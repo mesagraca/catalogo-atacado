@@ -1,8 +1,15 @@
 import type { Product } from "@/types/catalog";
 
-export function whatsappUrl(product: Pick<Product, "category" | "name" | "color_name">, quantity?: number) {
-  const variation = product.color_name ? `\nVariação: ${product.color_name}` : "";
-  const quantityLine = quantity ? `\nQuantidade: ${quantity}` : "";
-  const message = `Olá! Tenho interesse no catálogo de atacado Mesa & Graça.\n\nProduto: ${product.name}\nCategoria: ${product.category}${variation}${quantityLine}\n\nGostaria de confirmar disponibilidade, pedido mínimo e prazo.`;
+export function whatsappUrl(
+  product: Pick<Product, "category" | "name" | "color_name">,
+  quantity?: number,
+) {
+  const details = [
+    `*Produto:* ${product.name}`,
+    product.color_name ? `*Variação:* ${product.color_name}` : null,
+    quantity ? `*Quantidade:* ${quantity}` : null,
+  ].filter(Boolean);
+  const message = `Olá! Quero pedir este item do atacado Mesa & Graça 😊\n\n${details.join("\n")}\n\nPode me confirmar a disponibilidade e o prazo, por favor?`;
+
   return `https://wa.me/5511977007234?text=${encodeURIComponent(message)}`;
 }
