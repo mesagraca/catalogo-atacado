@@ -83,3 +83,6 @@
 /* Footer full-bleed, sem sobra abaixo do conteúdo. */
 .catalog-shell,.product-page-shell{padding-bottom:0}.site-footer{width:100vw;margin-right:calc(50% - 50vw)!important;margin-left:calc(50% - 50vw)!important;margin-bottom:0}.catalog-shell>.site-footer,.product-page-shell>.site-footer{margin-right:calc(50% - 50vw)!important;margin-left:calc(50% - 50vw)!important}.site-footer .footer-main,.site-footer .footer-bottom{width:min(100%,88rem);margin-right:auto;margin-left:auto;padding-right:clamp(1rem,3vw,3rem);padding-left:clamp(1rem,3vw,3rem)}
 @media(max-width:700px){.site-footer .footer-main,.site-footer .footer-bottom{padding-right:0;padding-left:0}}
+
+/* Informação visual já comunicada pelas imagens do produto. */
+.product-page-reference{display:none}
