@@ -5,7 +5,7 @@ import { useState } from "react";
 import { CATEGORIES, FEATURED_PRODUCTS } from "@/types/catalog";
 import { BrandLogo } from "./brand-logo";
 import { CollectionsMegaMenu } from "./collections-mega-menu";
-import { ArrowUpRightIcon } from "./ui-icons";
+import { WhatsAppIcon } from "./ui-icons";
 
 export function SiteHeader() {
   const [search, setSearch] = useState("");
@@ -31,15 +31,13 @@ export function SiteHeader() {
         />
       </label>
       <nav aria-label="Navegação principal">
-        <Link href="/catalogo">Jogos americanos</Link>
-        <Link href="/catalogo">Porta-guardanapos</Link>
         <CollectionsMegaMenu
           products={FEATURED_PRODUCTS}
           categories={CATEGORIES}
           onSelect={() => goToCatalog()}
         />
         <a href="https://wa.me/5511977007234" target="_blank" rel="noreferrer">
-          Atendimento <ArrowUpRightIcon />
+          Atendimento <WhatsAppIcon />
         </a>
       </nav>
     </header>
