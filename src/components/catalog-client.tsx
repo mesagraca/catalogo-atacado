@@ -24,6 +24,15 @@ import { WhatsAppIcon } from "./ui-icons";
 import { CollectionsMegaMenu } from "./collections-mega-menu";
 
 type Filter = "Todos" | Category;
+const mergeCatalog = (items: Product[]) => [
+  ...items,
+  ...FEATURED_PRODUCTS.filter(
+    (featured) =>
+      !items.some(
+        (item) => item.id === featured.id || item.name === featured.name,
+      ),
+  ),
+];
 
 export function CatalogClient({ print = false }: { print?: boolean }) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -49,7 +58,9 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
       .order("sort_order")
       .then(({ data }) => {
         setProducts(
-          (data as Product[])?.length ? (data as Product[]) : FEATURED_PRODUCTS,
+          (data as Product[])?.length
+            ? mergeCatalog(data as Product[])
+            : FEATURED_PRODUCTS,
         );
         setLoading(false);
       });

@@ -57,8 +57,19 @@ export function ProductPageClient({ id }: { id: string }) {
         setProduct(item);
         setVariation(item.variations?.[0]);
       }
-      if (catalogResult.data?.length)
-        setCatalogProducts(catalogResult.data as Product[]);
+      if (catalogResult.data?.length) {
+        const onlineProducts = catalogResult.data as Product[];
+        setCatalogProducts([
+          ...onlineProducts,
+          ...FEATURED_PRODUCTS.filter(
+            (featured) =>
+              !onlineProducts.some(
+                (item) =>
+                  item.id === featured.id || item.name === featured.name,
+              ),
+          ),
+        ]);
+      }
       setLoading(false);
     });
   }, [id]);
