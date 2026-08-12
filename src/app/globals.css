@@ -1,4 +1,5 @@
 @import "tailwindcss";
+body{font-family:var(--font-outfit),"Helvetica Neue",Helvetica,Arial,sans-serif!important}
 
 /* Refinamento da vitrine: e-commerce leve, tátil e editorial. */
 :root{--ink:#24211e;--paper:#f8f5ef;--cream:#fffdf9;--clay:#a95138;--line:#e6ddd1;--muted:#716a62;--card:#fffdf9}
