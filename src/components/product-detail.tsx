@@ -1,0 +1,13 @@
+"use client";
+
+import { useState } from "react";
+import type { Product, Variation } from "@/types/catalog";
+import { whatsappUrl } from "@/lib/whatsapp";
+
+export function ProductDetail({ product, onClose }: { product: Product; onClose: () => void }) {
+  const [variation, setVariation] = useState<Variation | undefined>(product.variations?.[0]);
+  const [quantity, setQuantity] = useState(1);
+  const href = `${whatsappUrl({ ...product, color_name: variation ? `${variation.pattern === "xadrez" ? "Xadrez" : "Liso"} ${variation.name}` : product.color_name })}%0AQuantidade:%20${quantity}`;
+  const money = (value: number | null) => value == null ? "Sob consulta" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+  return <div className="detail-backdrop" role="dialog" aria-modal="true" aria-label={product.name} onClick={onClose}><article className="detail-sheet" onClick={event => event.stopPropagation()}><button className="detail-close" onClick={onClose} aria-label="Fechar">×</button><div className="detail-image">{product.image_url && <img src={product.image_url} alt={product.name} />}</div><div className="detail-info"><p className="eyebrow">{product.collection || product.category}</p><h2>{product.name}</h2><p className="detail-copy">Referência visual do produto. Confirme disponibilidade e prazo com nossa equipe antes de finalizar o pedido.</p><div className="detail-price"><span>Preço atacado</span><strong>{money(product.wholesale_price)}</strong>{product.retail_price && <small>Varejo: {money(product.retail_price)}</small>}</div>{product.variations && <section className="detail-variations"><b>Escolha a variação</b>{["xadrez", "liso"].map(pattern => { const items = product.variations!.filter(item => item.pattern === pattern); return items.length ? <div className="detail-option-row" key={pattern}><span>{pattern === "xadrez" ? "Xadrez" : "Liso"}</span>{items.map(item => <button className={`detail-swatch ${pattern} ${variation?.name === item.name && variation?.pattern === item.pattern ? "selected" : ""}`} style={{ "--swatch": item.hex } as React.CSSProperties} onClick={() => setVariation(item)} key={`${pattern}-${item.name}`}>{item.name}</button>)}</div> : null; })}</section>}<div className="quantity"><span>Quantidade</span><div><button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button><strong>{quantity}</strong><button onClick={() => setQuantity(quantity + 1)}>+</button></div></div><a className="detail-action" target="_blank" rel="noreferrer" href={href}>Solicitar pelo WhatsApp <em>↗</em></a><small className="detail-note">Sem checkout: pedido sujeito à confirmação comercial.</small></div></article></div>;
+}
