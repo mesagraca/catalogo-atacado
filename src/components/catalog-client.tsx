@@ -6,6 +6,8 @@ import { CATEGORIES, FEATURED_PRODUCTS, type Category, type Product } from "@/ty
 import { isSupabaseReady, supabase } from "@/lib/supabase";
 import { ProductCard } from "./product-card";
 import { ProductDetail } from "./product-detail";
+import { CollectionHeader } from "./collection-header";
+import { ProductToolbar, type PriceRange, type SortOrder, type ViewMode } from "./product-toolbar";
 
 type Filter = "Todos" | Category;
 
@@ -13,21 +15,41 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("Todos");
+  const [collection, setCollection] = useState("");
+  const [color, setColor] = useState("");
+  const [priceRange, setPriceRange] = useState<PriceRange>("all");
+  const [sort, setSort] = useState<SortOrder>("featured");
+  const [view, setView] = useState<ViewMode>("grid");
   const [search, setSearch] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   useEffect(() => {
     if (!supabase) { setProducts(FEATURED_PRODUCTS); setLoading(false); return; }
     supabase.from("products").select("*").eq("is_visible", true).order("sort_order").then(({ data }) => { setProducts((data as Product[])?.length ? data as Product[] : FEATURED_PRODUCTS); setLoading(false); });
   }, []);
-  const results = useMemo(() => products.filter(p => (filter === "Todos" || p.category === filter) && `${p.name} ${p.category} ${p.collection ?? ""} ${p.color_name ?? ""}`.toLowerCase().includes(search.toLowerCase())), [products, filter, search]);
-  const collections = [...new Set(products.map(p => p.collection).filter(Boolean))] as string[];
+  const collections = useMemo(() => [...new Set(products.map(p => p.collection).filter(Boolean))] as string[], [products]);
+  const colors = useMemo(() => [...new Set(products.flatMap(product => [product.color_name, ...(product.variations?.map(item => item.name) ?? [])]).filter(Boolean))] as string[], [products]);
+  const results = useMemo(() => products.filter(product => {
+    const price = product.wholesale_price ?? product.retail_price;
+    const matchesPrice = priceRange === "all" || (price != null && ((priceRange === "up-to-10" && price <= 10) || (priceRange === "10-to-15" && price >= 10 && price <= 15) || (priceRange === "over-15" && price > 15)));
+    const matchesColor = !color || product.color_name === color || product.variations?.some(item => item.name === color);
+    const searchable = `${product.name} ${product.category} ${product.collection ?? ""} ${product.color_name ?? ""} ${product.variations?.map(item => item.name).join(" ") ?? ""}`.toLowerCase();
+    return (filter === "Todos" || product.category === filter) && (!collection || product.collection === collection) && matchesColor && matchesPrice && searchable.includes(search.toLowerCase());
+  }).sort((a, b) => {
+    if (sort === "name") return a.name.localeCompare(b.name, "pt-BR");
+    if (sort === "price-low") return (a.wholesale_price ?? a.retail_price ?? Infinity) - (b.wholesale_price ?? b.retail_price ?? Infinity);
+    if (sort === "price-high") return (b.wholesale_price ?? b.retail_price ?? -Infinity) - (a.wholesale_price ?? a.retail_price ?? -Infinity);
+    return a.sort_order - b.sort_order;
+  }), [products, filter, collection, color, priceRange, search, sort]);
+  const clearFilters = () => { setFilter("Todos"); setCollection(""); setColor(""); setPriceRange("all"); setSearch(""); };
+  const activeFilterCount = Number(filter !== "Todos") + Number(Boolean(collection)) + Number(Boolean(color)) + Number(priceRange !== "all");
 
   if (print) return <main className="print-shell">{CATEGORIES.map(category => <section className="category-section" key={category}><h2>{category}</h2><div className="product-grid">{products.filter(p => p.category === category).map(p => <ProductCard key={p.id} product={p} print />)}</div></section>)}</main>;
-  return <main className="catalog-shell"><header className="catalog-nav"><Link className="wordmark" href="/">Mesa <span>&amp;</span> Graça</Link><div><a href="https://wa.me/5511977007234" target="_blank">Atendimento ↗</a></div></header>
-    <section className="shop-header"><p className="eyebrow">CATÁLOGO ATACADO</p><h1>Encontre a peça certa para sua loja.</h1><p>Variações, preços e disponibilidade confirmados pela nossa equipe.</p></section>
-    <section className="shop-toolbar" aria-label="Filtros do catálogo"><label className="search-field"><span>⌕</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar por produto, coleção ou cor" aria-label="Buscar produtos" /></label><div className="filter-row">{(["Todos", ...CATEGORIES] as Filter[]).map(item => <button key={item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>{item}</button>)}</div></section>
-    <div className="shop-meta"><p><strong>{results.length}</strong> {results.length === 1 ? "produto encontrado" : "produtos encontrados"}</p><div>{collections.map(collection => <button key={collection} onClick={() => setSearch(collection)}>{collection}</button>)}</div></div>
-    {loading ? <p className="loading">Carregando catálogo…</p> : results.length ? <section className="commerce-grid">{results.map(product => <ProductCard key={product.id} product={product} onOpen={setSelectedProduct} />)}</section> : <section className="no-results"><strong>Nenhum produto encontrado.</strong><p>Tente outra busca ou limpe os filtros.</p><button onClick={() => { setSearch(""); setFilter("Todos"); }}>Limpar filtros</button></section>}
+  return <main className="catalog-shell"><header className="catalog-nav"><Link className="wordmark" href="/">Mesa <span>&amp;</span> Graça</Link><nav aria-label="Navegação principal"><button onClick={() => setFilter("Jogos Americanos")}>Jogos americanos</button><button onClick={() => setFilter("Porta-guardanapos")}>Porta-guardanapos</button><a href="https://wa.me/5511977007234" target="_blank" rel="noreferrer">Atendimento ↗</a></nav></header>
+    <CollectionHeader title={filter === "Todos" ? "Catálogo de atacado" : filter} />
+    <label className="catalog-search"><span aria-hidden="true">⌕</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar por produto, coleção ou cor" aria-label="Buscar produtos" /></label>
+    <ProductToolbar categories={CATEGORIES} collections={collections} colors={colors} category={filter} collection={collection} color={color} priceRange={priceRange} sort={sort} view={view} activeFilterCount={activeFilterCount} onCategory={setFilter} onCollection={setCollection} onColor={setColor} onPriceRange={setPriceRange} onSort={setSort} onView={setView} onClear={clearFilters} />
+    <div className="results-meta"><p><strong>{results.length}</strong> {results.length === 1 ? "produto encontrado" : "produtos encontrados"}</p>{activeFilterCount > 0 && <p>Filtros ativos: {activeFilterCount}</p>}</div>
+    {loading ? <section className="loading-grid" aria-label="Carregando produtos"><i /><i /><i /></section> : results.length ? <section className={`commerce-grid ${view === "list" ? "list-view" : ""}`}>{results.map(product => <ProductCard key={product.id} product={product} onOpen={setSelectedProduct} />)}</section> : <section className="no-results"><strong>Nenhum produto encontrado.</strong><p>Tente outra busca ou limpe os filtros.</p><button onClick={clearFilters}>Limpar filtros</button></section>}
     {selectedProduct && <ProductDetail product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     {!isSupabaseReady && <p className="phase-note">Vitrine de atacado · preços e disponibilidade sujeitos à confirmação.</p>}
   </main>;
