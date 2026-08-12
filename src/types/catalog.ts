@@ -78,6 +78,36 @@ const portaEditorialImages = [
   "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_1_c988d41d6badd1efa2385eedb82389ed.jpg",
   "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_1_3bb629e8d7a984df92f29c36eb831282.jpg",
 ] as const;
+const portaColorDetails = [
+  ["Roxo, verde e vinho", "#765B6A"],
+  ["Lilás e verde", "#8B7A8F"],
+  ["Amarelo e verde", "#D5A833"],
+  ["Vermelho e verde", "#B9373A"],
+  ["Azul-marinho e bege", "#263D5D"],
+  ["Verde", "#5A8251"],
+  ["Verde-esmeralda e dourado", "#39766B"],
+  ["Âmbar e dourado", "#B78232"],
+  ["Verde e bege", "#657E5C"],
+  ["Verde", "#5E7A50"],
+  ["Rosé", "#B16D77"],
+  ["Rosa e lilás", "#B47A91"],
+  ["Bege e dourado", "#B89C70"],
+  ["Palha e bege", "#B99B6E"],
+  ["Vermelho rubi", "#A41E2D"],
+  ["Dourado", "#BE8B33"],
+  ["Bege natural", "#AA8D6E"],
+  ["Pêssego e verde", "#D98973"],
+  ["Azul serenity", "#5489B3"],
+  ["Verde eucalipto", "#819D83"],
+  ["Amarelo, vermelho e verde", "#D5A233"],
+  ["Marrom", "#754A31"],
+  ["Marrom e bege", "#927554"],
+  ["Rosa", "#C45E7E"],
+  ["Azul", "#3F82BC"],
+  ["Branco, amarelo e natural", "#D8A929"],
+  ["Variações disponíveis", "#A8202A"],
+  ["Variações disponíveis", "#A8202A"],
+] as const;
 
 export const FEATURED_PRODUCTS: Product[] = [
   {
@@ -234,8 +264,8 @@ export const FEATURED_PRODUCTS: Product[] = [
         : index < 21
           ? "Coleções especiais"
           : "Porta-guardanapos",
-    color_name: null,
-    color_hex: null,
+    color_name: portaColorDetails[index][0],
+    color_hex: portaColorDetails[index][1],
     retail_price: retail,
     wholesale_price: wholesale,
     image_url: `/produtos/produto-${String(index + 1).padStart(2, "0")}.png`,
