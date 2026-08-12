@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "
 import Link from "next/link";
 import { CATEGORIES, type Category, type Product, type ProductInput } from "@/types/catalog";
 import { isSupabaseReady, supabase } from "@/lib/supabase";
-const blank=():ProductInput=>({name:"",category:"Jogos Americanos",sku:"",collection:"",color_name:"",color_hex:"",retail_price:null,wholesale_price:null,image_url:null,image_status:"placeholder",sort_order:0,is_visible:true});
+const blank=():ProductInput=>({name:"",category:"Lugar Americano",sku:"",collection:"",color_name:"",color_hex:"",retail_price:null,wholesale_price:null,image_url:null,image_status:"placeholder",sort_order:0,is_visible:true});
 const money=(v:number|null)=>v==null?"—":new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(v);
 export function AdminClient(){const [products,setProducts]=useState<Product[]>([]),[filter,setFilter]=useState("Todos"),[search,setSearch]=useState(""),[form,setForm]=useState<ProductInput>(blank()),[editing,setEditing]=useState<Product|null>(null),[open,setOpen]=useState(false),[saving,setSaving]=useState(false),[message,setMessage]=useState("");
  const load=async()=>{if(!supabase)return;const {data,error}=await supabase.from("products").select("*").order("sort_order");if(error)setMessage("Não foi possível carregar os produtos: "+error.message);else setProducts((data as Product[])||[])};useEffect(()=>{load()},[]);

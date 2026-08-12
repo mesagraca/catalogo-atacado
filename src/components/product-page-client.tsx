@@ -53,12 +53,29 @@ export function ProductPageClient({ id }: { id: string }) {
         .order("sort_order"),
     ]).then(([productResult, catalogResult]) => {
       if (productResult.data) {
-        const item = productResult.data as Product;
+        const fetchedProduct = productResult.data as Product;
+        const item = {
+          ...fetchedProduct,
+          category:
+            (fetchedProduct as { category: string }).category ===
+            "Jogos Americanos"
+              ? "Lugar Americano"
+              : fetchedProduct.category,
+        } as Product;
         setProduct(item);
         setVariation(item.variations?.[0]);
       }
       if (catalogResult.data?.length) {
-        const onlineProducts = catalogResult.data as Product[];
+        const onlineProducts = (catalogResult.data as Product[]).map(
+          (item) =>
+            ({
+              ...item,
+              category:
+                (item as { category: string }).category === "Jogos Americanos"
+                  ? "Lugar Americano"
+                  : item.category,
+            }) as Product,
+        );
         setCatalogProducts([
           ...onlineProducts,
           ...FEATURED_PRODUCTS.filter(

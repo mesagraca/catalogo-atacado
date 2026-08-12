@@ -1,4 +1,4 @@
-export const CATEGORIES = ["Jogos Americanos", "Porta-guardanapos"] as const;
+export const CATEGORIES = ["Lugar Americano", "Porta-guardanapos"] as const;
 export type Category = (typeof CATEGORIES)[number];
 export type Variation = {
   name: string;
@@ -66,8 +66,8 @@ const lacoColors = [
 export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "jogo-xadrez",
-    name: "Jogo Americano Redondo Xadrez",
-    category: "Jogos Americanos",
+    name: "Lugar Americano Redondo Xadrez",
+    category: "Lugar Americano",
     sku: "JA-XD",
     collection: "Dupla Face",
     color_name: "Variações disponíveis",
@@ -83,7 +83,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "fundo-mar",
     name: "Fundo do Mar Convencional",
-    category: "Jogos Americanos",
+    category: "Lugar Americano",
     sku: "JA-FMC",
     collection: "Fundo do Mar",
     color_name: "Azul e off-white",
@@ -98,7 +98,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "laco-frances",
     name: "Laço Francês",
-    category: "Jogos Americanos",
+    category: "Lugar Americano",
     sku: "JA-LF",
     collection: "Coleção Essencial",
     color_name: "Variações disponíveis",
@@ -113,7 +113,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "ja-abelhinha",
     name: "Lugar Americano Abelhinha",
-    category: "Jogos Americanos",
+    category: "Lugar Americano",
     sku: "JA-AB",
     collection: "Abelhinha",
     color_name: "Amarelo",
@@ -128,7 +128,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "ja-ovinho",
     name: "Lugar Americano Ovinho",
-    category: "Jogos Americanos",
+    category: "Lugar Americano",
     sku: "JA-OV",
     collection: "Ovinho",
     color_name: "Branco e amarelo",
@@ -143,7 +143,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "ja-cerejinha",
     name: "Lugar Americano Cerejinha",
-    category: "Jogos Americanos",
+    category: "Lugar Americano",
     sku: "JA-CE",
     collection: "Cerejinha",
     color_name: "Vermelho",
@@ -158,7 +158,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "ja-folhas",
     name: "Lugar Americano Folhas",
-    category: "Jogos Americanos",
+    category: "Lugar Americano",
     sku: "JA-FO",
     collection: "Folhas",
     color_name: "Verde",
@@ -173,7 +173,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "ja-magnolia",
     name: "Lugar Americano Magnólia",
-    category: "Jogos Americanos",
+    category: "Lugar Americano",
     sku: "JA-MA",
     collection: "Magnólia",
     color_name: "Floral",

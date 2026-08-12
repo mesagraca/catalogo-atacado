@@ -24,8 +24,15 @@ import { WhatsAppIcon } from "./ui-icons";
 import { CollectionsMegaMenu } from "./collections-mega-menu";
 
 type Filter = "Todos" | Category;
+const normalizeProduct = (product: Product): Product => ({
+  ...product,
+  category:
+    (product as { category: string }).category === "Jogos Americanos"
+      ? "Lugar Americano"
+      : product.category,
+});
 const mergeCatalog = (items: Product[]) => [
-  ...items,
+  ...items.map(normalizeProduct),
   ...FEATURED_PRODUCTS.filter(
     (featured) =>
       !items.some(
@@ -150,7 +157,7 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
     setPriceRange("all");
   };
   const heroImage =
-    filter === "Jogos Americanos"
+    filter === "Lugar Americano"
       ? "/produtos/Jogo%20Americano%20Redondo%20Xadrez%20%28Dupla%20Face%29.jpg"
       : filter === "Porta-guardanapos"
         ? "/produtos/laco-elegance.png"

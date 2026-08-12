@@ -1,6 +1,6 @@
 # Mesa & Graça — Catálogo Atacado
 
-Vitrine B2B de jogos americanos e porta-guardanapos, com seleção de variações e pedido por WhatsApp.
+Vitrine B2B de lugares americanos e porta-guardanapos, com seleção de variações e pedido por WhatsApp.
 
 ## Fase atual
 
