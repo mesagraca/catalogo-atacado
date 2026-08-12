@@ -8,6 +8,7 @@ import { ProductCard } from "./product-card";
 import { CollectionHeader } from "./collection-header";
 import { ProductSidebar, ProductToolbar, type PriceRange, type SortOrder, type ViewMode } from "./product-toolbar";
 import { BrandLogo } from "./brand-logo";
+import { SiteFooter } from "./site-footer";
 
 type Filter = "Todos" | Category;
 
@@ -50,6 +51,6 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
     <CollectionHeader title={filter === "Todos" ? "Catálogo de atacado" : filter} imageUrl={heroImage} />
     <ProductToolbar categories={CATEGORIES} collections={collections} colors={colors} category={filter} collection={collection} color={color} priceRange={priceRange} sort={sort} view={view} activeFilterCount={activeFilterCount} onCategory={chooseCategory} onCollection={setCollection} onColor={setColor} onPriceRange={setPriceRange} onSort={setSort} onView={setView} onClear={clearFilters} />
     <div className={`catalog-products-layout ${sidebarOpen ? "with-sidebar" : ""}`}><ProductSidebar open={sidebarOpen} onToggle={() => setSidebarOpen(open => !open)} categories={CATEGORIES} collections={collections} colors={colors} category={filter} collection={collection} color={color} priceRange={priceRange} sort={sort} view={view} activeFilterCount={activeFilterCount} onCategory={chooseCategory} onCollection={setCollection} onColor={setColor} onPriceRange={setPriceRange} onSort={setSort} onView={setView} onClear={clearFilters} /><div className="catalog-results"><div className="results-meta"><p><strong>{results.length}</strong> {results.length === 1 ? "produto encontrado" : "produtos encontrados"}</p>{activeFilterCount > 0 && <p>Filtros ativos: {activeFilterCount}</p>}</div>{loading ? <section className="loading-grid" aria-label="Carregando produtos"><i /><i /><i /></section> : results.length ? <section className={`commerce-grid ${view === "list" ? "list-view" : ""}`}>{results.map(product => <ProductCard key={product.id} product={product} />)}</section> : <section className="no-results"><strong>Nenhum produto encontrado.</strong><p>Tente outra busca ou limpe os filtros.</p><button onClick={clearFilters}>Limpar filtros</button></section>}</div></div>
-    {!isSupabaseReady && <p className="phase-note">Vitrine de atacado · preços e disponibilidade sujeitos à confirmação.</p>}
+    {!isSupabaseReady && <p className="phase-note">Vitrine de atacado · preços e disponibilidade sujeitos à confirmação.</p>}<SiteFooter />
   </main>;
 }
