@@ -47,7 +47,7 @@ export function ProductToolbar(props: Props) {
 
 export function ProductSidebar({ open, onToggle, ...props }: SidebarProps) {
   return <aside className={`product-sidebar ${open ? "open" : "closed"}`} aria-label="Filtros do catálogo">
-    <button className="sidebar-toggle" onClick={onToggle} aria-expanded={open}>{open ? "Ocultar filtros" : "Mostrar filtros"}<span aria-hidden="true">{open ? "←" : "→"}</span></button>
-    {open && <div className="sidebar-content"><div className="sidebar-heading"><p>Filtrar por</p>{props.activeFilterCount > 0 && <button onClick={props.onClear}>Limpar</button>}</div><FilterFields {...props} /></div>}
+    <button className="sidebar-toggle" onClick={onToggle} aria-expanded={open}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M4 7h16M7 12h10M10 17h4" strokeLinecap="round" /><circle cx="8" cy="7" r="1.5" fill="var(--cream)" /><circle cx="15" cy="12" r="1.5" fill="var(--cream)" /><circle cx="12" cy="17" r="1.5" fill="var(--cream)" /></svg><span>{open ? "Ocultar filtros" : "Filtros"}</span><b aria-hidden="true">{open ? "←" : "→"}</b></button>
+    {open && <div className="sidebar-content"><div className="sidebar-heading"><p>Refine sua busca</p>{props.activeFilterCount > 0 && <button onClick={props.onClear}>Limpar</button>}</div><FilterFields {...props} /></div>}
   </aside>;
 }
