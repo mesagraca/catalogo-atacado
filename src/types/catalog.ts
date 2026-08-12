@@ -16,6 +16,7 @@ export type Product = {
   retail_price: number | null;
   wholesale_price: number | null;
   image_url: string | null;
+  editorial_image_url?: string | null;
   image_status: "final" | "placeholder";
   sort_order: number;
   is_visible: boolean;
@@ -72,13 +73,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     collection: "Dupla Face",
     color_name: "Variações disponíveis",
     color_hex: null,
-    retail_price: null,
-    wholesale_price: null,
-    image_url:
-      "/produtos/Jogo%20Americano%20Redondo%20Xadrez%20%28Dupla%20Face%29.jpg",
+    retail_price: 22.32,
+    wholesale_price: 18.19,
+    image_url: "/produtos/dupla-face-rosa-bebe.png",
     image_status: "final",
     sort_order: 1,
     is_visible: true,
+    variations: [
+      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "xadrez" },
+      { name: "Vermelho", hex: "#C51F2A", pattern: "xadrez" },
+      { name: "Verde", hex: "#1F5A3D", pattern: "xadrez" },
+      { name: "Amarelo", hex: "#D99B19", pattern: "xadrez" },
+      { name: "Marinho", hex: "#203150", pattern: "xadrez" },
+      { name: "Preto", hex: "#292929", pattern: "xadrez" },
+      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso" },
+      { name: "Vermelho", hex: "#C51F2A", pattern: "liso" },
+      { name: "Verde", hex: "#1F5A3D", pattern: "liso" },
+      { name: "Amarelo", hex: "#D99B19", pattern: "liso" },
+      { name: "Marinho", hex: "#203150", pattern: "liso" },
+      { name: "Preto", hex: "#292929", pattern: "liso" },
+    ],
   },
   {
     id: "fundo-mar",
@@ -103,12 +117,21 @@ export const FEATURED_PRODUCTS: Product[] = [
     collection: "Coleção Essencial",
     color_name: "Variações disponíveis",
     color_hex: null,
-    retail_price: null,
-    wholesale_price: null,
-    image_url: "/produtos/La%C3%A7o%20Franc%C3%AAs.jpg",
+    retail_price: 32.9,
+    wholesale_price: 16.45,
+    image_url: "/produtos/laco-frances-rosa-bebe.png",
     image_status: "final",
     sort_order: 3,
     is_visible: true,
+    variations: [
+      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso" },
+      { name: "Rosa pink", hex: "#D82872", pattern: "liso" },
+      { name: "Azul marinho", hex: "#1A2947", pattern: "liso" },
+      { name: "Marrom", hex: "#704126", pattern: "liso" },
+      { name: "Vinho", hex: "#781F32", pattern: "liso" },
+      { name: "Amarelo", hex: "#D8A61B", pattern: "liso" },
+      { name: "Verde", hex: "#637039", pattern: "liso" },
+    ],
   },
   {
     id: "ja-abelhinha",

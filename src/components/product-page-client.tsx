@@ -38,6 +38,7 @@ export function ProductPageClient({ id }: { id: string }) {
     product?.variations?.[0],
   );
   const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState<"studio" | "editorial">("studio");
 
   useEffect(() => {
     if (!supabase) {
@@ -138,7 +139,7 @@ export function ProductPageClient({ id }: { id: string }) {
       <article className="product-page">
         <section className="product-page-image">
           {product.image_url ? (
-            <img src={product.image_url} alt={product.name} />
+            <><img src={activeImage === "editorial" && product.editorial_image_url ? product.editorial_image_url : product.image_url} alt={activeImage === "editorial" ? `Produto ${product.name} em uso` : product.name} />{product.editorial_image_url && <div className="product-image-gallery"><button className={activeImage === "studio" ? "selected" : ""} onClick={() => setActiveImage("studio")} aria-label="Ver foto do produto"><img src={product.image_url} alt="" /></button><button className={activeImage === "editorial" ? "selected" : ""} onClick={() => setActiveImage("editorial")} aria-label="Ver foto editorial"><img src={product.editorial_image_url} alt="" /></button></div>}</>
           ) : (
             <div className="image-placeholder">Imagem em atualização</div>
           )}
