@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { CATEGORIES, FEATURED_PRODUCTS, type Category, type Product } from "@/types/catalog";
 import { isSupabaseReady, supabase } from "@/lib/supabase";
 import { ProductCard } from "./product-card";
-import { ProductDetail } from "./product-detail";
 import { CollectionHeader } from "./collection-header";
 import { ProductToolbar, type PriceRange, type SortOrder, type ViewMode } from "./product-toolbar";
 
@@ -21,7 +20,6 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
   const [sort, setSort] = useState<SortOrder>("featured");
   const [view, setView] = useState<ViewMode>("grid");
   const [search, setSearch] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   useEffect(() => {
     if (!supabase) { setProducts(FEATURED_PRODUCTS); setLoading(false); return; }
     supabase.from("products").select("*").eq("is_visible", true).order("sort_order").then(({ data }) => { setProducts((data as Product[])?.length ? data as Product[] : FEATURED_PRODUCTS); setLoading(false); });
@@ -49,8 +47,7 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
     <label className="catalog-search"><span aria-hidden="true">⌕</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar por produto, coleção ou cor" aria-label="Buscar produtos" /></label>
     <ProductToolbar categories={CATEGORIES} collections={collections} colors={colors} category={filter} collection={collection} color={color} priceRange={priceRange} sort={sort} view={view} activeFilterCount={activeFilterCount} onCategory={setFilter} onCollection={setCollection} onColor={setColor} onPriceRange={setPriceRange} onSort={setSort} onView={setView} onClear={clearFilters} />
     <div className="results-meta"><p><strong>{results.length}</strong> {results.length === 1 ? "produto encontrado" : "produtos encontrados"}</p>{activeFilterCount > 0 && <p>Filtros ativos: {activeFilterCount}</p>}</div>
-    {loading ? <section className="loading-grid" aria-label="Carregando produtos"><i /><i /><i /></section> : results.length ? <section className={`commerce-grid ${view === "list" ? "list-view" : ""}`}>{results.map(product => <ProductCard key={product.id} product={product} onOpen={setSelectedProduct} />)}</section> : <section className="no-results"><strong>Nenhum produto encontrado.</strong><p>Tente outra busca ou limpe os filtros.</p><button onClick={clearFilters}>Limpar filtros</button></section>}
-    {selectedProduct && <ProductDetail product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+    {loading ? <section className="loading-grid" aria-label="Carregando produtos"><i /><i /><i /></section> : results.length ? <section className={`commerce-grid ${view === "list" ? "list-view" : ""}`}>{results.map(product => <ProductCard key={product.id} product={product} />)}</section> : <section className="no-results"><strong>Nenhum produto encontrado.</strong><p>Tente outra busca ou limpe os filtros.</p><button onClick={clearFilters}>Limpar filtros</button></section>}
     {!isSupabaseReady && <p className="phase-note">Vitrine de atacado · preços e disponibilidade sujeitos à confirmação.</p>}
   </main>;
 }
