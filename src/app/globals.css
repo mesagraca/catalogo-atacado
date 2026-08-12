@@ -1,4 +1,5 @@
 @import "tailwindcss";
+.commerce-grid{gap:1rem}.product-card{border-radius:16px}.product-image{aspect-ratio:1/1;border-radius:15px 15px 0 0}.product-info{min-height:0;padding:1rem}.product-info h3,.commerce-grid .product-info h3{min-height:0;font-size:.98rem;margin:.55rem 0 .7rem}.product-topline{font-size:.53rem}.product-note{min-height:0;padding-top:.6rem;font-size:.68rem}.variation-picker{min-height:0;padding:.65rem 0}.variation-picker small{margin-top:.4rem}.prices{margin:.75rem 0}.prices div{padding:.6rem 0}.whatsapp{padding:.72rem;font-size:.55rem}.commerce-grid .product-card{box-shadow:none}.commerce-grid .product-card:hover{transform:translateY(-2px);box-shadow:0 12px 26px #4d352012}
 body{font-family:var(--font-outfit),"Helvetica Neue",Helvetica,Arial,sans-serif!important}
 
 /* Refinamento da vitrine: e-commerce leve, tátil e editorial. */

@@ -1,44 +1,17 @@
 export const CATEGORIES = ["Jogos Americanos", "Porta-guardanapos"] as const;
 export type Category = (typeof CATEGORIES)[number];
-
-export type Variation = {
-  name: string;
-  hex: string;
-  pattern: "xadrez" | "liso";
-};
-
-export type Product = {
-  id: string;
-  name: string;
-  category: Category;
-  sku: string | null;
-  collection: string | null;
-  color_name: string | null;
-  color_hex: string | null;
-  retail_price: number | null;
-  wholesale_price: number | null;
-  image_url: string | null;
-  image_status: "final" | "placeholder";
-  sort_order: number;
-  is_visible: boolean;
-  variations?: Variation[];
-  created_at?: string;
-};
+export type Variation = { name: string; hex: string; pattern: "xadrez" | "liso" };
+export type Product = { id: string; name: string; category: Category; sku: string | null; collection: string | null; color_name: string | null; color_hex: string | null; retail_price: number | null; wholesale_price: number | null; image_url: string | null; image_status: "final" | "placeholder"; sort_order: number; is_visible: boolean; variations?: Variation[]; created_at?: string };
 export type ProductInput = Omit<Product, "id" | "created_at" | "variations">;
 
+const portaNames = [
+  ["Lírio Provence",12,9.04],["Lavanda Provençal",17,11.05],["Limone Toscano",14.9,10.43],["Cereja Mediterrânea",15.9,10.43],["Estrela Náutica",13.9,11.12],["Costela de Adão Tropical",11.9,9.04],["Medalhão Mediterrâneo Esmeralda",20,11.83],["Medalhão Mediterrâneo Âmbar",20,11.83],["Costela de Adão Mediterrânea",15.9,12.72],["Alecrim",17,11.9],["Dália Rosé Provence",13.9,9.04],["Orquídea Sauvage",14.9,9.04],["Estrela Náutica Provence",15.5,12.4],["Chapéu Junino",12.9,6],["Rubi",12.9,8],["Pérolas Douradas",13.9,9],["Nó Náutico",13.9,8],["Rosa Pêssego",13.9,9.04],["Flor Azul Serenity",13.9,9.04],["Folhagem Eucalipto",13.9,9.04],["Pizza Bordado",13.9,9.04],["Courino Marrom · Kit com 4",6.5,4.03],["Nó Turco · Kit com 4",7,4.9],["Flor Rosa",13.9,9.04],["Orquídea Azul",15.3,9.04],["Ovinho",13.9,9.04],["Laço Elegance",14.9,10.9],["Laço Charm",11.9,7.9],
+] as const;
+const lacoColors = [["Rosa bebê","#E9B7BC"],["Vermelho","#A8202A"],["Verde","#215F3E"],["Amarelo","#E4AD31"],["Marinho","#1D2C49"],["Preto","#272727"]] as const;
+
 export const FEATURED_PRODUCTS: Product[] = [
-  { id:"laco-elegance", name:"Laço Elegance", category:"Porta-guardanapos", sku:"PG-LE", collection:"Laços", color_name:"Preço único · escolha a variação", color_hex:null, retail_price:14.9, wholesale_price:10.9, image_url:"/produtos/laco-elegance.png", image_status:"final", sort_order:1, is_visible:true, variations:[
-    {name:"Rosa bebê",hex:"#E9B7BC",pattern:"xadrez"},{name:"Vermelho",hex:"#A8202A",pattern:"xadrez"},{name:"Verde",hex:"#215F3E",pattern:"xadrez"},{name:"Amarelo",hex:"#E4AD31",pattern:"xadrez"},{name:"Marinho",hex:"#1D2C49",pattern:"xadrez"},{name:"Preto",hex:"#272727",pattern:"xadrez"},
-    {name:"Rosa bebê",hex:"#E9B7BC",pattern:"liso"},{name:"Vermelho",hex:"#A8202A",pattern:"liso"},{name:"Verde",hex:"#215F3E",pattern:"liso"},{name:"Amarelo",hex:"#E4AD31",pattern:"liso"},{name:"Marinho",hex:"#1D2C49",pattern:"liso"},{name:"Preto",hex:"#272727",pattern:"liso"},
-  ]},
-  { id:"laco-charm", name:"Laço Charm", category:"Porta-guardanapos", sku:"PG-LC", collection:"Laços", color_name:"Preço único · escolha a cor", color_hex:null, retail_price:11.9, wholesale_price:7.9, image_url:"/produtos/laco-charm.png", image_status:"final", sort_order:2, is_visible:true, variations:[
-    {name:"Rosa bebê",hex:"#E9B7BC",pattern:"xadrez"},{name:"Vermelho",hex:"#A8202A",pattern:"xadrez"},{name:"Verde",hex:"#215F3E",pattern:"xadrez"},{name:"Amarelo",hex:"#E4AD31",pattern:"xadrez"},{name:"Marinho",hex:"#1D2C49",pattern:"xadrez"},{name:"Preto",hex:"#272727",pattern:"xadrez"},
-  ]},
-  { id:"ovinho", name:"Ovinho", category:"Porta-guardanapos", sku:"PG-OV", collection:"Café da manhã", color_name:null, color_hex:null, retail_price:13.9, wholesale_price:9.04, image_url:"/produtos/ovinho.png", image_status:"final", sort_order:3, is_visible:true },
-  { id:"orquidea-azul", name:"Orquídea Azul", category:"Porta-guardanapos", sku:"PG-OA", collection:"Florais", color_name:"Azul serenity", color_hex:"#2878C6", retail_price:15.3, wholesale_price:9.04, image_url:"/produtos/orquidea-azul.png", image_status:"final", sort_order:4, is_visible:true },
-  { id:"flor-rosa", name:"Flor Rosa", category:"Porta-guardanapos", sku:"PG-FR", collection:"Florais", color_name:"Rosa", color_hex:"#D94F72", retail_price:13.9, wholesale_price:9.04, image_url:"/produtos/flor-rosa.png", image_status:"final", sort_order:5, is_visible:true },
-  { id:"no-turco", name:"Nó Turco · Kit com 4", category:"Porta-guardanapos", sku:"PG-NT", collection:"Naturais", color_name:"Juta", color_hex:"#A66A37", retail_price:7, wholesale_price:4.9, image_url:"/produtos/no-turco.png", image_status:"final", sort_order:6, is_visible:true },
-  { id:"courino", name:"Courino Marrom · Kit com 4", category:"Porta-guardanapos", sku:"PG-CM", collection:"Essenciais", color_name:"Marrom", color_hex:"#934B2E", retail_price:6.5, wholesale_price:4.03, image_url:"/produtos/courino-marrom.png", image_status:"final", sort_order:7, is_visible:true },
-  { id:"xadrez-dupla-face", name:"Jogo Americano Redondo Xadrez", category:"Jogos Americanos", sku:"JA-XD", collection:"Dupla Face", color_name:"Variações com o mesmo preço", color_hex:null, retail_price:null, wholesale_price:null, image_url:"/produtos/jogo-xadrez-dupla-face.jpg", image_status:"final", sort_order:1, is_visible:true },
-  { id:"fundo-mar-convencional", name:"Fundo do Mar Convencional", category:"Jogos Americanos", sku:"JA-FMC", collection:"Fundo do Mar", color_name:"Azul e off-white", color_hex:"#4C83A8", retail_price:null, wholesale_price:null, image_url:"/produtos/fundo-do-mar-convencional.png", image_status:"final", sort_order:2, is_visible:true },
+  {id:"jogo-xadrez",name:"Jogo Americano Redondo Xadrez",category:"Jogos Americanos",sku:"JA-XD",collection:"Dupla Face",color_name:"Variações disponíveis",color_hex:null,retail_price:null,wholesale_price:null,image_url:"/produtos/Jogo%20Americano%20Redondo%20Xadrez%20%28Dupla%20Face%29.jpg",image_status:"final",sort_order:1,is_visible:true},
+  {id:"fundo-mar",name:"Fundo do Mar Convencional",category:"Jogos Americanos",sku:"JA-FMC",collection:"Fundo do Mar",color_name:"Azul e off-white",color_hex:"#4C83A8",retail_price:null,wholesale_price:null,image_url:"/produtos/FUNDO%20DO%20MAR%20CONVENCIONAL.png",image_status:"final",sort_order:2,is_visible:true},
+  {id:"laco-frances",name:"Laço Francês",category:"Jogos Americanos",sku:"JA-LF",collection:"Coleção Essencial",color_name:"Variações disponíveis",color_hex:null,retail_price:null,wholesale_price:null,image_url:"/produtos/La%C3%A7o%20Franc%C3%AAs.jpg",image_status:"final",sort_order:3,is_visible:true},
+  ...portaNames.map(([name, retail, wholesale], index): Product => ({ id:`pg-${index+1}`, name, category:"Porta-guardanapos", sku:`PG-${String(index+1).padStart(2,"0")}`, collection:index < 13 ? "Coleção Provence" : index < 21 ? "Coleções especiais" : "Porta-guardanapos", color_name:null, color_hex:null, retail_price:retail, wholesale_price:wholesale, image_url:`/produtos/produto-${String(index+1).padStart(2,"0")}.png`, image_status:"final", sort_order:index+1, is_visible:true, variations: name === "Laço Elegance" ? [...lacoColors.map(([name,hex])=>({name,hex,pattern:"xadrez" as const})),...lacoColors.map(([name,hex])=>({name,hex,pattern:"liso" as const}))] : name === "Laço Charm" ? lacoColors.map(([name,hex])=>({name,hex,pattern:"xadrez" as const})) : undefined })),
 ];
