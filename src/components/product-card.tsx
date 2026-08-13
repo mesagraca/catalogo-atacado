@@ -92,7 +92,7 @@ export function ProductCard({
         {product.wholesale_price != null && (
           <div className="product-commerce">
             <div>
-              <span>Preço atacado</span>
+              <span>{product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
               <strong>{money(product.wholesale_price)}</strong>
             </div>
             {product.retail_price != null && (
@@ -104,6 +104,11 @@ export function ProductCard({
               </div>
             )}
           </div>
+        )}
+        {product.kit_quantity && (
+          <p className="kit-unit-note">
+            Kit com {product.kit_quantity} unidades · valor por peça
+          </p>
         )}
         {hasColorInfo && (
           <>

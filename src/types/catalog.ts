@@ -20,6 +20,8 @@ export type Product = {
   image_status: "final" | "placeholder";
   sort_order: number;
   is_visible: boolean;
+  /** When present, the item is sold only as a kit and this is its piece count. */
+  kit_quantity?: number | null;
   variations?: Variation[];
   created_at?: string;
 };
@@ -295,6 +297,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     image_status: "final",
     sort_order: index + 1,
     is_visible: true,
+    kit_quantity: name.includes("Kit com 4") ? 4 : null,
     variations:
       name === "Laço Elegance"
         ? [

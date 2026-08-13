@@ -25,13 +25,19 @@ import { CollectionsMegaMenu } from "./collections-mega-menu";
 import { MobileCatalogMenu } from "./mobile-catalog-menu";
 
 type Filter = "Todos" | Category;
-const normalizeProduct = (product: Product): Product => ({
-  ...product,
-  category:
-    (product as { category: string }).category === "Jogos Americanos"
-      ? "Lugar Americano"
-      : product.category,
-});
+const normalizeProduct = (product: Product): Product => {
+  const fallback = FEATURED_PRODUCTS.find(
+    (featured) => featured.id === product.id || featured.name === product.name,
+  );
+  return {
+    ...product,
+    kit_quantity: product.kit_quantity ?? fallback?.kit_quantity,
+    category:
+      (product as { category: string }).category === "Jogos Americanos"
+        ? "Lugar Americano"
+        : product.category,
+  };
+};
 const mergeCatalog = (items: Product[]) => [
   ...items.map(normalizeProduct),
   ...FEATURED_PRODUCTS.filter(

@@ -56,8 +56,13 @@ export function ProductPageClient({ id }: { id: string }) {
     ]).then(([productResult, catalogResult]) => {
       if (productResult.data) {
         const fetchedProduct = productResult.data as Product;
+        const fallback = FEATURED_PRODUCTS.find(
+          (featured) =>
+            featured.id === fetchedProduct.id || featured.name === fetchedProduct.name,
+        );
         const item = {
           ...fetchedProduct,
+          kit_quantity: fetchedProduct.kit_quantity ?? fallback?.kit_quantity,
           category:
             (fetchedProduct as { category: string }).category ===
             "Jogos Americanos"
@@ -72,6 +77,12 @@ export function ProductPageClient({ id }: { id: string }) {
           (item) =>
             ({
               ...item,
+              kit_quantity:
+                item.kit_quantity ??
+                FEATURED_PRODUCTS.find(
+                  (featured) =>
+                    featured.id === item.id || featured.name === item.name,
+                )?.kit_quantity,
               category:
                 (item as { category: string }).category === "Jogos Americanos"
                   ? "Lugar Americano"
@@ -150,7 +161,7 @@ export function ProductPageClient({ id }: { id: string }) {
           <h1>{product.name}</h1>
           {product.wholesale_price != null && (
             <div className="product-page-price">
-              <span>Preço atacado</span>
+              <span>{product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
               <strong>{money(product.wholesale_price)}</strong>
               {product.retail_price != null && (
                 <small>
@@ -158,6 +169,11 @@ export function ProductPageClient({ id }: { id: string }) {
                 </small>
               )}
             </div>
+          )}
+          {product.kit_quantity && (
+            <p className="product-page-kit-note">
+              <b>Venda em kit com {product.kit_quantity} unidades.</b> O valor exibido é por peça.
+            </p>
           )}
           {hasColorInfo &&
             (product.variations?.length ? (
@@ -201,7 +217,7 @@ export function ProductPageClient({ id }: { id: string }) {
               </section>
             ))}
           <div className="product-page-quantity">
-            <span>Quantidade</span>
+            <span>{product.kit_quantity ? "Quantidade de kits" : "Quantidade"}</span>
             <div>
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
