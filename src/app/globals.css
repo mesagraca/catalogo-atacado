@@ -131,3 +131,6 @@ html,body{width:100%;max-width:100%;overflow-x:clip}body{position:relative}.cata
 
 /* Ações de catálogo: as duas opções têm largura integral e leitura imediata. */
 .product-card .card-bottom{display:block;width:100%}.product-card .card-actions{display:grid!important;width:100%;grid-template-columns:minmax(0,1fr)!important;gap:.55rem}.product-card .card-actions .product-cta,.product-card .card-actions .product-whatsapp{display:flex;width:100%!important;min-width:0!important;justify-content:center}.commerce-grid.list-view .product-card .card-bottom{width:100%}.commerce-grid.list-view .product-card .card-actions{width:100%;grid-template-columns:minmax(0,1fr)!important}
+
+/* Barra superior em toda a viewport, com o conteúdo alinhado à grade do catálogo. */
+.catalog-header{width:100vw;margin-left:calc(50% - 50vw);padding-right:max(clamp(1rem,3vw,3rem),calc((100vw - 88rem)/2 + clamp(1rem,3vw,3rem)));padding-left:max(clamp(1rem,3vw,3rem),calc((100vw - 88rem)/2 + clamp(1rem,3vw,3rem)))}
