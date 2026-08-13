@@ -51,11 +51,11 @@ export function CollectionsMegaMenu({ products, categories, onSelect }: Props) {
       {open && (
         <div className="mega-panel" role="menu">
           <div className="mega-intro">
-            <span>Explore o catálogo</span>
-            <strong>Peças para compor<br />uma mesa especial.</strong>
-            <button type="button" onClick={() => select("Todos")}>
-              Ver todos os produtos
-            </button>
+            <div>
+              <span>Explore o catálogo</span>
+              <strong>Encontre a peça ideal para sua mesa.</strong>
+            </div>
+            <button type="button" onClick={() => select("Todos")}>Ver todo o catálogo</button>
           </div>
           {groups.map((group) => (
             <section key={group.category}>
