@@ -5,6 +5,7 @@ import { useState } from "react";
 import { CATEGORIES, FEATURED_PRODUCTS } from "@/types/catalog";
 import { BrandLogo } from "./brand-logo";
 import { CollectionsMegaMenu } from "./collections-mega-menu";
+import { MobileCatalogMenu } from "./mobile-catalog-menu";
 import { WhatsAppIcon } from "./ui-icons";
 
 export function SiteHeader() {
@@ -47,6 +48,18 @@ export function SiteHeader() {
           Atendimento <WhatsAppIcon />
         </a>
       </nav>
+      <MobileCatalogMenu
+        products={FEATURED_PRODUCTS}
+        categories={CATEGORIES}
+        onSelect={(category, collection) =>
+          window.location.assign(
+            `/catalogo?${new URLSearchParams({
+              ...(category !== "Todos" ? { categoria: category } : {}),
+              ...(collection ? { colecao: collection } : {}),
+            }).toString()}`,
+          )
+        }
+      />
     </header>
   );
 }

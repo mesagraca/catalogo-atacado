@@ -22,6 +22,7 @@ import { BrandLogo } from "./brand-logo";
 import { SiteFooter } from "./site-footer";
 import { WhatsAppIcon } from "./ui-icons";
 import { CollectionsMegaMenu } from "./collections-mega-menu";
+import { MobileCatalogMenu } from "./mobile-catalog-menu";
 
 type Filter = "Todos" | Category;
 const normalizeProduct = (product: Product): Product => ({
@@ -220,6 +221,11 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
             Atendimento <WhatsAppIcon />
           </a>
         </nav>
+        <MobileCatalogMenu
+          products={products}
+          categories={CATEGORIES}
+          onSelect={chooseCollection}
+        />
       </header>
       <CollectionHeader
         title={filter === "Todos" ? "Catálogo de atacado" : filter}
