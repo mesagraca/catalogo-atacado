@@ -47,13 +47,13 @@ const portaNames = [
   ["Dália Rosé Provence", 13.9, 9.04],
   ["Orquídea Sauvage", 14.9, 9.04],
   ["Estrela Náutica Provence", 15.5, 12.4],
-  ["Chapéu Junino", 12.9, 6],
-  ["Rubi", 12.9, 8],
-  ["Pérolas Douradas", 13.9, 9],
+  ["Chapéu de Palha Junino", 12.9, 6],
+  ["Esferas Vermelhas Bordô", 12.9, 8],
+  ["Dourado com Pérolas", 13.9, 9],
   ["Nó Náutico", 13.9, 8],
-  ["Rosa Pêssego", 13.9, 9.04],
-  ["Flor Azul Serenity", 13.9, 9.04],
-  ["Folhagem Eucalipto", 13.9, 9.04],
+  ["Rosa Coral com Fibra Natural", 13.9, 9.04],
+  ["Flor Azul com Fibra Natural", 13.9, 9.04],
+  ["Suculenta Verde com Fibra Natural", 13.9, 9.04],
   ["Pizza Bordado", 13.9, 9.04],
   ["Courino Marrom · Kit com 4", 6.5, 4.03],
   ["Nó Turco · Kit com 4", 7, 4.9],
@@ -100,6 +100,14 @@ const portaStudioImages = [
   "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_2_b42f66a6e314fe4d9ccf2cfd1c25ad85.jpg",
   "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_2_77b902577cf0e6d28ed1ca4a8b2ab9e9.jpg",
   "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_2_a27899165db976414667998d6a019bd8.jpg",
+] as const;
+const updatedPortaImageSlugs = [
+  "lirio-provence", "lavanda-provencal", "limone-toscano", "cereja-mediterranea",
+  "estrela-nautica", "costela-adao-tropical", "medalhao-esmeralda", "medalhao-ambar",
+  "costela-adao-mediterranea", "alecrim", "dalia-rose-provence", "orquidea-sauvage",
+  "estrela-nautica-provence", "chapeu-palha-junino", "esferas-vermelhas-bordo", "dourado-perolas",
+  null, "rosa-coral", "flor-azul", "suculenta-verde", "pizza-bordado",
+  null, null, null, null, null, null, null,
 ] as const;
 const portaColorDetails = [
   ["Roxo, verde e vinho", "#765B6A"],
@@ -322,9 +330,12 @@ export const FEATURED_PRODUCTS: Product[] = [
     retail_price: retail,
     wholesale_price: wholesale,
     image_url:
+      (updatedPortaImageSlugs[index] && `/produtos/porta-guardanapos/${updatedPortaImageSlugs[index]}-01.webp`) ??
       portaStudioImages[index] ??
       `/produtos/produto-${String(index + 1).padStart(2, "0")}.png`,
-    editorial_image_url: portaEditorialImages[index] ?? null,
+    editorial_image_url:
+      (updatedPortaImageSlugs[index] && `/produtos/porta-guardanapos/${updatedPortaImageSlugs[index]}-02.webp`) ??
+      portaEditorialImages[index] ?? null,
     image_status: "final",
     sort_order: index + 1,
     is_visible: true,
