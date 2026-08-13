@@ -371,6 +371,7 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
   ...[
     ["jogo-feijoada", "Jogo Feijoada", "#5E4634", 16.68, 12.6, 4.03],
+    ["jogo-hot-dog", "Jogo Hot Dog", "#C84948", 19.15, 11.5, null],
     ["jogo-churrasco", "Jogo Churrasco", "#883F31", 26.04, 19.12, 4.03],
     ["jogo-hamburguer", "Jogo Hambúrguer", "#274A69", 24.02, 19.12, 4.03],
     ["jogo-pizza-dupla-face", "Jogo Pizza Dupla Face", "#A83A3E", 19.32, 12.05, 9.04],
@@ -389,7 +390,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ["jogo-bridgerton-verde", "Jogo Bridgerton Verde", "#477252", 18.66, 11.83, 11],
     ["jogo-fundo-mar-premium", "Jogo Fundo do Mar Premium", "#213C68", 29.25, 13.86, 12.4],
   ].map((entry, index): Product => {
-    const [id, name, color, placemat, napkin, ring] = entry as [string, string, string, number, number, number];
+    const [id, name, color, placemat, napkin, ring] = entry as [string, string, string, number, number, number | null];
     return {
     id,
     name,
@@ -408,7 +409,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     image_url: `/produtos/jogos/${id}-01.webp`,
     editorial_image_url: `/produtos/jogos/${id}-02.webp`,
     image_status: [
-      "jogo-feijoada", "jogo-churrasco", "jogo-hamburguer", "jogo-pizza-dupla-face",
+      "jogo-feijoada", "jogo-hot-dog", "jogo-churrasco", "jogo-hamburguer", "jogo-pizza-dupla-face",
       "jogo-quadrado-xadrez", "jogo-limao", "jogo-essence-campestre", "jogo-costela-adao",
       "jogo-alecrim", "jogo-lavanda", "jogo-oliveira", "jogo-rose-imperial", "jogo-flor-lottus",
       "jogo-bridgerton-azul", "jogo-bridgerton-verde",
@@ -417,7 +418,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     is_visible: true,
   }; }),
   ...[
-    ["la-hotdog-dupla-face", "Lugar Americano Hot Dog Dupla Face", "#C84948", 31.92, 19.15],
     ["la-natal-majestosa-vinho", "Lugar Americano Natal Majestosa Vinho", "#7B1C2D", 30.32, 16.68, "/produtos/NATAL%20MAJESTOSA%20VINHO.png"],
     ["la-natal-majestosa-verde", "Lugar Americano Natal Majestosa Verde", "#285A3C", 30.32, 16.68, "/produtos/NATAL%20MAJESTOSA%20verde.png"],
     ["la-natal-floresta", "Lugar Americano Natal Floresta Encantada", "#2F5938", 28.9, 15.9, "/produtos/Natal%20Floresta%20(Encantada).png"],
