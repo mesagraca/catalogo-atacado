@@ -7,6 +7,7 @@ export type Variation = {
 };
 export type GameItem = {
   label: "Lugar americano" | "Guardanapo" | "Porta-guardanapo";
+  retail_price?: number | null;
   wholesale_price: number | null;
 };
 export type Product = {
@@ -159,8 +160,8 @@ export const FEATURED_PRODUCTS: Product[] = [
     collection: "Dupla Face",
     color_name: "Variações disponíveis",
     color_hex: null,
-    retail_price: 22.32,
-    wholesale_price: 18.19,
+    retail_price: 28,
+    wholesale_price: 22.82,
     image_url: "/produtos/dupla-face-rosa-bebe.png",
     editorial_image_url: "/produtos/editorial-jogo-xadrez.png",
     image_status: "final",
@@ -275,7 +276,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     retail_price: 16.9,
     wholesale_price: null,
     game_items: [
-      { label: "Lugar americano", wholesale_price: 16.45 },
+      { label: "Lugar americano", retail_price: 32.9, wholesale_price: 19.74 },
       { label: "Guardanapo", wholesale_price: 12.6 },
       { label: "Porta-guardanapo", wholesale_price: 8.9 },
     ],
@@ -296,7 +297,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     retail_price: 15.9,
     wholesale_price: null,
     game_items: [
-      { label: "Lugar americano", wholesale_price: 16.45 },
+      { label: "Lugar americano", retail_price: 20.9, wholesale_price: 17.77 },
       { label: "Guardanapo", wholesale_price: 11.2 },
       { label: "Porta-guardanapo", wholesale_price: 10.9 },
     ],
@@ -388,7 +389,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ["jogo-flor-lottus", "Jogo Flor de Lóttus", "#DC8AA2", 16.22, 11.64, 9.3],
     ["jogo-bridgerton-azul", "Jogo Bridgerton Azul", "#557AB7", 16.22, 11.83, 9.95],
     ["jogo-bridgerton-verde", "Jogo Bridgerton Verde", "#477252", 18.66, 11.83, 11],
-    ["jogo-fundo-mar-premium", "Jogo Fundo do Mar Premium", "#213C68", 29.25, 13.86, 12.4],
+    ["jogo-fundo-mar-premium", "Jogo Fundo do Mar Premium", "#213C68", 22.5, 13.86, 12.4],
   ].map((entry, index): Product => {
     const [id, name, color, placemat, napkin, ring] = entry as [string, string, string, number, number, number | null];
     return {
@@ -402,7 +403,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     retail_price: null,
     wholesale_price: null,
     game_items: [
-      { label: "Lugar americano", wholesale_price: placemat },
+      { label: "Lugar americano", retail_price: id === "jogo-fundo-mar-premium" ? 45 : null, wholesale_price: placemat },
       { label: "Guardanapo", wholesale_price: napkin },
       { label: "Porta-guardanapo", wholesale_price: ring },
     ],

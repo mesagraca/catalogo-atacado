@@ -97,7 +97,7 @@ export function ProductCard({
           <div className="game-price-list" aria-label="Valores por item do jogo">
             <span>Jogo completo · preços por item</span>
             {product.game_items!.map((item) => (
-              <p key={item.label}><small>{item.label}</small><b>{money(item.wholesale_price)}</b></p>
+              <p key={item.label}><small>{item.label}{item.retail_price != null && <> <s>{money(item.retail_price)}</s></>}</small><b>{money(item.wholesale_price)}</b></p>
             ))}
           </div>
         ) : (
