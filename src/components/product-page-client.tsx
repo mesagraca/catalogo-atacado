@@ -146,8 +146,9 @@ export function ProductPageClient({ id }: { id: string }) {
   const hasColorInfo =
     Boolean(product.variations?.length) || Boolean(product.color_name);
   return (
-    <main className="product-page-shell">
+    <>
       <SiteHeader />
+      <main className="product-page-shell">
       <nav className="breadcrumb" aria-label="Navegação estrutural">
         <Link href="/">Início</Link>
         <span>/</span>
@@ -288,6 +289,7 @@ export function ProductPageClient({ id }: { id: string }) {
         </section>
       )}
       <SiteFooter />
-    </main>
+      </main>
+    </>
   );
 }

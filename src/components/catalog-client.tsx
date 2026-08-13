@@ -200,8 +200,9 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
       </main>
     );
   return (
-    <main className="catalog-shell">
+    <>
       <header className="catalog-nav catalog-header">
+        <div className="catalog-header-inner">
         <Link className="wordmark" href="/" aria-label="Mesa & Graça">
           <BrandLogo priority />
         </Link>
@@ -233,7 +234,9 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
           categories={CATEGORIES}
           onSelect={chooseCollection}
         />
+        </div>
       </header>
+      <main className="catalog-shell">
       <CollectionHeader
         title={filter === "Todos" ? "Catálogo de atacado" : filter}
         imageUrl={heroImage}
@@ -322,6 +325,7 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
         </p>
       )}
       <SiteFooter />
-    </main>
+      </main>
+    </>
   );
 }

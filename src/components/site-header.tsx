@@ -16,6 +16,7 @@ export function SiteHeader() {
     );
   return (
     <header className="catalog-nav catalog-header">
+      <div className="catalog-header-inner">
       <Link className="wordmark" href="/catalogo" aria-label="Mesa & Graça">
         <BrandLogo priority />
       </Link>
@@ -60,6 +61,7 @@ export function SiteHeader() {
           )
         }
       />
+      </div>
     </header>
   );
 }
