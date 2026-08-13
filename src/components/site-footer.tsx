@@ -36,6 +36,7 @@ export function SiteFooter() {
       </div>
       <div className="footer-bottom">
         <small>© {new Date().getFullYear()} Mesa & Graça</small>
+        <small>CNPJ: 56.933.061/0001-66</small>
         <small>Catálogo de atacado · pedidos sob consulta</small>
       </div>
     </footer>
