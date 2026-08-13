@@ -159,17 +159,15 @@ export function ProductPageClient({ id }: { id: string }) {
         <section className="product-page-info">
           <p className="eyebrow">{product.collection || product.category}</p>
           <h1>{product.name}</h1>
-          {product.wholesale_price != null && (
-            <div className="product-page-price">
-              <span>{product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-              <strong>{money(product.wholesale_price)}</strong>
-              {product.retail_price != null && (
-                <small>
-                  Varejo: <s>{money(product.retail_price)}</s>
-                </small>
-              )}
-            </div>
-          )}
+          <div className="product-page-price">
+            <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
+            <strong>{money(product.wholesale_price)}</strong>
+            {product.retail_price != null && (
+              <small>
+                Varejo: <s>{money(product.retail_price)}</s>
+              </small>
+            )}
+          </div>
           {product.kit_quantity && (
             <p className="product-page-kit-note">
               <b>Venda em kit com {product.kit_quantity} unidades.</b> O valor exibido é por peça.

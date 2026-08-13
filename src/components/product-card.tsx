@@ -89,22 +89,20 @@ export function ProductCard({
           <span>{product.collection || product.category}</span>
         </div>
         <h3>{product.name}</h3>
-        {product.wholesale_price != null && (
-          <div className="product-commerce">
-            <div>
-              <span>{product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-              <strong>{money(product.wholesale_price)}</strong>
-            </div>
-            {product.retail_price != null && (
-              <div className="price-comparison">
-                <small>
-                  Varejo <s>{money(product.retail_price)}</s>
-                </small>
-                {discount != null && <b>{discount}% OFF</b>}
-              </div>
-            )}
+        <div className="product-commerce">
+          <div>
+            <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
+            <strong>{money(product.wholesale_price)}</strong>
           </div>
-        )}
+          {product.retail_price != null && (
+            <div className="price-comparison">
+              <small>
+                Varejo <s>{money(product.retail_price)}</s>
+              </small>
+              {discount != null && <b>{discount}% OFF</b>}
+            </div>
+          )}
+        </div>
         {product.kit_quantity && (
           <p className="kit-unit-note">
             Kit com {product.kit_quantity} unidades · valor por peça
