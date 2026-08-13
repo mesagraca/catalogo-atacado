@@ -373,8 +373,8 @@ export const FEATURED_PRODUCTS: Product[] = [
   ...[
     ["jogo-feijoada", "Jogo Feijoada", "#5E4634", 16.68, 12.6, 4.03],
     ["jogo-hot-dog", "Jogo Hot Dog", "#C84948", 19.15, 11.5, null],
-    ["jogo-churrasco", "Jogo Churrasco", "#883F31", 26.04, 19.12, 4.03],
-    ["jogo-hamburguer", "Jogo Hambúrguer", "#274A69", 24.02, 19.12, 4.03],
+    ["jogo-churrasco", "Jogo Churrasco", "#883F31", 26.04, 14.34, 4.03],
+    ["jogo-hamburguer", "Jogo Hambúrguer", "#274A69", 24.02, 14.34, 4.03],
     ["jogo-pizza-dupla-face", "Jogo Pizza Dupla Face", "#A83A3E", 19.32, 12.05, 9.04],
     ["jogo-quadrado-xadrez", "Jogo Americano Quadrado Xadrez Dupla Face", "#A8202A", 18.19, 12.05, 7.1],
     ["jogo-limao", "Jogo Limão", "#577836", 14.59, 13.86, 10.43],
@@ -404,7 +404,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     wholesale_price: null,
     game_items: [
       { label: "Lugar americano", retail_price: id === "jogo-fundo-mar-premium" ? 45 : null, wholesale_price: placemat },
-      { label: "Guardanapo", wholesale_price: napkin },
+      { label: "Guardanapo", retail_price: ["jogo-churrasco", "jogo-hamburguer"].includes(id) ? 23.9 : null, wholesale_price: napkin },
       { label: "Porta-guardanapo", wholesale_price: ring },
     ],
     image_url: `/produtos/jogos/${id}-01.webp`,
