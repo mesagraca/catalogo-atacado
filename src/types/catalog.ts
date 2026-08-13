@@ -423,7 +423,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     ["la-natal-floresta", "Lugar Americano Natal Floresta Encantada", "#2F5938", 28.9, 15.9, "/produtos/Natal%20Floresta%20(Encantada).png"],
     ["la-natal-classico", "Lugar Americano Natal Clássico Borda Xadrez", "#A23A35", 35, 17.5, "/produtos/Natal%20Clássico%20(Borda%20Xadrez).png"],
     ["la-canto-graca", "Canto da Graça", "#B59471", 38.9, 19.45, "/produtos/Canto%20da%20Graça.jpg"],
-    ["la-colecao-essencial", "Coleção Essencial", "#A98B68", 23.9, 14.34],
   ].map((entry, index): Product => {
     const [id, name, color, retail, wholesale, image] = entry as [string, string, string, number, number, string?];
     return {
