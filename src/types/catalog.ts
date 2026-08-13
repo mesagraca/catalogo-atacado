@@ -78,6 +78,21 @@ const portaEditorialImages = [
   "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_1_c988d41d6badd1efa2385eedb82389ed.jpg",
   "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_1_3bb629e8d7a984df92f29c36eb831282.jpg",
 ] as const;
+const portaStudioImages = [
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_2_42905d2211971642638d54fbc12f43b9.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_2_6c169bdd781ccc57423060e797ec8382.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_2_a4a89e0a8fea4a45cbc2ca6948aed6ae.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_2_1f5ab6ff2f93d45f2659fc11c46aef1c.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_74_2_5e483e65c7841b23331b8ec4fdeb7579.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_costela_de_adao_tropical_75_2_fe903e2461b2a4cf34d7eb3096e1e30f.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_2_fc46d95d54a76f439347852bf9a79e97.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_ambar_77_2_522dd86c840917b8aaf4a2c1bac03469.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_costela_de_adao_mediterranea_78_2_192617c99c845172b3937da1767b1220.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_alecrim_79_2_8936e20af1396f4bcd17ae777b3e65bd.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_2_b42f66a6e314fe4d9ccf2cfd1c25ad85.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_2_77b902577cf0e6d28ed1ca4a8b2ab9e9.jpg",
+  "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_2_a27899165db976414667998d6a019bd8.jpg",
+] as const;
 const portaColorDetails = [
   ["Roxo, verde e vinho", "#765B6A"],
   ["Lilás e verde", "#8B7A8F"],
@@ -268,7 +283,9 @@ export const FEATURED_PRODUCTS: Product[] = [
     color_hex: portaColorDetails[index][1],
     retail_price: retail,
     wholesale_price: wholesale,
-    image_url: `/produtos/produto-${String(index + 1).padStart(2, "0")}.png`,
+    image_url:
+      portaStudioImages[index] ??
+      `/produtos/produto-${String(index + 1).padStart(2, "0")}.png`,
     editorial_image_url: portaEditorialImages[index] ?? null,
     image_status: "final",
     sort_order: index + 1,
