@@ -1,9 +1,13 @@
-export const CATEGORIES = ["Lugar Americano", "Porta-guardanapos"] as const;
+export const CATEGORIES = ["Jogos", "Lugar Americano", "Porta-guardanapos"] as const;
 export type Category = (typeof CATEGORIES)[number];
 export type Variation = {
   name: string;
   hex: string;
   pattern: "xadrez" | "liso";
+};
+export type GameItem = {
+  label: "Lugar americano" | "Guardanapo" | "Porta-guardanapo";
+  wholesale_price: number | null;
 };
 export type Product = {
   id: string;
@@ -22,6 +26,8 @@ export type Product = {
   is_visible: boolean;
   /** When present, the item is sold only as a kit and this is its piece count. */
   kit_quantity?: number | null;
+  /** A complete table game: placemat, napkin and napkin ring sold together. */
+  game_items?: GameItem[];
   variations?: Variation[];
   created_at?: string;
 };
@@ -197,14 +203,19 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
   {
     id: "ja-abelhinha",
-    name: "Lugar Americano Abelhinha",
-    category: "Lugar Americano",
+    name: "Jogo Abelhinha",
+    category: "Jogos",
     sku: "JA-AB",
     collection: "Abelhinha",
     color_name: "Amarelo",
     color_hex: "#E5AA1A",
     retail_price: 16.9,
     wholesale_price: null,
+    game_items: [
+      { label: "Lugar americano", wholesale_price: 16.45 },
+      { label: "Guardanapo", wholesale_price: 12.6 },
+      { label: "Porta-guardanapo", wholesale_price: 8.9 },
+    ],
     image_url: "/produtos/colecao-abelhinha.png",
     editorial_image_url: "/produtos/editorial-abelhinha.png",
     image_status: "final",
@@ -213,14 +224,19 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
   {
     id: "ja-ovinho",
-    name: "Lugar Americano Ovinho",
-    category: "Lugar Americano",
+    name: "Jogo Ovinho",
+    category: "Jogos",
     sku: "JA-OV",
     collection: "Ovinho",
     color_name: "Branco e amarelo",
     color_hex: "#E5A70D",
     retail_price: 15.9,
     wholesale_price: null,
+    game_items: [
+      { label: "Lugar americano", wholesale_price: 16.45 },
+      { label: "Guardanapo", wholesale_price: 11.2 },
+      { label: "Porta-guardanapo", wholesale_price: 10.9 },
+    ],
     image_url: "/produtos/colecao-ovinho.png",
     editorial_image_url: "/produtos/editorial-ovinho.png",
     image_status: "final",
@@ -229,14 +245,19 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
   {
     id: "ja-cerejinha",
-    name: "Lugar Americano Cerejinha",
-    category: "Lugar Americano",
+    name: "Jogo Cerejinha",
+    category: "Jogos",
     sku: "JA-CE",
     collection: "Cerejinha",
     color_name: "Vermelho",
     color_hex: "#C41432",
     retail_price: 16.9,
     wholesale_price: null,
+    game_items: [
+      { label: "Lugar americano", wholesale_price: 17.03 },
+      { label: "Guardanapo", wholesale_price: 11.64 },
+      { label: "Porta-guardanapo", wholesale_price: 10.43 },
+    ],
     image_url: "/produtos/colecao-cerejinha.png",
     editorial_image_url: "/produtos/editorial-cerejinha.png",
     image_status: "final",
@@ -245,14 +266,19 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
   {
     id: "ja-folhas",
-    name: "Lugar Americano Folhas",
-    category: "Lugar Americano",
+    name: "Jogo Folhas",
+    category: "Jogos",
     sku: "JA-FO",
     collection: "Folhas",
     color_name: "Verde",
     color_hex: "#486632",
     retail_price: null,
     wholesale_price: null,
+    game_items: [
+      { label: "Lugar americano", wholesale_price: 14.59 },
+      { label: "Guardanapo", wholesale_price: 13.86 },
+      { label: "Porta-guardanapo", wholesale_price: 9.9 },
+    ],
     image_url: "/produtos/colecao-folhas.png",
     editorial_image_url: "/produtos/editorial-folhas.png",
     image_status: "final",
@@ -261,14 +287,19 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
   {
     id: "ja-magnolia",
-    name: "Lugar Americano Magnólia",
-    category: "Lugar Americano",
+    name: "Jogo Magnólia",
+    category: "Jogos",
     sku: "JA-MA",
     collection: "Magnólia",
     color_name: "Floral",
     color_hex: "#B53A62",
     retail_price: 24.9,
-    wholesale_price: 18,
+    wholesale_price: null,
+    game_items: [
+      { label: "Lugar americano", wholesale_price: 18 },
+      { label: "Guardanapo", wholesale_price: 13.86 },
+      { label: "Porta-guardanapo", wholesale_price: 9 },
+    ],
     image_url: "/produtos/colecao-magnolia.png",
     editorial_image_url: "/produtos/editorial-magnolia.png",
     image_status: "final",

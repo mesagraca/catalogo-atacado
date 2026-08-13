@@ -1,7 +1,7 @@
 import type { Product } from "@/types/catalog";
 
 export function whatsappUrl(
-  product: Pick<Product, "category" | "name" | "color_name" | "kit_quantity">,
+  product: Pick<Product, "category" | "name" | "color_name" | "kit_quantity" | "game_items">,
   quantity?: number,
 ) {
   const details = [
@@ -12,6 +12,9 @@ export function whatsappUrl(
       : quantity
         ? `*Quantidade:* ${quantity}`
         : null,
+    product.game_items?.length
+      ? `*Composição:* ${product.game_items.map((item) => item.label).join(", ")}`
+      : null,
   ].filter(Boolean);
   const message = `Olá! Quero pedir este item do atacado Mesa & Graça 😊\n\n${details.join("\n")}\n\nPode me confirmar a disponibilidade e o prazo, por favor?`;
 

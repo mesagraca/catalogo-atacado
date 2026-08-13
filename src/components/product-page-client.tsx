@@ -63,6 +63,7 @@ export function ProductPageClient({ id }: { id: string }) {
         const item = {
           ...fetchedProduct,
           kit_quantity: fetchedProduct.kit_quantity ?? fallback?.kit_quantity,
+          game_items: fetchedProduct.game_items ?? fallback?.game_items,
           category:
             (fetchedProduct as { category: string }).category ===
             "Jogos Americanos"
@@ -83,6 +84,12 @@ export function ProductPageClient({ id }: { id: string }) {
                   (featured) =>
                     featured.id === item.id || featured.name === item.name,
                 )?.kit_quantity,
+              game_items:
+                item.game_items ??
+                FEATURED_PRODUCTS.find(
+                  (featured) =>
+                    featured.id === item.id || featured.name === item.name,
+                )?.game_items,
               category:
                 (item as { category: string }).category === "Jogos Americanos"
                   ? "Lugar Americano"
@@ -159,15 +166,24 @@ export function ProductPageClient({ id }: { id: string }) {
         <section className="product-page-info">
           <p className="eyebrow">{product.collection || product.category}</p>
           <h1>{product.name}</h1>
-          <div className="product-page-price">
-            <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-            <strong>{money(product.wholesale_price)}</strong>
-            {product.retail_price != null && (
-              <small>
-                Varejo: <s>{money(product.retail_price)}</s>
-              </small>
-            )}
-          </div>
+          {product.game_items?.length ? (
+            <section className="product-page-game-prices">
+              <span>Jogo completo · atacado por item</span>
+              {product.game_items.map((item) => (
+                <p key={item.label}><small>{item.label}</small><b>{money(item.wholesale_price)}</b></p>
+              ))}
+            </section>
+          ) : (
+            <div className="product-page-price">
+              <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
+              <strong>{money(product.wholesale_price)}</strong>
+              {product.retail_price != null && (
+                <small>
+                  Varejo: <s>{money(product.retail_price)}</s>
+                </small>
+              )}
+            </div>
+          )}
           {product.kit_quantity && (
             <p className="product-page-kit-note">
               <b>Venda em kit com {product.kit_quantity} unidades.</b> O valor exibido é por peça.

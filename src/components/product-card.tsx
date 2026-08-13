@@ -48,6 +48,7 @@ export function ProductCard({
   const visibleVariations = variations.slice(0, 6);
   const productUrl = `/catalogo/${product.id}`;
   const hasColorInfo = variations.length > 0 || Boolean(product.color_name);
+  const isGame = Boolean(product.game_items?.length);
   const whatsappHref = whatsappUrl(
     {
       ...product,
@@ -89,20 +90,29 @@ export function ProductCard({
           <span>{product.collection || product.category}</span>
         </div>
         <h3>{product.name}</h3>
-        <div className="product-commerce">
-          <div>
-            <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-            <strong>{money(product.wholesale_price)}</strong>
+        {isGame ? (
+          <div className="game-price-list" aria-label="Valores por item do jogo">
+            <span>Jogo completo · preços por item</span>
+            {product.game_items!.map((item) => (
+              <p key={item.label}><small>{item.label}</small><b>{money(item.wholesale_price)}</b></p>
+            ))}
           </div>
-          {product.retail_price != null && (
-            <div className="price-comparison">
-              <small>
-                Varejo <s>{money(product.retail_price)}</s>
-              </small>
-              {discount != null && <b>{discount}% OFF</b>}
+        ) : (
+          <div className="product-commerce">
+            <div>
+              <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
+              <strong>{money(product.wholesale_price)}</strong>
             </div>
-          )}
-        </div>
+            {product.retail_price != null && (
+              <div className="price-comparison">
+                <small>
+                  Varejo <s>{money(product.retail_price)}</s>
+                </small>
+                {discount != null && <b>{discount}% OFF</b>}
+              </div>
+            )}
+          </div>
+        )}
         {product.kit_quantity && (
           <p className="kit-unit-note">
             Kit com {product.kit_quantity} unidades · valor por peça

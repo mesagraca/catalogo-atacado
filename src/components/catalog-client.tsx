@@ -32,6 +32,7 @@ const normalizeProduct = (product: Product): Product => {
   return {
     ...product,
     kit_quantity: product.kit_quantity ?? fallback?.kit_quantity,
+    game_items: product.game_items ?? fallback?.game_items,
     category:
       (product as { category: string }).category === "Jogos Americanos"
         ? "Lugar Americano"
