@@ -39,6 +39,7 @@ export function ProductPageClient({ id }: { id: string }) {
   );
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState<"studio" | "editorial">("studio");
+  const [zoomPosition, setZoomPosition] = useState("50% 50%");
 
   useEffect(() => {
     if (!supabase) {
@@ -139,7 +140,7 @@ export function ProductPageClient({ id }: { id: string }) {
       <article className="product-page">
         <section className="product-page-image">
           {product.image_url ? (
-            <><img src={activeImage === "editorial" && product.editorial_image_url ? product.editorial_image_url : product.image_url} alt={activeImage === "editorial" ? `Produto ${product.name} em uso` : product.name} />{product.editorial_image_url && <div className="product-image-gallery"><button className={activeImage === "studio" ? "selected" : ""} onClick={() => setActiveImage("studio")} aria-label="Ver foto do produto"><img src={product.image_url} alt="" /></button><button className={activeImage === "editorial" ? "selected" : ""} onClick={() => setActiveImage("editorial")} aria-label="Ver foto editorial"><img src={product.editorial_image_url} alt="" /></button></div>}</>
+            <><div className="product-zoom" onMouseMove={(event) => { const rect = event.currentTarget.getBoundingClientRect(); setZoomPosition(`${((event.clientX - rect.left) / rect.width) * 100}% ${((event.clientY - rect.top) / rect.height) * 100}%`); }} onMouseLeave={() => setZoomPosition("50% 50%")}><img style={{ transformOrigin: zoomPosition }} src={activeImage === "editorial" && product.editorial_image_url ? product.editorial_image_url : product.image_url} alt={activeImage === "editorial" ? `Produto ${product.name} em uso` : product.name} /></div>{product.editorial_image_url && <div className="product-image-gallery"><button className={activeImage === "studio" ? "selected" : ""} onClick={() => setActiveImage("studio")} aria-label="Ver foto do produto"><img src={product.image_url} alt="" /></button><button className={activeImage === "editorial" ? "selected" : ""} onClick={() => setActiveImage("editorial")} aria-label="Ver foto editorial"><img src={product.editorial_image_url} alt="" /></button></div>}</>
           ) : (
             <div className="image-placeholder">Imagem em atualização</div>
           )}
