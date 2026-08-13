@@ -46,6 +46,12 @@ export function ProductCard({
   const visibleVariations = variations.slice(0, 6);
   const productUrl = `/catalogo/${product.id}`;
   const hasColorInfo = variations.length > 0 || Boolean(product.color_name);
+  const discount =
+    product.retail_price != null &&
+    product.wholesale_price != null &&
+    product.retail_price > product.wholesale_price
+      ? Math.round((1 - product.wholesale_price / product.retail_price) * 100)
+      : null;
   return (
     <article className="product-card">
       <Link
@@ -78,6 +84,14 @@ export function ProductCard({
               <span>Preço atacado</span>
               <strong>{money(product.wholesale_price)}</strong>
             </div>
+            {product.retail_price != null && (
+              <div className="price-comparison">
+                <small>
+                  Varejo <s>{money(product.retail_price)}</s>
+                </small>
+                {discount != null && <b>{discount}% OFF</b>}
+              </div>
+            )}
           </div>
         )}
         {hasColorInfo && (
@@ -123,11 +137,6 @@ export function ProductCard({
           </>
         )}
         <div className="card-bottom">
-          {product.retail_price != null && (
-            <small className="retail-reference">
-              Varejo <s>{money(product.retail_price)}</s>
-            </small>
-          )}
           {!print && (
             <Link className="product-cta" href={productUrl}>
               Ver produto <ArrowUpRightIcon />

@@ -34,7 +34,14 @@ export function SiteHeader() {
         <CollectionsMegaMenu
           products={FEATURED_PRODUCTS}
           categories={CATEGORIES}
-          onSelect={() => goToCatalog()}
+          onSelect={(category, collection) =>
+            window.location.assign(
+              `/catalogo?${new URLSearchParams({
+                ...(category !== "Todos" ? { categoria: category } : {}),
+                ...(collection ? { colecao: collection } : {}),
+              }).toString()}`,
+            )
+          }
         />
         <a href="https://wa.me/5511977007234" target="_blank" rel="noreferrer">
           Atendimento <WhatsAppIcon />

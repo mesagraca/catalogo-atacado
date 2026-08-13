@@ -53,6 +53,17 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
   const [search, setSearch] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("categoria");
+    const collection = params.get("colecao");
+    const query = params.get("busca");
+    if (category && CATEGORIES.includes(category as Category)) {
+      setFilter(category as Category);
+    }
+    if (collection) setCollection(collection);
+    if (query) setSearch(query);
+  }, []);
+  useEffect(() => {
     if (!supabase) {
       setProducts(FEATURED_PRODUCTS);
       setLoading(false);
