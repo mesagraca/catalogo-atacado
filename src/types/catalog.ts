@@ -316,12 +316,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     name,
     category: "Porta-guardanapos",
     sku: `PG-${String(index + 1).padStart(2, "0")}`,
-    collection:
-      index < 13
-        ? "Coleção Provence"
-        : index < 21
-          ? "Coleções especiais"
-          : "Porta-guardanapos",
+    collection: null,
     color_name: portaColorDetails[index][0],
     color_hex: portaColorDetails[index][1],
     retail_price: retail,

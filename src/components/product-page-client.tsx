@@ -65,6 +65,10 @@ export function ProductPageClient({ id }: { id: string }) {
         );
         const item = {
           ...fetchedProduct,
+          collection:
+            fetchedProduct.category === "Porta-guardanapos"
+              ? null
+              : fetchedProduct.collection,
           kit_quantity: fetchedProduct.kit_quantity ?? fallback?.kit_quantity,
           game_items: fetchedProduct.game_items ?? fallback?.game_items,
           category:
@@ -82,6 +86,8 @@ export function ProductPageClient({ id }: { id: string }) {
           (item) =>
             ({
               ...item,
+              collection:
+                item.category === "Porta-guardanapos" ? null : item.collection,
               kit_quantity:
                 item.kit_quantity ??
                 FEATURED_PRODUCTS.find(
