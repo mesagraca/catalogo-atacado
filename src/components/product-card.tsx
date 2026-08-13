@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import type { Product, Variation } from "@/types/catalog";
 import { ArrowUpRightIcon } from "./ui-icons";
+import { whatsappUrl } from "@/lib/whatsapp";
+import { WhatsAppIcon } from "./ui-icons";
 
 const money = (value: number | null) =>
   value == null
@@ -46,6 +48,15 @@ export function ProductCard({
   const visibleVariations = variations.slice(0, 6);
   const productUrl = `/catalogo/${product.id}`;
   const hasColorInfo = variations.length > 0 || Boolean(product.color_name);
+  const whatsappHref = whatsappUrl(
+    {
+      ...product,
+      color_name: selected
+        ? `${selected.pattern === "xadrez" ? "Xadrez" : "Liso"} ${selected.name}`
+        : product.color_name,
+    },
+    1,
+  );
   const discount =
     product.retail_price != null &&
     product.wholesale_price != null &&
@@ -138,9 +149,19 @@ export function ProductCard({
         )}
         <div className="card-bottom">
           {!print && (
-            <Link className="product-cta" href={productUrl}>
-              Ver produto <ArrowUpRightIcon />
-            </Link>
+            <div className="card-actions">
+              <Link className="product-cta" href={productUrl}>
+                Ver produto <ArrowUpRightIcon />
+              </Link>
+              <a
+                className="product-whatsapp"
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <WhatsAppIcon /> Chamar no WhatsApp
+              </a>
+            </div>
           )}
         </div>
       </div>
