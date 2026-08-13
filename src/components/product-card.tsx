@@ -44,6 +44,9 @@ export function ProductCard({
   const [selected, setSelected] = useState<Variation | undefined>(
     product.variations?.[0],
   );
+  const [editorialImage, setEditorialImage] = useState(
+    product.editorial_image_url ?? null,
+  );
   const variations = product.variations ?? [];
   const visibleVariations = variations.slice(0, 6);
   const productUrl = `/catalogo/${product.id}`;
@@ -67,7 +70,7 @@ export function ProductCard({
   return (
     <article className="product-card">
       <Link
-        className={`product-image product-open ${product.editorial_image_url ? "has-editorial" : ""}`}
+        className={`product-image product-open ${editorialImage ? "has-editorial" : ""}`}
         href={productUrl}
         aria-label={`Ver ${product.name}`}
       >
@@ -82,7 +85,7 @@ export function ProductCard({
         ) : (
           <div className="image-placeholder">Imagem em atualização</div>
         )}
-        {product.editorial_image_url && <img className="product-image-editorial" src={product.editorial_image_url} alt={`Produto ${product.name} em uso`} loading="lazy" decoding="async" />}
+        {editorialImage && <img className="product-image-editorial" src={editorialImage} alt={`Produto ${product.name} em uso`} loading="lazy" decoding="async" onError={() => setEditorialImage(null)} />}
         <span>Ver produto</span>
       </Link>
       <div className="product-info">
