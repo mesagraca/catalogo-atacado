@@ -50,7 +50,7 @@ const portaNames = [
   ["Chapéu de Palha Junino", 12.9, 6],
   ["Esferas Vermelhas Bordô", 12.9, 8],
   ["Dourado com Pérolas", 13.9, 9],
-  ["Nó Náutico", 13.9, 8],
+  ["Nó Trançado Cru com Detalhe em Courino", 13.9, 8],
   ["Rosa Coral com Fibra Natural", 13.9, 9.04],
   ["Flor Azul com Fibra Natural", 13.9, 9.04],
   ["Suculenta Verde com Fibra Natural", 13.9, 9.04],
@@ -106,9 +106,19 @@ const updatedPortaImageSlugs = [
   "estrela-nautica", "costela-adao-tropical", "medalhao-esmeralda", "medalhao-ambar",
   "costela-adao-mediterranea", "alecrim", "dalia-rose-provence", "orquidea-sauvage",
   "estrela-nautica-provence", "chapeu-palha-junino", "esferas-vermelhas-bordo", "dourado-perolas",
-  null, "rosa-coral", "flor-azul", "suculenta-verde", "pizza-bordado",
+  "no-trancado-courino", "rosa-coral", "flor-azul", "suculenta-verde", "pizza-bordado",
   null, null, null, null, null, null, null,
 ] as const;
+const generatedPortaEditorialImages: Partial<Record<number, string>> = {
+  16: "/produtos/editorial-no-nautico.png",
+  21: "/produtos/editorial-courino-marrom.png",
+  22: "/produtos/editorial-no-turco.png",
+  23: "/produtos/editorial-flor-rosa.png",
+  24: "/produtos/editorial-orquidea-azul.png",
+  25: "/produtos/editorial-ovinho-portal.png",
+  26: "/produtos/editorial-laco-elegance.png",
+  27: "/produtos/editorial-laco-charm.png",
+};
 const portaColorDetails = [
   ["Roxo, verde e vinho", "#765B6A"],
   ["Lilás e verde", "#8B7A8F"],
@@ -152,6 +162,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     retail_price: 22.32,
     wholesale_price: 18.19,
     image_url: "/produtos/dupla-face-rosa-bebe.png",
+    editorial_image_url: "/produtos/editorial-jogo-xadrez.png",
     image_status: "final",
     sort_order: 1,
     is_visible: true,
@@ -201,6 +212,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     retail_price: 32.9,
     wholesale_price: 16.45,
     image_url: "/produtos/laco-frances-rosa-bebe.png",
+    editorial_image_url: "/produtos/editorial-laco-frances.png",
     image_status: "final",
     sort_order: 3,
     is_visible: true,
@@ -334,6 +346,7 @@ export const FEATURED_PRODUCTS: Product[] = [
       portaStudioImages[index] ??
       `/produtos/produto-${String(index + 1).padStart(2, "0")}.png`,
     editorial_image_url:
+      generatedPortaEditorialImages[index] ??
       (updatedPortaImageSlugs[index] && `/produtos/porta-guardanapos/${updatedPortaImageSlugs[index]}-02.webp`) ??
       portaEditorialImages[index] ?? null,
     image_status: "final",
