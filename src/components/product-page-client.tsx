@@ -71,6 +71,8 @@ export function ProductPageClient({ id }: { id: string }) {
               : fetchedProduct.collection,
           kit_quantity: fetchedProduct.kit_quantity ?? fallback?.kit_quantity,
           game_items: fetchedProduct.game_items ?? fallback?.game_items,
+          description: fetchedProduct.description ?? fallback?.description,
+          materials: fetchedProduct.materials ?? fallback?.materials,
           category:
             (fetchedProduct as { category: string }).category ===
             "Jogos Americanos"
@@ -100,6 +102,18 @@ export function ProductPageClient({ id }: { id: string }) {
                   (featured) =>
                     featured.id === item.id || featured.name === item.name,
                 )?.game_items,
+              description:
+                item.description ??
+                FEATURED_PRODUCTS.find(
+                  (featured) =>
+                    featured.id === item.id || featured.name === item.name,
+                )?.description,
+              materials:
+                item.materials ??
+                FEATURED_PRODUCTS.find(
+                  (featured) =>
+                    featured.id === item.id || featured.name === item.name,
+                )?.materials,
               category:
                 (item as { category: string }).category === "Jogos Americanos"
                   ? "Lugar Americano"
@@ -241,6 +255,20 @@ export function ProductPageClient({ id }: { id: string }) {
                 </p>
               </section>
             ))}
+          <section className="product-page-details" aria-label="Características do produto">
+            <div>
+              <b>Características</b>
+              <p>{product.description ?? "—"}</p>
+            </div>
+            <div>
+              <b>Materiais</b>
+              <dl>
+                {(product.materials?.length ? product.materials : [{ label: "Material", value: "—" }]).map((material) => (
+                  <div key={material.label}><dt>{material.label}</dt><dd>{material.value || "—"}</dd></div>
+                ))}
+              </dl>
+            </div>
+          </section>
           <div className="product-page-quantity">
             <span>{product.kit_quantity ? "Quantidade de kits" : "Quantidade"}</span>
             <div>

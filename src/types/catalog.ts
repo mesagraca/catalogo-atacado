@@ -10,6 +10,10 @@ export type GameItem = {
   retail_price?: number | null;
   wholesale_price: number | null;
 };
+export type MaterialDetail = {
+  label: string;
+  value: string;
+};
 export type Product = {
   id: string;
   name: string;
@@ -22,6 +26,10 @@ export type Product = {
   wholesale_price: number | null;
   image_url: string | null;
   editorial_image_url?: string | null;
+  /** Texto comercial breve, exibido na página do produto. */
+  description?: string;
+  /** Materiais confirmados por componente. Use "—" quando ainda não informado. */
+  materials?: MaterialDetail[];
   image_status: "final" | "placeholder";
   sort_order: number;
   is_visible: boolean;
@@ -486,3 +494,30 @@ export const FEATURED_PRODUCTS: Product[] = [
           : undefined,
   })),
 ];
+
+const MATERIALS_BY_PRODUCT_ID: Record<string, MaterialDetail[]> = {
+  "jogo-bridgerton-azul": [{ label: "Lugar americano", value: "Tricoline" }, { label: "Guardanapo", value: "Tricoline" }],
+  "jogo-bridgerton-verde": [{ label: "Lugar americano", value: "Tricoline" }, { label: "Guardanapo", value: "Tricoline" }],
+  "jogo-pizza-dupla-face": [{ label: "Lugar americano", value: "Nylon e Oxford" }, { label: "Guardanapo", value: "Oxford" }],
+  "jogo-hot-dog": [{ label: "Lugar americano", value: "Nylon e Oxford" }, { label: "Guardanapo", value: "Oxford" }],
+  "jogo-feijoada": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
+  "jogo-hamburguer": [{ label: "Lugar americano", value: "Jeans e courino" }, { label: "Guardanapo", value: "Jeans" }],
+  "jogo-churrasco": [{ label: "Lugar americano", value: "Jeans e courino" }, { label: "Guardanapo", value: "Jeans" }],
+  "ja-abelhinha": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
+  "la-canto-graca": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
+  "jogo-limao": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "Tricoline" }],
+  "ja-cerejinha": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Oxford" }],
+  "ja-ovinho": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
+  "ja-folhas": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "Oxford" }],
+};
+
+const defaultDescription = (product: Product) => {
+  if (product.category === "Jogos") return "Jogo completo para mesa posta, composto por lugar americano, guardanapo e porta-guardanapo.";
+  if (product.category === "Porta-guardanapos") return "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.";
+  return "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.";
+};
+
+FEATURED_PRODUCTS.forEach((product) => {
+  product.description ??= defaultDescription(product);
+  product.materials ??= MATERIALS_BY_PRODUCT_ID[product.id] ?? [{ label: "Material", value: "—" }];
+});

@@ -33,6 +33,8 @@ const normalizeProduct = (product: Product): Product => {
     ...product,
     kit_quantity: product.kit_quantity ?? fallback?.kit_quantity,
     game_items: product.game_items ?? fallback?.game_items,
+    description: product.description ?? fallback?.description,
+    materials: product.materials ?? fallback?.materials,
     collection:
       product.category === "Porta-guardanapos" ? null : product.collection,
     category:
