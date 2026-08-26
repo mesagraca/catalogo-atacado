@@ -511,7 +511,37 @@ const MATERIALS_BY_PRODUCT_ID: Record<string, MaterialDetail[]> = {
   "ja-folhas": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "Oxford" }],
 };
 
+const GAME_DESCRIPTIONS: Record<string, string> = {
+  "fundo-mar": "Composição em azul e off-white que une lugar americano, guardanapo e porta-guardanapo para uma mesa de inspiração marítima.",
+  "jogo-xadrez": "Lugar americano redondo dupla face, com acabamento ondulado e opções xadrez ou lisas para alternar a composição da mesa.",
+  "ja-abelhinha": "Jogo delicado com lugar americano temático, guardanapo e porta-guardanapo Florzinha Amarela para uma mesa leve e cheia de charme.",
+  "ja-ovinho": "Composição divertida e delicada com lugar americano Ovinho, guardanapo creme e porta-guardanapo temático para cafés e mesas afetivas.",
+  "ja-cerejinha": "Jogo em tons de vermelho com detalhes de cerejinhas, composto por lugar americano, guardanapo listrado e porta-guardanapo coordenado.",
+  "ja-folhas": "Composição em folhagem verde que combina lugar americano, guardanapo e porta-guardanapo Esfera Marfim para uma mesa natural e acolhedora.",
+  "ja-magnolia": "Jogo floral de presença delicada, com lugar americano Magnólia, guardanapo creme e porta-guardanapo Esfera Dourada.",
+  "jogo-feijoada": "Jogo completo de inspiração brasileira, com lugar americano em nylon, guardanapo em tricoline e porta-guardanapo coordenado.",
+  "jogo-hot-dog": "Composição temática com borda xadrez vermelha, guardanapo bordado de hot dog e porta-guardanapo em courino. Ideal para mesas descontraídas.",
+  "jogo-churrasco": "Jogo completo com lugar americano em jeans e courino, guardanapo em jeans e porta-guardanapo coordenado. Uma proposta marcante para receber.",
+  "jogo-hamburguer": "Composição temática em jeans e courino, acompanhada de guardanapo em jeans e porta-guardanapo coordenado para uma mesa casual e cheia de personalidade.",
+  "jogo-pizza-dupla-face": "Jogo dupla face com lugar americano em nylon e Oxford, guardanapo em Oxford e porta-guardanapo Pizza Bordado para uma mesa temática.",
+  "jogo-quadrado-xadrez": "Jogo dupla face com lugar americano quadrado xadrez, guardanapo e porta-guardanapo coordenados. Escolha a cor que melhor combina com sua composição.",
+  "jogo-limao": "Composição vibrante de limões, com lugar americano em gorgurinho, guardanapo em tricoline e porta-guardanapo coordenado.",
+  "jogo-essence-campestre": "Jogo dupla face de atmosfera campestre, com lugar americano, guardanapo e porta-guardanapo para composições acolhedoras e versáteis.",
+  "jogo-costela-adao": "Composição tropical com estampa de Costela de Adão, guardanapo e porta-guardanapo coordenados para levar frescor à mesa.",
+  "jogo-alecrim": "Jogo de inspiração botânica, com lugar americano, guardanapo e porta-guardanapo coordenados para uma mesa leve e elegante.",
+  "jogo-lavanda": "Composição suave em tons de lavanda, com lugar americano, guardanapo e porta-guardanapo coordenados para receber com delicadeza.",
+  "jogo-oliveira": "Jogo de inspiração mediterrânea com lugar americano, guardanapo e porta-guardanapo coordenados em uma composição acolhedora.",
+  "jogo-rose-imperial": "Composição floral Rosé Imperial com lugar americano, guardanapo e porta-guardanapo para mesas românticas e cheias de detalhes.",
+  "jogo-mariposa-rose": "Jogo floral em tons rosé, composto por lugar americano, guardanapo e porta-guardanapo coordenados para uma mesa delicada.",
+  "jogo-belle-rose": "Composição Belle Rosé com lugar americano, guardanapo e porta-guardanapo coordenados, pensada para receber com elegância.",
+  "jogo-flor-lottus": "Jogo em tons florais suaves, com lugar americano, guardanapo e porta-guardanapo coordenados para uma mesa romântica.",
+  "jogo-bridgerton-azul": "Composição em tricoline com estampa floral azul, guardanapo coordenado e porta-guardanapo para uma mesa clássica e refinada.",
+  "jogo-bridgerton-verde": "Composição em tricoline com estampa floral verde, guardanapo coordenado e porta-guardanapo para uma mesa leve e elegante.",
+  "jogo-fundo-mar-premium": "Versão premium da linha Fundo do Mar, com lugar americano, guardanapo e porta-guardanapo coordenados em uma composição sofisticada.",
+};
+
 const defaultDescription = (product: Product) => {
+  if (GAME_DESCRIPTIONS[product.id]) return GAME_DESCRIPTIONS[product.id];
   if (product.category === "Jogos") return "Jogo completo para mesa posta, composto por lugar americano, guardanapo e porta-guardanapo.";
   if (product.category === "Porta-guardanapos") return "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.";
   return "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.";
