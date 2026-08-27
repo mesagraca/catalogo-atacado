@@ -73,6 +73,7 @@ export function ProductPageClient({ id }: { id: string }) {
           game_items: fetchedProduct.game_items ?? fallback?.game_items,
           description: fetchedProduct.description ?? fallback?.description,
           materials: fetchedProduct.materials ?? fallback?.materials,
+          dimensions: fetchedProduct.dimensions ?? fallback?.dimensions,
           category:
             (fetchedProduct as { category: string }).category ===
             "Jogos Americanos"
@@ -114,6 +115,12 @@ export function ProductPageClient({ id }: { id: string }) {
                   (featured) =>
                     featured.id === item.id || featured.name === item.name,
                 )?.materials,
+              dimensions:
+                item.dimensions ??
+                FEATURED_PRODUCTS.find(
+                  (featured) =>
+                    featured.id === item.id || featured.name === item.name,
+                )?.dimensions,
               category:
                 (item as { category: string }).category === "Jogos Americanos"
                   ? "Lugar Americano"
@@ -265,6 +272,14 @@ export function ProductPageClient({ id }: { id: string }) {
               <dl>
                 {(product.materials?.length ? product.materials : [{ label: "Material", value: "—" }]).map((material) => (
                   <div key={material.label}><dt>{material.label}</dt><dd>{material.value || "—"}</dd></div>
+                ))}
+              </dl>
+            </div>
+            <div>
+              <b>Medidas</b>
+              <dl>
+                {(product.dimensions?.length ? product.dimensions : [{ label: "Medidas", value: "—" }]).map((dimension) => (
+                  <div key={dimension.label}><dt>{dimension.label}</dt><dd>{dimension.value || "—"}</dd></div>
                 ))}
               </dl>
             </div>

@@ -30,6 +30,8 @@ export type Product = {
   description?: string;
   /** Materiais confirmados por componente. Use "—" quando ainda não informado. */
   materials?: MaterialDetail[];
+  /** Medidas confirmadas por componente. Use "—" quando ainda não informado. */
+  dimensions?: MaterialDetail[];
   image_status: "final" | "placeholder";
   sort_order: number;
   is_visible: boolean;
@@ -496,19 +498,59 @@ export const FEATURED_PRODUCTS: Product[] = [
 ];
 
 const MATERIALS_BY_PRODUCT_ID: Record<string, MaterialDetail[]> = {
-  "jogo-bridgerton-azul": [{ label: "Lugar americano", value: "Tricoline" }, { label: "Guardanapo", value: "Tricoline" }],
-  "jogo-bridgerton-verde": [{ label: "Lugar americano", value: "Tricoline" }, { label: "Guardanapo", value: "Tricoline" }],
-  "jogo-pizza-dupla-face": [{ label: "Lugar americano", value: "Nylon e Oxford" }, { label: "Guardanapo", value: "Oxford" }],
-  "jogo-hot-dog": [{ label: "Lugar americano", value: "Nylon e Oxford" }, { label: "Guardanapo", value: "Oxford" }],
-  "jogo-feijoada": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
+  "jogo-bridgerton-azul": [{ label: "Lugar americano", value: "Tricoline" }, { label: "Guardanapo", value: "Tricoline off-white" }],
+  "jogo-bridgerton-verde": [{ label: "Lugar americano", value: "Tricoline" }, { label: "Guardanapo", value: "Tricoline off-white" }],
+  "jogo-pizza-dupla-face": [{ label: "Lugar americano", value: "Nylon e Oxford" }, { label: "Guardanapo", value: "Oxford verde e xadrez" }],
+  "jogo-hot-dog": [{ label: "Lugar americano", value: "Nylon e Oxford" }, { label: "Guardanapo", value: "Oxford branco" }],
+  "jogo-feijoada": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline off-white" }],
   "jogo-hamburguer": [{ label: "Lugar americano", value: "Jeans e courino" }, { label: "Guardanapo", value: "Jeans" }],
   "jogo-churrasco": [{ label: "Lugar americano", value: "Jeans e courino" }, { label: "Guardanapo", value: "Jeans" }],
-  "ja-abelhinha": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
-  "la-canto-graca": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
-  "jogo-limao": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "Tricoline" }],
-  "ja-cerejinha": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Oxford" }],
-  "ja-ovinho": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline" }],
-  "ja-folhas": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "Oxford" }],
+  "ja-abelhinha": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline amarelo" }],
+  "la-canto-graca": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline off-white" }],
+  "jogo-limao": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "Tricoline azul-marinho" }],
+  "ja-cerejinha": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline listrado" }],
+  "ja-ovinho": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline off-white" }],
+  "ja-folhas": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "Oxford verde" }],
+  "ja-magnolia": [{ label: "Lugar americano", value: "Jacquard" }, { label: "Guardanapo", value: "Oxford verde" }],
+  "jogo-quadrado-xadrez": [{ label: "Lugar americano", value: "Nylon e Oxford" }, { label: "Guardanapo", value: "—" }],
+  "jogo-essence-campestre": [{ label: "Lugar americano", value: "Jacquard" }, { label: "Guardanapo", value: "Tricoline off-white" }],
+  "jogo-rose-imperial": [{ label: "Lugar americano", value: "Gorgurinho" }, { label: "Guardanapo", value: "—" }],
+  "jogo-flor-lottus": [{ label: "Lugar americano", value: "Courino" }, { label: "Guardanapo", value: "—" }],
+  "jogo-fundo-mar-premium": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "Tricoline azul-marinho" }],
+  "jogo-mariposa-rose": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "—" }],
+  "jogo-belle-rose": [{ label: "Lugar americano", value: "Nylon" }, { label: "Guardanapo", value: "—" }],
+  "jogo-costela-adao": [{ label: "Lugar americano", value: "Córdoba" }, { label: "Guardanapo", value: "Polly linho" }],
+  "jogo-alecrim": [{ label: "Lugar americano", value: "Córdoba" }, { label: "Guardanapo", value: "Polly linho" }],
+  "jogo-lavanda": [{ label: "Lugar americano", value: "Córdoba" }, { label: "Guardanapo", value: "Polly linho" }],
+  "jogo-oliveira": [{ label: "Lugar americano", value: "Córdoba" }, { label: "Guardanapo", value: "Polly linho" }],
+};
+
+const DIMENSIONS_BY_PRODUCT_ID: Record<string, MaterialDetail[]> = {
+  "jogo-bridgerton-azul": [{ label: "Lugar americano", value: "43 × 35 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-bridgerton-verde": [{ label: "Lugar americano", value: "43 × 35 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-pizza-dupla-face": [{ label: "Lugar americano", value: "38 × 38 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-hot-dog": [{ label: "Lugar americano", value: "43 × 34 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-feijoada": [{ label: "Lugar americano", value: "42,5 × 35,5 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-hamburguer": [{ label: "Lugar americano", value: "43 × 34 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-churrasco": [{ label: "Lugar americano", value: "43 × 33,5 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "ja-abelhinha": [{ label: "Lugar americano", value: "44 × 34 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "la-canto-graca": [{ label: "Lugar americano", value: "—" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-limao": [{ label: "Lugar americano", value: "43 × 34,5 cm" }, { label: "Guardanapo", value: "40 × 40 cm" }],
+  "ja-cerejinha": [{ label: "Lugar americano", value: "44 × 35 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "ja-ovinho": [{ label: "Lugar americano", value: "44 × 32,5 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "ja-folhas": [{ label: "Lugar americano", value: "43 × 34,5 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "ja-magnolia": [{ label: "Lugar americano", value: "43,5 × 33,5 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-quadrado-xadrez": [{ label: "Lugar americano", value: "43 × 34 cm" }, { label: "Guardanapo", value: "—" }],
+  "jogo-essence-campestre": [{ label: "Lugar americano", value: "43 × 33,5 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-rose-imperial": [{ label: "Lugar americano", value: "44 × 32 cm" }, { label: "Guardanapo", value: "—" }],
+  "jogo-flor-lottus": [{ label: "Lugar americano", value: "43 × 39 cm" }, { label: "Guardanapo", value: "—" }],
+  "jogo-fundo-mar-premium": [{ label: "Lugar americano", value: "41 × 32,5 cm" }, { label: "Guardanapo", value: "40 × 40 cm" }],
+  "jogo-mariposa-rose": [{ label: "Lugar americano", value: "43 × 33 cm" }, { label: "Guardanapo", value: "—" }],
+  "jogo-belle-rose": [{ label: "Lugar americano", value: "43 × 33 cm" }, { label: "Guardanapo", value: "—" }],
+  "jogo-costela-adao": [{ label: "Lugar americano", value: "43 × 34 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-alecrim": [{ label: "Lugar americano", value: "43 × 34 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-lavanda": [{ label: "Lugar americano", value: "43 × 34 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
+  "jogo-oliveira": [{ label: "Lugar americano", value: "43 × 34 cm" }, { label: "Guardanapo", value: "42 × 42 cm" }],
 };
 
 const GAME_DESCRIPTIONS: Record<string, string> = {
@@ -550,4 +592,5 @@ const defaultDescription = (product: Product) => {
 FEATURED_PRODUCTS.forEach((product) => {
   product.description ??= defaultDescription(product);
   product.materials ??= MATERIALS_BY_PRODUCT_ID[product.id] ?? [{ label: "Material", value: "—" }];
+  product.dimensions ??= DIMENSIONS_BY_PRODUCT_ID[product.id] ?? [{ label: "Medidas", value: "—" }];
 });
