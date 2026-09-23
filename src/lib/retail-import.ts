@@ -6,20 +6,21 @@ export async function applyRetailImport(
   sourceFilename: string,
 ) {
   const blockingIssues = result.issues.filter((issue) => issue.severity === "error");
-  const provisionalStock = result.issues.filter(
-    (issue) => issue.code === "provisional_stock",
-  );
-  if (blockingIssues.length || provisionalStock.length) {
-    throw new Error(
-      "A importação tem erros ou saldos provisórios. Corrija ou confirme os saldos antes de aplicar.",
-    );
+  if (blockingIssues.length) {
+    throw new Error("A importação tem erros críticos. Corrija-os antes de aplicar.");
   }
 
   const admin = getRetailAdmin();
-  const productRows = result.products.map((product) => ({
+  const usedSlugs = new Set<string>();
+  const productRows = result.products.map((product) => {
+    const slug = product.slug && usedSlugs.has(product.slug)
+      ? `${product.slug}-${product.sourceId}`
+      : product.slug;
+    if (slug) usedSlugs.add(slug);
+    return {
     source_product_id: product.sourceId,
     name: product.name,
-    slug: product.slug,
+    slug,
     category_level_1: product.categoryLevel1,
     category_level_2: product.categoryLevel2,
     collection: product.collection,
@@ -31,7 +32,8 @@ export async function applyRetailImport(
     lifecycle_status: product.active ? "active" : "inactive",
     retail_visible: product.visible,
     wholesale_visible: false,
-  }));
+    };
+  });
   const { data: storedProducts, error: productsError } = await admin
     .from("catalog_products")
     .upsert(productRows, { onConflict: "source_product_id" })
@@ -106,6 +108,8 @@ export async function applyRetailImport(
       (product) =>
         product.categoryLevel1 !== "Kits e Coleções" &&
         product.stock != null &&
+        product.stock !== 0 &&
+        product.stock !== 50 &&
         !existingSkuIds.has(skuIds.get(product.sku)),
     )
     .map((product) => ({
@@ -122,7 +126,7 @@ export async function applyRetailImport(
   }
 
   const { error: runError } = await admin.from("catalog_import_runs").insert({
-    source_name: "Tray XLSX",
+    source_name: sourceFilename.toLowerCase().endsWith(".csv") ? "Tray CSV" : "Tray XLSX",
     source_filename: sourceFilename,
     mode: "apply",
     totals: result.summary,
@@ -130,5 +134,9 @@ export async function applyRetailImport(
   });
   if (runError) throw runError;
 
-  return { importedProducts: productRows.length, openingBalances: openingBalances.length };
+  return {
+    importedProducts: productRows.length,
+    openingBalances: openingBalances.length,
+    pendingStockConfirmation: result.products.filter((product) => product.stock === 50).length,
+  };
 }

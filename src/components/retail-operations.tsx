@@ -34,9 +34,7 @@ export function RetailOperations() {
     setValidation(result);
     setLoading(false);
   };
-  const blockingIssues = validation?.issues.some(
-    (issue) => issue.severity === "error" || issue.code === "provisional_stock",
-  );
+  const blockingIssues = validation?.issues.some((issue) => issue.severity === "error");
   const apply = async () => {
     if (!file || blockingIssues) return;
     setLoading(true);
@@ -56,15 +54,15 @@ export function RetailOperations() {
         <p className="eyebrow">OPERAÇÃO</p>
         <h2 id="operations-title">Validar antes de importar.</h2>
         <p>
-          Envie o XLSX atual da Tray. A análise não altera o banco, apenas aponta
-          divergências e bloqueios antes da carga.
+          Envie o XLSX ou CSV atual da Tray. Saldos marcados como provisórios entram
+          como pendência, sem afetar o estoque, até serem confirmados.
         </p>
       </div>
       <form onSubmit={validate}>
         <label>
-          XLSX da Tray
+          Arquivo da Tray
           <input
-            accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
             onChange={(event: ChangeEvent<HTMLInputElement>) => setFile(event.target.files?.[0] ?? null)}
             required
             type="file"

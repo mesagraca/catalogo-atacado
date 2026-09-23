@@ -101,33 +101,73 @@ const rowsFromSheet = (sheet: ExcelJS.Worksheet): Row[] => {
   return rows;
 };
 
+const rowsFromCsv = (buffer: Buffer): Row[] => {
+  const text = new TextDecoder("utf-8").decode(buffer).replace(/^\uFEFF/, "");
+  const matrix: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (character === '"') {
+      if (quoted && text[index + 1] === '"') {
+        cell += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === "," && !quoted) {
+      row.push(cell);
+      cell = "";
+    } else if (character === "\n" && !quoted) {
+      row.push(cell.replace(/\r$/, ""));
+      matrix.push(row);
+      row = [];
+      cell = "";
+    } else {
+      cell += character;
+    }
+  }
+  if (cell || row.length) {
+    row.push(cell.replace(/\r$/, ""));
+    matrix.push(row);
+  }
+
+  const headers = matrix.shift()?.map(clean) ?? [];
+  return matrix
+    .map((values) => Object.fromEntries(headers.map((header, index) => [header ?? "", values[index] ?? ""])) as Row)
+    .filter((record) => Object.values(record).some((value) => clean(value)));
+};
+
 const uniqueUrls = (...values: Array<string | null>) =>
   [...new Set(values.filter((value): value is string => Boolean(value)))];
 
-export async function parseTrayWorkbook(buffer: Buffer): Promise<TrayImportResult> {
-  const workbook = new ExcelJS.Workbook();
-  // ExcelJS currently declares a narrower Node Buffer type than the one exposed
-  // by the runtime bundled with Next. The bytes are unchanged.
-  await workbook.xlsx.load(buffer as never);
-  const tray = workbook.getWorksheet(traySheetName);
-  const operational = workbook.getWorksheet(thamiSheetName);
-
-  if (!tray) throw new Error(`A aba obrigatória “${traySheetName}” não foi encontrada.`);
-
+const buildImportResult = (trayRows: Row[], operationalRows: Row[] | null): TrayImportResult => {
   const issues: ImportIssue[] = [];
   const sourceIds = new Set<number>();
   const skus = new Set<string>();
-  const products = rowsFromSheet(tray)
+  const slugs = new Set<string>();
+  const products = trayRows
     .map((row) => {
       const sourceId = number(row["Cód / ID"]);
       const name = clean(row["Nome produto"]);
       const sku = clean(row["Referência (SKU)"]);
-      if (!sourceId || !name || !sku) {
+      if (!sourceId || !name) {
         issues.push({
           severity: "error",
           code: "required_fields",
           sourceId: sourceId ?? undefined,
-          message: "Produto sem ID, nome ou SKU.",
+          message: "Produto sem ID ou nome.",
+        });
+        return null;
+      }
+      if (!sku) {
+        issues.push({
+          severity: "warning",
+          code: "missing_sku",
+          sourceId,
+          message: "Produto sem SKU; ficou fora desta carga até receber uma referência.",
         });
         return null;
       }
@@ -139,6 +179,16 @@ export async function parseTrayWorkbook(buffer: Buffer): Promise<TrayImportResul
       }
       sourceIds.add(sourceId);
       skus.add(sku);
+      const slug = clean(row["SEO - Endereço do produto (URL)"]);
+      if (slug && slugs.has(slug)) {
+        issues.push({
+          severity: "warning",
+          code: "duplicate_slug",
+          sourceId,
+          message: "Endereço SEO repetido; será desambiguado com o ID interno na carga.",
+        });
+      }
+      if (slug) slugs.add(slug);
       const stock = number(row["Estoque atual"]);
       const retailPrice = number(row["Preço de venda (R$)"]);
       const costPrice = number(row["Preço de custo (R$)"]);
@@ -178,20 +228,21 @@ export async function parseTrayWorkbook(buffer: Buffer): Promise<TrayImportResul
         seoTitle: clean(row["SEO Título"]),
         seoDescription: clean(row["SEO descrição simplificada (160 caracteres)"]),
         seoKeywords: clean(row["SEO palavra chave (Máx 5 e separados por vírgula)"]),
-        slug: clean(row["SEO - Endereço do produto (URL)"]),
+        slug,
         active: bool(row.Disponível),
         visible: bool(row["Exibir na loja"]),
       } satisfies TrayProduct;
     })
     .filter((product): product is TrayProduct => Boolean(product));
 
-  const operationalRows = operational ? rowsFromSheet(operational) : [];
   const operationalIds = new Set(
-    operationalRows
+    (operationalRows ?? [])
       .map((row) => number(row["Cód / ID"]))
       .filter((value): value is number => value != null),
   );
-  const catalogOnlyProducts = products.filter((product) => !operationalIds.has(product.sourceId));
+  const catalogOnlyProducts = operationalRows
+    ? products.filter((product) => !operationalIds.has(product.sourceId))
+    : [];
   for (const product of catalogOnlyProducts) {
     issues.push({
       severity: "warning",
@@ -206,7 +257,7 @@ export async function parseTrayWorkbook(buffer: Buffer): Promise<TrayImportResul
     issues,
     summary: {
       trayProducts: products.length,
-      operationalProducts: operationalRows.filter((row) => number(row["Cód / ID"]) != null).length,
+      operationalProducts: (operationalRows ?? []).filter((row) => number(row["Cód / ID"]) != null).length,
       catalogOnlyProducts: catalogOnlyProducts.length,
       zeroStockProducts: products.filter((product) => product.stock === 0).length,
       provisionalStockProducts: products.filter((product) => product.stock === 50).length,
@@ -214,4 +265,19 @@ export async function parseTrayWorkbook(buffer: Buffer): Promise<TrayImportResul
       missingCostProducts: products.filter((product) => !product.costPrice).length,
     },
   };
+};
+
+export async function parseTrayWorkbook(buffer: Buffer): Promise<TrayImportResult> {
+  const workbook = new ExcelJS.Workbook();
+  // ExcelJS currently declares a narrower Node Buffer type than the one exposed
+  // by the runtime bundled with Next. The bytes are unchanged.
+  await workbook.xlsx.load(buffer as never);
+  const tray = workbook.getWorksheet(traySheetName);
+  const operational = workbook.getWorksheet(thamiSheetName);
+  if (!tray) throw new Error(`A aba obrigatória “${traySheetName}” não foi encontrada.`);
+  return buildImportResult(rowsFromSheet(tray), operational ? rowsFromSheet(operational) : null);
+}
+
+export function parseTrayCsv(buffer: Buffer): TrayImportResult {
+  return buildImportResult(rowsFromCsv(buffer), null);
 }
