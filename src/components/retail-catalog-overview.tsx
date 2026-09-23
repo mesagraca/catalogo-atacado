@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { BrandLogo } from "./brand-logo";
 import { SiteFooter } from "./site-footer";
+import { RetailOperations } from "./retail-operations";
+import { RetailCatalogGrid } from "./retail-catalog-grid";
+import { getRetailCatalogCards } from "@/lib/retail-catalog";
 
 const nextSteps = [
   ["Base mestre", "253 produtos com SKU, imagens, atributos e categorias."],
@@ -9,7 +12,8 @@ const nextSteps = [
   ["Exportação Tray", "Arquivo XLS derivado e atualizável a partir da base validada."],
 ];
 
-export function RetailCatalogOverview() {
+export async function RetailCatalogOverview() {
+  const catalog = await getRetailCatalogCards();
   return (
     <>
       <header className="catalog-nav catalog-header">
@@ -54,6 +58,8 @@ export function RetailCatalogOverview() {
             nem estoque.
           </p>
         </section>
+        <RetailOperations />
+        {catalog.configured && catalog.products.length > 0 && <RetailCatalogGrid products={catalog.products} />}
       </main>
       <SiteFooter />
     </>
