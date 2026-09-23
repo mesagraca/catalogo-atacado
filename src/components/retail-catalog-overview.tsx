@@ -3,6 +3,7 @@ import { BrandLogo } from "./brand-logo";
 import { SiteFooter } from "./site-footer";
 import { RetailOperations } from "./retail-operations";
 import { RetailCatalogGrid } from "./retail-catalog-grid";
+import { RetailCatalogHealth } from "./retail-catalog-health";
 import { getRetailCatalogCards } from "@/lib/retail-catalog";
 
 const nextSteps = [
@@ -59,6 +60,7 @@ export async function RetailCatalogOverview() {
           </p>
         </section>
         <RetailOperations />
+        {catalog.configured && catalog.products.length > 0 && <RetailCatalogHealth products={catalog.products} />}
         {catalog.configured && catalog.products.length > 0 && <RetailCatalogGrid products={catalog.products} />}
       </main>
       <SiteFooter />
