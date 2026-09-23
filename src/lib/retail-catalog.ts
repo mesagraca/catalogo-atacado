@@ -8,6 +8,7 @@ export type RetailKitComponent = {
 };
 
 export type RetailMedia = {
+  id: string;
   role: "editorial" | "studio" | "gallery";
   position: number;
   url: string;
@@ -61,7 +62,7 @@ export async function getRetailCatalogCards(): Promise<{
     if (!productIds.length) return { products: [], configured: true };
     const [{ data: skus, error: skusError }, { data: media, error: mediaError }] = await Promise.all([
       admin.from("catalog_skus").select("id,product_id,sku,kind,stock_policy,minimum_stock,cost_price,weight_grams,height_cm,width_cm,length_cm,attributes").in("product_id", productIds),
-      admin.from("catalog_media").select("product_id,sku_id,url,role,position").eq("is_active", true).in("product_id", productIds),
+      admin.from("catalog_media").select("id,product_id,sku_id,url,role,position").eq("is_active", true).in("product_id", productIds),
     ]);
     if (skusError) throw skusError;
     if (mediaError) throw mediaError;
@@ -96,6 +97,7 @@ export async function getRetailCatalogCards(): Promise<{
           const image = applicableMedia.find((asset) => asset.role === "editorial") ?? applicableMedia.find((asset) => asset.role === "studio");
           const productMedia = applicableMedia
             .map((asset) => ({
+              id: asset.id,
               role: asset.role === "studio" || asset.role === "gallery" ? asset.role : "editorial",
               position: Number(asset.position),
               url: asset.url,

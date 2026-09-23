@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
 import type { RetailCatalogCard } from "@/lib/retail-catalog";
 
 const money = (value: number | null) =>
@@ -221,6 +222,7 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
             <div className="retail-media-status" aria-label="Cobertura de fotos">
               {(["editorial", "studio", "gallery"] as const).map((role) => <span className={product.media.some((asset) => asset.role === role) ? "done" : "pending"} key={role}>{role === "editorial" ? "Editorial" : role === "studio" ? "Estúdio" : "Galeria"}</span>)}
             </div>
+            <Link className="retail-open-product" href={`/varejo/produtos/${product.id}`}>Abrir produto para editar</Link>
             <label className="retail-media-upload">
               {uploading === product.id ? "Processando imagem…" : `Enviar foto ${mediaRole === "studio" ? "de estúdio" : mediaRole === "gallery" ? "de galeria" : "editorial"} · ${mediaPosition === "0" ? "principal" : `${mediaPosition}ª posição`}`}
               <input accept="image/jpeg,image/png,image/webp" disabled={uploading === product.id} onChange={(event) => uploadMedia(product, event)} type="file" />

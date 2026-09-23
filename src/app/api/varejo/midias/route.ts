@@ -81,3 +81,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message }, { status: 422 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  if (!(await hasRetailAccess())) return NextResponse.json({ message: "Acesso não autorizado." }, { status: 401 });
+  const body = await request.json() as { mediaId?: unknown };
+  const mediaId = typeof body.mediaId === "string" ? body.mediaId : "";
+  if (!mediaId) return NextResponse.json({ message: "Informe a imagem a remover." }, { status: 400 });
+  const admin = getRetailAdmin();
+  const { error } = await admin.from("catalog_media").update({ is_active: false }).eq("id", mediaId).eq("is_active", true);
+  if (error) return NextResponse.json({ message: error.message }, { status: 422 });
+  return NextResponse.json({ ok: true });
+}
