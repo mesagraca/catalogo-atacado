@@ -76,6 +76,9 @@ export function RetailOperations() {
         <a className="retail-export-link" href="/api/varejo/exportar/tray">
           Baixar exportação Tray
         </a>
+        <a className="retail-export-link" href="/api/varejo/exportar/estoque">
+          Baixar conferência de estoque
+        </a>
       </form>
       {validation && (
         <div className="retail-validation" aria-live="polite">
