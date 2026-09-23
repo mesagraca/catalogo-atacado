@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const file = formData.get("file");
   const apply = formData.get("apply") === "true";
+  const syncInventory = formData.get("syncInventory") === "true";
   if (!(file instanceof File) || !/\.(xlsx|csv)$/i.test(file.name)) {
     return NextResponse.json({ message: "Envie o XLSX ou CSV exportado pela Tray." }, { status: 400 });
   }
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
       ? parseTrayCsv(bytes)
       : await parseTrayWorkbook(bytes);
     if (!apply) return NextResponse.json({ mode: "validation", ...result });
-    const applied = await applyRetailImport(result, file.name);
+    const applied = await applyRetailImport(result, file.name, syncInventory);
     return NextResponse.json({ mode: "apply", ...result, applied });
   } catch (error) {
     console.error("Retail import failed", error);

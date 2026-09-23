@@ -4,6 +4,7 @@ import { getRetailAdmin } from "./retail-server";
 export async function applyRetailImport(
   result: TrayImportResult,
   sourceFilename: string,
+  syncInventory = false,
 ) {
   const blockingIssues = result.issues.filter((issue) => issue.severity === "error");
   if (blockingIssues.length) {
@@ -125,11 +126,39 @@ export async function applyRetailImport(
     if (openingError) throw openingError;
   }
 
+  const inventoryTargets = result.products
+    .filter((product) => product.categoryLevel1 !== "Kits e Coleções" && product.stock != null && product.stock !== 50)
+    .map((product) => ({ product, skuId: skuIds.get(product.sku) }))
+    .filter((item): item is { product: (typeof result.products)[number]; skuId: string } => Boolean(item.skuId));
+  const existingTargets = inventoryTargets.filter((item) => existingSkuIds.has(item.skuId));
+  let reconciliationMovements: Array<{ sku_id: string; quantity: number; type: string; reference: string }> = [];
+  if (syncInventory && existingTargets.length) {
+    const { data: currentStock, error: currentStockError } = await admin
+      .from("catalog_stock_availability")
+      .select("sku_id,available_quantity")
+      .in("sku_id", existingTargets.map((item) => item.skuId));
+    if (currentStockError) throw currentStockError;
+    const stockBySku = new Map((currentStock ?? []).map((item) => [item.sku_id, item.available_quantity]));
+    reconciliationMovements = existingTargets.flatMap(({ product, skuId }) => {
+      const delta = Number(product.stock) - Number(stockBySku.get(skuId) ?? 0);
+      return delta ? [{
+        sku_id: skuId,
+        quantity: delta,
+        type: "adjustment",
+        reference: `Conciliação de planilha: ${sourceFilename}`,
+      }] : [];
+    });
+    if (reconciliationMovements.length) {
+      const { error: reconciliationError } = await admin.from("inventory_movements").insert(reconciliationMovements);
+      if (reconciliationError) throw reconciliationError;
+    }
+  }
+
   const { error: runError } = await admin.from("catalog_import_runs").insert({
     source_name: sourceFilename.toLowerCase().endsWith(".csv") ? "Tray CSV" : "Tray XLSX",
     source_filename: sourceFilename,
     mode: "apply",
-    totals: result.summary,
+    totals: { ...result.summary, inventorySynchronized: syncInventory, inventoryAdjustments: reconciliationMovements.length },
     issues: result.issues,
   });
   if (runError) throw runError;
@@ -137,6 +166,7 @@ export async function applyRetailImport(
   return {
     importedProducts: productRows.length,
     openingBalances: openingBalances.length,
+    inventoryAdjustments: reconciliationMovements.length,
     pendingStockConfirmation: result.products.filter((product) => product.stock === 50).length,
   };
 }

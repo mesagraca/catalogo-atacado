@@ -22,6 +22,7 @@ export function RetailOperations() {
   const [file, setFile] = useState<File | null>(null);
   const [validation, setValidation] = useState<Validation | null>(null);
   const [loading, setLoading] = useState(false);
+  const [syncInventory, setSyncInventory] = useState(false);
 
   const validate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,6 +42,7 @@ export function RetailOperations() {
     const form = new FormData();
     form.set("file", file);
     form.set("apply", "true");
+    form.set("syncInventory", String(syncInventory));
     const response = await fetch("/api/varejo/importar", { method: "POST", body: form });
     const result = (await response.json()) as Validation;
     setValidation(result);
@@ -97,6 +99,11 @@ export function RetailOperations() {
               <button className="retail-apply" disabled={Boolean(blockingIssues) || loading} onClick={apply} type="button">
                 {blockingIssues ? "Corrija os bloqueios para aplicar" : loading ? "Aplicando…" : "Aplicar importação validada"}
               </button>
+              <label className="retail-sync-stock">
+                <input checked={syncInventory} onChange={(event) => setSyncInventory(event.target.checked)} type="checkbox" />
+                Conciliar estoque desta planilha
+                <span>Cria somente ajustes pela diferença encontrada; saldo provisório 50 continua ignorado.</span>
+              </label>
             </>
           )}
         </div>
