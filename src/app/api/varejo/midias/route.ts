@@ -92,3 +92,49 @@ export async function DELETE(request: NextRequest) {
   if (error) return NextResponse.json({ message: error.message }, { status: 422 });
   return NextResponse.json({ ok: true });
 }
+
+export async function PUT(request: NextRequest) {
+  if (!(await hasRetailAccess())) return NextResponse.json({ message: "Acesso não autorizado." }, { status: 401 });
+  const body = await request.json() as { mediaId?: unknown };
+  const mediaId = typeof body.mediaId === "string" ? body.mediaId : "";
+  if (!mediaId) return NextResponse.json({ message: "Informe a imagem principal." }, { status: 400 });
+
+  const admin = getRetailAdmin();
+  const { data: target, error: targetError } = await admin
+    .from("catalog_media")
+    .select("id,product_id,sku_id,role,position")
+    .eq("id", mediaId)
+    .eq("is_active", true)
+    .single();
+  if (targetError || !target) return NextResponse.json({ message: "Imagem não encontrada." }, { status: 404 });
+
+  let scopedMedia = admin
+    .from("catalog_media")
+    .select("id,role,position")
+    .eq("product_id", target.product_id)
+    .eq("is_active", true);
+  scopedMedia = target.sku_id ? scopedMedia.eq("sku_id", target.sku_id) : scopedMedia.is("sku_id", null);
+  const { data: activeMedia, error: scopeError } = await scopedMedia;
+  if (scopeError) return NextResponse.json({ message: scopeError.message }, { status: 422 });
+
+  const currentPrimary = activeMedia?.find((item) => item.role === "editorial" && item.position === 0);
+  if (currentPrimary && currentPrimary.id !== target.id) {
+    const usedGalleryPositions = new Set(activeMedia?.filter((item) => item.role === "gallery").map((item) => item.position));
+    const availablePosition = [8, 7, 6, 5, 4, 3, 2, 1, 0].find((position) => !usedGalleryPositions.has(position));
+    if (availablePosition === undefined) {
+      return NextResponse.json({ message: "A galeria já ocupa todos os espaços disponíveis." }, { status: 409 });
+    }
+    const { error: demoteError } = await admin
+      .from("catalog_media")
+      .update({ role: "gallery", position: availablePosition })
+      .eq("id", currentPrimary.id);
+    if (demoteError) return NextResponse.json({ message: demoteError.message }, { status: 422 });
+  }
+
+  const { error: promoteError } = await admin
+    .from("catalog_media")
+    .update({ role: "editorial", position: 0 })
+    .eq("id", target.id);
+  if (promoteError) return NextResponse.json({ message: promoteError.message }, { status: 422 });
+  return NextResponse.json({ ok: true });
+}

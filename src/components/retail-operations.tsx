@@ -8,6 +8,18 @@ type Validation = {
   message?: string;
 };
 
+type MediaMigration = {
+  localImages: number;
+  safeMatches: number;
+  migrated: number;
+  remaining: number;
+  unmatched: number;
+  ambiguous: string[];
+  candidates: Array<{ relativePath: string; productName: string; sku: string | null; role: string }>;
+  failures: string[];
+  message?: string;
+};
+
 const summaryLabels: Record<string, string> = {
   trayProducts: "Produtos na Tray",
   operationalProducts: "Produtos na operação",
@@ -23,6 +35,20 @@ export function RetailOperations() {
   const [validation, setValidation] = useState<Validation | null>(null);
   const [loading, setLoading] = useState(false);
   const [syncInventory, setSyncInventory] = useState(false);
+  const [mediaMigration, setMediaMigration] = useState<MediaMigration | null>(null);
+  const [mediaLoading, setMediaLoading] = useState(false);
+
+  const inspectMedia = async (apply = false) => {
+    setMediaLoading(true);
+    const response = await fetch("/api/varejo/midias/migrar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ apply }),
+    });
+    setMediaMigration(await response.json() as MediaMigration);
+    setMediaLoading(false);
+    if (apply && response.ok) window.location.reload();
+  };
 
   const validate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -111,6 +137,27 @@ export function RetailOperations() {
           )}
         </div>
       )}
+      <div className="retail-media-migration">
+        <div>
+          <p className="eyebrow">ACERVO LOCAL</p>
+          <h2>Migrar imagens já aprovadas.</h2>
+          <p>O sistema encontra apenas correspondências seguras pelo nome, cria uma cópia original privada e publica a versão otimizada no domínio.</p>
+        </div>
+        <button disabled={mediaLoading} onClick={() => inspectMedia(false)} type="button">
+          {mediaLoading ? "Analisando…" : "Analisar imagens locais"}
+        </button>
+        {mediaMigration && (
+          <div className="retail-media-migration-result" aria-live="polite">
+            {mediaMigration.message ? <p className="retail-access-error">{mediaMigration.message}</p> : <>
+              <p><strong>{mediaMigration.localImages}</strong> imagens locais · <strong>{mediaMigration.safeMatches}</strong> correspondências seguras · <strong>{mediaMigration.unmatched}</strong> sem vínculo automático.</p>
+              {mediaMigration.candidates.length > 0 && <ul>{mediaMigration.candidates.map((candidate) => <li key={candidate.relativePath}>{candidate.productName} <span>({candidate.role})</span></li>)}</ul>}
+              {mediaMigration.ambiguous.length > 0 && <p className="retail-muted">{mediaMigration.ambiguous.length} nomes ambíguos ficaram fora da migração automática para revisão.</p>}
+              {mediaMigration.failures.length > 0 && <p className="retail-access-error">{mediaMigration.failures[0]}</p>}
+              {mediaMigration.safeMatches > 0 && <button className="retail-apply" disabled={mediaLoading} onClick={() => inspectMedia(true)} type="button">Migrar {mediaMigration.safeMatches} imagem(ns) segura(s)</button>}
+            </>}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
