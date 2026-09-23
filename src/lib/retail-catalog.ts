@@ -27,6 +27,7 @@ export type RetailCatalogCard = {
   kind: "single" | "kit";
   stockPolicy: "independent" | "component";
   components: RetailKitComponent[];
+  minimumStock: number;
 };
 
 export async function getRetailCatalogCards(): Promise<{
@@ -45,7 +46,7 @@ export async function getRetailCatalogCards(): Promise<{
     const productIds = (products ?? []).map((product) => product.id);
     if (!productIds.length) return { products: [], configured: true };
     const [{ data: skus, error: skusError }, { data: media, error: mediaError }] = await Promise.all([
-      admin.from("catalog_skus").select("id,product_id,sku,kind,stock_policy").in("product_id", productIds),
+      admin.from("catalog_skus").select("id,product_id,sku,kind,stock_policy,minimum_stock").in("product_id", productIds),
       admin.from("catalog_media").select("product_id,sku_id,url,role,position").eq("is_active", true).in("product_id", productIds),
     ]);
     if (skusError) throw skusError;
@@ -112,6 +113,7 @@ export async function getRetailCatalogCards(): Promise<{
             kind: sku.kind === "kit" ? "kit" : "single",
             stockPolicy: sku.stock_policy === "component" ? "component" : "independent",
             components,
+            minimumStock: sku.minimum_stock,
           };
         });
       }),

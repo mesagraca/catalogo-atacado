@@ -5,6 +5,16 @@ import type { RetailCatalogCard } from "@/lib/retail-catalog";
 
 const money = (value: number | null) =>
   value == null ? "Sob consulta" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+const dateTime = (value: string) => new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(value));
+
+type InventoryMovement = {
+  id: string;
+  quantity: number;
+  type: string;
+  note: string | null;
+  reference: string | null;
+  occurred_at: string;
+};
 
 export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] }) {
   const [search, setSearch] = useState("");
@@ -16,6 +26,8 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
   const [kitDrafts, setKitDrafts] = useState<Record<string, RetailCatalogCard["components"]>>({});
   const [componentSelections, setComponentSelections] = useState<Record<string, string>>({});
   const [componentQuantities, setComponentQuantities] = useState<Record<string, number>>({});
+  const [history, setHistory] = useState<Record<string, InventoryMovement[] | undefined>>({});
+  const [historyLoading, setHistoryLoading] = useState<string | null>(null);
   const categories = useMemo(
     () => ["Todos", ...new Set(products.map((product) => product.category).filter(Boolean))] as string[],
     [products],
@@ -126,6 +138,17 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
     else setNotice((await response.json().catch(() => null))?.message ?? "Não foi possível salvar a composição do kit.");
   };
 
+  const loadHistory = async (product: RetailCatalogCard) => {
+    if (history[product.id] || historyLoading === product.id) return;
+    setHistoryLoading(product.id);
+    const response = await fetch(`/api/varejo/estoque?skuId=${encodeURIComponent(product.id)}`);
+    setHistoryLoading(null);
+    if (response.ok) {
+      const payload = await response.json() as { movements: InventoryMovement[] };
+      setHistory((items) => ({ ...items, [product.id]: payload.movements }));
+    } else setNotice((await response.json().catch(() => null))?.message ?? "Não foi possível carregar o histórico.");
+  };
+
   return (
     <section className="retail-catalog" aria-label="Produtos de varejo">
       <div className="retail-catalog-tools">
@@ -156,12 +179,12 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
             <p>{product.category ?? "Sem categoria"}</p>
             <h3>{product.name}</h3>
             <small>{product.sku} · {product.kind === "kit" ? "Kit composto" : "Item avulso"}</small>
-            <div className="retail-product-meta"><strong>{money(product.price)}</strong><span className={product.stock > 0 ? "available" : "unavailable"}>{product.stock > 0 ? `${product.stock} disponíveis` : "Sem estoque"}</span></div>
+            <div className="retail-product-meta"><strong>{money(product.price)}</strong><span className={product.stock <= 0 ? "unavailable" : product.minimumStock > 0 && product.stock <= product.minimumStock ? "low-stock" : "available"}>{product.stock <= 0 ? "Sem estoque" : product.minimumStock > 0 && product.stock <= product.minimumStock ? `Estoque baixo: ${product.stock}` : `${product.stock} disponíveis`}</span></div>
             <label className="retail-media-upload">
               {uploading === product.id ? "Processando imagem…" : `Enviar foto ${mediaRole === "studio" ? "de estúdio" : mediaRole === "gallery" ? "de galeria" : "editorial"}`}
               <input accept="image/jpeg,image/png,image/webp" disabled={uploading === product.id} onChange={(event) => uploadMedia(product, event)} type="file" />
             </label>
-            <details className="retail-product-editor">
+            <details className="retail-product-editor" onToggle={(event) => { if (event.currentTarget.open && product.kind === "single") void loadHistory(product); }}>
               <summary>Editar produto e estoque</summary>
               <form onSubmit={(event) => saveProduct(product, event)}>
                 <label>Nome<input defaultValue={product.name} name="name" required /></label>
@@ -197,7 +220,8 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
                   </ul>
                   <button disabled={saving === `kit-${product.id}`} onClick={() => saveKitComposition(product)} type="button">{saving === `kit-${product.id}` ? "Salvando…" : "Salvar composição"}</button>
                 </div>
-              ) : <form className="retail-stock-form" onSubmit={(event) => registerMovement(product, event)}>
+              ) : <>
+                <form className="retail-stock-form" onSubmit={(event) => registerMovement(product, event)}>
                 <strong>Movimentar estoque</strong>
                 <label>Tipo
                   <select defaultValue="receipt" name="type">
@@ -210,7 +234,12 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
                 <label>Quantidade<input defaultValue="1" name="quantity" required step="1" type="number" /></label>
                 <label>Observação<input name="note" placeholder="Ex.: contagem física" /></label>
                 <button disabled={saving === `stock-${product.id}`} type="submit">{saving === `stock-${product.id}` ? "Registrando…" : "Registrar movimento"}</button>
-              </form>}
+                </form>
+                <section className="retail-stock-history" aria-label="Últimos movimentos">
+                  <strong>Últimos movimentos</strong>
+                  {historyLoading === product.id ? <p>Carregando…</p> : history[product.id]?.length ? <ul>{history[product.id]?.map((movement) => <li key={movement.id}><b className={movement.quantity > 0 ? "positive" : "negative"}>{movement.quantity > 0 ? `+${movement.quantity}` : movement.quantity}</b><span>{movement.type} · {dateTime(movement.occurred_at)}{movement.note ? ` · ${movement.note}` : ""}</span></li>)}</ul> : <p>Nenhum movimento registrado.</p>}
+                </section>
+              </>}
             </details>
           </article>
         ))}

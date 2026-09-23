@@ -5,6 +5,21 @@ import { getRetailAdmin } from "@/lib/retail-server";
 export const runtime = "nodejs";
 const types = new Set(["receipt", "sale", "adjustment", "return"]);
 
+export async function GET(request: NextRequest) {
+  if (!(await hasRetailAccess())) return NextResponse.json({ message: "Acesso não autorizado." }, { status: 401 });
+  const skuId = request.nextUrl.searchParams.get("skuId");
+  if (!skuId) return NextResponse.json({ message: "Informe o SKU." }, { status: 400 });
+  const admin = getRetailAdmin();
+  const { data, error } = await admin
+    .from("inventory_movements")
+    .select("id,quantity,type,note,reference,occurred_at")
+    .eq("sku_id", skuId)
+    .order("occurred_at", { ascending: false })
+    .limit(12);
+  if (error) return NextResponse.json({ message: error.message }, { status: 422 });
+  return NextResponse.json({ movements: data ?? [] });
+}
+
 export async function POST(request: NextRequest) {
   if (!(await hasRetailAccess())) return NextResponse.json({ message: "Acesso não autorizado." }, { status: 401 });
   const body = await request.json() as { skuId?: string; quantity?: number; type?: string; note?: string };
