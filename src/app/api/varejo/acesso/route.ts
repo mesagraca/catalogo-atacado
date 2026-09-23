@@ -1,7 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-
-const COOKIE_NAME = "mesa_graca_varejo_access";
+import { createRetailAccessToken, RETAIL_ACCESS_COOKIE, RETAIL_ACCESS_MAX_AGE_SECONDS } from "@/lib/retail-access";
 
 const passwordsMatch = (provided: string, expected: string) => {
   const providedBuffer = Buffer.from(provided);
@@ -28,12 +27,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Senha incorreta." }, { status: 401 });
   }
 
+  const token = createRetailAccessToken();
+  if (!token) return NextResponse.json({ message: "A assinatura do acesso interno ainda não foi configurada." }, { status: 503 });
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(COOKIE_NAME, "granted", {
+  response.cookies.set(RETAIL_ACCESS_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 12,
+    maxAge: RETAIL_ACCESS_MAX_AGE_SECONDS,
     path: "/",
   });
   return response;
