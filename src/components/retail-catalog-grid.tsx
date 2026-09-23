@@ -16,9 +16,20 @@ type InventoryMovement = {
   occurred_at: string;
 };
 
+type WorkQueue = "all" | "media" | "price" | "low-stock" | "kit";
+
+const workQueues: Array<{ id: WorkQueue; label: string }> = [
+  { id: "all", label: "Todos" },
+  { id: "media", label: "Fotos pendentes" },
+  { id: "price", label: "Sem preço" },
+  { id: "low-stock", label: "Estoque baixo" },
+  { id: "kit", label: "Kits sem composição" },
+];
+
 export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todos");
+  const [workQueue, setWorkQueue] = useState<WorkQueue>("all");
   const [mediaRole, setMediaRole] = useState("editorial");
   const [mediaPosition, setMediaPosition] = useState("0");
   const [uploading, setUploading] = useState<string | null>(null);
@@ -33,10 +44,16 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
     () => ["Todos", ...new Set(products.map((product) => product.category).filter(Boolean))] as string[],
     [products],
   );
-  const results = products.filter((product) =>
-    (category === "Todos" || product.category === category) &&
-    `${product.name} ${product.sku} ${product.category ?? ""}`.toLowerCase().includes(search.toLowerCase()),
-  );
+  const results = products.filter((product) => {
+    const matchesQueue = workQueue === "all"
+      || (workQueue === "media" && !product.imageUrl)
+      || (workQueue === "price" && product.retailListPrice == null)
+      || (workQueue === "low-stock" && product.kind === "single" && product.minimumStock > 0 && product.stock <= product.minimumStock)
+      || (workQueue === "kit" && product.kind === "kit" && !product.components.length);
+    return (category === "Todos" || product.category === category)
+      && matchesQueue
+      && `${product.name} ${product.sku} ${product.category ?? ""}`.toLowerCase().includes(search.toLowerCase());
+  });
   const componentOptions = useMemo(() => products.filter((product) => product.kind === "single"), [products]);
   const componentsFor = (product: RetailCatalogCard) => kitDrafts[product.id] ?? product.components;
   const uploadMedia = async (product: RetailCatalogCard, event: ChangeEvent<HTMLInputElement>) => {
@@ -184,6 +201,10 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
         <div aria-label="Filtrar categoria">
           {categories.map((item) => <button className={category === item ? "active" : ""} key={item} onClick={() => setCategory(item)}>{item}</button>)}
         </div>
+      </div>
+      <div className="retail-work-queue" aria-label="Filtrar pendências">
+        <span>Priorizar</span>
+        {workQueues.map((item) => <button className={workQueue === item.id ? "active" : ""} key={item.id} onClick={() => setWorkQueue(item.id)}>{item.label}</button>)}
       </div>
       {notice && <p className="retail-feedback" role="alert">{notice}</p>}
       <p className="retail-result-count"><strong>{results.length}</strong> SKUs publicados no varejo</p>
