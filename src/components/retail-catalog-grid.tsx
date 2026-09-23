@@ -74,6 +74,14 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
         promotionPrice: data.get("promotionPrice"),
         promotionStartsAt: data.get("promotionStartsAt"),
         promotionEndsAt: data.get("promotionEndsAt"),
+        costPrice: data.get("costPrice"),
+        minimumStock: data.get("minimumStock"),
+        weightGrams: data.get("weightGrams"),
+        heightCm: data.get("heightCm"),
+        widthCm: data.get("widthCm"),
+        lengthCm: data.get("lengthCm"),
+        material: data.get("material"),
+        description: data.get("description"),
         visible: data.get("visible") === "on",
         active: data.get("active") === "on",
       }),
@@ -201,6 +209,8 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
               <form onSubmit={(event) => saveProduct(product, event)}>
                 <label>Nome<input defaultValue={product.name} name="name" required /></label>
                 <label>Categoria<input defaultValue={product.category ?? ""} name="category" /></label>
+                <label>Descrição comercial<textarea defaultValue={product.description ?? ""} name="description" placeholder="Características e diferenciais do produto" rows={3} /></label>
+                <label>Material<input defaultValue={product.material ?? ""} name="material" placeholder="Ex.: Nylon, Tricoline" /></label>
                 <label>Preço varejo<input defaultValue={product.retailListPrice ?? ""} min="0" name="retailPrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
                 <label>Preço atacado<input defaultValue={product.wholesalePrice ?? ""} min="0" name="wholesalePrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
                 <label>Preço marketplace<input defaultValue={product.marketplacePrice ?? ""} min="0" name="marketplacePrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
@@ -208,6 +218,16 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
                 <div className="retail-date-fields">
                   <label>Início<input defaultValue={product.promotionStartsAt ?? ""} name="promotionStartsAt" type="date" /></label>
                   <label>Fim<input defaultValue={product.promotionEndsAt ?? ""} name="promotionEndsAt" type="date" /></label>
+                </div>
+                <div className="retail-date-fields">
+                  <label>Custo<input defaultValue={product.costPrice ?? ""} min="0" name="costPrice" step="0.01" type="number" /></label>
+                  <label>Estoque mínimo<input defaultValue={product.minimumStock} min="0" name="minimumStock" step="1" type="number" /></label>
+                </div>
+                <div className="retail-measurements">
+                  <label>Peso g<input defaultValue={product.weightGrams ?? ""} min="0" name="weightGrams" step="0.01" type="number" /></label>
+                  <label>Altura cm<input defaultValue={product.heightCm ?? ""} min="0" name="heightCm" step="0.01" type="number" /></label>
+                  <label>Largura cm<input defaultValue={product.widthCm ?? ""} min="0" name="widthCm" step="0.01" type="number" /></label>
+                  <label>Compr. cm<input defaultValue={product.lengthCm ?? ""} min="0" name="lengthCm" step="0.01" type="number" /></label>
                 </div>
                 <div className="retail-switches">
                   <label><input defaultChecked={product.visible} name="visible" type="checkbox" /> Exibir no varejo</label>

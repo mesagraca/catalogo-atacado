@@ -17,6 +17,7 @@ export type RetailCatalogCard = {
   id: string;
   productId: string;
   name: string;
+  description: string | null;
   category: string | null;
   sku: string;
   price: number | null;
@@ -35,6 +36,12 @@ export type RetailCatalogCard = {
   stockPolicy: "independent" | "component";
   components: RetailKitComponent[];
   minimumStock: number;
+  costPrice: number | null;
+  weightGrams: number | null;
+  heightCm: number | null;
+  widthCm: number | null;
+  lengthCm: number | null;
+  material: string | null;
 };
 
 export async function getRetailCatalogCards(): Promise<{
@@ -45,7 +52,7 @@ export async function getRetailCatalogCards(): Promise<{
     const admin = getRetailAdmin();
     const { data: products, error: productsError } = await admin
       .from("catalog_products")
-      .select("id,name,category_level_1,retail_visible,lifecycle_status")
+      .select("id,name,category_level_1,description_html,retail_visible,lifecycle_status")
       .eq("retail_visible", true)
       .eq("lifecycle_status", "active")
       .order("name");
@@ -53,7 +60,7 @@ export async function getRetailCatalogCards(): Promise<{
     const productIds = (products ?? []).map((product) => product.id);
     if (!productIds.length) return { products: [], configured: true };
     const [{ data: skus, error: skusError }, { data: media, error: mediaError }] = await Promise.all([
-      admin.from("catalog_skus").select("id,product_id,sku,kind,stock_policy,minimum_stock").in("product_id", productIds),
+      admin.from("catalog_skus").select("id,product_id,sku,kind,stock_policy,minimum_stock,cost_price,weight_grams,height_cm,width_cm,length_cm,attributes").in("product_id", productIds),
       admin.from("catalog_media").select("product_id,sku_id,url,role,position").eq("is_active", true).in("product_id", productIds),
     ]);
     if (skusError) throw skusError;
@@ -110,6 +117,7 @@ export async function getRetailCatalogCards(): Promise<{
             id: sku.id,
             productId: product.id,
             name: product.name,
+            description: product.description_html ? product.description_html.replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]*>/g, "") : null,
             category: product.category_level_1,
             sku: sku.sku,
             price: retail?.sale_price ?? retail?.list_price ?? null,
@@ -128,6 +136,12 @@ export async function getRetailCatalogCards(): Promise<{
             stockPolicy: sku.stock_policy === "component" ? "component" : "independent",
             components,
             minimumStock: sku.minimum_stock,
+            costPrice: sku.cost_price,
+            weightGrams: sku.weight_grams,
+            heightCm: sku.height_cm,
+            widthCm: sku.width_cm,
+            lengthCm: sku.length_cm,
+            material: typeof sku.attributes?.material === "string" ? sku.attributes.material : null,
           };
         });
       }),

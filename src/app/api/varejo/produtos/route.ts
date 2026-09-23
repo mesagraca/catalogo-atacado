@@ -11,6 +11,12 @@ const date = (value: unknown) => {
   return raw && /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : null;
 };
 const validPrice = (value: number | null) => value == null || (Number.isFinite(value) && value >= 0);
+const validInteger = (value: number | null) => value != null && Number.isInteger(value) && value >= 0;
+const plainTextToHtml = (value: string) => value
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/\n/g, "<br />");
 
 export async function PATCH(request: NextRequest) {
   if (!(await hasRetailAccess())) return NextResponse.json({ message: "Acesso não autorizado." }, { status: 401 });
@@ -23,9 +29,17 @@ export async function PATCH(request: NextRequest) {
   const wholesalePrice = price(body.wholesalePrice);
   const marketplacePrice = price(body.marketplacePrice);
   const promotionPrice = price(body.promotionPrice);
+  const costPrice = price(body.costPrice);
+  const minimumStock = price(body.minimumStock);
+  const weightGrams = price(body.weightGrams);
+  const heightCm = price(body.heightCm);
+  const widthCm = price(body.widthCm);
+  const lengthCm = price(body.lengthCm);
+  const material = text(body.material);
+  const description = text(body.description);
   const promotionStartsAt = date(body.promotionStartsAt);
   const promotionEndsAt = date(body.promotionEndsAt);
-  if (!skuId || !productId || !name || !validPrice(retailPrice) || !validPrice(wholesalePrice) || !validPrice(marketplacePrice) || !validPrice(promotionPrice)) {
+  if (!skuId || !productId || !name || !validPrice(retailPrice) || !validPrice(wholesalePrice) || !validPrice(marketplacePrice) || !validPrice(promotionPrice) || !validPrice(costPrice) || !validInteger(minimumStock) || !validPrice(weightGrams) || !validPrice(heightCm) || !validPrice(widthCm) || !validPrice(lengthCm)) {
     return NextResponse.json({ message: "Nome, produto e SKU são obrigatórios. O preço pode ficar em branco para Sob consulta." }, { status: 400 });
   }
   if (promotionPrice != null && (retailPrice == null || promotionPrice > retailPrice)) {
@@ -37,7 +51,7 @@ export async function PATCH(request: NextRequest) {
   const admin = getRetailAdmin();
   const { data: sku, error: skuError } = await admin
     .from("catalog_skus")
-    .select("product_id")
+    .select("product_id,attributes")
     .eq("id", skuId)
     .single();
   if (skuError || sku.product_id !== productId) {
@@ -46,10 +60,21 @@ export async function PATCH(request: NextRequest) {
   const { error: productError } = await admin.from("catalog_products").update({
     name,
     category_level_1: category || null,
+    description_html: description ? plainTextToHtml(description) : null,
     retail_visible: Boolean(body.visible),
     lifecycle_status: body.active === false ? "inactive" : "active",
   }).eq("id", productId);
   if (productError) return NextResponse.json({ message: productError.message }, { status: 422 });
+  const { error: skuUpdateError } = await admin.from("catalog_skus").update({
+    attributes: { ...(sku.attributes ?? {}), material: material || null },
+    cost_price: costPrice,
+    minimum_stock: minimumStock,
+    weight_grams: weightGrams,
+    height_cm: heightCm,
+    width_cm: widthCm,
+    length_cm: lengthCm,
+  }).eq("id", skuId);
+  if (skuUpdateError) return NextResponse.json({ message: skuUpdateError.message }, { status: 422 });
   const { error: priceError } = await admin.from("catalog_prices").upsert([
     { sku_id: skuId, channel: "retail", list_price: retailPrice, sale_price: promotionPrice, sale_starts_at: promotionStartsAt, sale_ends_at: promotionEndsAt },
     { sku_id: skuId, channel: "wholesale", list_price: wholesalePrice, sale_price: null, sale_starts_at: null, sale_ends_at: null },
