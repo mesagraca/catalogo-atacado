@@ -51,6 +51,11 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
         name: data.get("name"),
         category: data.get("category"),
         retailPrice: data.get("retailPrice"),
+        wholesalePrice: data.get("wholesalePrice"),
+        marketplacePrice: data.get("marketplacePrice"),
+        promotionPrice: data.get("promotionPrice"),
+        promotionStartsAt: data.get("promotionStartsAt"),
+        promotionEndsAt: data.get("promotionEndsAt"),
         visible: data.get("visible") === "on",
         active: data.get("active") === "on",
       }),
@@ -120,7 +125,14 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
               <form onSubmit={(event) => saveProduct(product, event)}>
                 <label>Nome<input defaultValue={product.name} name="name" required /></label>
                 <label>Categoria<input defaultValue={product.category ?? ""} name="category" /></label>
-                <label>Preço varejo<input defaultValue={product.price ?? ""} min="0" name="retailPrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
+                <label>Preço varejo<input defaultValue={product.retailListPrice ?? ""} min="0" name="retailPrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
+                <label>Preço atacado<input defaultValue={product.wholesalePrice ?? ""} min="0" name="wholesalePrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
+                <label>Preço marketplace<input defaultValue={product.marketplacePrice ?? ""} min="0" name="marketplacePrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
+                <label>Preço promocional<input defaultValue={product.promotionPrice ?? ""} min="0" name="promotionPrice" step="0.01" type="number" /></label>
+                <div className="retail-date-fields">
+                  <label>Início<input defaultValue={product.promotionStartsAt ?? ""} name="promotionStartsAt" type="date" /></label>
+                  <label>Fim<input defaultValue={product.promotionEndsAt ?? ""} name="promotionEndsAt" type="date" /></label>
+                </div>
                 <div className="retail-switches">
                   <label><input defaultChecked={product.visible} name="visible" type="checkbox" /> Exibir no varejo</label>
                   <label><input defaultChecked={product.active} name="active" type="checkbox" /> Produto ativo</label>
