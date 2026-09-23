@@ -9,6 +9,7 @@ const money = (value: number | null) =>
 export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todos");
+  const [mediaRole, setMediaRole] = useState("editorial");
   const [uploading, setUploading] = useState<string | null>(null);
   const categories = useMemo(
     () => ["Todos", ...new Set(products.map((product) => product.category).filter(Boolean))] as string[],
@@ -26,7 +27,7 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
     form.set("file", file);
     form.set("productId", product.productId);
     form.set("skuId", product.id);
-    form.set("role", "editorial");
+    form.set("role", mediaRole);
     form.set("position", "0");
     const response = await fetch("/api/varejo/midias", { method: "POST", body: form });
     setUploading(null);
@@ -39,6 +40,14 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
         <label>
           Buscar produto ou SKU
           <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar no varejo" />
+        </label>
+        <label className="retail-media-role">
+          Tipo de foto
+          <select value={mediaRole} onChange={(event) => setMediaRole(event.target.value)}>
+            <option value="editorial">Editorial</option>
+            <option value="studio">Estúdio</option>
+            <option value="gallery">Galeria</option>
+          </select>
         </label>
         <div aria-label="Filtrar categoria">
           {categories.map((item) => <button className={category === item ? "active" : ""} key={item} onClick={() => setCategory(item)}>{item}</button>)}
@@ -56,7 +65,7 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
             <small>{product.sku}</small>
             <div className="retail-product-meta"><strong>{money(product.price)}</strong><span className={product.stock > 0 ? "available" : "unavailable"}>{product.stock > 0 ? `${product.stock} disponíveis` : "Sem estoque"}</span></div>
             <label className="retail-media-upload">
-              {uploading === product.id ? "Processando imagem…" : "Enviar foto editorial"}
+              {uploading === product.id ? "Processando imagem…" : `Enviar foto ${mediaRole === "studio" ? "de estúdio" : mediaRole === "gallery" ? "de galeria" : "editorial"}`}
               <input accept="image/jpeg,image/png,image/webp" disabled={uploading === product.id} onChange={(event) => uploadMedia(product, event)} type="file" />
             </label>
           </article>
