@@ -9,6 +9,8 @@ export type RetailCatalogCard = {
   price: number | null;
   stock: number;
   imageUrl: string | null;
+  visible: boolean;
+  active: boolean;
 };
 
 export async function getRetailCatalogCards(): Promise<{
@@ -19,7 +21,7 @@ export async function getRetailCatalogCards(): Promise<{
     const admin = getRetailAdmin();
     const { data: products, error: productsError } = await admin
       .from("catalog_products")
-      .select("id,name,category_level_1,retail_visible")
+      .select("id,name,category_level_1,retail_visible,lifecycle_status")
       .eq("retail_visible", true)
       .eq("lifecycle_status", "active")
       .order("name");
@@ -61,6 +63,8 @@ export async function getRetailCatalogCards(): Promise<{
             price: price?.sale_price ?? price?.list_price ?? null,
             stock: stockBySku.get(sku.id) ?? 0,
             imageUrl: image?.url ?? null,
+            visible: product.retail_visible,
+            active: product.lifecycle_status === "active",
           };
         });
       }),

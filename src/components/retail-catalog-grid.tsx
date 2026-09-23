@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import type { RetailCatalogCard } from "@/lib/retail-catalog";
 
 const money = (value: number | null) =>
@@ -11,6 +11,8 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
   const [category, setCategory] = useState("Todos");
   const [mediaRole, setMediaRole] = useState("editorial");
   const [uploading, setUploading] = useState<string | null>(null);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const categories = useMemo(
     () => ["Todos", ...new Set(products.map((product) => product.category).filter(Boolean))] as string[],
     [products],
@@ -32,6 +34,50 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
     const response = await fetch("/api/varejo/midias", { method: "POST", body: form });
     setUploading(null);
     if (response.ok) window.location.reload();
+    else setNotice((await response.json().catch(() => null))?.message ?? "Não foi possível enviar a imagem.");
+  };
+
+  const saveProduct = async (product: RetailCatalogCard, event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    setSaving(`product-${product.id}`);
+    setNotice(null);
+    const response = await fetch("/api/varejo/produtos", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        skuId: product.id,
+        productId: product.productId,
+        name: data.get("name"),
+        category: data.get("category"),
+        retailPrice: data.get("retailPrice"),
+        visible: data.get("visible") === "on",
+        active: data.get("active") === "on",
+      }),
+    });
+    setSaving(null);
+    if (response.ok) window.location.reload();
+    else setNotice((await response.json().catch(() => null))?.message ?? "Não foi possível salvar o produto.");
+  };
+
+  const registerMovement = async (product: RetailCatalogCard, event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    setSaving(`stock-${product.id}`);
+    setNotice(null);
+    const response = await fetch("/api/varejo/estoque", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        skuId: product.id,
+        type: data.get("type"),
+        quantity: Number(data.get("quantity")),
+        note: data.get("note"),
+      }),
+    });
+    setSaving(null);
+    if (response.ok) window.location.reload();
+    else setNotice((await response.json().catch(() => null))?.message ?? "Não foi possível registrar o movimento.");
   };
 
   return (
@@ -53,6 +99,7 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
           {categories.map((item) => <button className={category === item ? "active" : ""} key={item} onClick={() => setCategory(item)}>{item}</button>)}
         </div>
       </div>
+      {notice && <p className="retail-feedback" role="alert">{notice}</p>}
       <p className="retail-result-count"><strong>{results.length}</strong> SKUs publicados no varejo</p>
       <div className="retail-product-grid">
         {results.map((product) => (
@@ -68,6 +115,33 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
               {uploading === product.id ? "Processando imagem…" : `Enviar foto ${mediaRole === "studio" ? "de estúdio" : mediaRole === "gallery" ? "de galeria" : "editorial"}`}
               <input accept="image/jpeg,image/png,image/webp" disabled={uploading === product.id} onChange={(event) => uploadMedia(product, event)} type="file" />
             </label>
+            <details className="retail-product-editor">
+              <summary>Editar produto e estoque</summary>
+              <form onSubmit={(event) => saveProduct(product, event)}>
+                <label>Nome<input defaultValue={product.name} name="name" required /></label>
+                <label>Categoria<input defaultValue={product.category ?? ""} name="category" /></label>
+                <label>Preço varejo<input defaultValue={product.price ?? ""} min="0" name="retailPrice" placeholder="Sob consulta" step="0.01" type="number" /></label>
+                <div className="retail-switches">
+                  <label><input defaultChecked={product.visible} name="visible" type="checkbox" /> Exibir no varejo</label>
+                  <label><input defaultChecked={product.active} name="active" type="checkbox" /> Produto ativo</label>
+                </div>
+                <button disabled={saving === `product-${product.id}`} type="submit">{saving === `product-${product.id}` ? "Salvando…" : "Salvar dados"}</button>
+              </form>
+              <form className="retail-stock-form" onSubmit={(event) => registerMovement(product, event)}>
+                <strong>Movimentar estoque</strong>
+                <label>Tipo
+                  <select defaultValue="receipt" name="type">
+                    <option value="receipt">Entrada</option>
+                    <option value="sale">Saída / venda</option>
+                    <option value="return">Devolução</option>
+                    <option value="adjustment">Ajuste (use sinal + ou -)</option>
+                  </select>
+                </label>
+                <label>Quantidade<input defaultValue="1" name="quantity" required step="1" type="number" /></label>
+                <label>Observação<input name="note" placeholder="Ex.: contagem física" /></label>
+                <button disabled={saving === `stock-${product.id}`} type="submit">{saving === `stock-${product.id}` ? "Registrando…" : "Registrar movimento"}</button>
+              </form>
+            </details>
           </article>
         ))}
       </div>
