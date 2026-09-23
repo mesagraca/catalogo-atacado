@@ -34,6 +34,21 @@ export function RetailOperations() {
     setValidation(result);
     setLoading(false);
   };
+  const blockingIssues = validation?.issues.some(
+    (issue) => issue.severity === "error" || issue.code === "provisional_stock",
+  );
+  const apply = async () => {
+    if (!file || blockingIssues) return;
+    setLoading(true);
+    const form = new FormData();
+    form.set("file", file);
+    form.set("apply", "true");
+    const response = await fetch("/api/varejo/importar", { method: "POST", body: form });
+    const result = (await response.json()) as Validation;
+    setValidation(result);
+    setLoading(false);
+    if (response.ok) window.location.reload();
+  };
 
   return (
     <section className="retail-operations" aria-labelledby="operations-title">
@@ -81,6 +96,9 @@ export function RetailOperations() {
                   </p>
                 )) : <p className="ok">Nenhuma pendência crítica encontrada.</p>}
               </div>
+              <button className="retail-apply" disabled={Boolean(blockingIssues) || loading} onClick={apply} type="button">
+                {blockingIssues ? "Corrija os bloqueios para aplicar" : loading ? "Aplicando…" : "Aplicar importação validada"}
+              </button>
             </>
           )}
         </div>
