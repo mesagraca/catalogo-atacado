@@ -59,7 +59,7 @@ export async function RetailCatalogOverview() {
             nem estoque.
           </p>
         </section>
-        <RetailOperations />
+        <RetailOperations products={catalog.products} />
         {catalog.configured && catalog.products.length > 0 && <RetailCatalogHealth products={catalog.products} />}
         {catalog.configured && catalog.products.length > 0 && <RetailCatalogGrid products={catalog.products} />}
       </main>

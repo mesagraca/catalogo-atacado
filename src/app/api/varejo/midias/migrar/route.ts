@@ -11,6 +11,7 @@ type LocalImage = { absolutePath: string; relativePath: string; filename: string
 type CatalogSku = { id: string; product_id: string; sku: string | null };
 type CatalogProduct = { id: string; name: string };
 type Candidate = LocalImage & { productId: string; productName: string; skuId: string; sku: string | null; role: "editorial" | "studio"; position: 0 };
+type ManualRequest = { sourcePath?: unknown; skuId?: unknown; slot?: unknown };
 
 const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const safeName = (value: string) => value.replace(/[^a-z0-9-]/gi, "-").replace(/-+/g, "-");
@@ -56,13 +57,56 @@ async function findLocalImages(directory: string, root = directory): Promise<Loc
   return images;
 }
 
+async function storeLocalImage({ image, productId, skuId, productName, role }: { image: LocalImage; productId: string; skuId: string; productName: string; role: "editorial" | "studio" }) {
+  const admin = getRetailAdmin();
+  const original = await readFile(image.absolutePath);
+  const processed = await processCatalogImage(original);
+  const version = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+  const extension = path.extname(image.filename).slice(1).toLowerCase();
+  const folder = `${productId}/${skuId}/${role}`;
+  const originalPath = `${folder}/originais/${version}.${safeName(extension)}`;
+  const assetPath = `${folder}/${version}.jpg`;
+  const { error: originalError } = await admin.storage.from("retail-originals").upload(originalPath, original, { contentType: mimeType(image.filename), upsert: false });
+  if (originalError) throw originalError;
+  const { error: assetError } = await admin.storage.from("retail-assets").upload(assetPath, processed.buffer, { contentType: "image/jpeg", cacheControl: "31536000", upsert: false });
+  if (assetError) throw assetError;
+  const { error: insertError } = await admin.from("catalog_media").insert({
+    product_id: productId, sku_id: skuId, url: getRetailAssetUrl(assetPath), role, position: 0,
+    alt_text: productName, is_active: true,
+  });
+  if (insertError) throw insertError;
+}
+
 export async function POST(request: NextRequest) {
   if (!(await hasRetailAccess())) return NextResponse.json({ message: "Acesso não autorizado." }, { status: 401 });
-  const body = await request.json().catch(() => ({})) as { apply?: unknown };
+  const body = await request.json().catch(() => ({})) as { apply?: unknown } & ManualRequest;
   const apply = body.apply === true;
 
   try {
     const admin = getRetailAdmin();
+    const sourcePath = typeof body.sourcePath === "string" ? body.sourcePath : "";
+    const skuId = typeof body.skuId === "string" ? body.skuId : "";
+    if (sourcePath || skuId) {
+      if (!sourcePath || !skuId || !["primary", "second"].includes(String(body.slot))) {
+        return NextResponse.json({ message: "Selecione uma foto local, um SKU e o destino da imagem." }, { status: 400 });
+      }
+      const root = path.resolve(process.cwd(), "public", "produtos");
+      const absolutePath = path.resolve(root, sourcePath);
+      if (!absolutePath.startsWith(`${root}${path.sep}`) || !imageExtensions.has(path.extname(absolutePath).toLowerCase())) {
+        return NextResponse.json({ message: "A foto local informada não é válida." }, { status: 400 });
+      }
+      const [{ data: sku, error: skuError }, { data: targetMedia, error: targetMediaError }] = await Promise.all([
+        admin.from("catalog_skus").select("id,product_id,sku").eq("id", skuId).single(),
+        admin.from("catalog_media").select("id").eq("sku_id", skuId).eq("role", body.slot === "primary" ? "editorial" : "studio").eq("position", 0).eq("is_active", true).maybeSingle(),
+      ]);
+      if (skuError || !sku) return NextResponse.json({ message: "SKU não encontrado." }, { status: 404 });
+      if (targetMediaError) throw targetMediaError;
+      if (targetMedia) return NextResponse.json({ message: "Esse destino já tem uma imagem. Troque-a pela página do produto para preservar a decisão de principal." }, { status: 409 });
+      const { data: product, error: productError } = await admin.from("catalog_products").select("id,name").eq("id", sku.product_id).single();
+      if (productError || !product) return NextResponse.json({ message: "Produto não encontrado." }, { status: 404 });
+      await storeLocalImage({ image: { absolutePath, relativePath: sourcePath, filename: path.basename(absolutePath) }, productId: product.id, skuId: sku.id, productName: product.name, role: body.slot === "primary" ? "editorial" : "studio" });
+      return NextResponse.json({ ok: true });
+    }
     const [{ data: products, error: productsError }, { data: skus, error: skusError }, { data: media, error: mediaError }] = await Promise.all([
       admin.from("catalog_products").select("id,name").eq("lifecycle_status", "active"),
       admin.from("catalog_skus").select("id,product_id,sku"),
@@ -88,6 +132,7 @@ export async function POST(request: NextRequest) {
     const queuedSlots = new Set<string>();
     const candidates: Candidate[] = [];
     const ambiguous: string[] = [];
+    const reviewImages: string[] = [];
     let unmatched = 0;
     for (const image of images) {
       const key = imageKey(image.filename);
@@ -97,12 +142,14 @@ export async function POST(request: NextRequest) {
       if (!matches.length) {
         if (exactMatches.length > 1 || comparableMatches.length > 1) ambiguous.push(image.relativePath);
         else unmatched += 1;
+        reviewImages.push(image.relativePath);
         continue;
       }
       const product = matches[0];
       const productSkus = skusByProduct.get(product.id) ?? [];
       if (productSkus.length !== 1) {
         ambiguous.push(image.relativePath);
+        reviewImages.push(image.relativePath);
         continue;
       }
       const sku = productSkus[0];
@@ -117,22 +164,7 @@ export async function POST(request: NextRequest) {
     const failures: string[] = [];
     for (const candidate of batch) {
       try {
-        const original = await readFile(candidate.absolutePath);
-        const processed = await processCatalogImage(original);
-        const version = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
-        const extension = path.extname(candidate.filename).slice(1).toLowerCase();
-        const folder = `${candidate.productId}/${candidate.skuId}/${candidate.role}`;
-        const originalPath = `${folder}/originais/${version}.${safeName(extension)}`;
-        const assetPath = `${folder}/${version}.jpg`;
-        const { error: originalError } = await admin.storage.from("retail-originals").upload(originalPath, original, { contentType: mimeType(candidate.filename), upsert: false });
-        if (originalError) throw originalError;
-        const { error: assetError } = await admin.storage.from("retail-assets").upload(assetPath, processed.buffer, { contentType: "image/jpeg", cacheControl: "31536000", upsert: false });
-        if (assetError) throw assetError;
-        const { error: insertError } = await admin.from("catalog_media").insert({
-          product_id: candidate.productId, sku_id: candidate.skuId, url: getRetailAssetUrl(assetPath), role: candidate.role, position: 0,
-          alt_text: candidate.productName, is_active: true,
-        });
-        if (insertError) throw insertError;
+        await storeLocalImage({ image: candidate, productId: candidate.productId, skuId: candidate.skuId, productName: candidate.productName, role: candidate.role });
       } catch (error) {
         failures.push(`${candidate.relativePath}: ${error instanceof Error ? error.message : "falha no processamento"}`);
       }
@@ -146,6 +178,7 @@ export async function POST(request: NextRequest) {
       remaining: Math.max(0, candidates.length - batch.length),
       unmatched,
       ambiguous: ambiguous.slice(0, 20),
+      reviewImages: reviewImages.slice(0, 40),
       candidates: candidates.slice(0, 12).map(({ relativePath, productName, sku, role }) => ({ relativePath, productName, sku, role })),
       failures,
     });

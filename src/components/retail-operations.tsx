@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useState } from "react";
+import type { RetailCatalogCard } from "@/lib/retail-catalog";
 
 type Validation = {
   summary: Record<string, number>;
@@ -16,6 +17,7 @@ type MediaMigration = {
   unmatched: number;
   ambiguous: string[];
   candidates: Array<{ relativePath: string; productName: string; sku: string | null; role: string }>;
+  reviewImages: string[];
   failures: string[];
   message?: string;
 };
@@ -30,13 +32,18 @@ const summaryLabels: Record<string, string> = {
   missingCostProducts: "Sem custo",
 };
 
-export function RetailOperations() {
+const localImageUrl = (relativePath: string) => `/produtos/${relativePath.split("/").map(encodeURIComponent).join("/")}`;
+
+export function RetailOperations({ products }: { products: RetailCatalogCard[] }) {
   const [file, setFile] = useState<File | null>(null);
   const [validation, setValidation] = useState<Validation | null>(null);
   const [loading, setLoading] = useState(false);
   const [syncInventory, setSyncInventory] = useState(false);
   const [mediaMigration, setMediaMigration] = useState<MediaMigration | null>(null);
   const [mediaLoading, setMediaLoading] = useState(false);
+  const [manualSkuId, setManualSkuId] = useState("");
+  const [manualSlot, setManualSlot] = useState("primary");
+  const [manualImage, setManualImage] = useState<string | null>(null);
 
   const inspectMedia = async (apply = false) => {
     setMediaLoading(true);
@@ -48,6 +55,22 @@ export function RetailOperations() {
     setMediaMigration(await response.json() as MediaMigration);
     setMediaLoading(false);
     if (apply && response.ok) window.location.reload();
+  };
+  const linkLocalImage = async (relativePath: string) => {
+    if (!manualSkuId) {
+      setMediaMigration((current) => current ? { ...current, message: "Selecione o produto que deve receber esta foto." } : current);
+      return;
+    }
+    setManualImage(relativePath);
+    const response = await fetch("/api/varejo/midias/migrar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sourcePath: relativePath, skuId: manualSkuId, slot: manualSlot }),
+    });
+    const result = await response.json() as { message?: string };
+    setManualImage(null);
+    if (response.ok) window.location.reload();
+    else setMediaMigration((current) => current ? { ...current, message: result.message ?? "Não foi possível vincular a foto." } : current);
   };
 
   const validate = async (event: FormEvent<HTMLFormElement>) => {
@@ -154,6 +177,11 @@ export function RetailOperations() {
               {mediaMigration.ambiguous.length > 0 && <p className="retail-muted">{mediaMigration.ambiguous.length} nomes ambíguos ficaram fora da migração automática para revisão.</p>}
               {mediaMigration.failures.length > 0 && <p className="retail-access-error">{mediaMigration.failures[0]}</p>}
               {mediaMigration.safeMatches > 0 && <button className="retail-apply" disabled={mediaLoading} onClick={() => inspectMedia(true)} type="button">Migrar {mediaMigration.safeMatches} imagem(ns) segura(s)</button>}
+              {mediaMigration.reviewImages.length > 0 && <div className="retail-local-review">
+                <div className="retail-local-review-controls"><label>Produto de destino<select onChange={(event) => setManualSkuId(event.target.value)} value={manualSkuId}><option value="">Selecione o produto</option>{products.map((product) => <option key={product.id} value={product.id}>{product.name} · {product.sku}</option>)}</select></label><label>Destino<select onChange={(event) => setManualSlot(event.target.value)} value={manualSlot}><option value="primary">Imagem principal</option><option value="second">Segunda imagem / hover</option></select></label></div>
+                <p className="retail-muted">Revisão manual: escolha o produto e associe a foto correta. O arquivo local é processado e hospedado sem precisar reenviar.</p>
+                <div className="retail-local-review-grid">{mediaMigration.reviewImages.map((relativePath) => <article key={relativePath}><img alt="" src={localImageUrl(relativePath)} /><span>{relativePath}</span><button disabled={manualImage === relativePath} onClick={() => linkLocalImage(relativePath)} type="button">{manualImage === relativePath ? "Vinculando…" : "Vincular ao produto"}</button></article>)}</div>
+              </div>}
             </>}
           </div>
         )}
