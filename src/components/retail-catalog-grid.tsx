@@ -20,6 +20,7 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todos");
   const [mediaRole, setMediaRole] = useState("editorial");
+  const [mediaPosition, setMediaPosition] = useState("0");
   const [uploading, setUploading] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -47,7 +48,7 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
     form.set("productId", product.productId);
     form.set("skuId", product.id);
     form.set("role", mediaRole);
-    form.set("position", "0");
+    form.set("position", mediaPosition);
     const response = await fetch("/api/varejo/midias", { method: "POST", body: form });
     setUploading(null);
     if (response.ok) window.location.reload();
@@ -164,6 +165,14 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
             <option value="gallery">Galeria</option>
           </select>
         </label>
+        <label className="retail-media-role">
+          Posição
+          <select value={mediaPosition} onChange={(event) => setMediaPosition(event.target.value)}>
+            <option value="0">Principal</option>
+            <option value="1">Segunda</option>
+            <option value="2">Terceira</option>
+          </select>
+        </label>
         <div aria-label="Filtrar categoria">
           {categories.map((item) => <button className={category === item ? "active" : ""} key={item} onClick={() => setCategory(item)}>{item}</button>)}
         </div>
@@ -180,8 +189,11 @@ export function RetailCatalogGrid({ products }: { products: RetailCatalogCard[] 
             <h3>{product.name}</h3>
             <small>{product.sku} · {product.kind === "kit" ? "Kit composto" : "Item avulso"}</small>
             <div className="retail-product-meta"><strong>{money(product.price)}</strong><span className={product.stock <= 0 ? "unavailable" : product.minimumStock > 0 && product.stock <= product.minimumStock ? "low-stock" : "available"}>{product.stock <= 0 ? "Sem estoque" : product.minimumStock > 0 && product.stock <= product.minimumStock ? `Estoque baixo: ${product.stock}` : `${product.stock} disponíveis`}</span></div>
+            <div className="retail-media-status" aria-label="Cobertura de fotos">
+              {(["editorial", "studio", "gallery"] as const).map((role) => <span className={product.media.some((asset) => asset.role === role) ? "done" : "pending"} key={role}>{role === "editorial" ? "Editorial" : role === "studio" ? "Estúdio" : "Galeria"}</span>)}
+            </div>
             <label className="retail-media-upload">
-              {uploading === product.id ? "Processando imagem…" : `Enviar foto ${mediaRole === "studio" ? "de estúdio" : mediaRole === "gallery" ? "de galeria" : "editorial"}`}
+              {uploading === product.id ? "Processando imagem…" : `Enviar foto ${mediaRole === "studio" ? "de estúdio" : mediaRole === "gallery" ? "de galeria" : "editorial"} · ${mediaPosition === "0" ? "principal" : `${mediaPosition}ª posição`}`}
               <input accept="image/jpeg,image/png,image/webp" disabled={uploading === product.id} onChange={(event) => uploadMedia(product, event)} type="file" />
             </label>
             <details className="retail-product-editor" onToggle={(event) => { if (event.currentTarget.open && product.kind === "single") void loadHistory(product); }}>

@@ -7,6 +7,12 @@ export type RetailKitComponent = {
   quantity: number;
 };
 
+export type RetailMedia = {
+  role: "editorial" | "studio" | "gallery";
+  position: number;
+  url: string;
+};
+
 export type RetailCatalogCard = {
   id: string;
   productId: string;
@@ -22,6 +28,7 @@ export type RetailCatalogCard = {
   promotionEndsAt: string | null;
   stock: number;
   imageUrl: string | null;
+  media: RetailMedia[];
   visible: boolean;
   active: boolean;
   kind: "single" | "kit";
@@ -76,10 +83,16 @@ export async function getRetailCatalogCards(): Promise<{
       products: (products ?? []).flatMap((product) => {
         const productSkus = (skus ?? []).filter((sku) => sku.product_id === product.id);
         return productSkus.map((sku) => {
-          const image = (media ?? [])
+          const applicableMedia = (media ?? [])
             .filter((asset) => asset.product_id === product.id && (!asset.sku_id || asset.sku_id === sku.id))
             .sort((a, b) => Number(a.position) - Number(b.position))
-            .find((asset) => asset.role === "editorial" || asset.role === "studio");
+          const image = applicableMedia.find((asset) => asset.role === "editorial") ?? applicableMedia.find((asset) => asset.role === "studio");
+          const productMedia = applicableMedia
+            .map((asset) => ({
+              role: asset.role === "studio" || asset.role === "gallery" ? asset.role : "editorial",
+              position: Number(asset.position),
+              url: asset.url,
+            }));
           const retail = pricesBySku.get(sku.id)?.get("retail");
           const wholesale = pricesBySku.get(sku.id)?.get("wholesale");
           const marketplace = pricesBySku.get(sku.id)?.get("marketplace");
@@ -108,6 +121,7 @@ export async function getRetailCatalogCards(): Promise<{
             promotionEndsAt: retail?.sale_ends_at ?? null,
             stock: stockBySku.get(sku.id) ?? 0,
             imageUrl: image?.url ?? null,
+            media: productMedia,
             visible: product.retail_visible,
             active: product.lifecycle_status === "active",
             kind: sku.kind === "kit" ? "kit" : "single",

@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   const skuId = String(formData.get("skuId") ?? "") || null;
   const role = String(formData.get("role") ?? "");
   const position = Number(formData.get("position") ?? 0);
-  if (!(file instanceof File) || !productId || !validRoles.has(role)) {
+  if (!(file instanceof File) || !productId || !validRoles.has(role) || !Number.isInteger(position) || position < 0 || position > 8) {
     return NextResponse.json({ message: "Produto, função da imagem e arquivo são obrigatórios." }, { status: 400 });
   }
   if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
@@ -28,6 +28,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const admin = getRetailAdmin();
+    if (skuId) {
+      const { data: sku, error: skuError } = await admin.from("catalog_skus").select("product_id").eq("id", skuId).single();
+      if (skuError || !sku || sku.product_id !== productId) {
+        return NextResponse.json({ message: "O SKU informado não pertence a este produto." }, { status: 400 });
+      }
+    }
     const original = Buffer.from(await file.arrayBuffer());
     const processed = await processCatalogImage(original);
     const version = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
