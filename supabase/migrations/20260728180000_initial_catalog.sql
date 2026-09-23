@@ -36,15 +36,13 @@ create trigger products_updated_at before update on public.products for each row
 
 alter table public.products enable row level security;
 alter table public.settings enable row level security;
--- Simple single-operator catalogue: the public key can manage products.
--- Replace these with authenticated-only policies when an admin login is added.
-create policy "catalog reads visible products" on public.products for select using (is_visible);
-create policy "catalog operator manages products" on public.products for all to anon, authenticated using (true) with check (true);
-create policy "catalog reads settings" on public.settings for select using (true);
-create policy "catalog operator manages settings" on public.settings for all to anon, authenticated using (true) with check (true);
+-- The storefront can read published data, but mutations are exclusively made
+-- through server-side code using the service-role key. Never grant anonymous
+-- write access to a catalogue or its settings.
+create policy "catalog reads visible products" on public.products
+  for select to anon, authenticated using (is_visible);
+create policy "catalog reads settings" on public.settings
+  for select to anon, authenticated using (true);
 
 insert into storage.buckets (id, name, public) values ('product-images', 'product-images', true) on conflict (id) do update set public = true;
 create policy "public reads product images" on storage.objects for select using (bucket_id = 'product-images');
-create policy "operator uploads product images" on storage.objects for insert to anon, authenticated with check (bucket_id = 'product-images');
-create policy "operator updates product images" on storage.objects for update to anon, authenticated using (bucket_id = 'product-images') with check (bucket_id = 'product-images');
-create policy "operator deletes product images" on storage.objects for delete to anon, authenticated using (bucket_id = 'product-images');
