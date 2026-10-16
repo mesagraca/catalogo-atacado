@@ -33,11 +33,15 @@ export function dbRecordToCanonical(record: any, baseUrl: string): CanonicalProd
     image_url: v.image_url?.startsWith("http") ? v.image_url : `${baseUrl}${v.image_url}`,
   }));
 
+  const hasVariations = Boolean(record.has_variations && variants.length > 0);
+
   return {
     sync_control: {
+      internal_id: record.internal_id ? Number(record.internal_id) : null,
       catalog_product_id: record.id,
       tray_product_id: record.tray_product_id ?? null,
       sku: record.sku,
+      has_variations: hasVariations,
       status: record.tray_product_id ? "synced" : "pending",
       last_sync_at: record.last_sync_at || new Date().toISOString(),
     },
@@ -91,7 +95,7 @@ export function dbRecordToCanonical(record: any, baseUrl: string): CanonicalProd
       identifier_exists: false,
     },
     media: media || { images: [] },
-    variants,
+    variants: hasVariations ? variants : [],
     data_provenance: record.data_provenance || {
       has_estimates: true,
       estimated_fields: ["logistics.weight_grams", "logistics.dimensions"],
@@ -223,8 +227,8 @@ export async function getCanonicalProductById(identifier: string, baseUrl: strin
         .select("*, variants:variantes(*)");
 
       if (/^\d+$/.test(decoded)) {
-        // Se for puramente numérico, pode ser tray_product_id
-        query = query.or(`id.ilike.${decoded},sku.ilike.${decoded},tray_product_id.eq.${decoded}`);
+        // Se for puramente numérico, pode ser internal_id ou tray_product_id
+        query = query.or(`id.ilike.${decoded},sku.ilike.${decoded},tray_product_id.eq.${decoded},internal_id.eq.${decoded}`);
       } else {
         query = query.or(`id.ilike.${decoded},sku.ilike.${decoded}`);
       }

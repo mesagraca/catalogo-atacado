@@ -17,9 +17,11 @@ export interface DataProvenance {
 
 export interface CanonicalProduct {
   sync_control: {
+    internal_id?: number | null;
     catalog_product_id: string;
     tray_product_id: number | null;
     sku: string | null;
+    has_variations: boolean;
     status: "synced" | "pending";
     last_sync_at: string;
   };
@@ -253,9 +255,11 @@ export function toCanonicalProduct(
 
   return {
     sync_control: {
+      internal_id: null,
       catalog_product_id: product.id,
       tray_product_id: product.tray_id ?? null,
       sku: product.sku ?? null,
+      has_variations: Boolean(product.variations && product.variations.length > 1),
       status: product.tray_id ? "synced" : "pending",
       last_sync_at: new Date().toISOString(),
     },

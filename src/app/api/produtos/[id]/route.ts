@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCanonicalProductById, updateProductSyncData } from "@/lib/catalog-db";
 
 export async function GET(
@@ -47,6 +48,11 @@ export async function PATCH(
       sync_status,
       variants,
     });
+
+    // Invalidação de cache on-demand na Vercel Edge
+    revalidatePath("/api/produtos");
+    revalidatePath(`/api/produtos/${id}`);
+    revalidatePath("/catalogo");
 
     return NextResponse.json({
       success: true,
