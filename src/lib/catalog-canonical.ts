@@ -8,6 +8,13 @@ export interface CanonicalMediaImage {
   type: "studio" | "editorial";
 }
 
+export interface DataProvenance {
+  has_estimates: boolean;
+  estimated_fields: string[];
+  verified_fields: string[];
+  notes: Record<string, string>;
+}
+
 export interface CanonicalProduct {
   sync_control: {
     catalog_product_id: string;
@@ -29,11 +36,12 @@ export interface CanonicalProduct {
     included_items: string;
     warranty: string;
     warranty_days: number;
+    stock: number;
   };
   pricing: {
     price: number | null;
     wholesale_price: number | null;
-    cost_price: number | null;
+    cost_price: number;
     promotional_price: number | null;
   };
   logistics: {
@@ -47,11 +55,13 @@ export interface CanonicalProduct {
   };
   fiscal: {
     ncm: string;
-    ean: string | null;
+    ean: string;
     origin: number;
+    cest: string;
     cfop_internal: string;
     cfop_external: string;
     csosn: string;
+    tax_group_tray: string;
   };
   technical_specifications: Record<string, string>;
   google_shopping: {
@@ -70,9 +80,13 @@ export interface CanonicalProduct {
     sku: string;
     stock: number;
     price: number | null;
+    cost_price: number;
+    ncm: string;
+    ean: string;
     attributes: Record<string, string>;
     image_url: string;
   }>;
+  data_provenance: DataProvenance;
 }
 
 export function toCanonicalProduct(
@@ -87,6 +101,26 @@ export function toCanonicalProduct(
     }
     return finalPath;
   };
+
+  const estimatedFields: string[] = [];
+  const verifiedFields: string[] = [
+    "general.name",
+    "general.sku",
+    "general.category",
+    "media.images",
+  ];
+  const provenanceNotes: Record<string, string> = {
+    stock: "Estoque configurado em 0 por segurança até contagem física de inventário.",
+    cost_price: "Preço de custo configurado em 0.00 até envio dos custos oficiais de fábrica.",
+    fiscal_ean: "EAN preenchido com string vazia ('') indicando fabricação própria autoral sem GTIN.",
+  };
+
+  if (product.collection) {
+    verifiedFields.push("general.collection");
+  }
+  if (product.tray_id) {
+    verifiedFields.push("sync_control.tray_product_id");
+  }
 
   // 1. Logística estimada com base na categoria
   let weight = 150;
@@ -106,13 +140,34 @@ export function toCanonicalProduct(
     height = 6;
   }
 
-  // 2. Preços (sugestão de varejo caso só tenha atacado)
-  const wholesalePrice = product.wholesale_price ?? null;
-  const retailPrice =
-    product.retail_price ??
-    (wholesalePrice ? Math.round(wholesalePrice * 1.65 * 100) / 100 : null);
-  const costPrice =
-    wholesalePrice ? Math.round(wholesalePrice * 0.55 * 100) / 100 : null;
+  estimatedFields.push("logistics.weight_grams", "logistics.dimensions");
+  provenanceNotes["logistics"] =
+    "Peso e dimensões de embalagem estimados por categoria para viabilizar frete; aguarda pesagem física na expedição.";
+
+  // 2. Preços (sem dados inventados)
+  let wholesalePrice = product.wholesale_price ?? null;
+  if (wholesalePrice == null && product.game_items?.length) {
+    // Soma exata dos itens reais do jogo
+    wholesalePrice = Math.round(
+      product.game_items.reduce((acc, item) => acc + (item.wholesale_price ?? 0), 0) * 100,
+    ) / 100;
+    verifiedFields.push("pricing.wholesale_price");
+  } else if (wholesalePrice != null) {
+    verifiedFields.push("pricing.wholesale_price");
+  }
+
+  let retailPrice = product.retail_price ?? null;
+  if (retailPrice != null) {
+    verifiedFields.push("pricing.price");
+  } else if (wholesalePrice != null) {
+    // Margem padrão de varejo sugerida (1.65x)
+    retailPrice = Math.round(wholesalePrice * 1.65 * 100) / 100;
+    estimatedFields.push("pricing.price");
+    provenanceNotes["pricing.price"] =
+      "Preço de varejo calculado com margem sugerida de 1.65x sobre o atacado; aguarda definição de tabela B2C oficial.";
+  }
+
+  const costPrice = 0.0; // Zero por segurança
 
   // 3. Imagens (JPEG < 350 KB para Tray + WebP para canais modernos)
   const images: CanonicalMediaImage[] = [];
@@ -141,7 +196,7 @@ export function toCanonicalProduct(
   const specs: Record<string, string> = {
     Marca: "Mesa & Graça",
     Categoria: product.category,
-    "Cuidados de Lavagem": "Lavar à mão ou em ciclo suave, secar à sombra.",
+    "Cuidados de Lavagem": "Lavar com sabão neutro, não usar alvejante, secar à sombra.",
   };
 
   if (product.collection) specs["Coleção"] = product.collection;
@@ -152,18 +207,21 @@ export function toCanonicalProduct(
     specs["Composição"] = product.materials
       .map((m) => `${m.label}: ${m.value}`)
       .join(" | ");
+    verifiedFields.push("technical_specifications.materials");
   }
 
   if (product.dimensions?.length) {
     specs["Medidas"] = product.dimensions
       .map((d) => `${d.label}: ${d.value}`)
       .join(" | ");
+    verifiedFields.push("technical_specifications.dimensions");
   }
 
   if (product.game_items?.length) {
     specs["Composição do Jogo"] = product.game_items
       .map((g) => `${g.label} (Atacado: R$ ${g.wholesale_price})`)
       .join(" + ");
+    verifiedFields.push("technical_specifications.game_items");
   }
 
   // 5. Itens inclusos
@@ -173,13 +231,19 @@ export function toCanonicalProduct(
       ? `Kit com ${product.kit_quantity} unidades de ${product.name}`
       : `1 unidade de ${product.name}`;
 
-  // 6. Variantes
+  // 6. Dados Fiscais
+  const ncm = product.category === "Porta-guardanapos" ? "73239300" : "63025300";
+
+  // 7. Variantes (estoque zero por segurança)
   const variants =
     product.variations?.map((v: Variation) => ({
       tray_variant_id: null,
       sku: v.sku ?? `${product.sku}-${v.name.substring(0, 2).toUpperCase()}`,
-      stock: 20,
+      stock: 0,
       price: retailPrice,
+      cost_price: 0.0,
+      ncm,
+      ean: "",
       attributes: {
         Cor: v.name,
         Estampa: v.pattern === "xadrez" ? "Xadrez" : "Liso",
@@ -208,6 +272,7 @@ export function toCanonicalProduct(
       included_items: includedItems,
       warranty: "30 dias contra defeitos de fabricação",
       warranty_days: 30,
+      stock: 0,
     },
     pricing: {
       price: retailPrice,
@@ -225,12 +290,14 @@ export function toCanonicalProduct(
       availability_text: "Pronta entrega",
     },
     fiscal: {
-      ncm: "63025300",
-      ean: null,
+      ncm,
+      ean: "",
       origin: 0,
+      cest: "",
       cfop_internal: "5102",
       cfop_external: "6102",
       csosn: "102",
+      tax_group_tray: "",
     },
     technical_specifications: specs,
     google_shopping: {
@@ -245,5 +312,11 @@ export function toCanonicalProduct(
       images,
     },
     variants,
+    data_provenance: {
+      has_estimates: estimatedFields.length > 0,
+      estimated_fields: estimatedFields,
+      verified_fields: verifiedFields,
+      notes: provenanceNotes,
+    },
   };
 }
