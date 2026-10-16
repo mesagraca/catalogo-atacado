@@ -473,7 +473,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ["lugar-americano-natal-classico-borda-xadrez", "Lugar Americano Natal Clássico Borda Xadrez", "#A23A35", 35, 17.5, "/produtos/natal-classico-borda-xadrez.png", "CLAS"],
     ["lugar-americano-canto-da-graca", "Canto da Graça", "#B59471", 38.9, 19.45, "/produtos/canto-da-graca.jpg", "CANT"],
   ].map((entry, index): Product => {
-    const [id, name, color, retail, wholesale, image, code] = entry as [string, string, string, number, number, string?, string];
+    const [id, name, color, retail, wholesale, image, code] = entry as [string, string, string, number, number, string, string];
     return {
     id,
     name,
