@@ -329,23 +329,25 @@ async function runMigration() {
         hasRealVariations,
       ];
 
-      await client.query(insertProdSQL, prodValues);
+      const prodRes = await client.query(insertProdSQL, prodValues);
+      const internalId = prodRes.rows[0].internal_id;
       insertedProducts++;
 
       // 2. Inserir Variantes (Apenas se tiver variações reais!)
-      await client.query('DELETE FROM public.variantes WHERE produto_id = $1', [canonical.sync_control.catalog_product_id]);
+      await client.query('DELETE FROM public.variantes WHERE produto_internal_id = $1', [internalId]);
 
       if (hasRealVariations && canonical.variants && canonical.variants.length > 0) {
         for (const v of canonical.variants) {
           const insertVarSQL = `
             INSERT INTO public.variantes (
-              produto_id, sku, name, pattern, color_hex,
+              produto_internal_id, produto_slug, sku, name, pattern, color_hex,
               stock, price, cost_price, ncm, ean, tray_variant_id, attributes, image_url
             ) VALUES (
-              $1, $2, $3, $4, $5,
-              $6, $7, $8, $9, $10, $11, $12, $13
+              $1, $2, $3, $4, $5, $6,
+              $7, $8, $9, $10, $11, $12, $13, $14
             )
             ON CONFLICT (sku) DO UPDATE SET
+              produto_internal_id = EXCLUDED.produto_internal_id,
               stock = EXCLUDED.stock,
               price = EXCLUDED.price,
               cost_price = EXCLUDED.cost_price,
@@ -354,6 +356,7 @@ async function runMigration() {
           `;
 
           const varValues = [
+            internalId,
             canonical.sync_control.catalog_product_id,
             v.sku,
             v.attributes.Cor || v.sku,
@@ -376,16 +379,17 @@ async function runMigration() {
 
       // 3. Inserir Fotos
       if (canonical.media.images && canonical.media.images.length > 0) {
-        await client.query('DELETE FROM public.fotos WHERE produto_id = $1', [canonical.sync_control.catalog_product_id]);
+        await client.query('DELETE FROM public.fotos WHERE produto_internal_id = $1', [internalId]);
 
         let photoOrder = 1;
         for (const img of canonical.media.images) {
           const insertFotoSQL = `
             INSERT INTO public.fotos (
-              produto_id, url, url_webp, alt, type, is_cover, sort_order
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7);
+              produto_internal_id, produto_slug, url, url_webp, alt, type, is_cover, sort_order
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
           `;
           await client.query(insertFotoSQL, [
+            internalId,
             canonical.sync_control.catalog_product_id,
             img.url,
             img.url_webp,
