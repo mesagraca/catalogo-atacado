@@ -460,8 +460,8 @@ export const FEATURED_PRODUCTS: Product[] = [
       { label: "Guardanapo", retail_price: ["kit-churrasco", "kit-hamburguer"].includes(id) ? 23.9 : null, wholesale_price: napkin },
       { label: "Porta-guardanapo", wholesale_price: ring },
     ],
-    image_url: imageSlug ? `/produtos/jogos/${imageSlug}-01.webp` : "/produtos/placeholder-mesaegraca.webp",
-    editorial_image_url: imageSlug ? `/produtos/jogos/${imageSlug}-02.webp` : null,
+    image_url: imageSlug ? `/produtos/jogos/${imageSlug}-${imageSlug === "jogo-hot-dog" ? "01" : "02"}.webp` : "/produtos/placeholder-mesaegraca.webp",
+    editorial_image_url: imageSlug ? `/produtos/jogos/${imageSlug}-${imageSlug === "jogo-hot-dog" ? "02" : "01"}.webp` : null,
     image_status: imageSlug ? "final" : "placeholder",
     sort_order: index + 9,
     is_visible: true,
@@ -505,13 +505,13 @@ export const FEATURED_PRODUCTS: Product[] = [
     wholesale_price: wholesale,
     image_url:
       config.customImage ??
-      (updatedPortaImageSlugs[index] && `/produtos/porta-guardanapos/${updatedPortaImageSlugs[index]}-01.webp`) ??
+      (updatedPortaImageSlugs[index] && `/produtos/porta-guardanapos/${updatedPortaImageSlugs[index]}-02.webp`) ??
       portaStudioImages[index] ??
       `/produtos/produto-${String(index + 1).padStart(2, "0")}.webp`,
     editorial_image_url:
       config.customEditorial ??
       generatedPortaEditorialImages[index] ??
-      (updatedPortaImageSlugs[index] && `/produtos/porta-guardanapos/${updatedPortaImageSlugs[index]}-02.webp`) ??
+      (updatedPortaImageSlugs[index] && `/produtos/porta-guardanapos/${updatedPortaImageSlugs[index]}-01.webp`) ??
       portaEditorialImages[index] ?? null,
     image_status: "final",
     sort_order: index + 1,
