@@ -1,0 +1,13 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" fill="#FAF7F2"/>
+  <rect x="30" y="30" width="740" height="740" rx="16" stroke="#E5DEC9" stroke-width="2" stroke-dasharray="8 8"/>
+  <circle cx="400" cy="350" r="70" fill="#F0EBE1" stroke="#D8CEBA" stroke-width="2"/>
+  <!-- Ícone estilizado de prato e talheres / câmera clássica -->
+  <path d="M400 310V390M360 350H440" stroke="#9A8B73" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="400" cy="350" r="45" stroke="#9A8B73" stroke-width="2" fill="none"/>
+  
+  <text x="400" y="470" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="600" fill="#4A3E31" letter-spacing="2">MESA &amp; GRAÇA</text>
+  <text x="400" y="505" text-anchor="middle" font-family="'Helvetica Neue', sans-serif" font-size="16" font-weight="500" fill="#8C7D6B" letter-spacing="4">ATACADO &amp; MESA POSTA</text>
+  <rect x="320" y="530" width="160" height="1" fill="#D8CEBA"/>
+  <text x="400" y="565" text-anchor="middle" font-family="'Helvetica Neue', sans-serif" font-size="14" font-weight="400" fill="#A89B89" letter-spacing="1">FOTO EM PRODUÇÃO • EM BREVE</text>
+</svg>

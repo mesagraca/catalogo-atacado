@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "Mesa & Graça | Catálogo Atacado",
   description:
     "Vitrine de atacado Mesa & Graça: lugares americanos e porta-guardanapos.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({
