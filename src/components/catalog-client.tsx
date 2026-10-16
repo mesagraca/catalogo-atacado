@@ -182,10 +182,10 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
   };
   const heroImage =
     filter === "Lugar Americano"
-      ? "/produtos/Jogo%20Americano%20Redondo%20Xadrez%20%28Dupla%20Face%29.jpg"
+      ? "/produtos/dupla-face-rosa-bebe.webp"
       : filter === "Porta-guardanapos"
-        ? "/produtos/laco-elegance.png"
-        : "/produtos/laco-charm.png";
+        ? "/produtos/laco-elegance.webp"
+        : "/produtos/laco-charm.webp";
 
   if (print)
     return (
