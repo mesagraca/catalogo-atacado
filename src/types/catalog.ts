@@ -469,8 +469,8 @@ export const FEATURED_PRODUCTS: Product[] = [
   ...[
     ["lugar-americano-natal-majestosa-vinho", "Lugar Americano Natal Majestosa Vinho", "#7B1C2D", 30.32, 16.68, "/produtos/natal-majestosa-vinho.webp", "MAJV"],
     ["lugar-americano-natal-majestosa-verde", "Lugar Americano Natal Majestosa Verde", "#285A3C", 30.32, 16.68, "/produtos/natal-majestosa-verde.webp", "MAJE"],
-    ["lugar-americano-natal-floresta-encantada", "Lugar Americano Natal Floresta Encantada", "#2F5938", 28.9, 15.9, "/produtos/natal-floresta-encantada.webp", "FLOR"],
-    ["lugar-americano-natal-classico-borda-xadrez", "Lugar Americano Natal Clássico Borda Xadrez", "#A23A35", 35, 17.5, "/produtos/natal-classico-borda-xadrez.webp", "CLAS"],
+    ["lugar-americano-natal-floresta-encantada", "Lugar Americano Natal Floresta Encantada", "#2F5938", 28.9, 15.9, "/produtos/natal-floresta-encantada.webp", "NTFL"],
+    ["lugar-americano-natal-classico-borda-xadrez", "Lugar Americano Natal Clássico Borda Xadrez", "#A23A35", 35, 17.5, "/produtos/natal-classico-borda-xadrez.webp", "NTCL"],
     ["lugar-americano-canto-da-graca", "Canto da Graça", "#B59471", 38.9, 19.45, "/produtos/canto-da-graca.webp", "CANT"],
   ].map((entry, index): Product => {
     const [id, name, color, retail, wholesale, image, code] = entry as [string, string, string, number, number, string, string];

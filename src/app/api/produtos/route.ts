@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { FEATURED_PRODUCTS, CATEGORIES, type Category } from "@/types/catalog";
-import { toCanonicalProduct } from "@/lib/catalog-canonical";
+import { getCanonicalProducts } from "@/lib/catalog-db";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -12,62 +11,34 @@ export async function GET(request: Request) {
   const offsetParam = url.searchParams.get("offset");
   const format = url.searchParams.get("format"); // "tray" | "full"
 
-  let filtered = [...FEATURED_PRODUCTS];
-
-  // 1. Filtro por Categoria
-  if (categoria) {
-    filtered = filtered.filter(
-      (p) => p.category.toLowerCase() === categoria.toLowerCase(),
-    );
-  }
-
-  // 2. Filtro por Status Tray
-  if (status === "pendente_tray") {
-    filtered = filtered.filter((p) => p.tray_id == null);
-  } else if (status === "vinculado_tray") {
-    filtered = filtered.filter((p) => p.tray_id != null);
-  }
-
-  const totalFiltered = filtered.length;
-
-  // 3. Paginação
   const limit = limitParam ? Math.min(Math.max(1, parseInt(limitParam, 10)), 100) : 50;
   const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10)) : 0;
-  const paginated = filtered.slice(offset, offset + limit);
 
-  // 4. Mapeamento Canônico
-  const canonicalItems = paginated.map((p) => toCanonicalProduct(p, baseUrl));
-
-  const totalProducts = FEATURED_PRODUCTS.length;
-  const pendingCount = FEATURED_PRODUCTS.filter((p) => p.tray_id == null).length;
-  const syncedCount = FEATURED_PRODUCTS.filter((p) => p.tray_id != null).length;
+  const result = await getCanonicalProducts({
+    categoria,
+    status,
+    limit,
+    offset,
+    baseUrl,
+  });
 
   return NextResponse.json(
     {
-      summary: {
-        total_catalog_products: totalProducts,
-        synced_tray_products: syncedCount,
-        pending_tray_products: pendingCount,
-        available_categories: CATEGORIES,
-      },
-      pagination: {
-        total: totalFiltered,
-        limit,
-        offset,
-        has_more: offset + limit < totalFiltered,
-      },
+      source: result.source,
+      summary: result.summary,
+      pagination: result.pagination,
       filters_applied: {
         category: categoria ?? null,
         status: status ?? null,
         format: format ?? "canonical",
       },
-      products: canonicalItems,
+      products: result.products,
     },
     {
       status: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
       },
     },
   );

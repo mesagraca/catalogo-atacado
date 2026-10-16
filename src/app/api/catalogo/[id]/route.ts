@@ -1,20 +1,15 @@
 import { NextResponse } from "next/server";
-import { FEATURED_PRODUCTS } from "@/types/catalog";
-import { toCanonicalProduct } from "@/lib/catalog-canonical";
+import { getCanonicalProductById } from "@/lib/catalog-db";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const decodedId = decodeURIComponent(id).toLowerCase();
+  const url = new URL(request.url);
+  const baseUrl = `${url.protocol}//${url.host}`;
 
-  const product = FEATURED_PRODUCTS.find(
-    (p) =>
-      p.id.toLowerCase() === decodedId ||
-      p.sku?.toLowerCase() === decodedId ||
-      String(p.tray_id) === decodedId,
-  );
+  const product = await getCanonicalProductById(id, baseUrl);
 
   if (!product) {
     return NextResponse.json(
@@ -23,15 +18,11 @@ export async function GET(
     );
   }
 
-  const url = new URL(request.url);
-  const baseUrl = `${url.protocol}//${url.host}`;
-  const canonical = toCanonicalProduct(product, baseUrl);
-
-  return NextResponse.json(canonical, {
+  return NextResponse.json(product, {
     status: 200,
     headers: {
       "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
     },
   });
 }
