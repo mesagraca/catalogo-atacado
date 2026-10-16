@@ -105,7 +105,7 @@ CREATE TABLE public.produtos (
 CREATE TABLE public.variantes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   produto_internal_id INTEGER NOT NULL REFERENCES public.produtos(internal_id) ON DELETE CASCADE,
-  produto_slug TEXT NOT NULL REFERENCES public.produtos(id) ON DELETE CASCADE,
+  produto_slug TEXT NOT NULL,
   sku TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   pattern TEXT,
@@ -126,7 +126,7 @@ CREATE TABLE public.variantes (
 CREATE TABLE public.fotos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   produto_internal_id INTEGER NOT NULL REFERENCES public.produtos(internal_id) ON DELETE CASCADE,
-  produto_slug TEXT NOT NULL REFERENCES public.produtos(id) ON DELETE CASCADE,
+  produto_slug TEXT NOT NULL,
   type TEXT NOT NULL DEFAULT 'studio',
   is_cover BOOLEAN NOT NULL DEFAULT false,
   sort_order INTEGER NOT NULL DEFAULT 0,
