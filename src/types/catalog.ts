@@ -4,6 +4,7 @@ export type Variation = {
   name: string;
   hex: string;
   pattern: "xadrez" | "liso";
+  sku?: string;
 };
 export type GameItem = {
   label: "Lugar americano" | "Guardanapo" | "Porta-guardanapo";
@@ -19,6 +20,7 @@ export type Product = {
   name: string;
   category: Category;
   sku: string | null;
+  tray_id?: number | null;
   collection: string | null;
   color_name: string | null;
   color_hex: string | null;
@@ -161,12 +163,44 @@ const portaColorDetails = [
   ["Variações disponíveis", "#A8202A"],
 ] as const;
 
+const PORTA_CONFIG: Array<{ code: string; tray_id: number | null }> = [
+  { code: "LIRI", tray_id: 70 },
+  { code: "LAVA", tray_id: 71 },
+  { code: "LIMO", tray_id: 72 },
+  { code: "CERE", tray_id: 73 },
+  { code: "NAUT", tray_id: 74 },
+  { code: "COTR", tray_id: 75 },
+  { code: "MDES", tray_id: 76 },
+  { code: "MDAM", tray_id: 77 },
+  { code: "COME", tray_id: 78 },
+  { code: "ALEC", tray_id: 79 },
+  { code: "DALI", tray_id: 80 },
+  { code: "ORQS", tray_id: 81 },
+  { code: "NAUP", tray_id: 82 },
+  { code: "CHAP", tray_id: 153 },
+  { code: "ESFE", tray_id: 154 },
+  { code: "PERO", tray_id: 152 },
+  { code: "NOTR", tray_id: 156 },
+  { code: "ROSC", tray_id: 151 },
+  { code: "FLAZ", tray_id: 158 },
+  { code: "SUCU", tray_id: 155 },
+  { code: "PIZZ", tray_id: 214 },
+  { code: "COUR-K4", tray_id: 212 },
+  { code: "NOTU-K4", tray_id: null },
+  { code: "FLRO", tray_id: null },
+  { code: "ORQA", tray_id: 235 },
+  { code: "OVIN", tray_id: null },
+  { code: "ELEG", tray_id: null },
+  { code: "CHAR", tray_id: null },
+];
+
 export const FEATURED_PRODUCTS: Product[] = [
   {
     id: "jogo-xadrez",
     name: "Lugar Americano Redondo Xadrez",
     category: "Lugar Americano",
-    sku: "JA-XD",
+    sku: "MG-LA-XADR",
+    tray_id: null,
     collection: "Dupla Face",
     color_name: "Variações disponíveis",
     color_hex: null,
@@ -178,25 +212,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     sort_order: 1,
     is_visible: true,
     variations: [
-      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "xadrez" },
-      { name: "Vermelho", hex: "#C51F2A", pattern: "xadrez" },
-      { name: "Verde", hex: "#1F5A3D", pattern: "xadrez" },
-      { name: "Amarelo", hex: "#D99B19", pattern: "xadrez" },
-      { name: "Marinho", hex: "#203150", pattern: "xadrez" },
-      { name: "Preto", hex: "#292929", pattern: "xadrez" },
-      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso" },
-      { name: "Vermelho", hex: "#C51F2A", pattern: "liso" },
-      { name: "Verde", hex: "#1F5A3D", pattern: "liso" },
-      { name: "Amarelo", hex: "#D99B19", pattern: "liso" },
-      { name: "Marinho", hex: "#203150", pattern: "liso" },
-      { name: "Preto", hex: "#292929", pattern: "liso" },
+      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "xadrez", sku: "MG-LA-XADR-RS" },
+      { name: "Vermelho", hex: "#C51F2A", pattern: "xadrez", sku: "MG-LA-XADR-VM" },
+      { name: "Verde", hex: "#1F5A3D", pattern: "xadrez", sku: "MG-LA-XADR-VD" },
+      { name: "Amarelo", hex: "#D99B19", pattern: "xadrez", sku: "MG-LA-XADR-AM" },
+      { name: "Marinho", hex: "#203150", pattern: "xadrez", sku: "MG-LA-XADR-MR" },
+      { name: "Preto", hex: "#292929", pattern: "xadrez", sku: "MG-LA-XADR-PR" },
+      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso", sku: "MG-LA-XADR-RS-LIS" },
+      { name: "Vermelho", hex: "#C51F2A", pattern: "liso", sku: "MG-LA-XADR-VM-LIS" },
+      { name: "Verde", hex: "#1F5A3D", pattern: "liso", sku: "MG-LA-XADR-VD-LIS" },
+      { name: "Amarelo", hex: "#D99B19", pattern: "liso", sku: "MG-LA-XADR-AM-LIS" },
+      { name: "Marinho", hex: "#203150", pattern: "liso", sku: "MG-LA-XADR-MR-LIS" },
+      { name: "Preto", hex: "#292929", pattern: "liso", sku: "MG-LA-XADR-PR-LIS" },
     ],
   },
   {
     id: "fundo-mar",
     name: "Jogo Fundo do Mar Convencional",
     category: "Jogos",
-    sku: "JA-FMC",
+    sku: "MG-KT-FUND",
+    tray_id: null,
     collection: "Fundo do Mar",
     color_name: "Azul e off-white",
     color_hex: "#4C83A8",
@@ -216,7 +251,8 @@ export const FEATURED_PRODUCTS: Product[] = [
     id: "laco-frances",
     name: "Laço Francês",
     category: "Lugar Americano",
-    sku: "JA-LF",
+    sku: "MG-LA-LACO",
+    tray_id: null,
     collection: "Coleção Essencial",
     color_name: "Variações disponíveis",
     color_hex: null,
@@ -228,33 +264,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     sort_order: 3,
     is_visible: true,
     variations: [
-      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso" },
-      { name: "Rosa pink", hex: "#D82872", pattern: "liso" },
-      { name: "Azul marinho", hex: "#1A2947", pattern: "liso" },
-      { name: "Marrom", hex: "#704126", pattern: "liso" },
-      { name: "Vinho", hex: "#781F32", pattern: "liso" },
-      { name: "Amarelo", hex: "#D8A61B", pattern: "liso" },
-      { name: "Verde", hex: "#637039", pattern: "liso" },
+      { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso", sku: "MG-LA-LACO-RS" },
+      { name: "Rosa pink", hex: "#D82872", pattern: "liso", sku: "MG-LA-LACO-PK" },
+      { name: "Azul marinho", hex: "#1A2947", pattern: "liso", sku: "MG-LA-LACO-MR" },
+      { name: "Marrom", hex: "#704126", pattern: "liso", sku: "MG-LA-LACO-MO" },
+      { name: "Vinho", hex: "#781F32", pattern: "liso", sku: "MG-LA-LACO-VI" },
+      { name: "Amarelo", hex: "#D8A61B", pattern: "liso", sku: "MG-LA-LACO-AM" },
+      { name: "Verde", hex: "#637039", pattern: "liso", sku: "MG-LA-LACO-VD" },
     ],
   },
   ...[
-    ["classico-ondulado", "Clássico Ondulado", "01-Classico-Ondulado.jpg"],
-    ["beija-flor", "Beija-Flor", "02-Beija-Flor.jpg"],
-    ["versailles", "Versailles", "03-Versailles.jpg"],
-    ["imperial", "Imperial", "04-Imperial.jpg"],
-    ["provencal", "Provençal", "05-Provencal.jpg"],
-    ["arabesco", "Arabesco", "06-Arabesco.jpg"],
-    ["flor-de-lis", "Flor de Lis", "07-Flor-de-Lis.jpg"],
-    ["jardim", "Jardim", "08-Jardim.jpg"],
-    ["vintage", "Vintage", "09-Vintage.jpg"],
-    ["signature-mesa-graca", "Signature Mesa & Graça", "10-Signature-Mesa-e-Graca.jpg"],
+    ["classico-ondulado", "Clássico Ondulado", "01-Classico-Ondulado.jpg", "CLAS"],
+    ["beija-flor", "Beija-Flor", "02-Beija-Flor.jpg", "BEIJ"],
+    ["versailles", "Versailles", "03-Versailles.jpg", "VERS"],
+    ["imperial", "Imperial", "04-Imperial.jpg", "IMPE"],
+    ["provencal", "Provençal", "05-Provencal.jpg", "PROV"],
+    ["arabesco", "Arabesco", "06-Arabesco.jpg", "ARAB"],
+    ["flor-de-lis", "Flor de Lis", "07-Flor-de-Lis.jpg", "FLOR"],
+    ["jardim", "Jardim", "08-Jardim.jpg", "JARD"],
+    ["vintage", "Vintage", "09-Vintage.jpg", "VINT"],
+    ["signature-mesa-graca", "Signature Mesa & Graça", "10-Signature-Mesa-e-Graca.jpg", "SIGN"],
   ].map((entry, index): Product => {
-    const [id, name, image] = entry as [string, string, string];
+    const [id, name, image, code] = entry as [string, string, string, string];
     return {
       id: `essencial-${id}`,
       name,
       category: "Lugar Americano",
-      sku: `ESS-${String(index + 1).padStart(2, "0")}`,
+      sku: `MG-LA-${code}`,
+      tray_id: null,
       collection: "Coleção Essencial",
       color_name: "Variações disponíveis",
       color_hex: null,
@@ -265,13 +302,13 @@ export const FEATURED_PRODUCTS: Product[] = [
       sort_order: index + 4,
       is_visible: true,
       variations: [
-        { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso" },
-        { name: "Rosa pink", hex: "#D82872", pattern: "liso" },
-        { name: "Azul marinho", hex: "#1A2947", pattern: "liso" },
-        { name: "Marrom", hex: "#704126", pattern: "liso" },
-        { name: "Vinho", hex: "#781F32", pattern: "liso" },
-        { name: "Amarelo", hex: "#D8A61B", pattern: "liso" },
-        { name: "Verde", hex: "#637039", pattern: "liso" },
+        { name: "Rosa bebê", hex: "#E9B7BC", pattern: "liso", sku: `MG-LA-${code}-RS` },
+        { name: "Rosa pink", hex: "#D82872", pattern: "liso", sku: `MG-LA-${code}-PK` },
+        { name: "Azul marinho", hex: "#1A2947", pattern: "liso", sku: `MG-LA-${code}-MR` },
+        { name: "Marrom", hex: "#704126", pattern: "liso", sku: `MG-LA-${code}-MO` },
+        { name: "Vinho", hex: "#781F32", pattern: "liso", sku: `MG-LA-${code}-VI` },
+        { name: "Amarelo", hex: "#D8A61B", pattern: "liso", sku: `MG-LA-${code}-AM` },
+        { name: "Verde", hex: "#637039", pattern: "liso", sku: `MG-LA-${code}-VD` },
       ],
     };
   }),
@@ -279,7 +316,8 @@ export const FEATURED_PRODUCTS: Product[] = [
     id: "ja-abelhinha",
     name: "Jogo Abelhinha",
     category: "Jogos",
-    sku: "JA-AB",
+    sku: "MG-KT-ABEL",
+    tray_id: 250,
     collection: "Abelhinha",
     color_name: "Amarelo",
     color_hex: "#E5AA1A",
@@ -300,7 +338,8 @@ export const FEATURED_PRODUCTS: Product[] = [
     id: "ja-ovinho",
     name: "Jogo Ovinho",
     category: "Jogos",
-    sku: "JA-OV",
+    sku: "MG-KT-OVIN",
+    tray_id: 251,
     collection: "Ovinho",
     color_name: "Branco e amarelo",
     color_hex: "#E5A70D",
@@ -321,7 +360,8 @@ export const FEATURED_PRODUCTS: Product[] = [
     id: "ja-cerejinha",
     name: "Jogo Cerejinha",
     category: "Jogos",
-    sku: "JA-CE",
+    sku: "MG-KT-CERE",
+    tray_id: 252,
     collection: "Cerejinha",
     color_name: "Vermelho",
     color_hex: "#C41432",
@@ -342,7 +382,8 @@ export const FEATURED_PRODUCTS: Product[] = [
     id: "ja-folhas",
     name: "Jogo Folhas",
     category: "Jogos",
-    sku: "JA-FO",
+    sku: "MG-KT-FOLH",
+    tray_id: 253,
     collection: "Folhas",
     color_name: "Verde",
     color_hex: "#486632",
@@ -363,7 +404,8 @@ export const FEATURED_PRODUCTS: Product[] = [
     id: "ja-magnolia",
     name: "Jogo Magnólia",
     category: "Jogos",
-    sku: "JA-MA",
+    sku: "MG-KT-MAGN",
+    tray_id: 254,
     collection: "Magnólia",
     color_name: "Floral",
     color_hex: "#B53A62",
@@ -381,32 +423,33 @@ export const FEATURED_PRODUCTS: Product[] = [
     is_visible: true,
   },
   ...[
-    ["jogo-feijoada", "Jogo Feijoada", "#5E4634", 16.68, 12.6, 4.03],
-    ["jogo-hot-dog", "Jogo Hot Dog", "#C84948", 19.15, 11.5, null],
-    ["jogo-churrasco", "Jogo Churrasco", "#883F31", 26.04, 14.34, 4.03],
-    ["jogo-hamburguer", "Jogo Hambúrguer", "#274A69", 24.02, 14.34, 4.03],
-    ["jogo-pizza-dupla-face", "Jogo Pizza Dupla Face", "#A83A3E", 19.32, 12.05, 9.04],
-    ["jogo-quadrado-xadrez", "Jogo Americano Quadrado Xadrez Dupla Face", "#A8202A", 18.19, 12.05, 7.1],
-    ["jogo-limao", "Jogo Limão", "#577836", 14.59, 13.86, 10.43],
-    ["jogo-essence-campestre", "Jogo Essence Campestre Dupla Face", "#725441", 16.72, 11.5, 4.9],
-    ["jogo-costela-adao", "Jogo Costela de Adão", "#46693E", 19.14, 13.43, 12.72],
-    ["jogo-alecrim", "Jogo Alecrim", "#5E7A50", 19.14, 13.43, 11.9],
-    ["jogo-lavanda", "Jogo Lavanda", "#8F78A3", 19.14, 13.43, 11.05],
-    ["jogo-oliveira", "Jogo Oliveira", "#7B6651", 19.14, 13.43, 9.04],
-    ["jogo-rose-imperial", "Jogo Rosé Imperial", "#BD8392", 14.59, 11.64, 9.04],
-    ["jogo-mariposa-rose", "Jogo Mariposa Rosé", "#6E453A", 15.4, 11.64, 8.2],
-    ["jogo-belle-rose", "Jogo Belle Rosé", "#5C3B35", 15.4, 11.64, 8.2],
-    ["jogo-flor-lottus", "Jogo Flor de Lóttus", "#DC8AA2", 16.22, 11.64, 9.3],
-    ["jogo-bridgerton-azul", "Jogo Bridgerton Azul", "#557AB7", 16.22, 11.83, 9.95],
-    ["jogo-bridgerton-verde", "Jogo Bridgerton Verde", "#477252", 18.66, 11.83, 11],
-    ["jogo-fundo-mar-premium", "Jogo Fundo do Mar Premium", "#213C68", 22.5, 13.86, 12.4],
+    ["jogo-feijoada", "Jogo Feijoada", "#5E4634", 16.68, 12.6, 4.03, "FEIJ", 141],
+    ["jogo-hot-dog", "Jogo Hot Dog", "#C84948", 19.15, 11.5, null, "HOTD", 140],
+    ["jogo-churrasco", "Jogo Churrasco", "#883F31", 26.04, 14.34, 4.03, "CHUR", 139],
+    ["jogo-hamburguer", "Jogo Hambúrguer", "#274A69", 24.02, 14.34, 4.03, "HAMB", 142],
+    ["jogo-pizza-dupla-face", "Jogo Pizza Dupla Face", "#A83A3E", 19.32, 12.05, 9.04, "PIZZ", null],
+    ["jogo-quadrado-xadrez", "Jogo Americano Quadrado Xadrez Dupla Face", "#A8202A", 18.19, 12.05, 7.1, "QXAD", null],
+    ["jogo-limao", "Jogo Limão", "#577836", 14.59, 13.86, 10.43, "LIMA", 176],
+    ["jogo-essence-campestre", "Jogo Essence Campestre Dupla Face", "#725441", 16.72, 11.5, 4.9, "CAMP", null],
+    ["jogo-costela-adao", "Jogo Costela de Adão", "#46693E", 19.14, 13.43, 12.72, "COST", 120],
+    ["jogo-alecrim", "Jogo Alecrim", "#5E7A50", 19.14, 13.43, 11.9, "ALEC", 121],
+    ["jogo-lavanda", "Jogo Lavanda", "#8F78A3", 19.14, 13.43, 11.05, "LAVA", 119],
+    ["jogo-oliveira", "Jogo Oliveira", "#7B6651", 19.14, 13.43, 9.04, "OLIV", 122],
+    ["jogo-rose-imperial", "Jogo Rosé Imperial", "#BD8392", 14.59, 11.64, 9.04, "ROSE", null],
+    ["jogo-mariposa-rose", "Jogo Mariposa Rosé", "#6E453A", 15.4, 11.64, 8.2, "MARI", null],
+    ["jogo-belle-rose", "Jogo Belle Rosé", "#5C3B35", 15.4, 11.64, 8.2, "BELL", null],
+    ["jogo-flor-lottus", "Jogo Flor de Lóttus", "#DC8AA2", 16.22, 11.64, 9.3, "LOTT", 229],
+    ["jogo-bridgerton-azul", "Jogo Bridgerton Azul", "#557AB7", 16.22, 11.83, 9.95, "BRIA", 231],
+    ["jogo-bridgerton-verde", "Jogo Bridgerton Verde", "#477252", 18.66, 11.83, 11, "BRIV", 234],
+    ["jogo-fundo-mar-premium", "Jogo Fundo do Mar Premium", "#213C68", 22.5, 13.86, 12.4, "FUNP", null],
   ].map((entry, index): Product => {
-    const [id, name, color, placemat, napkin, ring] = entry as [string, string, string, number, number, number | null];
+    const [id, name, color, placemat, napkin, ring, code, trayId] = entry as [string, string, string, number, number, number | null, string, number | null];
     return {
     id,
     name,
     category: "Jogos",
-    sku: `JG-${String(index + 9).padStart(2, "0")}`,
+    sku: `MG-KT-${code}`,
+    tray_id: trayId,
     collection: name.replace(/^Jogo /, "").replace(/^Jogo Americano /, ""),
     color_name: "Conforme composição",
     color_hex: color,
@@ -429,18 +472,19 @@ export const FEATURED_PRODUCTS: Product[] = [
     is_visible: true,
   }; }),
   ...[
-    ["la-natal-majestosa-vinho", "Lugar Americano Natal Majestosa Vinho", "#7B1C2D", 30.32, 16.68, "/produtos/NATAL%20MAJESTOSA%20VINHO.png"],
-    ["la-natal-majestosa-verde", "Lugar Americano Natal Majestosa Verde", "#285A3C", 30.32, 16.68, "/produtos/NATAL%20MAJESTOSA%20verde.png"],
-    ["la-natal-floresta", "Lugar Americano Natal Floresta Encantada", "#2F5938", 28.9, 15.9, "/produtos/Natal%20Floresta%20(Encantada).png"],
-    ["la-natal-classico", "Lugar Americano Natal Clássico Borda Xadrez", "#A23A35", 35, 17.5, "/produtos/Natal%20Clássico%20(Borda%20Xadrez).png"],
-    ["la-canto-graca", "Canto da Graça", "#B59471", 38.9, 19.45, "/produtos/Canto%20da%20Graça.jpg"],
+    ["la-natal-majestosa-vinho", "Lugar Americano Natal Majestosa Vinho", "#7B1C2D", 30.32, 16.68, "/produtos/NATAL%20MAJESTOSA%20VINHO.png", "MAJV"],
+    ["la-natal-majestosa-verde", "Lugar Americano Natal Majestosa Verde", "#285A3C", 30.32, 16.68, "/produtos/NATAL%20MAJESTOSA%20verde.png", "MAJE"],
+    ["la-natal-floresta", "Lugar Americano Natal Floresta Encantada", "#2F5938", 28.9, 15.9, "/produtos/Natal%20Floresta%20(Encantada).png", "FLOR"],
+    ["la-natal-classico", "Lugar Americano Natal Clássico Borda Xadrez", "#A23A35", 35, 17.5, "/produtos/Natal%20Clássico%20(Borda%20Xadrez).png", "CLAS"],
+    ["la-canto-graca", "Canto da Graça", "#B59471", 38.9, 19.45, "/produtos/Canto%20da%20Graça.jpg", "CANT"],
   ].map((entry, index): Product => {
-    const [id, name, color, retail, wholesale, image] = entry as [string, string, string, number, number, string?];
+    const [id, name, color, retail, wholesale, image, code] = entry as [string, string, string, number, number, string?, string];
     return {
     id,
     name,
     category: "Lugar Americano",
-    sku: `LA-${String(index + 3).padStart(2, "0")}`,
+    sku: `MG-LA-${code}`,
+    tray_id: null,
     collection: name.includes("Natal") ? "Natal" : null,
     color_name: "Variações disponíveis",
     color_hex: color,
@@ -451,11 +495,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     sort_order: index + 10,
     is_visible: true,
   }; }),
-  ...portaNames.map(([name, retail, wholesale], index): Product => ({
+  ...portaNames.map(([name, retail, wholesale], index): Product => {
+    const config = PORTA_CONFIG[index] ?? { code: `PG${String(index + 1).padStart(2, "0")}`, tray_id: null };
+    return {
     id: `pg-${index + 1}`,
     name,
     category: "Porta-guardanapos",
-    sku: `PG-${String(index + 1).padStart(2, "0")}`,
+    sku: `MG-PG-${config.code}`,
+    tray_id: config.tray_id,
     collection: null,
     color_name: portaColorDetails[index][0],
     color_hex: portaColorDetails[index][1],
@@ -476,25 +523,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     variations:
       name === "Laço Elegance"
         ? [
-            ...lacoColors.map(([name, hex]) => ({
-              name,
+            ...lacoColors.map(([cName, hex]) => ({
+              name: cName,
               hex,
               pattern: "xadrez" as const,
+              sku: `MG-PG-ELEG-${cName.substring(0, 2).toUpperCase()}-XD`,
             })),
-            ...lacoColors.map(([name, hex]) => ({
-              name,
+            ...lacoColors.map(([cName, hex]) => ({
+              name: cName,
               hex,
               pattern: "liso" as const,
+              sku: `MG-PG-ELEG-${cName.substring(0, 2).toUpperCase()}-LS`,
             })),
           ]
         : name === "Laço Charm"
-          ? lacoColors.map(([name, hex]) => ({
-              name,
+          ? lacoColors.map(([cName, hex]) => ({
+              name: cName,
               hex,
               pattern: "xadrez" as const,
+              sku: `MG-PG-CHAR-${cName.substring(0, 2).toUpperCase()}`,
             }))
           : undefined,
-  })),
+  }; }),
 ];
 
 const MATERIALS_BY_PRODUCT_ID: Record<string, MaterialDetail[]> = {
