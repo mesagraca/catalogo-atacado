@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { FEATURED_PRODUCTS, CATEGORIES } from "@/types/catalog";
+import { supabase } from "@/lib/supabase";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -7,9 +8,24 @@ export async function GET(request: Request) {
   const format = url.searchParams.get("format");
   const acceptHeader = request.headers.get("accept") ?? "";
 
-  const totalProducts = FEATURED_PRODUCTS.length;
-  const pendingCount = FEATURED_PRODUCTS.filter((p) => p.tray_id == null).length;
-  const syncedCount = FEATURED_PRODUCTS.filter((p) => p.tray_id != null).length;
+  let totalProducts = FEATURED_PRODUCTS.length;
+  let pendingCount = FEATURED_PRODUCTS.filter((p) => p.tray_id == null).length;
+  let syncedCount = FEATURED_PRODUCTS.filter((p) => p.tray_id != null).length;
+
+  if (supabase) {
+    try {
+      const [{ count: total }, { count: pending }, { count: synced }] = await Promise.all([
+        supabase.from("produtos").select("id", { count: "exact", head: true }).eq("active", true),
+        supabase.from("produtos").select("id", { count: "exact", head: true }).eq("active", true).is("tray_product_id", null),
+        supabase.from("produtos").select("id", { count: "exact", head: true }).eq("active", true).not("tray_product_id", "is", null),
+      ]);
+      if (total != null) totalProducts = total;
+      if (pending != null) pendingCount = pending;
+      if (synced != null) syncedCount = synced;
+    } catch {
+      // fallback gracioso já definido
+    }
+  }
 
   const routes = {
     overview: {

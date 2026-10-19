@@ -54,9 +54,15 @@ const mergeCatalog = (items: Product[]) => [
   ),
 ];
 
-export function CatalogClient({ print = false }: { print?: boolean }) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export function CatalogClient({
+  print = false,
+  initialProducts,
+}: {
+  print?: boolean;
+  initialProducts?: Product[];
+}) {
+  const [products, setProducts] = useState<Product[]>(initialProducts ?? []);
+  const [loading, setLoading] = useState(!initialProducts || initialProducts.length === 0);
   const [filter, setFilter] = useState<Filter>("Todos");
   const [collection, setCollection] = useState("");
   const [color, setColor] = useState("");
@@ -77,25 +83,48 @@ export function CatalogClient({ print = false }: { print?: boolean }) {
     if (query) setSearch(query);
   }, []);
   useEffect(() => {
-    if (!supabase) {
-      setProducts(FEATURED_PRODUCTS);
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
       setLoading(false);
       return;
     }
-    supabase
-      .from("products")
-      .select("*")
-      .eq("is_visible", true)
-      .order("sort_order")
-      .then(({ data }) => {
-        setProducts(
-          (data as Product[])?.length
-            ? mergeCatalog(data as Product[])
-            : FEATURED_PRODUCTS,
-        );
+    // Caso o componente seja instanciado sem initialProducts, busca da API dinâmica
+    fetch("/api/produtos?limit=100")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.products && Array.isArray(data.products)) {
+          // Converter do canonical para Product da UI se necessário ou usar diretamente
+          setProducts(data.products.map((p: any) => ({
+            id: p.sync_control?.catalog_product_id || p.id,
+            name: p.general?.name || p.name,
+            category: p.general?.category || p.category,
+            sku: p.general?.sku || p.sku,
+            tray_id: p.sync_control?.tray_product_id ?? p.tray_id ?? null,
+            collection: p.general?.collection ?? p.collection ?? null,
+            color_name: p.general?.color_name ?? p.color_name ?? null,
+            color_hex: p.general?.color_hex ?? p.color_hex ?? null,
+            retail_price: p.pricing?.price ?? p.retail_price ?? null,
+            wholesale_price: p.pricing?.wholesale_price ?? p.wholesale_price ?? null,
+            image_url: p.media?.images?.find((img: any) => img.is_cover)?.url_webp || p.media?.images?.[0]?.url_webp || p.media?.images?.[0]?.url || p.image_url || null,
+            editorial_image_url: p.media?.images?.find((img: any) => !img.is_cover)?.url_webp || p.media?.images?.[1]?.url_webp || p.editorial_image_url || null,
+            description: p.general?.short_description || p.general?.description || p.description || "",
+            image_status: "final",
+            sort_order: p.sort_order ?? 0,
+            is_visible: p.general?.active ?? true,
+            kit_quantity: p.kit_quantity ?? null,
+            game_items: p.game_items,
+            variations: p.variants,
+          })));
+        } else {
+          setProducts(FEATURED_PRODUCTS);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setProducts(FEATURED_PRODUCTS);
         setLoading(false);
       });
-  }, []);
+  }, [initialProducts]);
   const collections = useMemo(
     () =>
       [

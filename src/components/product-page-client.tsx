@@ -27,120 +27,79 @@ const money = (value: number | null) =>
         currency: "BRL",
       }).format(value);
 
-export function ProductPageClient({ id }: { id: string }) {
+export function ProductPageClient({
+  id,
+  initialProduct,
+  initialCatalog,
+}: {
+  id: string;
+  initialProduct?: Product | null;
+  initialCatalog?: Product[];
+}) {
   const [product, setProduct] = useState<Product | null>(
-    FEATURED_PRODUCTS.find((item) => item.id === id) ?? null,
+    initialProduct ?? FEATURED_PRODUCTS.find((item) => item.id === id) ?? null,
   );
-  const [loading, setLoading] = useState(!product);
-  const [catalogProducts, setCatalogProducts] =
-    useState<Product[]>(FEATURED_PRODUCTS);
+  const [loading, setLoading] = useState(!initialProduct && !product);
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>(
+    initialCatalog && initialCatalog.length > 0 ? initialCatalog : FEATURED_PRODUCTS,
+  );
   const [variation, setVariation] = useState<Variation | undefined>(
-    product?.variations?.[0],
+    (initialProduct ?? product)?.variations?.[0],
   );
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState<"studio" | "editorial">("studio");
   const [editorialImage, setEditorialImage] = useState<string | null>(
-    product?.editorial_image_url ?? null,
+    (initialProduct ?? product)?.editorial_image_url ?? null,
   );
   const [zoomPosition, setZoomPosition] = useState("50% 50%");
 
   useEffect(() => {
-    if (!supabase) {
+    if (initialProduct) {
+      setProduct(initialProduct);
+      setVariation(initialProduct.variations?.[0]);
+      setEditorialImage(initialProduct.editorial_image_url ?? null);
+      if (initialCatalog && initialCatalog.length > 0) {
+        setCatalogProducts(initialCatalog);
+      }
       setLoading(false);
       return;
     }
-    Promise.all([
-      supabase.from("products").select("*").eq("id", id).maybeSingle(),
-      supabase
-        .from("products")
-        .select("*")
-        .eq("is_visible", true)
-        .order("sort_order"),
-    ]).then(([productResult, catalogResult]) => {
-      if (productResult.data) {
-        const fetchedProduct = productResult.data as Product;
-        const fallback = FEATURED_PRODUCTS.find(
-          (featured) =>
-            featured.id === fetchedProduct.id || featured.name === fetchedProduct.name,
-        );
-        const item = {
-          ...fetchedProduct,
-          collection:
-            fetchedProduct.category === "Porta-guardanapos"
-              ? null
-              : fetchedProduct.collection,
-          kit_quantity: fetchedProduct.kit_quantity ?? fallback?.kit_quantity,
-          game_items: fetchedProduct.game_items ?? fallback?.game_items,
-          description: fetchedProduct.description ?? fallback?.description,
-          materials: fetchedProduct.materials ?? fallback?.materials,
-          dimensions: fetchedProduct.dimensions ?? fallback?.dimensions,
-          category:
-            (fetchedProduct as { category: string }).category ===
-            "Jogos Americanos"
-              ? "Lugar Americano"
-              : fetchedProduct.category,
-        } as Product;
-        setProduct(item);
-        setVariation(item.variations?.[0]);
-        setEditorialImage(item.editorial_image_url ?? null);
-      }
-      if (catalogResult.data?.length) {
-        const onlineProducts = (catalogResult.data as Product[]).map(
-          (item) =>
-            ({
-              ...item,
-              collection:
-                item.category === "Porta-guardanapos" ? null : item.collection,
-              kit_quantity:
-                item.kit_quantity ??
-                FEATURED_PRODUCTS.find(
-                  (featured) =>
-                    featured.id === item.id || featured.name === item.name,
-                )?.kit_quantity,
-              game_items:
-                item.game_items ??
-                FEATURED_PRODUCTS.find(
-                  (featured) =>
-                    featured.id === item.id || featured.name === item.name,
-                )?.game_items,
-              description:
-                item.description ??
-                FEATURED_PRODUCTS.find(
-                  (featured) =>
-                    featured.id === item.id || featured.name === item.name,
-                )?.description,
-              materials:
-                item.materials ??
-                FEATURED_PRODUCTS.find(
-                  (featured) =>
-                    featured.id === item.id || featured.name === item.name,
-                )?.materials,
-              dimensions:
-                item.dimensions ??
-                FEATURED_PRODUCTS.find(
-                  (featured) =>
-                    featured.id === item.id || featured.name === item.name,
-                )?.dimensions,
-              category:
-                (item as { category: string }).category === "Jogos Americanos"
-                  ? "Lugar Americano"
-                  : item.category,
-            }) as Product,
-        );
-        setCatalogProducts([
-          ...onlineProducts,
-          ...FEATURED_PRODUCTS.filter(
-            (featured) =>
-              !onlineProducts.some(
-                (item) =>
-                  item.id === featured.id || item.name === featured.name,
-              ),
-          ),
-        ]);
-      }
-      setLoading(false);
-    });
-  }, [id]);
+
+    // Fallback no client caso a página seja montada sem SSR props
+    fetch(`/api/produtos/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.product) {
+          const p = data.product;
+          const mapped: Product = {
+            id: p.sync_control?.catalog_product_id || p.id,
+            name: p.general?.name || p.name,
+            category: p.general?.category || p.category,
+            sku: p.general?.sku || p.sku,
+            tray_id: p.sync_control?.tray_product_id ?? p.tray_id ?? null,
+            collection: p.general?.collection ?? p.collection ?? null,
+            color_name: p.general?.color_name ?? p.color_name ?? null,
+            color_hex: p.general?.color_hex ?? p.color_hex ?? null,
+            retail_price: p.pricing?.price ?? p.retail_price ?? null,
+            wholesale_price: p.pricing?.wholesale_price ?? p.wholesale_price ?? null,
+            image_url: p.media?.images?.find((img: any) => img.is_cover)?.url_webp || p.media?.images?.[0]?.url_webp || p.media?.images?.[0]?.url || null,
+            editorial_image_url: p.media?.images?.find((img: any) => !img.is_cover)?.url_webp || p.media?.images?.[1]?.url_webp || null,
+            description: p.general?.description || p.general?.short_description || "",
+            image_status: "final",
+            sort_order: p.sort_order ?? 0,
+            is_visible: p.general?.active ?? true,
+            kit_quantity: p.kit_quantity ?? null,
+            game_items: p.game_items,
+            variations: p.variants,
+          };
+          setProduct(mapped);
+          setVariation(mapped.variations?.[0]);
+          setEditorialImage(mapped.editorial_image_url ?? null);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id, initialProduct, initialCatalog]);
 
   if (loading)
     return (
@@ -178,7 +137,7 @@ export function ProductPageClient({ id }: { id: string }) {
     Boolean(product.variations?.length) || Boolean(product.color_name);
   return (
     <>
-      <SiteHeader />
+      <SiteHeader products={catalogProducts} />
       <main className="product-page-shell">
       <nav className="breadcrumb" aria-label="Navegação estrutural">
         <Link href="/">Início</Link>

@@ -8,8 +8,11 @@ import { CollectionsMegaMenu } from "./collections-mega-menu";
 import { MobileCatalogMenu } from "./mobile-catalog-menu";
 import { WhatsAppIcon } from "./ui-icons";
 
-export function SiteHeader() {
+import type { Product } from "@/types/catalog";
+
+export function SiteHeader({ products }: { products?: Product[] } = {}) {
   const [search, setSearch] = useState("");
+  const catalogList = products && products.length > 0 ? products : FEATURED_PRODUCTS;
   const goToCatalog = () =>
     window.location.assign(
       `/catalogo${search.trim() ? `?busca=${encodeURIComponent(search.trim())}` : ""}`,
@@ -34,7 +37,7 @@ export function SiteHeader() {
       </label>
       <nav aria-label="Navegação principal">
         <CollectionsMegaMenu
-          products={FEATURED_PRODUCTS}
+          products={catalogList}
           categories={CATEGORIES}
           onSelect={(category, collection) =>
             window.location.assign(
@@ -50,7 +53,7 @@ export function SiteHeader() {
         </a>
       </nav>
       <MobileCatalogMenu
-        products={FEATURED_PRODUCTS}
+        products={catalogList}
         categories={CATEGORIES}
         onSelect={(category, collection) =>
           window.location.assign(

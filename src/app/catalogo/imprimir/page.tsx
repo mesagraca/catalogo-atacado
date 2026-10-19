@@ -1,4 +1,10 @@
-"use client";
-import Link from "next/link";
-import { CatalogClient } from "@/components/catalog-client";
-export default function PrintPage(){return <><div className="print-toolbar"><Link href="/catalogo">← Voltar ao catálogo</Link><button onClick={()=>window.print()}>Exportar / Salvar PDF</button></div><CatalogClient print/></>}
+import { getUIProducts } from "@/lib/catalog-db";
+import { PrintCatalogClient } from "./print-client";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function PrintPage() {
+  const products = await getUIProducts();
+  return <PrintCatalogClient products={products} />;
+}

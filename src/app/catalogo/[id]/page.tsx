@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { FEATURED_PRODUCTS } from "@/types/catalog";
+import { notFound } from "next/navigation";
+import { getUIProductById, getUIProducts } from "@/lib/catalog-db";
 import { ProductPageClient } from "@/components/product-page-client";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata({
   params,
@@ -8,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const product = FEATURED_PRODUCTS.find((p) => p.id === id);
+  const product = await getUIProductById(id);
 
   if (!product) {
     return {
@@ -44,64 +48,75 @@ export default async function ProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = FEATURED_PRODUCTS.find((p) => p.id === id);
+  const [product, catalog] = await Promise.all([
+    getUIProductById(id),
+    getUIProducts(),
+  ]);
 
-  const jsonLd = product
-    ? {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        name: product.name,
-        sku: product.sku,
-        productID: product.id,
-        category: product.category,
-        image: [
-          product.image_url
-            ? `https://catalogo.mesaegraca.com.br${product.image_url}`
-            : null,
-          product.editorial_image_url
-            ? `https://catalogo.mesaegraca.com.br${product.editorial_image_url}`
-            : null,
-        ].filter(Boolean),
-        description: product.description,
-        brand: {
-          "@type": "Brand",
-          name: "Mesa & Graça",
-        },
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "BRL",
-          price: product.wholesale_price ?? product.retail_price ?? undefined,
-          availability: "https://schema.org/InStock",
-        },
-        additionalProperty: [
-          {
-            "@type": "PropertyValue",
-            name: "tray_id",
-            value: product.tray_id ?? null,
-          },
-          {
-            "@type": "PropertyValue",
-            name: "api_endpoint",
-            value: `https://catalogo.mesaegraca.com.br/api/catalogo/${product.id}`,
-          },
-          ...(product.game_items?.map((item) => ({
-            "@type": "PropertyValue",
-            name: `item_${item.label.toLowerCase().replace(/\s+/g, "_")}`,
-            value: `Atacado: R$ ${item.wholesale_price}`,
-          })) ?? []),
-        ],
-      }
-    : null;
+  if (!product) {
+    notFound();
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    sku: product.sku,
+    productID: product.id,
+    category: product.category,
+    image: [
+      product.image_url
+        ? (product.image_url.startsWith("http")
+            ? product.image_url
+            : `https://catalogo.mesaegraca.com.br${product.image_url}`)
+        : null,
+      product.editorial_image_url
+        ? (product.editorial_image_url.startsWith("http")
+            ? product.editorial_image_url
+            : `https://catalogo.mesaegraca.com.br${product.editorial_image_url}`)
+        : null,
+    ].filter(Boolean),
+    description: product.description,
+    brand: {
+      "@type": "Brand",
+      name: "Mesa & Graça",
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "BRL",
+      price: product.wholesale_price ?? product.retail_price ?? undefined,
+      availability: "https://schema.org/InStock",
+    },
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "tray_id",
+        value: product.tray_id ?? null,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "api_endpoint",
+        value: `https://catalogo.mesaegraca.com.br/api/catalogo/${product.id}`,
+      },
+      ...(product.game_items?.map((item) => ({
+        "@type": "PropertyValue",
+        name: `item_${item.label.toLowerCase().replace(/\s+/g, "_")}`,
+        value: `Atacado: R$ ${item.wholesale_price}`,
+      })) ?? []),
+    ],
+  };
 
   return (
     <>
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-      <ProductPageClient id={id} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProductPageClient
+        id={id}
+        initialProduct={product}
+        initialCatalog={catalog}
+      />
     </>
   );
 }

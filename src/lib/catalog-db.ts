@@ -307,3 +307,188 @@ export async function updateProductSyncData(
 
   return updatedProd;
 }
+
+const COLOR_HEX_MAP: Record<string, string> = {
+  "rosa bebê": "#E9B7BC",
+  "vermelho": "#C51F2A",
+  "verde": "#1F5A3D",
+  "amarelo": "#D99B19",
+  "marinho": "#203150",
+  "azul marinho": "#1A2947",
+  "preto": "#292929",
+  "rosa pink": "#D82872",
+  "marrom": "#704126",
+  "vinho": "#781F32",
+  "laranja": "#E67E22",
+  "terracota": "#D35400",
+  "off-white": "#F5F5F0",
+  "bege": "#E0D7C6",
+  "cinza": "#808080",
+  "branco": "#FFFFFF",
+};
+
+/**
+ * Converte um registro do Supabase (com variantes e fotos) para o modelo Product da interface do catálogo.
+ */
+export function dbRecordToUIProduct(record: any): Product {
+  const images = record.media?.images || [];
+  const photos = record.photos || [];
+
+  // Imagem principal (estúdio ou capa)
+  let coverImg =
+    photos.find((p: any) => p.is_cover) ||
+    photos.find((p: any) => p.type === "studio") ||
+    photos[0];
+  let coverUrl = coverImg ? coverImg.url_webp || coverImg.url : null;
+  if (!coverUrl && images.length > 0) {
+    const mediaCover = images.find((img: any) => img.is_cover) || images[0];
+    coverUrl = mediaCover.url_webp || mediaCover.url;
+  }
+
+  // Imagem editorial (hover ou ambiente)
+  let editorialImg =
+    photos.find((p: any) => p.type === "editorial" || (!p.is_cover && photos.length > 1)) ||
+    photos[1];
+  let editorialUrl = editorialImg ? editorialImg.url_webp || editorialImg.url : null;
+  if (!editorialUrl && images.length > 1) {
+    const mediaEditorial =
+      images.find((img: any) => !img.is_cover || img.type === "editorial") ||
+      images[1];
+    editorialUrl = mediaEditorial ? mediaEditorial.url_webp || mediaEditorial.url : null;
+  }
+
+  // Limpar domínios absolutos conhecidos para links relativos portáteis
+  const cleanUrl = (u: string | null | undefined): string | null => {
+    if (!u) return null;
+    return u.replace(/^https?:\/\/catalogo\.mesaegraca\.com\.br/, "");
+  };
+
+  // Variantes
+  const variants = (record.variants || []).map((v: any) => {
+    const name = v.name || v.attributes?.Cor || v.attributes?.color_name || "Padrão";
+    const patternRaw = v.pattern || v.attributes?.Estampa || v.attributes?.pattern || "liso";
+    const pattern = String(patternRaw).toLowerCase() === "xadrez" ? "xadrez" : "liso";
+    const hex =
+      v.color_hex ||
+      v.attributes?.hex ||
+      v.attributes?.color_hex ||
+      COLOR_HEX_MAP[name.toLowerCase()] ||
+      "#CCCCCC";
+    return {
+      name,
+      hex,
+      pattern: pattern as "xadrez" | "liso",
+      sku: v.sku,
+    };
+  });
+
+  // Itens de jogo (jogos completos de mesa posta)
+  const gameItems = (record.game_items || []).map((g: any) => ({
+    label: g.label,
+    wholesale_price: g.wholesale_price != null ? Number(g.wholesale_price) : null,
+    retail_price: g.retail_price != null ? Number(g.retail_price) : null,
+  }));
+
+  // Materiais e medidas
+  const materials = record.technical_specifications?.materials;
+  const dimensions = record.technical_specifications?.dimensions;
+
+  // Categoria
+  let category: any = record.category;
+  if (category === "Jogos Americanos") category = "Lugar Americano";
+
+  // Descrição
+  const description = record.short_description || record.description || "";
+
+  return {
+    id: record.id,
+    name: record.name,
+    category,
+    sku: record.sku || null,
+    tray_id: record.tray_product_id ?? null,
+    collection: category === "Porta-guardanapos" ? null : (record.collection || null),
+    color_name: record.color_name || (variants.length > 0 ? "Variações disponíveis" : null),
+    color_hex: record.color_hex || null,
+    retail_price: record.price != null ? Number(record.price) : null,
+    wholesale_price: record.wholesale_price != null ? Number(record.wholesale_price) : null,
+    image_url: cleanUrl(coverUrl),
+    editorial_image_url: cleanUrl(editorialUrl),
+    description,
+    materials: materials && materials.length > 0 ? materials : undefined,
+    dimensions: dimensions && dimensions.length > 0 ? dimensions : undefined,
+    image_status: "final",
+    sort_order: Number(record.sort_order ?? 0),
+    is_visible: Boolean(record.active),
+    kit_quantity: record.technical_specifications?.kit_quantity ?? null,
+    game_items: gameItems.length > 0 ? gameItems : undefined,
+    variations: variants.length > 0 ? variants : undefined,
+  };
+}
+
+/**
+ * Busca todos os produtos formatados para o catálogo a partir do Supabase.
+ * Retorna os produtos ativos ordenados por sort_order.
+ * Se o Supabase estiver indisponível, faz fallback automático para FEATURED_PRODUCTS.
+ */
+export async function getUIProducts(options?: { includeInactive?: boolean }): Promise<Product[]> {
+  if (supabase) {
+    try {
+      let query = supabase
+        .from("produtos")
+        .select("*, variants:variantes(*), photos:fotos(*)")
+        .order("sort_order", { ascending: true });
+
+      if (!options?.includeInactive) {
+        query = query.eq("active", true);
+      }
+
+      const { data, error } = await query;
+      if (!error && data && data.length > 0) {
+        return data.map(dbRecordToUIProduct);
+      }
+    } catch (err) {
+      console.warn("⚠️ Falha ao buscar produtos da UI no Supabase:", err);
+    }
+  }
+
+  return FEATURED_PRODUCTS;
+}
+
+/**
+ * Busca um único produto por slug/ID, SKU ou ID interno no Supabase para a página do produto.
+ */
+export async function getUIProductById(identifier: string): Promise<Product | null> {
+  const decoded = decodeURIComponent(identifier).trim().toLowerCase();
+
+  if (supabase) {
+    try {
+      let query = supabase
+        .from("produtos")
+        .select("*, variants:variantes(*), photos:fotos(*)");
+
+      if (/^\d+$/.test(decoded)) {
+        query = query.or(`id.ilike.${decoded},sku.ilike.${decoded},tray_product_id.eq.${decoded},internal_id.eq.${decoded}`);
+      } else {
+        query = query.or(`id.ilike.${decoded},sku.ilike.${decoded}`);
+      }
+
+      const { data, error } = await query.limit(1).maybeSingle();
+
+      if (!error && data) {
+        return dbRecordToUIProduct(data);
+      }
+    } catch (err) {
+      console.warn("⚠️ Falha ao buscar produto por ID no Supabase:", err);
+    }
+  }
+
+  const local = FEATURED_PRODUCTS.find(
+    (p) =>
+      p.id.toLowerCase() === decoded ||
+      p.sku?.toLowerCase() === decoded ||
+      String(p.tray_id) === decoded,
+  );
+
+  return local ?? null;
+}
+
