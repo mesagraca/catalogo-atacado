@@ -700,6 +700,15 @@
   width: 100% !important;
 }
 
+/* ==========================================================================
+   Banner Hero: desativar qualquer injeção legada de texto via ::after
+   ========================================================================== */
+.collection-header h1::after,
+.collection-hero h1::after {
+  content: none !important;
+  display: none !important;
+}
+
 /* Página do produto (Dual CTAs) */
 .product-page-cta-group {
   display: flex;
