@@ -44,7 +44,9 @@ export type Product = {
   variations?: Variation[];
   created_at?: string;
 };
-export type ProductInput = Omit<Product, "id" | "created_at" | "variations">;
+export type ProductInput = Omit<Product, "id" | "created_at"> & {
+  variations?: Variation[];
+};
 
 const portaNames = [
   ["Lírio Provence", 12, 9.04],

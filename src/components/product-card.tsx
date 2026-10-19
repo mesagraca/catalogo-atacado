@@ -102,8 +102,29 @@ export function ProductCard({
       <div className="product-info">
         <div className="product-topline">
           <span>{product.collection || product.category}</span>
+          {(product.sku || product.id) && (
+            <span
+              className="product-ref-pill"
+              title={`Código de referência: ${product.sku || product.id}`}
+            >
+              REF: {product.sku ? product.sku.replace(/^MG-/, "") : product.id.slice(0, 8)}
+            </span>
+          )}
         </div>
         <h3>{product.name}</h3>
+        {print && product.description && (
+          <p className="print-product-desc">{product.description}</p>
+        )}
+        {print && (product.materials?.length || product.dimensions?.length) ? (
+          <div className="print-product-specs">
+            {product.materials?.map((m) => (
+              <span key={m.label}><strong>{m.label}:</strong> {m.value}</span>
+            ))}
+            {product.dimensions?.map((d) => (
+              <span key={d.label}><strong>{d.label}:</strong> {d.value}</span>
+            ))}
+          </div>
+        ) : null}
         {isGame ? (
           <div className="game-price-list" aria-label="Valores por item do jogo">
             <span>Jogo completo · preços por item</span>

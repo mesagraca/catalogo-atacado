@@ -40,7 +40,14 @@ export async function POST(request: Request) {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
 
-    const payload = {
+    const technicalSpecifications: Record<string, any> = {
+      materials: Array.isArray(body.materials) ? body.materials : [],
+      dimensions: Array.isArray(body.dimensions) ? body.dimensions : [],
+      kit_quantity: body.kit_quantity != null ? Number(body.kit_quantity) : null,
+      variations: Array.isArray(body.variations) ? body.variations : [],
+    };
+
+    const payload: Record<string, any> = {
       id: slug,
       name: body.name,
       category: body.category || "Lugar Americano",
@@ -54,6 +61,8 @@ export async function POST(request: Request) {
       active: body.is_visible !== false,
       short_description: body.description || "",
       description: body.description || "",
+      technical_specifications: technicalSpecifications,
+      game_items: Array.isArray(body.game_items) ? body.game_items : [],
       media: {
         images: [
           body.image_url
@@ -133,31 +142,53 @@ export async function PATCH(request: Request) {
       dbUpdates.short_description = updates.description;
     }
 
-    // Se houver alteração de imagem
-    if (updates.image_url !== undefined || updates.editorial_image_url !== undefined) {
+    if (
+      updates.materials !== undefined ||
+      updates.dimensions !== undefined ||
+      updates.kit_quantity !== undefined ||
+      updates.variations !== undefined
+    ) {
       const { data: current } = await supabaseAdmin
         .from("produtos")
-        .select("media")
+        .select("technical_specifications")
         .eq("id", id)
         .single();
 
-      const existingImages = current?.media?.images || [];
-      const newImages = [...existingImages];
+      const existingTech = current?.technical_specifications || {};
+      dbUpdates.technical_specifications = {
+        ...existingTech,
+        ...(updates.materials !== undefined ? { materials: updates.materials } : {}),
+        ...(updates.dimensions !== undefined ? { dimensions: updates.dimensions } : {}),
+        ...(updates.kit_quantity !== undefined
+          ? { kit_quantity: updates.kit_quantity != null ? Number(updates.kit_quantity) : null }
+          : {}),
+        ...(updates.variations !== undefined ? { variations: updates.variations } : {}),
+      };
+    }
 
+    if (updates.game_items !== undefined) {
+      dbUpdates.game_items = updates.game_items;
+    }
+
+    // Se houver alteração de imagem ou reordenação
+    if (updates.image_url !== undefined || updates.editorial_image_url !== undefined) {
+      const newImages = [];
       if (updates.image_url) {
-        const coverIdx = newImages.findIndex((img: any) => img.is_cover);
-        const item = { url: updates.image_url, url_webp: updates.image_url, is_cover: true, type: "studio" };
-        if (coverIdx > -1) newImages[coverIdx] = item;
-        else newImages.unshift(item);
+        newImages.push({
+          url: updates.image_url,
+          url_webp: updates.image_url,
+          is_cover: true,
+          type: "studio",
+        });
       }
-
       if (updates.editorial_image_url) {
-        const editIdx = newImages.findIndex((img: any) => !img.is_cover);
-        const item = { url: updates.editorial_image_url, url_webp: updates.editorial_image_url, is_cover: false, type: "editorial" };
-        if (editIdx > -1) newImages[editIdx] = item;
-        else newImages.push(item);
+        newImages.push({
+          url: updates.editorial_image_url,
+          url_webp: updates.editorial_image_url,
+          is_cover: false,
+          type: "editorial",
+        });
       }
-
       dbUpdates.media = { images: newImages };
     }
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type DragEvent } from "react";
 import Link from "next/link";
-import { CATEGORIES, type Product, type ProductInput } from "@/types/catalog";
+import { CATEGORIES, type Product, type ProductInput, type Variation, type MaterialDetail } from "@/types/catalog";
 import { isSupabaseReady, supabase } from "@/lib/supabase";
 
 const PRESET_COLORS = [
@@ -18,6 +18,15 @@ const PRESET_COLORS = [
   { name: "Preto Ébano", hex: "#22201E" },
 ];
 
+const KIT_OPTIONS = [
+  { label: "Venda Avulsa (Unitário)", value: null },
+  { label: "Kit com 2 peças", value: 2 },
+  { label: "Kit com 4 peças", value: 4 },
+  { label: "Kit com 6 peças", value: 6 },
+  { label: "Kit com 8 peças", value: 8 },
+  { label: "Kit com 12 peças", value: 12 },
+];
+
 const blank = (): ProductInput => ({
   name: "",
   category: "Lugar Americano",
@@ -29,6 +38,11 @@ const blank = (): ProductInput => ({
   wholesale_price: null,
   image_url: null,
   editorial_image_url: null,
+  description: "",
+  materials: [],
+  dimensions: [],
+  kit_quantity: null,
+  variations: [],
   image_status: "final",
   sort_order: 0,
   is_visible: true,
@@ -48,13 +62,14 @@ const money = (v: number | null) =>
  * @description
  * Interface completa conectada ao Supabase PostgreSQL para controle de produtos:
  * 1. Listagem pesquisável e filtrável por categoria com badges de status
- * 2. Fluxo guiado (Wizard em 4 etapas) para inclusão e edição de produtos
- * 3. Seleção visual de cores, paleta rápida e gerador inteligente de SKU
- * 4. Pré-visualização imediata de fotos de estúdio (capa) e editorial (em uso)
- * 5. Cálculo automático de margem/desconto de atacado vs varejo
+ * 2. Fluxo guiado em 5 etapas para inclusão e edição abrangente de produtos
+ * 3. Gerenciamento de Descrição, Venda em Kit, Materiais e Medidas dinâmicas
+ * 4. Matriz de Variantes avançada com suporte a Estampas (Xadrez vs Liso) e SKUs
+ * 5. Reordenação interativa de fotos com Drag & Drop e botão de troca rápida 1-Click
+ * 6. Cálculo automático de margens e descontos atacado vs varejo
  * 
  * @returns {JSX.Element} Painel administrativo com controle em tempo real
- * @since v2.4.0
+ * @since v2.5.0
  * @category Admin
  */
 export function AdminClient() {
@@ -64,9 +79,11 @@ export function AdminClient() {
   const [form, setForm] = useState<ProductInput>(blank());
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
-  const [wizardStep, setWizardStep] = useState<1 | 2 | 3 | 4>(1);
+  const [wizardStep, setWizardStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [draggedTarget, setDraggedTarget] = useState<"cover" | "editorial" | null>(null);
+  const [dragOverTarget, setDragOverTarget] = useState<"cover" | "editorial" | null>(null);
 
   const load = async () => {
     try {
@@ -110,6 +127,113 @@ export function AdminClient() {
       .slice(0, 4);
     const rand = Math.floor(100 + Math.random() * 900);
     change("sku", `MG-${prefix}-${cleanName || "PROD"}-${rand}`);
+  };
+
+  // Reordenação de fotos 1-Click
+  const swapPhotos = () => {
+    setForm((old) => ({
+      ...old,
+      image_url: old.editorial_image_url ?? null,
+      editorial_image_url: old.image_url ?? null,
+    }));
+  };
+
+  // Handlers de Drag and Drop para fotos
+  const handleDragStart = (e: DragEvent, source: "cover" | "editorial") => {
+    setDraggedTarget(source);
+    e.dataTransfer.setData("text/plain", source);
+  };
+
+  const handleDragOver = (e: DragEvent, target: "cover" | "editorial") => {
+    e.preventDefault();
+    if (draggedTarget && draggedTarget !== target) {
+      setDragOverTarget(target);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setDragOverTarget(null);
+  };
+
+  const handleDrop = (e: DragEvent, target: "cover" | "editorial") => {
+    e.preventDefault();
+    setDragOverTarget(null);
+    if (draggedTarget && draggedTarget !== target) {
+      swapPhotos();
+    }
+    setDraggedTarget(null);
+  };
+
+  // Gerenciamento dinâmico de Materiais
+  const addMaterialRow = () => {
+    setForm((old) => ({
+      ...old,
+      materials: [...(old.materials || []), { label: "", value: "" }],
+    }));
+  };
+
+  const updateMaterialRow = (index: number, field: "label" | "value", val: string) => {
+    setForm((old) => {
+      const copy = [...(old.materials || [])];
+      copy[index] = { ...copy[index], [field]: val };
+      return { ...old, materials: copy };
+    });
+  };
+
+  const removeMaterialRow = (index: number) => {
+    setForm((old) => ({
+      ...old,
+      materials: (old.materials || []).filter((_, i) => i !== index),
+    }));
+  };
+
+  // Gerenciamento dinâmico de Medidas
+  const addDimensionRow = () => {
+    setForm((old) => ({
+      ...old,
+      dimensions: [...(old.dimensions || []), { label: "", value: "" }],
+    }));
+  };
+
+  const updateDimensionRow = (index: number, field: "label" | "value", val: string) => {
+    setForm((old) => {
+      const copy = [...(old.dimensions || [])];
+      copy[index] = { ...copy[index], [field]: val };
+      return { ...old, dimensions: copy };
+    });
+  };
+
+  const removeDimensionRow = (index: number) => {
+    setForm((old) => ({
+      ...old,
+      dimensions: (old.dimensions || []).filter((_, i) => i !== index),
+    }));
+  };
+
+  // Gerenciamento dinâmico de Variantes (Xadrez vs Liso, Cor, SKU)
+  const addVariationRow = () => {
+    setForm((old) => ({
+      ...old,
+      variations: [
+        ...(old.variations || []),
+        { name: "", hex: "#E8DEC8", pattern: "liso", sku: "" },
+      ],
+    }));
+  };
+
+  const updateVariationRow = (index: number, field: keyof Variation, val: any) => {
+    setForm((old) => {
+      const copy = [...(old.variations || [])];
+      copy[index] = { ...copy[index], [field]: val };
+      return { ...old, variations: copy };
+    });
+  };
+
+  const removeVariationRow = (index: number) => {
+    setForm((old) => ({
+      ...old,
+      variations: (old.variations || []).filter((_, i) => i !== index),
+    }));
   };
 
   async function upload(
@@ -156,7 +280,18 @@ export function AdminClient() {
 
   function start(product?: Product) {
     setEditing(product || null);
-    setForm(product ? { ...product } : blank());
+    if (product) {
+      setForm({
+        ...product,
+        description: product.description || "",
+        materials: product.materials ? [...product.materials] : [],
+        dimensions: product.dimensions ? [...product.dimensions] : [],
+        kit_quantity: product.kit_quantity ?? null,
+        variations: product.variations ? [...product.variations] : [],
+      });
+    } else {
+      setForm(blank());
+    }
     setWizardStep(1);
     setOpen(true);
     setMessage("");
@@ -174,6 +309,10 @@ export function AdminClient() {
         collection: form.collection || null,
         color_name: form.color_name || null,
         color_hex: form.color_hex || null,
+        kit_quantity: form.kit_quantity != null ? Number(form.kit_quantity) : null,
+        materials: (form.materials || []).filter((m) => m.label.trim() || m.value.trim()),
+        dimensions: (form.dimensions || []).filter((d) => d.label.trim() || d.value.trim()),
+        variations: (form.variations || []).filter((v) => v.name.trim()),
         ...(editing ? { id: editing.id } : {}),
       };
 
@@ -251,7 +390,7 @@ export function AdminClient() {
         <p className="category-label">GESTÃO DE CATÁLOGO SUPABASE</p>
         <h1>Painel de Controle de Produtos</h1>
         <p>
-          Gerencie preços de atacado, visibilidade na vitrine e fotos com persistência em tempo real.
+          Gerencie preços de atacado, especificações completas, fotos e visibilidade com persistência em tempo real.
         </p>
       </section>
 
@@ -297,10 +436,15 @@ export function AdminClient() {
               <div>
                 <b>{p.name}</b>
                 <small>
-                  {p.category} · {p.color_name || "Sem cor"} · SKU: {p.sku || "—"}
+                  {p.category} · {p.color_name || "Sem cor"} · REF: {p.sku ? p.sku.replace(/^MG-/, "") : p.id.slice(0, 8)}
                   <span className={`status-pill ${p.is_visible ? "active" : "inactive"}`}>
                     {p.is_visible ? "Ativo" : "Oculto"}
                   </span>
+                  {p.kit_quantity && (
+                    <span className="status-pill active" style={{ background: "#2b1d14", color: "#fff" }}>
+                      Kit {p.kit_quantity} un
+                    </span>
+                  )}
                 </small>
               </div>
               <strong>{money(p.wholesale_price)}</strong>
@@ -320,7 +464,7 @@ export function AdminClient() {
         )}
       </section>
 
-      {/* Modal Guiado em 4 Etapas */}
+      {/* Modal Guiado em 5 Etapas */}
       {open && (
         <div className="modal-backdrop">
           <form className="product-form wizard-form" onSubmit={save}>
@@ -344,34 +488,41 @@ export function AdminClient() {
                 className={`wizard-step-btn ${wizardStep === 1 ? "active" : ""} ${wizardStep > 1 ? "completed" : ""}`}
                 onClick={() => setWizardStep(1)}
               >
-                <span>1</span> Informações
+                <span>1</span> Geral &amp; Kit
               </button>
               <button
                 type="button"
                 className={`wizard-step-btn ${wizardStep === 2 ? "active" : ""} ${wizardStep > 2 ? "completed" : ""}`}
                 onClick={() => setWizardStep(2)}
               >
-                <span>2</span> Cores
+                <span>2</span> Cores &amp; Estampas
               </button>
               <button
                 type="button"
                 className={`wizard-step-btn ${wizardStep === 3 ? "active" : ""} ${wizardStep > 3 ? "completed" : ""}`}
                 onClick={() => setWizardStep(3)}
               >
-                <span>3</span> Preços
+                <span>3</span> Ficha Técnica
               </button>
               <button
                 type="button"
-                className={`wizard-step-btn ${wizardStep === 4 ? "active" : ""}`}
+                className={`wizard-step-btn ${wizardStep === 4 ? "active" : ""} ${wizardStep > 4 ? "completed" : ""}`}
                 onClick={() => setWizardStep(4)}
               >
-                <span>4</span> Fotos &amp; Publicação
+                <span>4</span> Preços
+              </button>
+              <button
+                type="button"
+                className={`wizard-step-btn ${wizardStep === 5 ? "active" : ""}`}
+                onClick={() => setWizardStep(5)}
+              >
+                <span>5</span> Fotos &amp; Publicação
               </button>
             </nav>
 
             {/* Conteúdo das Etapas */}
             <div className="wizard-body">
-              {/* ETAPA 1: Dados Gerais */}
+              {/* ETAPA 1: Dados Gerais, Kit & Descrição */}
               {wizardStep === 1 && (
                 <div className="wizard-pane">
                   <div className="form-row">
@@ -382,7 +533,7 @@ export function AdminClient() {
                         autoFocus
                         value={form.name}
                         onChange={(e) => change("name", e.target.value)}
-                        placeholder="Ex: Jogo Americano Redondo Xadrez"
+                        placeholder="Ex: Jogo Americano Redondo Xadrez Provence"
                       />
                     </label>
                   </div>
@@ -432,66 +583,269 @@ export function AdminClient() {
                       </div>
                     </label>
                   </div>
-                </div>
-              )}
 
-              {/* ETAPA 2: Cores & Variações */}
-              {wizardStep === 2 && (
-                <div className="wizard-pane">
-                  <div className="form-row">
-                    <label>
-                      Nome da Cor ou Padrão *
-                      <input
-                        value={form.color_name || ""}
-                        onChange={(e) => change("color_name", e.target.value)}
-                        placeholder="Ex: Linho Cru, Terracota, Verde Alecrim"
-                      />
-                    </label>
-                  </div>
-
-                  <div className="form-row">
-                    <label>Seletor Rápido de Cor:</label>
-                    <div className="preset-colors-row">
-                      {PRESET_COLORS.map((pc) => (
-                        <button
-                          type="button"
-                          key={pc.name}
-                          className={`preset-color-dot ${form.color_hex === pc.hex ? "active" : ""}`}
-                          style={{ backgroundColor: pc.hex }}
-                          title={pc.name}
-                          onClick={() => {
-                            change("color_hex", pc.hex);
-                            if (!form.color_name) change("color_name", pc.name);
-                          }}
-                        />
-                      ))}
+                  <div className="form-section-card">
+                    <div className="form-section-header">
+                      <p className="form-section-title">📦 Formato de Venda (Kit ou Unitário)</p>
+                      <p className="form-helper-text">Se for vendido exclusivamente em conjunto</p>
+                    </div>
+                    <div className="form-row">
+                      <label>
+                        Quantidade de Peças por Kit
+                        <select
+                          value={form.kit_quantity ?? ""}
+                          onChange={(e) =>
+                            change("kit_quantity", e.target.value ? Number(e.target.value) : null)
+                          }
+                        >
+                          {KIT_OPTIONS.map((opt) => (
+                            <option key={String(opt.value)} value={opt.value ?? ""}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
                     </div>
                   </div>
 
-                  <div className="form-grid color-custom-grid">
+                  <div className="form-row">
                     <label>
-                      Código Hexadecimal Customizado
-                      <input
-                        value={form.color_hex || ""}
-                        onChange={(e) => change("color_hex", e.target.value)}
-                        placeholder="#C46549"
-                      />
-                    </label>
-                    <label>
-                      Color Picker
-                      <input
-                        type="color"
-                        className="color-picker-input"
-                        value={form.color_hex || "#E8DEC8"}
-                        onChange={(e) => change("color_hex", e.target.value)}
+                      Descrição Comercial do Produto
+                      <textarea
+                        rows={3}
+                        value={form.description || ""}
+                        onChange={(e) => change("description", e.target.value)}
+                        placeholder="Texto comercial elegante com detalhes sobre a composição da mesa posta, acabamento e diferenciais..."
                       />
                     </label>
                   </div>
                 </div>
               )}
 
-              {/* ETAPA 3: Precificação */}
+              {/* ETAPA 2: Cores, Padrões e Variantes Avançadas */}
+              {wizardStep === 2 && (
+                <div className="wizard-pane">
+                  <div className="form-section-card">
+                    <div className="form-section-header">
+                      <p className="form-section-title">🎨 Cor Principal e Preset Rápido</p>
+                      <p className="form-helper-text">Usada na identificação primária da peça</p>
+                    </div>
+
+                    <div className="form-row">
+                      <label>
+                        Nome da Cor Principal *
+                        <input
+                          value={form.color_name || ""}
+                          onChange={(e) => change("color_name", e.target.value)}
+                          placeholder="Ex: Linho Cru, Terracota, Verde Alecrim"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="form-row">
+                      <label>Seletor Rápido de Paleta:</label>
+                      <div className="preset-colors-row">
+                        {PRESET_COLORS.map((pc) => (
+                          <button
+                            type="button"
+                            key={pc.name}
+                            className={`preset-color-dot ${form.color_hex === pc.hex ? "active" : ""}`}
+                            style={{ backgroundColor: pc.hex }}
+                            title={pc.name}
+                            onClick={() => {
+                              change("color_hex", pc.hex);
+                              if (!form.color_name) change("color_name", pc.name);
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="form-grid color-custom-grid">
+                      <label>
+                        Código Hexadecimal
+                        <input
+                          value={form.color_hex || ""}
+                          onChange={(e) => change("color_hex", e.target.value)}
+                          placeholder="#C46549"
+                        />
+                      </label>
+                      <label>
+                        Color Picker
+                        <input
+                          type="color"
+                          className="color-picker-input"
+                          value={form.color_hex || "#E8DEC8"}
+                          onChange={(e) => change("color_hex", e.target.value)}
+                        />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Gerenciador de Variantes (Xadrez, Liso, Cores adicionais) */}
+                  <div className="form-section-card">
+                    <div className="form-section-header">
+                      <p className="form-section-title">✨ Grade de Variações (Xadrez, Liso, Outras Cores)</p>
+                      <button
+                        type="button"
+                        className="btn-add-item"
+                        onClick={addVariationRow}
+                      >
+                        + Adicionar Variação
+                      </button>
+                    </div>
+                    <p className="form-helper-text">
+                      Cadastre diferentes estampas (como Xadrez e Lisa) ou paletas no mesmo produto para escolha do lojista.
+                    </p>
+
+                    {(form.variations && form.variations.length > 0) ? (
+                      <div className="dynamic-list">
+                        {form.variations.map((v, idx) => (
+                          <div className="dynamic-row-variant" key={idx}>
+                            <input
+                              placeholder="Nome da variante (ex: Xadrez Azul)"
+                              value={v.name}
+                              onChange={(e) => updateVariationRow(idx, "name", e.target.value)}
+                            />
+                            <select
+                              value={v.pattern}
+                              onChange={(e) =>
+                                updateVariationRow(idx, "pattern", e.target.value as "xadrez" | "liso")
+                              }
+                            >
+                              <option value="liso">Estampa: Lisa</option>
+                              <option value="xadrez">Estampa: Xadrez</option>
+                            </select>
+                            <input
+                              type="color"
+                              title="Cor da variação"
+                              className="color-picker-input"
+                              style={{ width: "100%", height: "2.75rem" }}
+                              value={v.hex || "#E8DEC8"}
+                              onChange={(e) => updateVariationRow(idx, "hex", e.target.value)}
+                            />
+                            <input
+                              placeholder="SKU variante (opc)"
+                              value={v.sku || ""}
+                              onChange={(e) => updateVariationRow(idx, "sku", e.target.value)}
+                            />
+                            <button
+                              type="button"
+                              className="btn-remove-row"
+                              onClick={() => removeVariationRow(idx)}
+                              title="Remover variação"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="form-helper-text" style={{ fontStyle: "italic" }}>
+                        Nenhuma variação extra cadastrada. O produto usará apenas a cor principal.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* ETAPA 3: Ficha Técnica (Materiais & Medidas) */}
               {wizardStep === 3 && (
+                <div className="wizard-pane">
+                  {/* Materiais e Tecidos */}
+                  <div className="form-section-card">
+                    <div className="form-section-header">
+                      <p className="form-section-title">🧵 Materiais e Composição por Componente</p>
+                      <button
+                        type="button"
+                        className="btn-add-item"
+                        onClick={addMaterialRow}
+                      >
+                        + Adicionar Material
+                      </button>
+                    </div>
+
+                    {(form.materials && form.materials.length > 0) ? (
+                      <div className="dynamic-list">
+                        {form.materials.map((m, idx) => (
+                          <div className="dynamic-row" key={idx}>
+                            <input
+                              placeholder="Componente (ex: Tecido principal, Argola)"
+                              value={m.label}
+                              onChange={(e) => updateMaterialRow(idx, "label", e.target.value)}
+                            />
+                            <input
+                              placeholder="Composição (ex: Sarja 100% Algodão, Madeira Natural)"
+                              value={m.value}
+                              onChange={(e) => updateMaterialRow(idx, "value", e.target.value)}
+                            />
+                            <button
+                              type="button"
+                              className="btn-remove-row"
+                              onClick={() => removeMaterialRow(idx)}
+                              title="Remover linha"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="form-helper-text" style={{ fontStyle: "italic" }}>
+                        Nenhum material adicionado. Clique no botão acima para incluir detalhes de tecido.
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Medidas e Dimensões */}
+                  <div className="form-section-card">
+                    <div className="form-section-header">
+                      <p className="form-section-title">📏 Medidas e Dimensões por Peça</p>
+                      <button
+                        type="button"
+                        className="btn-add-item"
+                        onClick={addDimensionRow}
+                      >
+                        + Adicionar Medida
+                      </button>
+                    </div>
+
+                    {(form.dimensions && form.dimensions.length > 0) ? (
+                      <div className="dynamic-list">
+                        {form.dimensions.map((d, idx) => (
+                          <div className="dynamic-row" key={idx}>
+                            <input
+                              placeholder="Dimensão (ex: Diâmetro, Medida da peça)"
+                              value={d.label}
+                              onChange={(e) => updateDimensionRow(idx, "label", e.target.value)}
+                            />
+                            <input
+                              placeholder="Valor (ex: 38 cm, 45 cm x 45 cm)"
+                              value={d.value}
+                              onChange={(e) => updateDimensionRow(idx, "value", e.target.value)}
+                            />
+                            <button
+                              type="button"
+                              className="btn-remove-row"
+                              onClick={() => removeDimensionRow(idx)}
+                              title="Remover linha"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="form-helper-text" style={{ fontStyle: "italic" }}>
+                        Nenhuma medida adicionada. Clique no botão acima para especificar diâmetro ou tamanho.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* ETAPA 4: Precificação */}
+              {wizardStep === 4 && (
                 <div className="wizard-pane">
                   <div className="form-grid">
                     <label>
@@ -526,23 +880,49 @@ export function AdminClient() {
                     <div className="margin-feedback-card">
                       <span className="margin-pill">{discountPercent}% de Margem</span>
                       <p>
-                        O revendedor compra por <strong>{money(form.wholesale_price)}</strong> e pode revender por <strong>{money(form.retail_price)}</strong>.
+                        O revendedor adquire por <strong>{money(form.wholesale_price)}</strong> e pode revender por <strong>{money(form.retail_price)}</strong>.
                       </p>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* ETAPA 4: Fotos e Publicação */}
-              {wizardStep === 4 && (
+              {/* ETAPA 5: Fotos, Reordenação (Drag & Drop) e Publicação */}
+              {wizardStep === 5 && (
                 <div className="wizard-pane">
+                  {/* Banner de Troca Rápida de Fotos */}
+                  <div className="photo-swap-banner">
+                    <button
+                      type="button"
+                      className="btn-swap-photos"
+                      onClick={swapPhotos}
+                      title="Inverter ordem das fotos (Capa ↔ Editorial)"
+                    >
+                      ⇄ Inverter Ordem (Capa ↔ Editorial)
+                    </button>
+                  </div>
+
                   <div className="photo-upload-grid">
                     {/* Foto Principal / Capa */}
-                    <div className="photo-card-dropzone">
-                      <p className="photo-title">Foto de Capa (Estúdio / Fundo Limpo)</p>
+                    <div
+                      className={`photo-card-dropzone ${dragOverTarget === "cover" ? "drag-active" : ""}`}
+                      onDragOver={(e) => handleDragOver(e, "cover")}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, "cover")}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span className="photo-badge-order">1ª Foto · Capa</span>
+                        <p className="photo-title">Estúdio / Fundo Limpo</p>
+                      </div>
+
                       {form.image_url ? (
-                        <div className="photo-preview-wrap">
+                        <div
+                          className="photo-preview-wrap"
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, "cover")}
+                        >
                           <img src={form.image_url} alt="Capa" />
+                          <span className="photo-drag-hint">Arraste para a direita para trocar com a editorial</span>
                           <div className="photo-actions">
                             <label className="photo-replace-btn">
                               Trocar foto
@@ -576,11 +956,25 @@ export function AdminClient() {
                     </div>
 
                     {/* Foto Editorial / Ambiente */}
-                    <div className="photo-card-dropzone">
-                      <p className="photo-title">Foto Editorial (Mesa Posta / Hover)</p>
+                    <div
+                      className={`photo-card-dropzone ${dragOverTarget === "editorial" ? "drag-active" : ""}`}
+                      onDragOver={(e) => handleDragOver(e, "editorial")}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, "editorial")}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span className="photo-badge-order" style={{ background: "#746b61" }}>2ª Foto · Editorial</span>
+                        <p className="photo-title">Mesa Posta / Hover</p>
+                      </div>
+
                       {form.editorial_image_url ? (
-                        <div className="photo-preview-wrap">
+                        <div
+                          className="photo-preview-wrap"
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, "editorial")}
+                        >
                           <img src={form.editorial_image_url} alt="Editorial" />
+                          <span className="photo-drag-hint">Arraste para a esquerda para tornar esta a capa</span>
                           <div className="photo-actions">
                             <label className="photo-replace-btn">
                               Trocar foto
@@ -626,7 +1020,7 @@ export function AdminClient() {
                     </label>
 
                     <label className="order-input-label">
-                      Posição de Destaque (Ordem):
+                      Posição de Destaque:
                       <input
                         type="number"
                         value={form.sort_order}
@@ -659,7 +1053,7 @@ export function AdminClient() {
                   </button>
                 )}
 
-                {wizardStep < 4 ? (
+                {wizardStep < 5 ? (
                   <button
                     type="button"
                     className="btn-next"

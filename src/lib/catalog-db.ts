@@ -363,12 +363,16 @@ export function dbRecordToUIProduct(record: any): Product {
     return u.replace(/^https?:\/\/catalogo\.mesaegraca\.com\.br/, "");
   };
 
-  // Variantes
-  const variants = (record.variants || []).map((v: any) => {
+  // Variantes (tabela relacional ou objeto jsonb)
+  const rawVariantsList = (record.variants && record.variants.length > 0)
+    ? record.variants
+    : (record.technical_specifications?.variations || []);
+  const variants = rawVariantsList.map((v: any) => {
     const name = v.name || v.attributes?.Cor || v.attributes?.color_name || "Padrão";
     const patternRaw = v.pattern || v.attributes?.Estampa || v.attributes?.pattern || "liso";
     const pattern = String(patternRaw).toLowerCase() === "xadrez" ? "xadrez" : "liso";
     const hex =
+      v.hex ||
       v.color_hex ||
       v.attributes?.hex ||
       v.attributes?.color_hex ||
