@@ -20,20 +20,57 @@ export async function generateMetadata({
     };
   }
 
+  const coverImage = product.image_url
+    ? (product.image_url.startsWith("http")
+        ? product.image_url
+        : `https://catalogo.mesaegraca.com.br${product.image_url}`)
+    : "https://catalogo.mesaegraca.com.br/banner-catalogo.jpg";
+
+  const priceText = product.wholesale_price
+    ? `R$ ${product.wholesale_price.toFixed(2).replace(".", ",")}`
+    : "";
+
+  const title = `${product.name} ${priceText ? `(Atacado: ${priceText})` : ""} | Mesa & Graça`;
+  const desc =
+    product.description ||
+    `Confira ${product.name} no catálogo atacado Mesa & Graça com condições exclusivas para lojistas.`;
+
   return {
-    title: `${product.name} | Catálogo Atacado Mesa & Graça`,
-    description:
-      product.description ??
-      `Confira ${product.name} no catálogo atacado Mesa & Graça.`,
+    title,
+    description: desc,
     alternates: {
       canonical: `/catalogo/${product.id}`,
       types: {
         "application/json": `/api/catalogo/${product.id}`,
       },
     },
+    openGraph: {
+      title,
+      description: desc,
+      url: `https://catalogo.mesaegraca.com.br/catalogo/${product.id}`,
+      siteName: "Mesa & Graça — Catálogo Atacado",
+      locale: "pt_BR",
+      type: "website",
+      images: [
+        {
+          url: coverImage,
+          width: 1200,
+          height: 1200,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: desc,
+      images: [coverImage],
+    },
     other: {
       "product:id": product.id,
       "product:sku": product.sku ?? "",
+      "product:price:amount": product.wholesale_price ? String(product.wholesale_price) : "",
+      "product:price:currency": "BRL",
       "product:tray_id": product.tray_id ? String(product.tray_id) : "",
       "product:category": product.category,
       "product:collection": product.collection ?? "",

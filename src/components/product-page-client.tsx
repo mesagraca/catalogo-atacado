@@ -18,6 +18,7 @@ import {
   PlusIcon,
   WhatsAppIcon,
 } from "./ui-icons";
+import { useWholesaleCart } from "@/context/wholesale-cart-context";
 
 const money = (value: number | null) =>
   value == null
@@ -36,6 +37,7 @@ export function ProductPageClient({
   initialProduct?: Product | null;
   initialCatalog?: Product[];
 }) {
+  const { addItem } = useWholesaleCart();
   const [product, setProduct] = useState<Product | null>(
     initialProduct ?? FEATURED_PRODUCTS.find((item) => item.id === id) ?? null,
   );
@@ -261,17 +263,26 @@ export function ProductPageClient({
               </button>
             </div>
           </div>
-          <a
-            className="product-page-action"
-            target="_blank"
-            rel="noreferrer"
-            href={href}
-          >
-            <WhatsAppIcon /> Solicitar pelo WhatsApp
-          </a>
+          <div className="product-page-cta-group">
+            <button
+              type="button"
+              className="product-page-add-cart-btn"
+              onClick={() => addItem(product, variation, quantity)}
+            >
+              + Adicionar ao Pedido ({quantity} {quantity === 1 ? "unidade" : "unidades"})
+            </button>
+            <a
+              className="product-page-action"
+              target="_blank"
+              rel="noreferrer"
+              href={href}
+              title="Pedir apenas este item agora no WhatsApp"
+            >
+              <WhatsAppIcon /> Pedir avulso no WhatsApp
+            </a>
+          </div>
           <p className="product-page-note">
-            Pedido sem checkout. Nossa equipe confirma disponibilidade, mínimo e
-            prazo.
+            Monte seu pedido de atacado com múltiplas peças ou chame direto para um item avulso.
           </p>
         </section>
       </article>

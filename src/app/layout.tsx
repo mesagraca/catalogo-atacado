@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Allura, Outfit } from "next/font/google";
 import "./globals.css";
+import "./cart.css";
 
 const allura = Allura({
   weight: "400",
@@ -24,13 +25,15 @@ export const metadata: Metadata = {
   },
 };
 
+import { Providers } from "@/components/providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
       <body className={`${allura.variable} ${outfit.variable}`}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

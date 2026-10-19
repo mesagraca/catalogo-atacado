@@ -34,6 +34,8 @@ function Swatch({
   );
 }
 
+import { useWholesaleCart } from "@/context/wholesale-cart-context";
+
 export function ProductCard({
   product,
   print = false,
@@ -41,6 +43,7 @@ export function ProductCard({
   product: Product;
   print?: boolean;
 }) {
+  const { addItem } = useWholesaleCart();
   const [selected, setSelected] = useState<Variation | undefined>(
     product.variations?.[0],
   );
@@ -169,13 +172,24 @@ export function ProductCard({
               <Link className="product-cta" href={productUrl}>
                 Ver produto <ArrowUpRightIcon />
               </Link>
+              <button
+                type="button"
+                className="product-add-cart-btn"
+                onClick={() => addItem(product, selected, 1)}
+                title="Adicionar à sacola de pedido de atacado"
+                aria-label={`Adicionar ${product.name} ao pedido`}
+              >
+                + Pedido
+              </button>
               <a
                 className="product-whatsapp"
                 href={whatsappHref}
                 target="_blank"
                 rel="noreferrer"
+                title="Pedir direto no WhatsApp"
+                aria-label={`Pedir ${product.name} no WhatsApp`}
               >
-                <WhatsAppIcon /> Chamar no WhatsApp
+                <WhatsAppIcon />
               </a>
             </div>
           )}
