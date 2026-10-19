@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 import { useWholesaleCart } from "@/context/wholesale-cart-context";
 import { BagIcon } from "./ui-icons";
 
@@ -11,7 +12,17 @@ const money = (v: number) =>
   }).format(v);
 
 export function WholesaleCartFloatButton() {
+  const pathname = usePathname();
   const { totalPieces, totalValue, openDrawer, isDrawerOpen } = useWholesaleCart();
+
+  // Ocultar em telas administrativas e de impressão
+  if (
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/catalogo/imprimir") ||
+    pathname?.startsWith("/varejo")
+  ) {
+    return null;
+  }
 
   if (totalPieces === 0 || isDrawerOpen) return null;
 

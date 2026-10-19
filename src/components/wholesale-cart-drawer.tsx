@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useWholesaleCart } from "@/context/wholesale-cart-context";
 import { MinusIcon, PlusIcon, TrashIcon, WhatsAppIcon } from "./ui-icons";
 
@@ -12,6 +13,7 @@ const money = (v: number) =>
   }).format(v);
 
 export function WholesaleCartDrawer() {
+  const pathname = usePathname();
   const {
     items,
     isDrawerOpen,
@@ -24,7 +26,14 @@ export function WholesaleCartDrawer() {
     checkoutWhatsApp,
   } = useWholesaleCart();
 
-  if (!isDrawerOpen) return null;
+  if (
+    !isDrawerOpen ||
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/catalogo/imprimir") ||
+    pathname?.startsWith("/varejo")
+  ) {
+    return null;
+  }
 
   return (
     <div className="cart-backdrop" onClick={closeDrawer} role="dialog" aria-modal="true" aria-label="Sacola de Pedido de Atacado">

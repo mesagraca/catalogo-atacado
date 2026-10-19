@@ -81,13 +81,22 @@ export function ProductCard({
             className="product-image-main"
             src={product.image_url}
             alt={product.name}
-            loading="lazy"
-            decoding="async"
+            loading={print ? "eager" : "lazy"}
+            decoding={print ? "sync" : "async"}
           />
         ) : (
           <div className="image-placeholder">Imagem em atualização</div>
         )}
-        {editorialImage && <img className="product-image-editorial" src={editorialImage} alt={`Produto ${product.name} em uso`} loading="lazy" decoding="async" onError={() => setEditorialImage(null)} />}
+        {editorialImage && (
+          <img
+            className="product-image-editorial"
+            src={editorialImage}
+            alt={`Produto ${product.name} em uso`}
+            loading={print ? "eager" : "lazy"}
+            decoding={print ? "sync" : "async"}
+            onError={() => setEditorialImage(null)}
+          />
+        )}
         <span>Ver produto</span>
       </Link>
       <div className="product-info">
