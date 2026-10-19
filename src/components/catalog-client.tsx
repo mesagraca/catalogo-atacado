@@ -183,6 +183,15 @@ export function CatalogClient({
               (b.wholesale_price ?? b.retail_price ?? -Infinity) -
               (a.wholesale_price ?? a.retail_price ?? -Infinity)
             );
+          // Mais recentes: prioriza produtos mais novos cadastrados
+          if (b.created_at && a.created_at) {
+            const timeDiff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+            if (timeDiff !== 0) return timeDiff;
+          } else if (b.created_at) {
+            return 1;
+          } else if (a.created_at) {
+            return -1;
+          }
           return a.sort_order - b.sort_order;
         }),
     [products, filter, collection, color, priceRange, search, sort],
@@ -272,7 +281,8 @@ export function CatalogClient({
       </header>
       <main className="catalog-shell">
       <CollectionHeader
-        title={filter === "Todos" ? "Catálogo de atacado" : filter}
+        category={filter}
+        collection={collection}
         imageUrl={heroImage}
       />
       <ProductToolbar

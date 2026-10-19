@@ -38,7 +38,7 @@ function FilterFields(props: Props) {
   </div>;
 }
 
-const sortLabels: Record<SortOrder, string> = { featured: "Ordem do catálogo", name: "Nome: A a Z", "price-low": "Menor preço", "price-high": "Maior preço" };
+const sortLabels: Record<SortOrder, string> = { featured: "Mais recentes", name: "Nome: A a Z", "price-low": "Menor preço", "price-high": "Maior preço" };
 
 function SortMenu({ sort, onSort }: Pick<Props, "sort" | "onSort">) {
   return <details className="sort-menu"><summary><span>Ordenar</span><strong>{sortLabels[sort]}</strong><svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m4 6 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" /></svg></summary><div className="sort-options">{(Object.keys(sortLabels) as SortOrder[]).map(option => <button key={option} className={sort === option ? "active" : ""} onClick={event => { onSort(option); (event.currentTarget.closest("details") as HTMLDetailsElement).removeAttribute("open"); }}>{sortLabels[option]}{sort === option && <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 8 3 3 7-7" strokeLinecap="round" strokeLinejoin="round" /></svg>}</button>)}</div></details>

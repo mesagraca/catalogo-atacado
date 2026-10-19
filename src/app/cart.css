@@ -626,6 +626,80 @@
   fill: #fff !important;
 }
 
+/* ==========================================================================
+   Modo Lista — Isolamento estrito de imagem e largura das colunas
+   ========================================================================== */
+.commerce-grid.list-view .product-card,
+.list-view .product-card {
+  display: grid !important;
+  grid-template-columns: 13.5rem minmax(0, 1fr) !important;
+  min-height: 12rem !important;
+  overflow: hidden !important;
+  align-items: stretch !important;
+}
+
+.commerce-grid.list-view .product-image,
+.list-view .product-image {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 13.5rem !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  aspect-ratio: auto !important;
+  border-radius: 17px 0 0 17px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+.commerce-grid.list-view .product-image img,
+.commerce-grid.list-view .product-image-main,
+.commerce-grid.list-view .product-image-editorial,
+.list-view .product-image img,
+.list-view .product-image-main,
+.list-view .product-image-editorial {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  object-fit: cover !important;
+}
+
+.commerce-grid.list-view .product-info,
+.list-view .product-info {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto 1fr auto !important;
+  padding: 1.15rem 1.35rem !important;
+  gap: 0 1.5rem !important;
+}
+
+@media (max-width: 700px) {
+  .commerce-grid.list-view .product-card,
+  .list-view .product-card {
+    grid-template-columns: 8.5rem minmax(0, 1fr) !important;
+  }
+  .commerce-grid.list-view .product-image,
+  .list-view .product-image {
+    max-width: 8.5rem !important;
+  }
+}
+
+/* ==========================================================================
+   Barra lateral: manter largura de 12.2rem consistente mesmo fechada
+   ========================================================================== */
+.product-sidebar,
+.product-sidebar.closed,
+.product-sidebar.open {
+  width: 12.2rem !important;
+}
+
+.product-sidebar .sidebar-toggle {
+  width: 100% !important;
+}
+
 /* Página do produto (Dual CTAs) */
 .product-page-cta-group {
   display: flex;

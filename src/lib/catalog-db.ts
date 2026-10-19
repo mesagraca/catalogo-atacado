@@ -422,6 +422,7 @@ export function dbRecordToUIProduct(record: any): Product {
     kit_quantity: record.technical_specifications?.kit_quantity ?? null,
     game_items: gameItems.length > 0 ? gameItems : undefined,
     variations: variants.length > 0 ? variants : undefined,
+    created_at: record.created_at || undefined,
   };
 }
 
