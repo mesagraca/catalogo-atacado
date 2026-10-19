@@ -518,36 +518,112 @@
    Botões Integrados nos Cards e Página do Produto
    ========================================================================== */
 
-/* Botão no card do catálogo */
+/* Botão no card do catálogo: 3 botões em linhas individuais empilhadas com equilíbrio visual */
 .product-card .card-actions {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  display: flex !important;
+  flex-direction: column !important;
   gap: 0.45rem !important;
+  width: 100% !important;
+  margin-top: 0.65rem !important;
+}
+
+/* 1. Botão Ver Produto */
+.product-card .card-actions .product-cta {
+  display: flex !important;
   align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+  width: 100% !important;
+  min-height: 2.45rem !important;
+  padding: 0 0.85rem !important;
+  border-radius: 8px !important;
+  background: var(--ink, #251b14) !important;
+  color: #fffdfa !important;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 12px rgba(37, 27, 20, 0.12) !important;
 }
 
-.product-add-cart-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.5rem;
-  padding: 0 0.75rem;
-  border: 1px solid var(--clay, #b25a3d);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--clay, #b25a3d);
-  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s ease;
+.product-card .card-actions .product-cta:hover {
+  background: var(--clay, #b25a3d) !important;
+  transform: translateY(-1px);
 }
 
-.product-add-cart-btn:hover {
-  background: var(--clay, #b25a3d);
-  color: #fff;
+/* 2. Botão Adicionar ao Pedido */
+.product-card .card-actions .product-add-cart-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+  width: 100% !important;
+  min-height: 2.35rem !important;
+  padding: 0 0.85rem !important;
+  border: 1px solid rgba(178, 90, 61, 0.35) !important;
+  border-radius: 8px !important;
+  background: #fdfaf6 !important;
+  color: var(--clay, #b25a3d) !important;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.product-card .card-actions .product-add-cart-btn svg {
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  stroke: var(--clay, #b25a3d) !important;
+}
+
+.product-card .card-actions .product-add-cart-btn:hover {
+  background: var(--clay, #b25a3d) !important;
+  color: #fff !important;
+  border-color: var(--clay, #b25a3d) !important;
+}
+
+.product-card .card-actions .product-add-cart-btn:hover svg {
+  stroke: #fff !important;
+}
+
+/* 3. Botão WhatsApp */
+.product-card .card-actions .product-whatsapp {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+  width: 100% !important;
+  min-height: 2.35rem !important;
+  padding: 0 0.85rem !important;
+  border: 1px solid #cbe4d4 !important;
+  border-radius: 8px !important;
+  background: #f4faf6 !important;
+  color: #1e7e49 !important;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.product-card .card-actions .product-whatsapp svg {
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  fill: #1e7e49 !important;
+}
+
+.product-card .card-actions .product-whatsapp:hover {
+  background: #1e7e49 !important;
+  color: #fff !important;
+  border-color: #1e7e49 !important;
+}
+
+.product-card .card-actions .product-whatsapp:hover svg {
+  fill: #fff !important;
 }
 
 /* Página do produto (Dual CTAs) */

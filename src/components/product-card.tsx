@@ -3,9 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Product, Variation } from "@/types/catalog";
-import { ArrowUpRightIcon } from "./ui-icons";
+import { ArrowUpRightIcon, BagIcon, WhatsAppIcon } from "./ui-icons";
 import { whatsappUrl } from "@/lib/whatsapp";
-import { WhatsAppIcon } from "./ui-icons";
 
 const money = (value: number | null) =>
   value == null
@@ -179,7 +178,7 @@ export function ProductCard({
                 title="Adicionar à sacola de pedido de atacado"
                 aria-label={`Adicionar ${product.name} ao pedido`}
               >
-                + Pedido
+                <BagIcon /> + Adicionar ao pedido
               </button>
               <a
                 className="product-whatsapp"
@@ -189,7 +188,7 @@ export function ProductCard({
                 title="Pedir direto no WhatsApp"
                 aria-label={`Pedir ${product.name} no WhatsApp`}
               >
-                <WhatsAppIcon />
+                <WhatsAppIcon /> Pedir avulso no WhatsApp
               </a>
             </div>
           )}
