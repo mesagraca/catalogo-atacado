@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type DragEvent } from "react";
 import Link from "next/link";
-import { CATEGORIES, type Product, type ProductInput, type Variation, type MaterialDetail } from "@/types/catalog";
+import { CATEGORIES, type Category, type Product, type ProductInput, type Variation, type MaterialDetail, type GameItem } from "@/types/catalog";
 import { isSupabaseReady, supabase } from "@/lib/supabase";
 
 const PRESET_COLORS = [
@@ -31,6 +31,7 @@ const blank = (): ProductInput => ({
   name: "",
   category: "Lugar Americano",
   sku: "",
+  tray_id: null,
   collection: "",
   color_name: "",
   color_hex: "#E8DEC8",
@@ -43,6 +44,7 @@ const blank = (): ProductInput => ({
   dimensions: [],
   kit_quantity: null,
   variations: [],
+  game_items: [],
   image_status: "final",
   sort_order: 0,
   is_visible: true,
@@ -80,6 +82,7 @@ export function AdminClient() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
   const [wizardStep, setWizardStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [pricingMode, setPricingMode] = useState<"standard" | "game_items">("standard");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [draggedTarget, setDraggedTarget] = useState<"cover" | "editorial" | null>(null);
@@ -236,6 +239,75 @@ export function AdminClient() {
     }));
   };
 
+  // Atalhos rápidos para Materiais e Medidas
+  const quickAddMaterial = (label: string) => {
+    setForm((old) => ({
+      ...old,
+      materials: [...(old.materials || []), { label, value: "" }],
+    }));
+  };
+
+  const quickAddDimension = (label: string) => {
+    setForm((old) => ({
+      ...old,
+      dimensions: [...(old.dimensions || []), { label, value: "" }],
+    }));
+  };
+
+  // Gerenciamento dinâmico de Itens de Jogo Completo (preços por peça)
+  const addGameItem = (label = "", wholesale_price: number | null = null, retail_price: number | null = null) => {
+    setForm((old) => ({
+      ...old,
+      game_items: [...(old.game_items || []), { label, wholesale_price, retail_price }],
+    }));
+  };
+
+  const updateGameItem = (index: number, field: keyof GameItem, val: any) => {
+    setForm((old) => {
+      const copy = [...(old.game_items || [])];
+      copy[index] = { ...copy[index], [field]: val };
+      return { ...old, game_items: copy };
+    });
+  };
+
+  const removeGameItem = (index: number) => {
+    setForm((old) => ({
+      ...old,
+      game_items: (old.game_items || []).filter((_, i) => i !== index),
+    }));
+  };
+
+  const populateStandardGameItems = () => {
+    setForm((old) => {
+      const existing = old.game_items || [];
+      const standardLabels = ["Lugar americano", "Guardanapo", "Porta-guardanapo"];
+      const newItems = [...existing];
+      standardLabels.forEach((lbl) => {
+        if (!newItems.some((item) => item.label.toLowerCase() === lbl.toLowerCase())) {
+          newItems.push({ label: lbl, wholesale_price: null, retail_price: null });
+        }
+      });
+      return { ...old, game_items: newItems };
+    });
+  };
+
+  const syncGlobalPriceFromGameItems = () => {
+    if (!form.game_items || form.game_items.length === 0) return;
+    const totalWholesale = form.game_items.reduce(
+      (acc, item) => acc + (item.wholesale_price ? Number(item.wholesale_price) : 0),
+      0,
+    );
+    const totalRetail = form.game_items.reduce(
+      (acc, item) => acc + (item.retail_price ? Number(item.retail_price) : 0),
+      0,
+    );
+    setForm((old) => ({
+      ...old,
+      wholesale_price: totalWholesale > 0 ? Number(totalWholesale.toFixed(2)) : old.wholesale_price,
+      retail_price: totalRetail > 0 ? Number(totalRetail.toFixed(2)) : old.retail_price,
+    }));
+  };
+
   async function upload(
     e: ChangeEvent<HTMLInputElement>,
     field: "image_url" | "editorial_image_url",
@@ -281,15 +353,20 @@ export function AdminClient() {
   function start(product?: Product) {
     setEditing(product || null);
     if (product) {
+      const hasGame = Boolean(product.game_items && product.game_items.length > 0);
+      setPricingMode(hasGame || product.category === "Jogos" ? "game_items" : "standard");
       setForm({
         ...product,
+        tray_id: product.tray_id ?? null,
         description: product.description || "",
         materials: product.materials ? [...product.materials] : [],
         dimensions: product.dimensions ? [...product.dimensions] : [],
         kit_quantity: product.kit_quantity ?? null,
         variations: product.variations ? [...product.variations] : [],
+        game_items: product.game_items ? product.game_items.map((g) => ({ ...g })) : [],
       });
     } else {
+      setPricingMode("standard");
       setForm(blank());
     }
     setWizardStep(1);
@@ -306,6 +383,7 @@ export function AdminClient() {
       const payload = {
         ...form,
         sku: form.sku || null,
+        tray_id: form.tray_id ? Number(form.tray_id) : null,
         collection: form.collection || null,
         color_name: form.color_name || null,
         color_hex: form.color_hex || null,
@@ -313,6 +391,10 @@ export function AdminClient() {
         materials: (form.materials || []).filter((m) => m.label.trim() || m.value.trim()),
         dimensions: (form.dimensions || []).filter((d) => d.label.trim() || d.value.trim()),
         variations: (form.variations || []).filter((v) => v.name.trim()),
+        game_items:
+          pricingMode === "game_items"
+            ? (form.game_items || []).filter((g) => g.label.trim())
+            : [],
         ...(editing ? { id: editing.id } : {}),
       };
 
@@ -445,9 +527,24 @@ export function AdminClient() {
                       Kit {p.kit_quantity} un
                     </span>
                   )}
+                  {p.game_items && p.game_items.length > 0 && (
+                    <span className="status-pill active" style={{ background: "#734e34", color: "#fff" }}>
+                      Jogo ({p.game_items.length} itens)
+                    </span>
+                  )}
                 </small>
               </div>
-              <strong>{money(p.wholesale_price)}</strong>
+              <strong>
+                {p.wholesale_price != null ? (
+                  money(p.wholesale_price)
+                ) : p.game_items && p.game_items.length > 0 ? (
+                  <span className="price-game-summary" title="Preço total dos itens do jogo">
+                    {money(p.game_items.reduce((acc, i) => acc + (i.wholesale_price || 0), 0))}
+                  </span>
+                ) : (
+                  "—"
+                )}
+              </strong>
               <div className="item-actions">
                 <button type="button" onClick={() => start(p)}>Editar</button>
                 <button type="button" onClick={() => toggle(p)}>
@@ -546,7 +643,15 @@ export function AdminClient() {
                           type="button"
                           key={c}
                           className={`category-pill-opt ${form.category === c ? "selected" : ""}`}
-                          onClick={() => change("category", c)}
+                          onClick={() => {
+                            change("category", c);
+                            if (c === "Jogos") {
+                              setPricingMode("game_items");
+                              if (!form.game_items || form.game_items.length === 0) {
+                                populateStandardGameItems();
+                              }
+                            }
+                          }}
                         >
                           {c}
                         </button>
@@ -581,6 +686,18 @@ export function AdminClient() {
                           Gerar
                         </button>
                       </div>
+                    </label>
+
+                    <label>
+                      ID Tray E-commerce (Opcional)
+                      <input
+                        type="number"
+                        value={form.tray_id ?? ""}
+                        onChange={(e) =>
+                          change("tray_id", e.target.value ? Number(e.target.value) : null)
+                        }
+                        placeholder="Ex: 250"
+                      />
                     </label>
                   </div>
 
@@ -755,13 +872,21 @@ export function AdminClient() {
                   {/* Materiais e Tecidos */}
                   <div className="form-section-card">
                     <div className="form-section-header">
-                      <p className="form-section-title">🧵 Materiais e Composição por Componente</p>
+                      <div>
+                        <p className="form-section-title">🧵 Materiais e Composição por Componente</p>
+                        <div className="quick-chip-row">
+                          <span className="quick-chip-label">Atalhos rápidos:</span>
+                          <button type="button" className="quick-chip-btn" onClick={() => quickAddMaterial("Lugar americano")}>+ Lugar americano</button>
+                          <button type="button" className="quick-chip-btn" onClick={() => quickAddMaterial("Guardanapo")}>+ Guardanapo</button>
+                          <button type="button" className="quick-chip-btn" onClick={() => quickAddMaterial("Porta-guardanapo")}>+ Porta-guardanapo</button>
+                        </div>
+                      </div>
                       <button
                         type="button"
                         className="btn-add-item"
                         onClick={addMaterialRow}
                       >
-                        + Adicionar Material
+                        + Adicionar Linha
                       </button>
                     </div>
 
@@ -792,7 +917,7 @@ export function AdminClient() {
                       </div>
                     ) : (
                       <p className="form-helper-text" style={{ fontStyle: "italic" }}>
-                        Nenhum material adicionado. Clique no botão acima para incluir detalhes de tecido.
+                        Nenhum material adicionado. Use os atalhos acima para preencher rapidamente.
                       </p>
                     )}
                   </div>
@@ -800,13 +925,21 @@ export function AdminClient() {
                   {/* Medidas e Dimensões */}
                   <div className="form-section-card">
                     <div className="form-section-header">
-                      <p className="form-section-title">📏 Medidas e Dimensões por Peça</p>
+                      <div>
+                        <p className="form-section-title">📏 Medidas e Dimensões por Peça</p>
+                        <div className="quick-chip-row">
+                          <span className="quick-chip-label">Atalhos rápidos:</span>
+                          <button type="button" className="quick-chip-btn" onClick={() => quickAddDimension("Lugar americano")}>+ Lugar americano</button>
+                          <button type="button" className="quick-chip-btn" onClick={() => quickAddDimension("Guardanapo")}>+ Guardanapo</button>
+                          <button type="button" className="quick-chip-btn" onClick={() => quickAddDimension("Porta-guardanapo")}>+ Porta-guardanapo</button>
+                        </div>
+                      </div>
                       <button
                         type="button"
                         className="btn-add-item"
                         onClick={addDimensionRow}
                       >
-                        + Adicionar Medida
+                        + Adicionar Linha
                       </button>
                     </div>
 
@@ -847,41 +980,244 @@ export function AdminClient() {
               {/* ETAPA 4: Precificação */}
               {wizardStep === 4 && (
                 <div className="wizard-pane">
-                  <div className="form-grid">
-                    <label>
-                      Preço Atacado (Lojista) *
-                      <input
-                        required
-                        type="number"
-                        step="0.01"
-                        value={form.wholesale_price ?? ""}
-                        onChange={(e) =>
-                          change("wholesale_price", e.target.value ? Number(e.target.value) : null)
-                        }
-                        placeholder="0,00"
-                      />
-                    </label>
-
-                    <label>
-                      Preço Sugerido de Varejo
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={form.retail_price ?? ""}
-                        onChange={(e) =>
-                          change("retail_price", e.target.value ? Number(e.target.value) : null)
-                        }
-                        placeholder="0,00"
-                      />
-                    </label>
+                  {/* Seletor de Modalidade de Preço */}
+                  <div className="form-section-card">
+                    <div className="form-section-header">
+                      <div>
+                        <p className="form-section-title">💰 Formato de Precificação</p>
+                        <p className="form-helper-text">Escolha como este produto é cobrado do lojista</p>
+                      </div>
+                    </div>
+                    <div className="pricing-mode-pills">
+                      <button
+                        type="button"
+                        className={`pricing-mode-pill ${pricingMode === "standard" ? "active" : ""}`}
+                        onClick={() => setPricingMode("standard")}
+                      >
+                        🏷️ Preço Único / Global (Peça ou Kit)
+                      </button>
+                      <button
+                        type="button"
+                        className={`pricing-mode-pill ${pricingMode === "game_items" ? "active" : ""}`}
+                        onClick={() => {
+                          setPricingMode("game_items");
+                          if (!form.game_items || form.game_items.length === 0) {
+                            populateStandardGameItems();
+                          }
+                        }}
+                      >
+                        🍽️ Preços por Item (Jogo Completo de Mesa)
+                      </button>
+                    </div>
                   </div>
 
-                  {discountPercent != null && (
-                    <div className="margin-feedback-card">
-                      <span className="margin-pill">{discountPercent}% de Margem</span>
-                      <p>
-                        O revendedor adquire por <strong>{money(form.wholesale_price)}</strong> e pode revender por <strong>{money(form.retail_price)}</strong>.
-                      </p>
+                  {pricingMode === "game_items" ? (
+                    <div className="form-section-card">
+                      <div className="form-section-header">
+                        <div>
+                          <p className="form-section-title">🍽️ Itens do Jogo &amp; Preços Separados</p>
+                          <p className="form-helper-text">
+                            Defina os preços de atacado e varejo por item (ex: Lugar Americano, Guardanapo, Porta-guardanapo)
+                          </p>
+                        </div>
+                        <div className="game-items-head-actions">
+                          <button
+                            type="button"
+                            className="btn-quick-outline"
+                            onClick={populateStandardGameItems}
+                            title="Preenche automaticamente com Lugar Americano, Guardanapo e Porta-guardanapo"
+                          >
+                            ✨ Padrão 3 Peças
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-add-item"
+                            onClick={() => addGameItem("", null, null)}
+                          >
+                            + Adicionar Peça
+                          </button>
+                        </div>
+                      </div>
+
+                      {form.game_items && form.game_items.length > 0 ? (
+                        <div className="game-items-table">
+                          <div className="game-items-table-head">
+                            <span>Componente / Peça *</span>
+                            <span>Preço Atacado (R$) *</span>
+                            <span>Varejo / De (R$)</span>
+                            <span></span>
+                          </div>
+                          <div className="dynamic-list">
+                            {form.game_items.map((item, idx) => (
+                              <div className="dynamic-row-game-item" key={idx}>
+                                <input
+                                  required
+                                  placeholder="Ex: Lugar americano, Guardanapo..."
+                                  value={item.label}
+                                  onChange={(e) => updateGameItem(idx, "label", e.target.value)}
+                                />
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="Ex: 19,74"
+                                  value={item.wholesale_price ?? ""}
+                                  onChange={(e) =>
+                                    updateGameItem(
+                                      idx,
+                                      "wholesale_price",
+                                      e.target.value ? Number(e.target.value) : null,
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="Ex: 32,90 (opc)"
+                                  value={item.retail_price ?? ""}
+                                  onChange={(e) =>
+                                    updateGameItem(
+                                      idx,
+                                      "retail_price",
+                                      e.target.value ? Number(e.target.value) : null,
+                                    )
+                                  }
+                                />
+                                <button
+                                  type="button"
+                                  className="btn-remove-row"
+                                  onClick={() => removeGameItem(idx)}
+                                  title="Remover item"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="form-helper-text" style={{ fontStyle: "italic" }}>
+                          Nenhum componente adicionado. Clique em &quot;Padrão 3 Peças&quot; para preencher rapidamente.
+                        </p>
+                      )}
+
+                      {/* Card de Consolidação e Totalização do Jogo */}
+                      {form.game_items && form.game_items.length > 0 && (
+                        <div className="game-summary-card">
+                          <div className="game-summary-stats">
+                            <div className="summary-stat">
+                              <span>Total Atacado (Soma):</span>
+                              <strong>
+                                {money(
+                                  form.game_items.reduce(
+                                    (acc, it) => acc + (it.wholesale_price ? Number(it.wholesale_price) : 0),
+                                    0,
+                                  ),
+                                )}
+                              </strong>
+                            </div>
+                            <div className="summary-stat">
+                              <span>Total Varejo Sugerido:</span>
+                              <strong>
+                                {money(
+                                  form.game_items.reduce(
+                                    (acc, it) => acc + (it.retail_price ? Number(it.retail_price) : 0),
+                                    0,
+                                  ),
+                                )}
+                              </strong>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            className="btn-sync-prices"
+                            onClick={syncGlobalPriceFromGameItems}
+                            title="Atualiza o Preço Atacado e Varejo global do produto com a soma dos itens"
+                          >
+                            🔄 Sincronizar com Preço Global do Jogo
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Preço Global Opcional para o Jogo Fechado */}
+                      <div className="form-section-card" style={{ marginTop: "1rem" }}>
+                        <div className="form-section-header">
+                          <p className="form-section-title">Preço Global do Jogo (Opcional)</p>
+                          <p className="form-helper-text">
+                            Preencha se o jogo fechado tiver um valor próprio de atacado além da soma avulsa
+                          </p>
+                        </div>
+                        <div className="form-grid">
+                          <label>
+                            Atacado Jogo Completo
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={form.wholesale_price ?? ""}
+                              onChange={(e) =>
+                                change("wholesale_price", e.target.value ? Number(e.target.value) : null)
+                              }
+                              placeholder="Opcional se itens preenchidos"
+                            />
+                          </label>
+                          <label>
+                            Varejo Sugerido Jogo Completo
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={form.retail_price ?? ""}
+                              onChange={(e) =>
+                                change("retail_price", e.target.value ? Number(e.target.value) : null)
+                              }
+                              placeholder="Opcional se itens preenchidos"
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="form-section-card">
+                      <div className="form-section-header">
+                        <p className="form-section-title">🏷️ Preço Atacado &amp; Varejo</p>
+                        <p className="form-helper-text">Defina o valor por unidade ou pelo kit fechado</p>
+                      </div>
+
+                      <div className="form-grid">
+                        <label>
+                          Preço Atacado (Lojista) *
+                          <input
+                            required={pricingMode === "standard"}
+                            type="number"
+                            step="0.01"
+                            value={form.wholesale_price ?? ""}
+                            onChange={(e) =>
+                              change("wholesale_price", e.target.value ? Number(e.target.value) : null)
+                            }
+                            placeholder="0,00"
+                          />
+                        </label>
+
+                        <label>
+                          Preço Sugerido de Varejo
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={form.retail_price ?? ""}
+                            onChange={(e) =>
+                              change("retail_price", e.target.value ? Number(e.target.value) : null)
+                            }
+                            placeholder="0,00"
+                          />
+                        </label>
+                      </div>
+
+                      {discountPercent != null && (
+                        <div className="margin-feedback-card" style={{ marginTop: "1.25rem" }}>
+                          <span className="margin-pill">{discountPercent}% de Margem</span>
+                          <p>
+                            O revendedor adquire por <strong>{money(form.wholesale_price)}</strong> e pode revender por <strong>{money(form.retail_price)}</strong>.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

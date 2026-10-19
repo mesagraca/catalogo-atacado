@@ -7,7 +7,7 @@ export type Variation = {
   sku?: string;
 };
 export type GameItem = {
-  label: "Lugar americano" | "Guardanapo" | "Porta-guardanapo";
+  label: string;
   retail_price?: number | null;
   wholesale_price: number | null;
 };

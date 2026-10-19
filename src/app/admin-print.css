@@ -1322,6 +1322,203 @@
   color: #1a5d35;
 }
 
+/* Seletor de Modalidade de Preço */
+.pricing-mode-pills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.pricing-mode-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  border: 2px solid #ede4d8;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6d6358;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.pricing-mode-pill:hover {
+  border-color: #2b1d14;
+  color: #2b1d14;
+}
+
+.pricing-mode-pill.active {
+  background: #2b1d14;
+  color: #ffffff;
+  border-color: #2b1d14;
+  box-shadow: 0 4px 12px rgba(43, 29, 20, 0.15);
+}
+
+/* Atalhos Rápidos na Ficha Técnica */
+.quick-chip-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.quick-chip-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #8c8278;
+}
+
+.quick-chip-btn {
+  background: #ffffff;
+  border: 1px solid #dcd3c8;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #554d45;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-chip-btn:hover {
+  background: #f7f2eb;
+  border-color: #2b1d14;
+  color: #2b1d14;
+}
+
+/* Tabela de Componentes e Preços de Jogos */
+.game-items-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.btn-quick-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  background: #ffffff;
+  border: 1px solid #2b1d14;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2b1d14;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-quick-outline:hover {
+  background: #2b1d14;
+  color: #ffffff;
+}
+
+.game-items-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+.game-items-table-head {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.5fr) minmax(7rem, 1fr) minmax(7rem, 1fr) 2rem;
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #746b61;
+  text-transform: uppercase;
+}
+
+.dynamic-row-game-item {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.5fr) minmax(7rem, 1fr) minmax(7rem, 1fr) 2rem;
+  gap: 0.75rem;
+  align-items: center;
+  background: #ffffff;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e5ded6;
+}
+
+.dynamic-row-game-item input {
+  width: 100%;
+}
+
+/* Consolidação e Totalização do Jogo */
+.game-summary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: 1.15rem 1.4rem;
+  background: #faf6f0;
+  border: 1px solid #e2d7c8;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.game-summary-stats {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.summary-stat span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #746b61;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-stat strong {
+  font-size: 1.25rem;
+  color: #2b1d14;
+  font-weight: 700;
+}
+
+.btn-sync-prices {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.15rem;
+  background: #2b1d14;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-sync-prices:hover {
+  background: #b25a3d;
+}
+
+.price-game-summary {
+  color: #734e34;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 /* Upload Visual de Fotos & Drag and Drop */
 .photo-swap-banner {
   display: flex;
@@ -1696,8 +1893,20 @@
     grid-template-columns: 1fr;
   }
   .dynamic-row,
-  .dynamic-row-variant {
+  .dynamic-row-variant,
+  .dynamic-row-game-item {
     grid-template-columns: 1fr;
+  }
+  .game-items-table-head {
+    display: none;
+  }
+  .pricing-mode-pills {
+    grid-template-columns: 1fr;
+  }
+  .game-summary-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
   .visibility-settings-card {
     flex-direction: column;

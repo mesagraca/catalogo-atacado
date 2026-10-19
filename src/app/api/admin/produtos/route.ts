@@ -52,6 +52,7 @@ export async function POST(request: Request) {
       name: body.name,
       category: body.category || "Lugar Americano",
       sku: body.sku || null,
+      tray_product_id: body.tray_id ? Number(body.tray_id) : null,
       collection: body.collection || null,
       color_name: body.color_name || null,
       color_hex: body.color_hex || null,
@@ -62,7 +63,15 @@ export async function POST(request: Request) {
       short_description: body.description || "",
       description: body.description || "",
       technical_specifications: technicalSpecifications,
-      game_items: Array.isArray(body.game_items) ? body.game_items : [],
+      game_items: Array.isArray(body.game_items)
+        ? body.game_items
+            .filter((g: any) => g && g.label && g.label.trim())
+            .map((g: any) => ({
+              label: g.label.trim(),
+              wholesale_price: g.wholesale_price != null && g.wholesale_price !== "" ? Number(g.wholesale_price) : null,
+              retail_price: g.retail_price != null && g.retail_price !== "" ? Number(g.retail_price) : null,
+            }))
+        : [],
       media: {
         images: [
           body.image_url
@@ -130,6 +139,7 @@ export async function PATCH(request: Request) {
     if (updates.name !== undefined) dbUpdates.name = updates.name;
     if (updates.category !== undefined) dbUpdates.category = updates.category;
     if (updates.sku !== undefined) dbUpdates.sku = updates.sku || null;
+    if (updates.tray_id !== undefined) dbUpdates.tray_product_id = updates.tray_id ? Number(updates.tray_id) : null;
     if (updates.collection !== undefined) dbUpdates.collection = updates.collection || null;
     if (updates.color_name !== undefined) dbUpdates.color_name = updates.color_name || null;
     if (updates.color_hex !== undefined) dbUpdates.color_hex = updates.color_hex || null;
@@ -167,7 +177,15 @@ export async function PATCH(request: Request) {
     }
 
     if (updates.game_items !== undefined) {
-      dbUpdates.game_items = updates.game_items;
+      dbUpdates.game_items = Array.isArray(updates.game_items)
+        ? updates.game_items
+            .filter((g: any) => g && g.label && g.label.trim())
+            .map((g: any) => ({
+              label: g.label.trim(),
+              wholesale_price: g.wholesale_price != null && g.wholesale_price !== "" ? Number(g.wholesale_price) : null,
+              retail_price: g.retail_price != null && g.retail_price !== "" ? Number(g.retail_price) : null,
+            }))
+        : [];
     }
 
     // Se houver alteração de imagem ou reordenação
