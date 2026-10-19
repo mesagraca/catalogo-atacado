@@ -104,7 +104,7 @@ export function ProductCard({
           <span>{product.collection || product.category}</span>
           {(product.sku || product.id) && (
             <span
-              className="product-ref-pill"
+              className="product-ref-code"
               title={`Código de referência: ${product.sku || product.id}`}
             >
               REF: {product.sku ? product.sku.replace(/^MG-/, "") : product.id.slice(0, 8)}

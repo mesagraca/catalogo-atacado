@@ -284,30 +284,40 @@
   page-break-inside: avoid;
   break-inside: avoid;
   display: grid !important;
-  grid-template-columns: minmax(18rem, 26rem) minmax(0, 1fr) !important;
+  grid-template-columns: minmax(18rem, 28rem) minmax(0, 1fr) !important;
+  align-items: stretch !important;
   border: 1px solid #e5ded6;
   border-radius: 16px;
   overflow: hidden;
   background: #ffffff;
-  min-height: 24rem;
+  min-height: 25rem;
 }
 
 .print-product-grid.layout-single .product-image {
   height: 100% !important;
-  min-height: 24rem !important;
+  min-height: 25rem !important;
   width: 100% !important;
-  max-width: 26rem !important;
+  max-width: 28rem !important;
+  display: flex !important;
   border-radius: 15px 0 0 15px !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .print-product-grid.layout-single .product-image img {
   width: 100% !important;
   height: 100% !important;
+  min-height: 100% !important;
   object-fit: cover !important;
+  display: block !important;
+  border-radius: 15px 0 0 15px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .print-product-grid.layout-single .product-info {
-  padding: 2rem 2.5rem !important;
+  padding: 2.25rem 2.5rem !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -371,18 +381,27 @@
   margin: 0.15rem 0;
 }
 
-/* Pílula de REF / SKU Rápido e Ficha Técnica */
-.product-ref-pill {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #695e54;
-  background: #f1ebe3;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ded5c9;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  white-space: nowrap;
+/* Linha Topline e Código de REF Sutil e Discreto */
+.product-topline {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+}
+
+.product-ref-code {
+  margin-left: auto !important;
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  color: #9c9083 !important;
+  text-transform: uppercase !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+  font-family: inherit !important;
 }
 
 .print-product-desc {
@@ -427,7 +446,47 @@
     box-shadow: none !important;
   }
 
-  /* 1 Produto Rigorosamente por Página no Layout Single */
+  /* Capa de Revista Elegante no Layout Single (Página 1 nunca em branco) */
+  .layout-single .print-header {
+    page-break-after: always !important;
+    break-after: page !important;
+    height: 90vh !important;
+    min-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 4rem 2rem !important;
+    box-sizing: border-box !important;
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+  }
+
+  .layout-single .print-header .print-header-brand {
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+
+  .layout-single .print-header .print-header-brand h1 {
+    font-size: 2.6rem !important;
+    margin: 0.5rem 0 !important;
+  }
+
+  .layout-single .print-header .print-header-info {
+    margin-top: 2.5rem !important;
+    font-size: 0.95rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  .layout-single .print-category-heading {
+    display: none !important;
+  }
+
+  /* 1 Produto Rigorosamente por Página no Layout Single com Foto 100% Esticada */
   .print-product-grid.layout-single {
     display: block !important;
     gap: 0 !important;
@@ -438,27 +497,42 @@
     break-after: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    height: 90vh !important;
-    min-height: 90vh !important;
+    height: 92vh !important;
+    min-height: 92vh !important;
     max-height: 94vh !important;
-    margin: 0 0 2rem 0 !important;
+    margin: 0 !important;
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 50% 50% !important;
+    align-items: stretch !important;
     border: 1px solid #dcd3c8 !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
     box-sizing: border-box !important;
+    background: #ffffff !important;
   }
 
   .print-product-grid.layout-single .product-image {
     height: 100% !important;
-    max-height: 86vh !important;
+    min-height: 100% !important;
+    max-height: 94vh !important;
     width: 100% !important;
     max-width: 100% !important;
+    display: flex !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 15px 0 0 15px !important;
+    overflow: hidden !important;
   }
 
   .print-product-grid.layout-single .product-image img {
     width: 100% !important;
     height: 100% !important;
+    min-height: 100% !important;
     object-fit: cover !important;
+    display: block !important;
+    border-radius: 15px 0 0 15px !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .print-product-grid.layout-single .product-info {
@@ -466,12 +540,24 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
-    gap: 1.25rem !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    gap: 1.15rem !important;
   }
 
   .print-product-grid.layout-single .product-info h3 {
     font-size: 2rem !important;
     line-height: 1.2 !important;
+  }
+
+  /* O último produto não quebra página para não empurrar rodapé vazio */
+  .layout-single .print-category-section:last-of-type .print-product-grid.layout-single .product-card:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  .layout-single .print-footer {
+    display: none !important;
   }
 }
 
@@ -823,24 +909,27 @@
 
 .wizard-form {
   width: min(100%, 54rem);
+  height: min(92vh, 54rem);
   max-height: 92vh;
-  overflow-y: auto;
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 2.25rem 2.5rem;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  overflow: hidden;
+  padding: 0;
+  gap: 0;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
 }
 
 /* Cabeçalho do Wizard */
 .form-head {
+  flex-shrink: 0;
+  padding: 1.5rem 2.25rem 1rem;
+  border-bottom: 1px solid #ede4d8;
+  background: #ffffff;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  border-bottom: 1px solid #e5ded6;
-  padding-bottom: 1.25rem;
 }
 
 .form-head h2 {
@@ -870,13 +959,15 @@
 
 /* Barra Visual de Etapas (5 Passos) */
 .wizard-nav {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0.75rem 2.25rem;
+  background: #fdfaf6;
+  border-bottom: 1px solid #ede4d8;
+  border-radius: 0;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 0.5rem;
-  background: #fbf8f4;
-  padding: 0.45rem;
-  border-radius: 12px;
-  border: 1px solid #ece4d9;
 }
 
 .wizard-step-btn {
@@ -926,7 +1017,12 @@
 
 /* Corpo do Wizard */
 .wizard-body {
-  min-height: 20rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.75rem 2.25rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .wizard-pane {
@@ -1488,19 +1584,22 @@
 
 /* Rodapé do Wizard */
 .wizard-footer {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #e5ded6;
-  padding-top: 1.35rem;
-  margin-top: 0.5rem;
+  border-top: 1px solid #ede4d8;
+  background: #ffffff;
+  padding: 1.25rem 2.25rem;
+  margin-top: 0;
+  z-index: 10;
 }
 
 .btn-cancel {
-  padding: 0.65rem 1.25rem;
+  padding: 0.65rem 1.35rem;
   border: 1px solid #dcd3c8;
   border-radius: 8px;
-  background: transparent;
+  background: #fdfaf6;
   color: #6d6358;
   font-size: 0.8rem;
   font-weight: 600;
@@ -1509,7 +1608,7 @@
 }
 
 .btn-cancel:hover {
-  background: #f7f2eb;
+  background: #f0ebe4;
   color: #29251f;
 }
 
@@ -1575,8 +1674,23 @@
 
 /* Responsividade Mobile */
 @media (max-width: 768px) {
+  .wizard-form {
+    height: 96vh;
+    max-height: 96vh;
+    border-radius: 12px;
+  }
+  .form-head {
+    padding: 1.25rem 1.25rem 0.85rem;
+  }
   .wizard-nav {
     grid-template-columns: repeat(2, 1fr);
+    padding: 0.5rem 1rem;
+  }
+  .wizard-body {
+    padding: 1.25rem 1.25rem;
+  }
+  .wizard-footer {
+    padding: 1rem 1.25rem;
   }
   .photo-upload-grid {
     grid-template-columns: 1fr;
