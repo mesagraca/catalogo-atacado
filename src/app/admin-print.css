@@ -1,0 +1,880 @@
+/* ==========================================================================
+   Mesa & Graça — Estilos Dedicados para /imprimir e /admin
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ROTA /catalogo/imprimir (Visualização em Tela e Impressão A4)
+   -------------------------------------------------------------------------- */
+
+.print-page-wrapper {
+  min-height: 100vh;
+  background: #f7f2eb;
+  color: #29251f;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Barra de Ações Superior (Fixa na tela, oculta na impressão) */
+.print-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #2b1d14;
+  color: #fffdfa;
+  box-shadow: 0 4px 18px rgba(43, 29, 20, 0.15);
+  padding: 0.85rem 1.5rem;
+}
+
+.print-toolbar-inner {
+  max-width: 82rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.print-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #e5ded6;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.print-back-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.print-toolbar-center {
+  font-size: 0.76rem;
+  color: #d2c5b9;
+  letter-spacing: 0.03em;
+}
+
+.print-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: #b25a3d;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.print-action-btn:hover {
+  background: #9a4c32;
+  transform: translateY(-1px);
+}
+
+/* Folha / Shell de Impressão */
+.print-shell {
+  max-width: 82rem;
+  margin: 2rem auto;
+  padding: 2.5rem 3rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+/* Cabeçalho Institucional de Impressão */
+.print-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1.8rem;
+  border-bottom: 2px solid #29251f;
+  margin-bottom: 2.5rem;
+}
+
+.print-header-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.print-header-brand h1 {
+  margin: 0.4rem 0 0;
+  font: 400 clamp(1.8rem, 3vw, 2.4rem)/1.1 Georgia, serif;
+  color: #29251f;
+  letter-spacing: -0.03em;
+}
+
+.print-header-brand p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #746b61;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.print-header-info {
+  text-align: right;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #554d45;
+}
+
+.print-header-info p {
+  margin: 0;
+}
+
+.print-header-info strong {
+  color: #29251f;
+}
+
+/* Seções por Categoria */
+.print-category-section {
+  margin-bottom: 3rem;
+  page-break-inside: auto;
+}
+
+.print-category-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2d9cd;
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.print-category-heading h2 {
+  margin: 0;
+  font: 400 1.65rem/1.2 Georgia, serif;
+  color: #29251f;
+  letter-spacing: -0.02em;
+}
+
+.print-category-heading span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #b25a3d;
+  letter-spacing: 0.08em;
+}
+
+/* Grade de Produtos em 3 colunas */
+.print-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.print-product-grid .product-card {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  border: 1px solid #e5ded6;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.print-product-grid .product-image {
+  height: 12.5rem;
+  min-height: 12.5rem;
+  border-radius: 11px 11px 0 0;
+}
+
+.print-product-grid .product-info {
+  padding: 0.85rem 0.95rem;
+}
+
+.print-product-grid .product-info h3 {
+  font-size: 1.05rem;
+  min-height: auto;
+  margin: 0.25rem 0 0.5rem;
+}
+
+/* Rodapé da Impressão */
+.print-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2d9cd;
+  text-align: center;
+  font-size: 0.7rem;
+  color: #8c8278;
+  line-height: 1.6;
+}
+
+.print-footer p {
+  margin: 0.2rem 0;
+}
+
+/* Regras Estritas de Mídia Impressa */
+@media print {
+  .print-toolbar,
+  .cart-float-wrapper,
+  .cart-backdrop,
+  .cart-drawer {
+    display: none !important;
+  }
+
+  body, .print-page-wrapper {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print-shell {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .print-product-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .print-product-grid .product-card {
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. ROTA /admin (Painel Administrativo do Catálogo Mesa & Graça)
+   -------------------------------------------------------------------------- */
+
+/* Tela de Login PIN */
+.admin-access-page,
+.retail-access-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 10%, #fffdfa 0%, #f7f2eb 60%, #ece3d7 100%);
+  padding: 1.5rem;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.admin-access-card,
+.retail-access-card {
+  width: min(100%, 26rem);
+  background: #ffffff;
+  border: 1px solid #e5ded6;
+  border-radius: 20px;
+  padding: clamp(2rem, 5vw, 2.75rem);
+  box-shadow: 0 16px 45px rgba(43, 29, 20, 0.08);
+  text-align: center;
+}
+
+.admin-access-card .brand-logo,
+.retail-access-card .brand-logo {
+  height: 2.5rem;
+  margin: 0 auto 1.25rem;
+}
+
+.admin-access-card .eyebrow,
+.retail-access-card .eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #b25a3d;
+  text-transform: uppercase;
+}
+
+.admin-access-card h1,
+.retail-access-card h1 {
+  margin: 0 0 0.75rem;
+  font: 400 1.75rem/1.2 Georgia, serif;
+  color: #29251f;
+  letter-spacing: -0.03em;
+}
+
+.admin-access-card p,
+.retail-access-card p {
+  margin: 0 0 1.75rem;
+  font-size: 0.8rem;
+  color: #746b61;
+  line-height: 1.5;
+}
+
+.admin-access-card form,
+.retail-access-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.admin-access-card label,
+.retail-access-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #29251f;
+}
+
+.admin-access-card input,
+.retail-access-card input {
+  height: 2.85rem;
+  padding: 0 1rem;
+  border: 1px solid #dcd3c8;
+  border-radius: 9px;
+  background: #fbf8f4;
+  font-size: 0.95rem;
+  color: #29251f;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-access-card input:focus,
+.retail-access-card input:focus {
+  border-color: #b25a3d;
+  box-shadow: 0 0 0 3px rgba(178, 90, 61, 0.15);
+  background: #ffffff;
+}
+
+.admin-access-card button,
+.retail-access-card button {
+  height: 2.85rem;
+  margin-top: 0.5rem;
+  background: #2b1d14;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-access-card button:hover,
+.retail-access-card button:hover {
+  background: #b25a3d;
+}
+
+.admin-access-card button:disabled,
+.retail-access-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.retail-access-error {
+  margin: 0.25rem 0 0;
+  color: #a33b2c;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Painel Principal /admin */
+.admin-page {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 5rem;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #29251f;
+}
+
+/* Topbar do Admin */
+.admin-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #e5ded6;
+  margin-bottom: 2rem;
+}
+
+.admin-top .wordmark {
+  font: 400 1.85rem/1 Georgia, serif;
+  color: #29251f;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+
+.admin-top .wordmark span {
+  color: #b25a3d;
+  font-style: italic;
+}
+
+.admin-top div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-top a {
+  padding: 0.5rem 0.95rem;
+  border: 1px solid #dcd3c8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #4f473e;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.admin-top a:hover {
+  border-color: #2b1d14;
+  color: #2b1d14;
+}
+
+.admin-top button {
+  padding: 0.55rem 1.15rem;
+  border: none;
+  border-radius: 8px;
+  background: #2b1d14;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.admin-top button:hover {
+  background: #b25a3d;
+  transform: translateY(-1px);
+}
+
+/* Título e Cabeçalho do Admin */
+.admin-heading {
+  margin-bottom: 2rem;
+}
+
+.admin-heading .category-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #b25a3d;
+  text-transform: uppercase;
+}
+
+.admin-heading h1 {
+  margin: 0 0 0.5rem;
+  font: 400 clamp(2rem, 4vw, 2.85rem)/1.15 Georgia, serif;
+  color: #29251f;
+  letter-spacing: -0.03em;
+}
+
+.admin-heading h1 span {
+  color: #b25a3d;
+  font-style: italic;
+}
+
+.admin-heading p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #746b61;
+}
+
+/* Barra de Controles (Busca + Filtros) */
+.admin-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e5ded6;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 14px rgba(43, 29, 20, 0.03);
+}
+
+.admin-controls input {
+  flex: 1;
+  max-width: 24rem;
+  height: 2.45rem;
+  padding: 0 0.85rem;
+  border: 1px solid #e0d7cd;
+  border-radius: 8px;
+  background: #fdfaf6;
+  font-size: 0.82rem;
+  color: #29251f;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.admin-controls input:focus {
+  border-color: #b25a3d;
+  background: #ffffff;
+}
+
+.admin-controls div {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.admin-controls div button {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid #e5ded6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #6d6358;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.admin-controls div button:hover {
+  border-color: #2b1d14;
+  color: #2b1d14;
+}
+
+.admin-controls div button.active {
+  background: #2b1d14;
+  color: #ffffff;
+  border-color: #2b1d14;
+}
+
+.admin-message {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #fdf3ef;
+  border: 1px solid #f3d4c7;
+  color: #9a4c32;
+  font-size: 0.8rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Lista de Produtos do Admin */
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-item {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.95rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e5ded6;
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-item:hover {
+  border-color: #cdbeaf;
+  box-shadow: 0 4px 16px rgba(43, 29, 20, 0.05);
+}
+
+.admin-item.inactive-item {
+  opacity: 0.65;
+  background: #fbf9f6;
+}
+
+.admin-thumb {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f3ece4;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.admin-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-thumb span {
+  font-size: 0.65rem;
+  color: #8c8278;
+  font-style: italic;
+}
+
+.admin-item div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-item b {
+  font-size: 0.95rem;
+  color: #29251f;
+  font-weight: 600;
+}
+
+.admin-item small {
+  font-size: 0.72rem;
+  color: #746b61;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-pill.active {
+  background: #e2f4e8;
+  color: #178444;
+}
+
+.status-pill.inactive {
+  background: #f0ebe4;
+  color: #746b61;
+}
+
+.admin-item strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2b1d14;
+  white-space: nowrap;
+}
+
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.item-actions button {
+  padding: 0.42rem 0.75rem;
+  border: 1px solid #dcd3c8;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #4f473e;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.item-actions button:hover {
+  background: #f7f2eb;
+  border-color: #2b1d14;
+  color: #2b1d14;
+}
+
+.item-actions button.danger {
+  border-color: #f5cdc6;
+  color: #a33b2c;
+  background: #fff8f7;
+}
+
+.item-actions button.danger:hover {
+  background: #a33b2c;
+  color: #ffffff;
+  border-color: #a33b2c;
+}
+
+.no-products {
+  padding: 3rem;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px dashed #dcd3c8;
+  color: #746b61;
+  font-size: 0.85rem;
+}
+
+/* Modal de Cadastro / Edição */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(26, 17, 12, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.product-form {
+  width: min(100%, 45rem);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5ded6;
+  padding-bottom: 1rem;
+}
+
+.form-head h2 {
+  margin: 0.25rem 0 0;
+  font: 400 1.5rem/1.2 Georgia, serif;
+  color: #29251f;
+}
+
+.form-head button {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: #f7f2eb;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  color: #746b61;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s ease;
+}
+
+.form-head button:hover {
+  background: #e5ded6;
+  color: #29251f;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #4f473e;
+}
+
+.form-grid input,
+.form-grid select {
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid #dcd3c8;
+  border-radius: 8px;
+  background: #fdfaf6;
+  font-size: 0.82rem;
+  color: #29251f;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+  border-color: #b25a3d;
+  background: #ffffff;
+}
+
+.file-label input[type="file"] {
+  height: auto;
+  padding: 0.4rem 0;
+  background: transparent;
+  border: none;
+  font-size: 0.74rem;
+}
+
+.file-label span {
+  color: #1e7e49;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.product-form label.visible {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #29251f;
+  cursor: pointer;
+}
+
+.product-form label.visible input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: #b25a3d;
+}
+
+.save-product {
+  height: 3rem;
+  background: #2b1d14;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.save-product:hover {
+  background: #b25a3d;
+}
+
+.save-product:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsividade Mobile Admin */
+@media (max-width: 768px) {
+  .admin-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .admin-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-controls input {
+    max-width: 100%;
+  }
+  .admin-item {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    row-gap: 0.75rem;
+  }
+  .admin-thumb {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  .admin-item strong {
+    grid-column: 2;
+  }
+  .item-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

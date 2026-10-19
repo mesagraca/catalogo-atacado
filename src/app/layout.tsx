@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Allura, Outfit } from "next/font/google";
 import "./globals.css";
 import "./cart.css";
+import "./admin-print.css";
 
 const allura = Allura({
   weight: "400",

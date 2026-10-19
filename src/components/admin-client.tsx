@@ -231,7 +231,9 @@ export function AdminClient() {
                 <b>{p.name}</b>
                 <small>
                   {p.category} · {p.color_name || "Sem cor"} · SKU: {p.sku || "—"}
-                  {!p.is_visible && " (Oculto)"}
+                  <span className={`status-pill ${p.is_visible ? "active" : "inactive"}`}>
+                    {p.is_visible ? "Ativo" : "Oculto"}
+                  </span>
                 </small>
               </div>
               <strong>{money(p.wholesale_price)}</strong>
