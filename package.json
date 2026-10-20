@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "check-updates": "node scripts/check-updates.mjs",
+    "dev": "node scripts/check-updates.mjs && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
