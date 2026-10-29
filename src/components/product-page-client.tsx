@@ -202,16 +202,11 @@ export function ProductPageClient({
                   <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
                   <strong>{money(product.wholesale_price)}</strong>
                 </div>
-                {product.dimensions?.[0]?.value && (
-                  <span className="product-page-size-badge" title="Tamanho / Medida">
-                    {product.dimensions[0].value}
-                  </span>
-                )}
               </div>
               {product.retail_price != null && (
                 <div className="price-comparison-row">
                   <small>
-                    Varejo sugerido: <s>{money(product.retail_price)}</s>
+                    Preço varejo: <s>{money(product.retail_price)}</s>
                   </small>
                   {product.wholesale_price && product.retail_price > product.wholesale_price && (
                     <span className="discount-pill">
