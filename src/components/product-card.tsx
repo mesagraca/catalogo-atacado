@@ -158,7 +158,7 @@ export function ProductCard({
         )}
         {hasColorInfo && (
           <>
-            <div className="product-divider" />
+            {!isGame && <div className="product-divider" />}
             {variations.length > 0 ? (
               <div className="variation-picker">
                 <span>Variações no mesmo preço</span>
