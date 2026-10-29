@@ -131,22 +131,28 @@ export function ProductCard({
             {product.game_items!.map((item) => (
               <p key={item.label}>
                 <small>{item.label.replace(/\s*\(.*?\)/, "").trim()}</small>
-                <b>{money(item.wholesale_price)}</b>
+                <span className="game-item-card-prices">
+                  {item.retail_price != null && (
+                    <s className="game-item-card-retail">{money(item.retail_price)}</s>
+                  )}
+                  <b>{money(item.wholesale_price)}</b>
+                </span>
               </p>
             ))}
           </div>
         ) : (
           <div className="product-commerce">
-            <div>
+            <div className="commerce-wholesale-box">
               <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-              <strong>{money(product.wholesale_price)}</strong>
+              <div className="wholesale-price-row">
+                <strong>{money(product.wholesale_price)}</strong>
+                {discount != null && <b className="discount-pill">{discount}% OFF</b>}
+              </div>
             </div>
             {product.retail_price != null && (
-              <div className="price-comparison">
-                <small>
-                  Varejo <s>{money(product.retail_price)}</s>
-                </small>
-                {discount != null && <b>{discount}% OFF</b>}
+              <div className="commerce-retail-box">
+                <span>Preço varejo</span>
+                <s className="retail-price-val">{money(product.retail_price)}</s>
               </div>
             )}
           </div>

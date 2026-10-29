@@ -159,15 +159,15 @@ export function ProductPageClient({
           )}
         </section>
         <section className="product-page-info">
-          <div className="product-topline product-page-topline">
-            <p className="eyebrow">{product.collection || product.category}</p>
-            {(product.sku || product.id) && (
+          <p className="eyebrow">{product.collection || product.category}</p>
+          <h1>{product.name}</h1>
+          {(product.sku || product.id) && (
+            <div className="product-page-sku-wrapper">
               <span className="product-ref-code" title={`Código de referência: ${product.sku || product.id}`}>
                 REF: {product.sku ? product.sku.replace(/^MG-/, "") : product.id.slice(0, 8)}
               </span>
-            )}
-          </div>
-          <h1>{product.name}</h1>
+            </div>
+          )}
                     {product.game_items?.length ? (
             <section className="product-page-game-prices">
               <div className="game-prices-header">
@@ -200,7 +200,14 @@ export function ProductPageClient({
               <div className="price-main-row">
                 <div>
                   <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-                  <strong>{money(product.wholesale_price)}</strong>
+                  <div className="wholesale-price-row">
+                    <strong>{money(product.wholesale_price)}</strong>
+                    {product.wholesale_price && product.retail_price && product.retail_price > product.wholesale_price && (
+                      <span className="discount-pill">
+                        {Math.round((1 - product.wholesale_price / product.retail_price) * 100)}% OFF
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               {product.retail_price != null && (
@@ -208,11 +215,6 @@ export function ProductPageClient({
                   <small>
                     Preço varejo: <s>{money(product.retail_price)}</s>
                   </small>
-                  {product.wholesale_price && product.retail_price > product.wholesale_price && (
-                    <span className="discount-pill">
-                      {Math.round((1 - product.wholesale_price / product.retail_price) * 100)}% OFF
-                    </span>
-                  )}
                 </div>
               )}
             </div>
