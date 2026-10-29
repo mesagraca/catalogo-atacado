@@ -359,3 +359,27 @@ html,body{width:100%;max-width:100%;overflow-x:clip}body{position:relative}.cata
 .product-page-sku-wrapper {
   margin: 0 0 1.15rem;
 }
+
+/* Padronizacao rigorosa de ritmo vertical na pagina de produto (1.15rem uniforme entre todas as secoes) */
+.product-page-price,
+.product-page-game-prices,
+.product-page-variations,
+.product-page-details,
+.product-page-quantity {
+  margin: 0 0 1.15rem !important;
+}
+
+.game-item-wholesale {
+  color: var(--clay) !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.game-item-retail {
+  color: #a04d40;
+  text-decoration: line-through;
+  text-decoration-color: #c13e36;
+  text-decoration-thickness: 1.2px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}

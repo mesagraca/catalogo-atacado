@@ -168,56 +168,67 @@ export function ProductPageClient({
               </span>
             </div>
           )}
-                    {product.game_items?.length ? (
+                    {/* Bloco Universal de Preco (Avulsos e Kits) */}
+          <div className="product-page-price">
+            <div className="price-main-row">
+              <div>
+                <span>
+                  {product.game_items?.length
+                    ? "Total atacado"
+                    : product.kit_quantity
+                    ? "Atacado por unidade"
+                    : product.wholesale_price == null
+                    ? "Preço"
+                    : "Preço atacado"}
+                </span>
+                <div className="wholesale-price-row">
+                  <strong>{money(product.wholesale_price)}</strong>
+                  {product.wholesale_price &&
+                    product.retail_price &&
+                    product.retail_price > product.wholesale_price && (
+                      <span className="discount-pill">
+                        {Math.round(
+                          (1 - product.wholesale_price / product.retail_price) * 100,
+                        )}
+                        % OFF
+                      </span>
+                    )}
+                </div>
+              </div>
+            </div>
+            {product.retail_price != null && (
+              <div className="price-comparison-row">
+                <small>
+                  Preço varejo: <s>{money(product.retail_price)}</s>
+                </small>
+              </div>
+            )}
+          </div>
+
+          {/* Discriminacao por peca para Jogos / Kits */}
+          {Boolean(product.game_items?.length) && (
             <section className="product-page-game-prices">
               <div className="game-prices-header">
                 <span>Jogo completo · discriminação por peça</span>
-                {product.wholesale_price != null && (
-                  <div className="game-total-pill">
-                    Total Atacado: <strong>{money(product.wholesale_price)}</strong>
-                    {product.retail_price != null && (
-                      <small> (Varejo: <s>{money(product.retail_price)}</s>)</small>
-                    )}
-                  </div>
-                )}
               </div>
               <div className="game-items-table">
-                {product.game_items.map((item) => (
+                {product.game_items!.map((item) => (
                   <div className="game-item-row" key={item.label}>
                     <span className="game-item-label">{item.label}</span>
                     <div className="game-item-values">
                       {item.retail_price != null && (
-                        <small className="game-item-retail">Varejo <s>{money(item.retail_price)}</s></small>
+                        <s className="game-item-retail">
+                          {money(item.retail_price)}
+                        </s>
                       )}
-                      <b className="game-item-wholesale">{money(item.wholesale_price)}</b>
+                      <b className="game-item-wholesale">
+                        {money(item.wholesale_price)}
+                      </b>
                     </div>
                   </div>
                 ))}
               </div>
             </section>
-          ) : (
-            <div className="product-page-price">
-              <div className="price-main-row">
-                <div>
-                  <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-                  <div className="wholesale-price-row">
-                    <strong>{money(product.wholesale_price)}</strong>
-                    {product.wholesale_price && product.retail_price && product.retail_price > product.wholesale_price && (
-                      <span className="discount-pill">
-                        {Math.round((1 - product.wholesale_price / product.retail_price) * 100)}% OFF
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              {product.retail_price != null && (
-                <div className="price-comparison-row">
-                  <small>
-                    Preço varejo: <s>{money(product.retail_price)}</s>
-                  </small>
-                </div>
-              )}
-            </div>
           )}
           {product.kit_quantity && (
             <p className="product-page-kit-note">

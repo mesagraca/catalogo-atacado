@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWholesaleCart } from "@/context/wholesale-cart-context";
-import { MinusIcon, PlusIcon, TrashIcon, WhatsAppIcon } from "./ui-icons";
+import { MinusIcon, PlusIcon, TrashIcon, WhatsAppIcon, ChevronDownIcon } from "./ui-icons";
 
 const money = (v: number) =>
   new Intl.NumberFormat("pt-BR", {
@@ -20,6 +20,7 @@ export function WholesaleCartDrawer() {
     closeDrawer,
     removeItem,
     updateQuantity,
+    changeItemVariation,
     clearCart,
     totalPieces,
     totalValue,
@@ -76,6 +77,8 @@ export function WholesaleCartDrawer() {
             <div className="cart-items-list">
               {items.map((item) => {
                 const subtotal = item.unitPrice * item.quantity;
+                const hasMultipleVars =
+                  item.product.variations && item.product.variations.length > 1;
                 const varLabel = item.variation
                   ? `${item.variation.pattern === "xadrez" ? "Xadrez" : "Liso"} ${item.variation.name}`
                   : item.product.color_name;
@@ -110,7 +113,47 @@ export function WholesaleCartDrawer() {
                         </button>
                       </div>
 
-                      {varLabel && (
+                      {hasMultipleVars ? (
+                        <div className="cart-item-var-picker">
+                          {item.variation?.hex && (
+                            <span
+                              className="cart-item-swatch"
+                              style={{ backgroundColor: item.variation.hex }}
+                            />
+                          )}
+                          <div className="cart-var-select-wrapper">
+                            <select
+                              className="cart-var-select"
+                              value={
+                                item.variation
+                                  ? `${item.variation.pattern}-${item.variation.name}`
+                                  : ""
+                              }
+                              onChange={(e) => {
+                                const selected = item.product.variations?.find(
+                                  (v) =>
+                                    `${v.pattern}-${v.name}` === e.target.value,
+                                );
+                                if (selected) {
+                                  changeItemVariation(item.id, selected);
+                                }
+                              }}
+                              aria-label={`Alterar variação de ${item.product.name}`}
+                            >
+                              {item.product.variations!.map((v) => {
+                                const key = `${v.pattern}-${v.name}`;
+                                const label = `${v.pattern === "xadrez" ? "Xadrez" : "Liso"} ${v.name}`;
+                                return (
+                                  <option key={key} value={key}>
+                                    {label}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <ChevronDownIcon className="cart-var-chevron" />
+                          </div>
+                        </div>
+                      ) : varLabel ? (
                         <div className="cart-item-var">
                           {item.variation?.hex && (
                             <span
@@ -120,7 +163,7 @@ export function WholesaleCartDrawer() {
                           )}
                           <span>{varLabel}</span>
                         </div>
-                      )}
+                      ) : null}
 
                       <div className="cart-item-pricing">
                         <small className="cart-item-unit">

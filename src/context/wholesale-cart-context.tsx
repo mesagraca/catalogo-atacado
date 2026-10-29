@@ -23,6 +23,7 @@ interface WholesaleCartContextType {
   addItem: (product: Product, variation?: Variation, quantity?: number) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, newQuantity: number) => void;
+  changeItemVariation: (id: string, newVariation: Variation) => void;
   clearCart: () => void;
   totalPieces: number;
   totalValue: number;
@@ -128,6 +129,41 @@ export function WholesaleCartProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const changeItemVariation = (id: string, newVariation: Variation) => {
+    setItems((prev) => {
+      const currentItemIndex = prev.findIndex((i) => i.id === id);
+      if (currentItemIndex === -1) return prev;
+
+      const currentItem = prev[currentItemIndex];
+      const newVarKey = `${newVariation.pattern || "liso"}-${newVariation.name || "cor"}-${newVariation.sku || ""}`;
+      const newId = `${currentItem.product.id}::${newVarKey}`;
+
+      if (newId === id) return prev;
+
+      const existingTargetIndex = prev.findIndex((i) => i.id === newId);
+
+      if (existingTargetIndex > -1) {
+        // Se já existe um item com a variação selecionada, funde as quantidades
+        const updated = [...prev];
+        updated[existingTargetIndex] = {
+          ...updated[existingTargetIndex],
+          quantity: updated[existingTargetIndex].quantity + currentItem.quantity,
+        };
+        // Remove a linha antiga
+        return updated.filter((i) => i.id !== id);
+      }
+
+      // Senão apenas atualiza a variação e o id preservando a quantidade
+      const updated = [...prev];
+      updated[currentItemIndex] = {
+        ...currentItem,
+        id: newId,
+        variation: newVariation,
+      };
+      return updated;
+    });
+  };
+
   const clearCart = () => {
     setItems([]);
   };
@@ -181,6 +217,7 @@ export function WholesaleCartProvider({ children }: { children: ReactNode }) {
         addItem,
         removeItem,
         updateQuantity,
+        changeItemVariation,
         clearCart,
         totalPieces,
         totalValue,

@@ -709,60 +709,114 @@
   display: none !important;
 }
 
-/* Página do produto (Dual CTAs) */
+/* Página do produto (Dual CTAs perfeitamente padronizados) */
 .product-page-cta-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 0.5rem;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.65rem !important;
+  margin: 0 0 0.85rem !important;
 }
 
 .product-page-add-cart-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 3.25rem;
+  min-height: 3.15rem !important;
   padding: 0 1.25rem;
   border: none;
-  border-radius: 9px;
+  border-radius: 10px !important;
   background: var(--ink, #251b14);
   color: var(--cream, #fffdfa);
   font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.82rem !important;
   font-weight: 700;
   letter-spacing: 0.03em;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 8px 22px rgba(37, 27, 20, 0.18);
+  box-shadow: 0 4px 14px rgba(37, 27, 20, 0.12);
 }
 
 .product-page-add-cart-btn:hover {
   background: var(--clay, #b25a3d);
   transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(178, 90, 61, 0.28);
+  box-shadow: 0 6px 18px rgba(178, 90, 61, 0.22);
 }
 
 .product-page-action {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 2.85rem;
-  padding: 0 1.25rem;
-  border: 1px solid var(--line, #e8dfd8);
-  border-radius: 9px;
-  background: #fff;
-  color: #1e7e49;
-  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-decoration: none;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  min-height: 3.15rem !important;
+  margin-top: 0 !important;
+  padding: 0 1.25rem !important;
+  border: 1px solid var(--line, #e8dfd8) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: #1e7e49 !important;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
   transition: all 0.2s ease;
 }
 
 .product-page-action:hover {
-  border-color: #1e7e49;
-  background: #f4fbf6;
+  border-color: #1e7e49 !important;
+  background: #f4fbf6 !important;
+  transform: translateY(-1px);
+}
+
+.product-page-note {
+  margin: 0.75rem auto 0 !important;
+}
+
+/* Seletor rápido de variação na gaveta do carrinho */
+.cart-item-var-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.1rem 0;
+}
+
+.cart-var-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.cart-var-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--cream, #f5ece3);
+  border: 1px solid var(--line, #e8dfd8);
+  border-radius: 6px;
+  padding: 0.2rem 1.4rem 0.2rem 0.5rem;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink, #251b14);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.cart-var-select:hover,
+.cart-var-select:focus {
+  border-color: var(--clay, #b25a3d);
+  background: #fff;
+  outline: none;
+}
+
+.cart-var-chevron {
+  position: absolute;
+  right: 0.35rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  color: var(--muted, #6d5b50);
+  pointer-events: none;
 }
 
 /* ==========================================================================
