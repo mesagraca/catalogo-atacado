@@ -323,19 +323,23 @@ html,body{width:100%;max-width:100%;overflow-x:clip}body{position:relative}.cata
 .commerce-retail-box .retail-price-val {
   color: #a04d40;
   text-decoration-color: #c13e36;
-  text-decoration-thickness: 1.5px;
-  font-size: 0.92rem;
+  text-decoration-thickness: 1.2px;
+  font-size: 0.68rem;
   font-weight: 600;
 }
 .price-comparison-row small {
   color: #a04d40;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .price-comparison-row s {
   color: #b14d40;
   text-decoration-color: #c13e36;
-  text-decoration-thickness: 1.5px;
+  text-decoration-thickness: 1.2px;
+  font-size: 0.68rem;
+  font-weight: 600;
 }
 .game-item-card-prices {
   display: flex;
@@ -349,6 +353,9 @@ html,body{width:100%;max-width:100%;overflow-x:clip}body{position:relative}.cata
   font-size: 0.72rem;
   font-weight: 600;
 }
+.product-page-info h1 {
+  margin-bottom: 0.35rem !important;
+}
 .product-page-sku-wrapper {
-  margin: 0.4rem 0 0.95rem;
+  margin: 0 0 1.15rem;
 }
