@@ -129,6 +129,10 @@ export type Product = {
   created_at?: string;
 };
 
+export type ProductInput = Omit<Product, "id" | "created_at"> & {
+  variations?: Variation[];
+};
+
 export const FEATURED_PRODUCTS: Product[] = ${JSON.stringify(uiProducts, null, 2)};
 `;
 

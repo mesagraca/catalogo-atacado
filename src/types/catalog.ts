@@ -65,22 +65,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo delicado com lugar americano temático, guardanapo e porta-guardanapo Florzinha Amarela para uma mesa leve e cheia de charme.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "NYLON 600 + TRICOLINE 50% AMARELO"
+        "label": "Lugar Americano",
+        "value": "NYLON 600 (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE 50% AMARELO"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "FLOR AMARELA"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -105,22 +117,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição divertida e delicada com lugar americano Ovinho, guardanapo creme e porta-guardanapo temático para cafés e mesas afetivas.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "NYLON 600  BRANCO E AMARELO + TRICOLINE 50% CREME"
+        "label": "Lugar Americano",
+        "value": "NYLON 600  BRANCO E AMARELO (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE 50% CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "OVINHO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -145,22 +169,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo em tons de vermelho com detalhes de cerejinhas, composto por lugar americano, guardanapo listrado e porta-guardanapo coordenado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "NYLON 600 + TRICOLINE 50% LISTRADO VERMELHO/BRANCO"
+        "label": "Lugar Americano",
+        "value": "NYLON 600 (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE 50% LISTRADO VERMELHO/BRANCO"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "CEREJINHA"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -185,22 +221,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição em folhagem verde que combina lugar americano, guardanapo e porta-guardanapo Esfera Marfim para uma mesa natural e acolhedora.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "GORGURINHO + OXFORD VERDE OU CREME"
+        "label": "Lugar Americano",
+        "value": "GORGURINHO (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "OXFORD VERDE OU CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "-"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -225,22 +273,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo floral de presença delicada, com lugar americano Magnólia, guardanapo creme e porta-guardanapo Esfera Dourada.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "JACGUARD + TRICOLINE 50% CREME"
+        "label": "Lugar Americano",
+        "value": "JACGUARD (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE 50% CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "ESFERA DOURADA"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -265,22 +325,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo completo de inspiração brasileira, com lugar americano em nylon, guardanapo em tricoline e porta-guardanapo coordenado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "NYLON 600 MARROM + TRICOLINE CREME"
+        "label": "Lugar Americano",
+        "value": "NYLON 600 MARROM (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "COURINO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "220 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -305,22 +377,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição temática com borda xadrez vermelha, guardanapo bordado de hot dog e porta-guardanapo em courino. Ideal para mesas descontraídas.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "NYLON 600 MARROM / OXFORD XADREZ + OXFORD BRANCO"
+        "label": "Lugar Americano",
+        "value": "NYLON 600 MARROM / OXFORD XADREZ (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "OXFORD BRANCO"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "-"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -345,22 +429,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo completo com lugar americano em jeans e courino, guardanapo em jeans e porta-guardanapo coordenado. Uma proposta marcante para receber.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "JEANS - COURINO + JEANS LEVE"
+        "label": "Lugar Americano",
+        "value": "JEANS - COURINO (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "JEANS LEVE"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "COURINO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "180 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -385,22 +481,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição temática em jeans e courino, acompanhada de guardanapo em jeans e porta-guardanapo coordenado para uma mesa casual e cheia de personalidade.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "JEANS - COURINO + JEANS LEVE"
+        "label": "Lugar Americano",
+        "value": "JEANS - COURINO (SEM BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "JEANS LEVE"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "COURINO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "250 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -425,22 +533,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição vibrante de limões, com lugar americano em gorgurinho, guardanapo em tricoline e porta-guardanapo coordenado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "JACQUARD (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "OXFORD BRANCO"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "LIMÃO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -465,22 +585,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição tropical com estampa de Costela de Adão, guardanapo e porta-guardanapo coordenados para levar frescor à mesa.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "CÓRDOBA ESTAMPADO + LINHO 50%"
+        "label": "Lugar Americano",
+        "value": "CÓRDOBA ESTAMPADO (SEM BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "COSTELA DE ADÃO MEDITERRANEO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "200 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -505,22 +637,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo de inspiração botânica, com lugar americano, guardanapo e porta-guardanapo coordenados para uma mesa leve e elegante.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "CÓRDOBA ESTAMPADO + LINHO 50%"
+        "label": "Lugar Americano",
+        "value": "CÓRDOBA ESTAMPADO (SEM BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "ALECRIM"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "210 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -545,22 +689,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição suave em tons de lavanda, com lugar americano, guardanapo e porta-guardanapo coordenados para receber com delicadeza.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "CÓRDOBA ESTAMPADO + LINHO 50%"
+        "label": "Lugar Americano",
+        "value": "CÓRDOBA ESTAMPADO (SEM BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "LAVANDA"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -585,22 +741,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo de inspiração mediterrânea com lugar americano, guardanapo e porta-guardanapo coordenados em uma composição acolhedora.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "CÓRDOBA ESTAMPADO + LINHO 50%"
+        "label": "Lugar Americano",
+        "value": "CÓRDOBA ESTAMPADO (SEM BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "DALIA ROSE"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "200 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -625,22 +793,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Jogo em tons florais suaves, com lugar americano, guardanapo e porta-guardanapo coordenados para uma mesa romântica.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "COURINO ROSA + OXFORD BRANCO"
+        "label": "Lugar Americano",
+        "value": "COURINO ROSA (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "OXFORD BRANCO"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "FLOR DE LOTUS"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -665,22 +845,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição em tricoline com estampa floral azul, guardanapo coordenado e porta-guardanapo para uma mesa clássica e refinada.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "TRICOLINE FLORIDO 100% + TRICOLINE CREME"
+        "label": "Lugar Americano",
+        "value": "TRICOLINE FLORIDO 100% (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "ORQUIDEA AZUL"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -705,22 +897,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Composição em tricoline com estampa floral verde, guardanapo coordenado e porta-guardanapo para uma mesa leve e elegante.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "TRICOLINE FLORIDO 100% + TRICOLINE CREME"
+        "label": "Lugar Americano",
+        "value": "TRICOLINE FLORIDO 100% (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "M. MEDITARRÂNEO ESMERALDA"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -745,22 +949,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -785,22 +993,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Estrutura e Material",
         "value": "LAVANDA"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -825,22 +1037,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -865,22 +1081,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Estrutura e Material",
         "value": "CEREJINHA"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -905,22 +1125,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -945,22 +1169,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Estrutura e Material",
         "value": "COSTELA DE ADÃO MEDITERRANEO"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "35 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -985,22 +1213,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1025,22 +1257,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1065,22 +1301,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Estrutura e Material",
         "value": "COSTELA DE ADÃO MEDITERRANEO"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1105,22 +1345,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Estrutura e Material",
         "value": "ALECRIM"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "30 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1145,22 +1389,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "FLOR ROSA"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1185,22 +1433,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1225,22 +1477,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1265,18 +1521,22 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
@@ -1305,22 +1565,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1345,22 +1609,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1385,22 +1653,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "70 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1425,22 +1697,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1465,22 +1741,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1505,22 +1785,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1545,22 +1829,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Estrutura e Material",
         "value": "PIZZA - BORDADO"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1585,22 +1873,34 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "150 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1625,22 +1925,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "70 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -1662,25 +1966,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 53.83,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_de_4_porta_guardanapos_margarida_fibra_natural_62_1_2dcc35d69b397d6ee51d251ccf746fe7.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_de_4_porta_guardanapos_margarida_fibra_natural_62_2_939620b40877d81f5cde9dff4fd4b82a.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Artesanal com Fibra Natural.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "200 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1702,25 +2018,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_com_guardanapo_e_porta_guardanapo_83_1_53111740fc122e405b6f0813151781dd.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_com_guardanapo_e_porta_guardanapo_83_2_33495fe568597e77631449ae6c845aef.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1742,25 +2070,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_bordo_com_guardanapo_e_porta_guardanapo_84_1_400179a8243172519d3b9ed25763166d.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_bordo_com_guardanapo_e_porta_guardanapo_84_2_9c65e9dcd508a45fb13f67159bbf9c2d.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1782,25 +2122,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_1_4ee8ddba425a6ecb0a1aea494a0a21c0.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_2_52eae4b9b37ad4cf4bf8cf3766ef882c.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1822,25 +2174,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_marinho_com_guardanapo_e_porta_guardanapo_86_1_d28231f6587faa9ef3ec8f919c9c5597.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_marinho_com_guardanapo_e_porta_guardanapo_86_2_d428e6d2be58be7bc5889570638d6c93.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1862,25 +2226,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_vermelho_com_guardanapo_e_porta_guardanapo_laco_87_1_98754c2fecb31f116641764570681dc5.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_vermelho_com_guardanapo_e_porta_guardanapo_laco_87_2_b8bc4e46cfaeb4cfba1581cd1c21055b.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1902,25 +2278,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_verde_com_guardanapo_e_porta_guardanapo_88_1_d727a54635064bcb59d0079f8d495684.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_verde_com_guardanapo_e_porta_guardanapo_88_2_b537f99eba0672fcc96728af4aa891d5.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1942,25 +2330,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_verde_com_guardanapo_e_porta_guardanapo_laco_135_1_f2bd3879c982d96f0c73f21b101d9be5.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_verde_com_g_2_20260623101350_e453e1fbd87a.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -1982,25 +2382,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_com_guardanapo_e_porta_guardanapo_laco_136_1_ff0dc2455ae46dd53182b9e279f500d7.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_com_guardanapo_e_porta_guardanapo_laco_136_2_75614fe10725bc3aa88d5a5c1a5cd46c.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -2022,25 +2434,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_laco_137_1_d06c33cda7bae6ba44f88d017c4fb99c.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_2_20260623101609_f59f8d92416b.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -2062,25 +2486,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 38.5,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_marinho_com_guardanapo_e_porta_guardanapo_laco_138_1_b3652e6bda5440209392c9e90fdabbb6.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_azul_marinh_2_20260623101548_c898923f74a2.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -2105,7 +2541,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em CÓRDOBA ESTAMPADO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "CÓRDOBA ESTAMPADO"
       },
       {
@@ -2116,10 +2552,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -2145,7 +2585,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em LINHO 50%.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "LINHO 50%"
       },
       {
@@ -2155,11 +2595,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 44 cm"
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -2185,7 +2629,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em CÓRDOBA ESTAMPADO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "CÓRDOBA ESTAMPADO"
       },
       {
@@ -2196,10 +2640,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "100 g"
       }
     ],
@@ -2225,7 +2673,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em LINHO 50%.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "LINHO 50%"
       },
       {
@@ -2235,12 +2683,16 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
       }
     ],
     "image_status": "final",
@@ -2265,7 +2717,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em CÓRDOBA ESTAMPADO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "CÓRDOBA ESTAMPADO"
       },
       {
@@ -2276,10 +2728,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -2305,7 +2761,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em LINHO 50%.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "LINHO 50%"
       },
       {
@@ -2315,12 +2771,16 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
       }
     ],
     "image_status": "final",
@@ -2345,7 +2805,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em CÓRDOBA ESTAMPADO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "CÓRDOBA ESTAMPADO"
       },
       {
@@ -2356,10 +2816,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "100 g"
       }
     ],
@@ -2385,7 +2849,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em LINHO 50%.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "LINHO 50%"
       },
       {
@@ -2395,12 +2859,16 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "60 g"
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
       }
     ],
     "image_status": "final",
@@ -2422,25 +2890,29 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 9.73,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_1_883d4c67b5821887038f4fd78c45db3f.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_2_28114bf08c51a43b9d018df4d65e2e94.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Artesanal com Fibra Natural.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Artesanal em Fibra Natural e Madeira.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "70 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -2462,15 +2934,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 16.1,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_1_ca46eeb0333c67d7333ccbd025abd5d7.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_2_0c9a51209634dfebbb87d235f481046c.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhe Estruturado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 Impermeável"
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
       },
       {
         "label": "Acabamento",
-        "value": "Bordado com frase autoral"
+        "value": "Bordado exclusivo ou acabamento ondulado"
       }
     ],
     "dimensions": [
@@ -2479,7 +2951,11 @@ export const FEATURED_PRODUCTS: Product[] = [
         "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -2502,24 +2978,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 13.93,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_1_b9de10d99053f74af94b4a3f764bf045.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_2_de99465eb6317db22d8c275702f462d2.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -2542,15 +3022,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 16.1,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_1_52121ea5748695cfbba771b3c94fdf99.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_2_b2dab6c673773269dcbb888bd6a9fec3.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhe Estruturado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 Impermeável"
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
       },
       {
         "label": "Acabamento",
-        "value": "Bordado com frase autoral"
+        "value": "Bordado exclusivo ou acabamento ondulado"
       }
     ],
     "dimensions": [
@@ -2559,7 +3039,11 @@ export const FEATURED_PRODUCTS: Product[] = [
         "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -2582,24 +3066,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 13.93,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_1_409c456bb2025f7f2294bcb3d40d9fa6.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_2_030734e8a407c1f1dc95dd0e1816fcd8.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -2622,15 +3110,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 16.1,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_1_0fc8cd820697e33e3e12bd1fd2f24ff3.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_2_9913707690c53b8b53642598ed711160.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhe Estruturado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 Impermeável"
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
       },
       {
         "label": "Acabamento",
-        "value": "Bordado com frase autoral"
+        "value": "Bordado exclusivo ou acabamento ondulado"
       }
     ],
     "dimensions": [
@@ -2639,7 +3127,11 @@ export const FEATURED_PRODUCTS: Product[] = [
         "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -2662,24 +3154,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 13.93,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_1_b443c6323211d1b3f06ff7a43a7f3e8e.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_2_44123d19b0dcba567d8add3ff268b469.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -2702,15 +3198,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 16.1,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_vermelho_bordo_165_1_a54556fad62b8828958546d5cf089b92.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_vermelho_bordo_165_2_89c32c2c6aad848753be2e3832377173.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhe Estruturado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 Impermeável"
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
       },
       {
         "label": "Acabamento",
-        "value": "Bordado com frase autoral"
+        "value": "Bordado exclusivo ou acabamento ondulado"
       }
     ],
     "dimensions": [
@@ -2719,7 +3215,11 @@ export const FEATURED_PRODUCTS: Product[] = [
         "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -2742,24 +3242,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 13.93,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_1_3b988786c65b8fdf6ab71fe69ddebdb1.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_2_528864a86d65fdd0823c832d8f4c5ec3.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -2782,25 +3286,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 36.4,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_italia_completo_1_pessoa_com_lugar_americano_guardanapo_e_porta_guardanapo_pizza_167_1_e501a2246d055f989be7fbe44ab89a3c.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_italia_completo_1_pessoa_com_lugar_americano_guardanapo_e_porta_guardanapo_pizza_167_2_960ad0c76ca0855435b37f74694bc6ee.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 e Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhes (Acabamento refinado).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 e Algodão"
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -2822,24 +3338,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 25.2,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_itlia_redondo_verde_com_borda_xadr_1_20260625150332_3a2ee33fc003.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_itlia_redondo_verde_com_borda_xadr_2_20260625150332_0b4c3f00deca.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhe Estruturado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 Impermeável"
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
       },
       {
         "label": "Acabamento",
-        "value": "Bordado com frase autoral"
+        "value": "Bordado exclusivo ou acabamento ondulado"
       }
     ],
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 44 cm"
+        "value": "Redondo 44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -2862,24 +3382,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 13.93,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_1_ec5cdc4807cfcd00132b0f00444c9fa1.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_2_66bf6f4d12b053e32e4d0273ff75683e.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -2905,7 +3429,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em TRICOLINE CREME.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "TRICOLINE CREME"
       },
       {
@@ -2915,12 +3439,16 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 44 cm"
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
       }
     ],
     "image_status": "final",
@@ -2945,7 +3473,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em OXFORD BRANCO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "OXFORD BRANCO"
       },
       {
@@ -2955,11 +3483,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 44 cm"
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -2985,7 +3517,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em JEANS LEVE.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "JEANS LEVE"
       },
       {
@@ -2995,11 +3527,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 44 cm"
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -3025,7 +3561,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em NYLON 600 MARROM.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "NYLON 600 MARROM"
       },
       {
@@ -3036,10 +3572,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3065,7 +3605,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em JEANS - COURINO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "JEANS - COURINO"
       },
       {
@@ -3076,10 +3616,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "100 g"
       }
     ],
@@ -3105,7 +3649,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em NYLON 600 MARROM / OXFORD XADREZ.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "NYLON 600 MARROM / OXFORD XADREZ"
       },
       {
@@ -3116,10 +3660,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3142,25 +3690,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 36.06,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_1_aad1ea8416f35e8485058ee2c8d4c8d8.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_2_eacb8949ca391117ae09070d8473947d.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em JACGUARD + TRICOLINE 50% CREME.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em JACGUARD (BORDADO).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "JACGUARD + TRICOLINE 50% CREME"
+        "label": "Lugar Americano",
+        "value": "JACGUARD (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "TRICOLINE 50% CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "NÓ TURCO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -3182,25 +3742,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 34.09,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_rosa_com_lugar_americano_guardanapo_porta_guardanapo_178_1_e63e1f2b867fc958a55b102a8a8b6d45.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_rosa_com_lugar_americano_guardanapo_porta_guardanapo_178_2_236d0b84ba4fb3e270525c8953b646a4.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em GORGURINHO + OXFORD BRANCO.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em GORGURINHO (BORDADO).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "GORGURINHO + OXFORD BRANCO"
+        "label": "Lugar Americano",
+        "value": "GORGURINHO (BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "OXFORD BRANCO"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "FLOR ROSA"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "340 g"
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",
@@ -3225,7 +3797,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em GORGURINHO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "GORGURINHO"
       },
       {
@@ -3236,10 +3808,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3262,24 +3838,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 11.2,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_1_fd9f5f747ec253861fe0c9226771e9ba.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_2_14ff19b4e17861d74654d7f86ce81161.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -3305,7 +3885,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em GORGURINHO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "GORGURINHO"
       },
       {
@@ -3316,10 +3896,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3342,24 +3926,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 10.43,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_1_03bb60ead4509abb8618e3298fcc1674.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_2_f9b8133ad34134ea5b3262e6bcf0ecbd.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -3385,7 +3973,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em JACGUARD.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "JACGUARD"
       },
       {
@@ -3396,10 +3984,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3422,24 +4014,28 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 13.23,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_1_5b389c4cc2ab54664852088ce99c860e.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_2_744b835673c64b6b0122af572b717c3b.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Tricoline 100% Algodão com Toque Suave.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Tricoline 100% Algodão"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e toque suave"
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
+        "label": "Comprimento x Largura",
         "value": "44 x 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "50 g"
       }
     ],
@@ -3462,25 +4058,29 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 6.79,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_tassel_marrom_185_1_508f67d352d83a5a49aff44831e593fb.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_tassel_marrom_185_2_7bdb7664bab5297de56265dc3db16b02.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Artesanal com Fibra Natural.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Artesanal em Fibra Natural e Madeira.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Artesanal com Fibra Natural"
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
-        "value": "Estrutura artesanal exclusiva para mesa posta"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "7 x 5 x 5 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
         "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "value": "40 g"
       }
     ],
     "image_status": "final",
@@ -3505,7 +4105,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em JEANS LEVE.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "JEANS LEVE"
       },
       {
@@ -3515,12 +4115,16 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 44 cm"
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "80 g"
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
       }
     ],
     "image_status": "final",
@@ -3545,7 +4149,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em COURINO ROSA.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "COURINO ROSA"
       },
       {
@@ -3556,10 +4160,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3585,7 +4193,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em TRICOLINE FLORIDO 100%.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "TRICOLINE FLORIDO 100%"
       },
       {
@@ -3596,10 +4204,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3625,7 +4237,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em TRICOLINE FLORIDO 100%.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "TRICOLINE FLORIDO 100%"
       },
       {
@@ -3636,10 +4248,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "120 g"
       }
     ],
@@ -3665,7 +4281,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "description": "Peça exclusiva Mesa & Graça confeccionada em JEANS - COURINO.",
     "materials": [
       {
-        "label": "Tecido / Composição",
+        "label": "Tecido Principal",
         "value": "JEANS - COURINO"
       },
       {
@@ -3676,10 +4292,14 @@ export const FEATURED_PRODUCTS: Product[] = [
     "dimensions": [
       {
         "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "150 g"
       }
     ],
@@ -3702,15 +4322,15 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 24.43,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_1_15a3ff30201eca083ef9a1bb94903a83.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_2_f5000ec01d86a78aff45e85fb4c4b3cb.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em Nylon 600 Impermeável com Detalhe Estruturado.",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "Nylon 600 Impermeável"
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
       },
       {
         "label": "Acabamento",
-        "value": "Bordado com frase autoral"
+        "value": "Bordado exclusivo ou acabamento ondulado"
       }
     ],
     "dimensions": [
@@ -3719,7 +4339,11 @@ export const FEATURED_PRODUCTS: Product[] = [
         "value": "44 x 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
         "value": "150 g"
       }
     ],
@@ -3742,25 +4366,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "wholesale_price": 40.46,
     "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_costela_de_adao_com_lugar_americano_guardanapo_porta_guardanapo_255_1_6fd832c3f4c6122fa95743935f6ac89e.jpg",
     "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_costela_de_adao_com_lugar_americano_guardanapo_porta_guardanapo_255_2_fb1be81f54bcc036ede5fc42c505f197.jpg",
-    "description": "Peça exclusiva Mesa & Graça confeccionada em CÓRDOBA ESTAMPADO + LINHO 50%.",
+    "description": "Peça exclusiva Mesa & Graça confeccionada em CÓRDOBA ESTAMPADO (SEM BORDADO).",
     "materials": [
       {
-        "label": "Tecido / Composição",
-        "value": "CÓRDOBA ESTAMPADO + LINHO 50%"
+        "label": "Lugar Americano",
+        "value": "CÓRDOBA ESTAMPADO (SEM BORDADO)"
       },
       {
-        "label": "Acabamento",
-        "value": "Composição completa coordenada de mesa posta"
+        "label": "Guardanapo",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "COSTELA DE ADÃO MEDITERRANEO"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 x 5 cm"
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
       },
       {
-        "label": "Peso Unitário Aproximado",
-        "value": "300 g"
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 340 g)"
       }
     ],
     "image_status": "final",

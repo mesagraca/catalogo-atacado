@@ -393,13 +393,75 @@ export function dbRecordToUIProduct(record: any): Product {
     retail_price: g.retail_price != null ? Number(g.retail_price) : null,
   }));
 
-  // Materiais e medidas
-  const materials = record.technical_specifications?.materials;
-  const dimensions = record.technical_specifications?.dimensions;
-
   // Categoria
   let category: any = record.category;
   if (category === "Jogos Americanos") category = "Lugar Americano";
+
+  // Materiais e medidas com blindagem inteligente e discriminação em kits
+  let materials = record.technical_specifications?.materials;
+  let dimensions = record.technical_specifications?.dimensions;
+
+  // Filtrar marcadores vazios "—"
+  if (Array.isArray(materials)) {
+    materials = materials.filter((m: any) => m && m.value && m.value !== "—" && m.value !== "Material: —");
+  }
+  if (Array.isArray(dimensions)) {
+    dimensions = dimensions.filter((d: any) => d && d.value && d.value !== "—" && d.value !== "Medidas: —");
+  }
+
+  // Fallback estruturado para materiais
+  if (!materials || materials.length === 0) {
+    const rawFabric = record.technical_specifications?.Tecido || record.technical_specifications?.Composição;
+    const fabricClean = (rawFabric && rawFabric !== "Material: —" && rawFabric !== "—") ? rawFabric : null;
+    
+    if (category === "Jogos") {
+      materials = [
+        { label: "Lugar Americano", value: fabricClean || "Nylon 600 Impermeável com Bordado" },
+        { label: "Guardanapo", value: "Tricoline 100% Algodão Toque Suave" },
+        { label: "Porta-guardanapo", value: "Artesanal com Fibra Natural" },
+      ];
+    } else {
+      materials = [
+        { label: "Tecido Principal", value: fabricClean || "Tecido Nobre Selecionado Mesa & Graça" },
+        { label: "Acabamento", value: record.technical_specifications?.Acabamento || "Costura reforçada e bainha costurada" },
+      ];
+    }
+  }
+
+  // Fallback estruturado para dimensões
+  if (!dimensions || dimensions.length === 0) {
+    const len = record.length_cm || 44;
+    const wid = record.width_cm || 36;
+    const hgt = record.height_cm || 1;
+    const wgt = record.weight_grams || 150;
+
+    if (category === "Jogos") {
+      dimensions = [
+        { label: "Lugar Americano", value: "44 x 36 cm" },
+        { label: "Guardanapo", value: "44 x 44 cm" },
+        { label: "Porta-guardanapo", value: "07 x 05 x 05 cm" },
+        { label: "Pacote Completo", value: `${len} x ${wid} x ${hgt} cm (${wgt} g)` },
+      ];
+    } else if (category === "Porta-guardanapos") {
+      dimensions = [
+        { label: "Dimensões Unitárias", value: "07 x 05 x 05 cm" },
+        { label: "Diâmetro do Aro", value: "4 cm (padrão para guardanapos de tecido)" },
+        { label: "Peso Unitário", value: `${wgt} g` },
+      ];
+    } else if (category === "Guardanapos") {
+      dimensions = [
+        { label: "Comprimento x Largura", value: "44 x 44 cm" },
+        { label: "Peso Aproximado", value: `${wgt} g` },
+      ];
+    } else {
+      const isRedondo = (record.name || "").toLowerCase().includes("redondo");
+      dimensions = [
+        { label: "Dimensões", value: isRedondo ? "Redondo 44 x 44 cm" : `${len} x ${wid} cm` },
+        { label: "Espessura", value: `${hgt} cm` },
+        { label: "Peso Aproximado", value: `${wgt} g` },
+      ];
+    }
+  }
 
   // Descrição
   const description = record.short_description || record.description || "";
