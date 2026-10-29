@@ -335,25 +335,32 @@ export function dbRecordToUIProduct(record: any): Product {
   const images = record.media?.images || [];
   const photos = record.photos || [];
 
-  // Imagem principal (estúdio ou capa)
+  // Imagem principal (obrigatoriamente estúdio / fundo branco em atacado)
   let coverImg =
-    photos.find((p: any) => p.is_cover) ||
+    photos.find((p: any) => p.is_cover && p.type === "studio") ||
     photos.find((p: any) => p.type === "studio") ||
+    photos.find((p: any) => p.is_cover) ||
     photos[0];
   let coverUrl = coverImg ? coverImg.url_webp || coverImg.url : null;
   if (!coverUrl && images.length > 0) {
-    const mediaCover = images.find((img: any) => img.is_cover) || images[0];
+    const mediaCover =
+      images.find((img: any) => img.is_cover && img.type === "studio") ||
+      images.find((img: any) => img.type === "studio") ||
+      images.find((img: any) => img.is_cover) ||
+      images[0];
     coverUrl = mediaCover.url_webp || mediaCover.url;
   }
 
-  // Imagem editorial (hover ou ambiente)
+  // Imagem editorial (hover ou mesa posta ambientada em uso)
   let editorialImg =
-    photos.find((p: any) => p.type === "editorial" || (!p.is_cover && photos.length > 1)) ||
+    photos.find((p: any) => p.type === "editorial" && (p.url_webp || p.url) !== coverUrl) ||
+    photos.find((p: any) => !p.is_cover && (p.url_webp || p.url) !== coverUrl) ||
     photos[1];
   let editorialUrl = editorialImg ? editorialImg.url_webp || editorialImg.url : null;
   if (!editorialUrl && images.length > 1) {
     const mediaEditorial =
-      images.find((img: any) => !img.is_cover || img.type === "editorial") ||
+      images.find((img: any) => img.type === "editorial" && (img.url_webp || img.url) !== coverUrl) ||
+      images.find((img: any) => !img.is_cover && (img.url_webp || img.url) !== coverUrl) ||
       images[1];
     editorialUrl = mediaEditorial ? mediaEditorial.url_webp || mediaEditorial.url : null;
   }

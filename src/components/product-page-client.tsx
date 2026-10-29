@@ -86,7 +86,9 @@ export function ProductPageClient({
             wholesale_price: p.pricing?.wholesale_price ?? p.wholesale_price ?? null,
             image_url: p.media?.images?.find((img: any) => img.is_cover)?.url_webp || p.media?.images?.[0]?.url_webp || p.media?.images?.[0]?.url || null,
             editorial_image_url: p.media?.images?.find((img: any) => !img.is_cover)?.url_webp || p.media?.images?.[1]?.url_webp || null,
-            description: p.general?.description || p.general?.short_description || "",
+            description: p.general?.description || p.general?.short_description || p.description || "",
+            materials: p.technical_specifications?.materials || p.materials,
+            dimensions: p.technical_specifications?.dimensions || p.dimensions,
             image_status: "final",
             sort_order: p.sort_order ?? 0,
             is_visible: p.general?.active ?? true,
@@ -157,23 +159,66 @@ export function ProductPageClient({
           )}
         </section>
         <section className="product-page-info">
-          <p className="eyebrow">{product.collection || product.category}</p>
+          <div className="product-topline product-page-topline">
+            <p className="eyebrow">{product.collection || product.category}</p>
+            {(product.sku || product.id) && (
+              <span className="product-ref-code" title={`Código de referência: ${product.sku || product.id}`}>
+                REF: {product.sku ? product.sku.replace(/^MG-/, "") : product.id.slice(0, 8)}
+              </span>
+            )}
+          </div>
           <h1>{product.name}</h1>
-          {product.game_items?.length ? (
+                    {product.game_items?.length ? (
             <section className="product-page-game-prices">
-              <span>Jogo completo · atacado por item</span>
-              {product.game_items.map((item) => (
-                <p key={item.label}><small>{item.label}{item.retail_price != null && <> <s>{money(item.retail_price)}</s></>}</small><b>{money(item.wholesale_price)}</b></p>
-              ))}
+              <div className="game-prices-header">
+                <span>Jogo completo · discriminação por peça</span>
+                {product.wholesale_price != null && (
+                  <div className="game-total-pill">
+                    Total Atacado: <strong>{money(product.wholesale_price)}</strong>
+                    {product.retail_price != null && (
+                      <small> (Varejo: <s>{money(product.retail_price)}</s>)</small>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="game-items-table">
+                {product.game_items.map((item) => (
+                  <div className="game-item-row" key={item.label}>
+                    <span className="game-item-label">{item.label}</span>
+                    <div className="game-item-values">
+                      {item.retail_price != null && (
+                        <small className="game-item-retail">Varejo <s>{money(item.retail_price)}</s></small>
+                      )}
+                      <b className="game-item-wholesale">{money(item.wholesale_price)}</b>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </section>
           ) : (
             <div className="product-page-price">
-              <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
-              <strong>{money(product.wholesale_price)}</strong>
+              <div className="price-main-row">
+                <div>
+                  <span>{product.wholesale_price == null ? "Preço" : product.kit_quantity ? "Atacado por unidade" : "Preço atacado"}</span>
+                  <strong>{money(product.wholesale_price)}</strong>
+                </div>
+                {product.dimensions?.[0]?.value && (
+                  <span className="product-page-size-badge" title="Tamanho / Medida">
+                    {product.dimensions[0].value}
+                  </span>
+                )}
+              </div>
               {product.retail_price != null && (
-                <small>
-                  Varejo: <s>{money(product.retail_price)}</s>
-                </small>
+                <div className="price-comparison-row">
+                  <small>
+                    Varejo sugerido: <s>{money(product.retail_price)}</s>
+                  </small>
+                  {product.wholesale_price && product.retail_price > product.wholesale_price && (
+                    <span className="discount-pill">
+                      {Math.round((1 - product.wholesale_price / product.retail_price) * 100)}% OFF
+                    </span>
+                  )}
+                </div>
               )}
             </div>
           )}

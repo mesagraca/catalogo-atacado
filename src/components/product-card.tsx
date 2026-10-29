@@ -146,6 +146,11 @@ export function ProductCard({
                 {discount != null && <b>{discount}% OFF</b>}
               </div>
             )}
+            {product.dimensions?.[0]?.value && (
+              <div className="card-size-badge">
+                <span>{product.dimensions[0].value}</span>
+              </div>
+            )}
           </div>
         )}
         {product.kit_quantity && (
