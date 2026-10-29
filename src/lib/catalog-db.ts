@@ -1,6 +1,7 @@
 import { supabase, supabaseAdmin } from "./supabase";
 import { FEATURED_PRODUCTS, CATEGORIES, type Product } from "@/types/catalog";
 import { toCanonicalProduct, type CanonicalProduct } from "./catalog-canonical";
+import { roundPriceToDecile } from "./pricing";
 
 /**
  * Converte um registro do banco de dados PostgreSQL (Supabase)
@@ -389,8 +390,8 @@ export function dbRecordToUIProduct(record: any): Product {
   // Itens de jogo (jogos completos de mesa posta)
   const gameItems = (record.game_items || []).map((g: any) => ({
     label: g.label,
-    wholesale_price: g.wholesale_price != null ? Number(g.wholesale_price) : null,
-    retail_price: g.retail_price != null ? Number(g.retail_price) : null,
+    wholesale_price: g.wholesale_price != null ? roundPriceToDecile(g.wholesale_price) : null,
+    retail_price: g.retail_price != null ? roundPriceToDecile(g.retail_price) : null,
   }));
 
   // Categoria
@@ -475,8 +476,8 @@ export function dbRecordToUIProduct(record: any): Product {
     collection: category === "Porta-guardanapos" ? null : (record.collection || null),
     color_name: record.color_name || (variants.length > 0 ? "Variações disponíveis" : null),
     color_hex: record.color_hex || null,
-    retail_price: record.price != null ? Number(record.price) : null,
-    wholesale_price: record.wholesale_price != null ? Number(record.wholesale_price) : null,
+    retail_price: record.price != null ? roundPriceToDecile(record.price) : null,
+    wholesale_price: record.wholesale_price != null ? roundPriceToDecile(record.wholesale_price) : null,
     image_url: cleanUrl(coverUrl),
     editorial_image_url: cleanUrl(editorialUrl),
     description,
