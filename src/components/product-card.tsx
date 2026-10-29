@@ -52,8 +52,8 @@ export function ProductCard({
   const variations = product.variations ?? [];
   const visibleVariations = variations.slice(0, 6);
   const productUrl = `/catalogo/${product.id}`;
-  const hasColorInfo = variations.length > 0 || Boolean(product.color_name);
   const isGame = Boolean(product.game_items?.length);
+  const hasColorInfo = isGame || variations.length > 0 || Boolean(product.color_name);
   const whatsappHref = whatsappUrl(
     {
       ...product,
@@ -129,7 +129,10 @@ export function ProductCard({
           <div className="game-price-list" aria-label="Valores por item do jogo">
             <span>Jogo completo · preços por item</span>
             {product.game_items!.map((item) => (
-              <p key={item.label}><small>{item.label}{item.retail_price != null && <> <s>{money(item.retail_price)}</s></>}</small><b>{money(item.wholesale_price)}</b></p>
+              <p key={item.label}>
+                <small>{item.label.replace(/\s*\(.*?\)/, "").trim()}</small>
+                <b>{money(item.wholesale_price)}</b>
+              </p>
             ))}
           </div>
         ) : (
@@ -191,10 +194,8 @@ export function ProductCard({
               <div className="variation-picker single-color">
                 <span>Cor disponível</span>
                 <p>
-                  {product.color_hex && (
-                    <i style={{ backgroundColor: product.color_hex }} />
-                  )}{" "}
-                  {product.color_name}
+                  <i style={{ backgroundColor: product.color_hex || "#8d789d" }} />{" "}
+                  {isGame ? "Conforme composição" : (product.color_name || "Conforme composição")}
                 </p>
               </div>
             )}
