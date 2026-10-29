@@ -53,7 +53,7 @@ export function ProductCard({
   const visibleVariations = variations.slice(0, 6);
   const productUrl = `/catalogo/${product.id}`;
   const isGame = Boolean(product.game_items?.length);
-  const hasColorInfo = isGame || variations.length > 0 || Boolean(product.color_name);
+  const hasColorInfo = variations.length > 1;
   const whatsappHref = whatsappUrl(
     {
       ...product,
@@ -164,42 +164,32 @@ export function ProductCard({
         )}
         {hasColorInfo && (
           <>
-            {!isGame && <div className="product-divider" />}
-            {variations.length > 0 ? (
-              <div className="variation-picker">
-                <span>Variações no mesmo preço</span>
-                <div className="swatch-row">
-                  {visibleVariations.map((v) => (
-                    <Swatch
-                      key={`${v.pattern}-${v.name}`}
-                      variation={v}
-                      selected={
-                        selected?.name === v.name &&
-                        selected?.pattern === v.pattern
-                      }
-                      onClick={() => setSelected(v)}
-                    />
-                  ))}
-                  {variations.length > visibleVariations.length && (
-                    <Link
-                      className="more-swatches"
-                      href={productUrl}
-                      aria-label={`Ver mais ${variations.length - visibleVariations.length} variações`}
-                    >
-                      +{variations.length - visibleVariations.length}
-                    </Link>
-                  )}
-                </div>
+            <div className="product-divider" />
+            <div className="variation-picker">
+              <span>Variações no mesmo preço</span>
+              <div className="swatch-row">
+                {visibleVariations.map((v) => (
+                  <Swatch
+                    key={`${v.pattern}-${v.name}`}
+                    variation={v}
+                    selected={
+                      selected?.name === v.name &&
+                      selected?.pattern === v.pattern
+                    }
+                    onClick={() => setSelected(v)}
+                  />
+                ))}
+                {variations.length > visibleVariations.length && (
+                  <Link
+                    className="more-swatches"
+                    href={productUrl}
+                    aria-label={`Ver mais ${variations.length - visibleVariations.length} variações`}
+                  >
+                    +{variations.length - visibleVariations.length}
+                  </Link>
+                )}
               </div>
-            ) : (
-              <div className="variation-picker single-color">
-                <span>Cor disponível</span>
-                <p>
-                  <i style={{ backgroundColor: product.color_hex || "#8d789d" }} />{" "}
-                  {isGame ? "Conforme composição" : (product.color_name || "Conforme composição")}
-                </p>
-              </div>
-            )}
+            </div>
           </>
         )}
         <div className="card-bottom">

@@ -137,8 +137,7 @@ export function ProductPageClient({
         a.sort_order - b.sort_order,
     )
     .slice(0, 3);
-  const hasColorInfo =
-    Boolean(product.variations?.length) || Boolean(product.color_name);
+  const hasColorInfo = Boolean(product.variations && product.variations.length > 1);
   return (
     <>
       <SiteHeader products={catalogProducts} />
@@ -235,47 +234,36 @@ export function ProductPageClient({
               <b>Venda em kit com {product.kit_quantity} unidades.</b> O valor exibido é por peça.
             </p>
           )}
-          {hasColorInfo &&
-            (product.variations?.length ? (
-              <section className="product-page-variations">
-                <b>Escolha a variação</b>
-                {groups.map((pattern) => {
-                  const items =
-                    product.variations?.filter(
-                      (item) => item.pattern === pattern,
-                    ) ?? [];
-                  return items.length ? (
-                    <div className="product-page-option-row" key={pattern}>
-                      <span>{pattern === "xadrez" ? "Xadrez" : "Liso"}</span>
-                      <div className="product-page-options">
-                        {items.map((item) => (
-                          <button
-                            className={`product-page-swatch ${pattern} ${variation?.name === item.name && variation.pattern === item.pattern ? "selected" : ""}`}
-                            style={
-                              { "--swatch": item.hex } as React.CSSProperties
-                            }
-                            onClick={() => setVariation(item)}
-                            key={`${pattern}-${item.name}`}
-                          >
-                            {item.name}
-                          </button>
-                        ))}
-                      </div>
+          {hasColorInfo && (
+            <section className="product-page-variations">
+              <b>Escolha a variação</b>
+              {groups.map((pattern) => {
+                const items =
+                  product.variations?.filter(
+                    (item) => item.pattern === pattern,
+                  ) ?? [];
+                return items.length ? (
+                  <div className="product-page-option-row" key={pattern}>
+                    <span>{pattern === "xadrez" ? "Xadrez" : "Liso"}</span>
+                    <div className="product-page-options">
+                      {items.map((item) => (
+                        <button
+                          className={`product-page-swatch ${pattern} ${variation?.name === item.name && variation.pattern === item.pattern ? "selected" : ""}`}
+                          style={
+                            { "--swatch": item.hex } as React.CSSProperties
+                          }
+                          onClick={() => setVariation(item)}
+                          key={`${pattern}-${item.name}`}
+                        >
+                          {item.name}
+                        </button>
+                      ))}
                     </div>
-                  ) : null;
-                })}
-              </section>
-            ) : (
-              <section className="product-page-variations">
-                <b>Cor disponível</b>
-                <p className="product-page-color">
-                  {product.color_hex && (
-                    <i style={{ backgroundColor: product.color_hex }} />
-                  )}{" "}
-                  {product.color_name}
-                </p>
-              </section>
-            ))}
+                  </div>
+                ) : null;
+              })}
+            </section>
+          )}
           <section className="product-page-details" aria-label="Características do produto">
             <div>
               <b>Características</b>
