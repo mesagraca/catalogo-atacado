@@ -76,8 +76,11 @@ export function CatalogClient({
     const category = params.get("categoria");
     const collection = params.get("colecao");
     const query = params.get("busca");
-    if (category && CATEGORIES.includes(category as Category)) {
+    if (category && CATEGORIES.includes(category as Category) && !collection) {
       setFilter(category as Category);
+    } else if (category && CATEGORIES.includes(category as Category) && collection) {
+      // Quando uma coleção está selecionada na URL, mostra todos os itens da coleção por padrão
+      setFilter("Todos");
     }
     if (collection) setCollection(collection);
     if (query) setSearch(query);

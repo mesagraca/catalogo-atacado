@@ -486,16 +486,20 @@ export function dbRecordToUIProduct(record: any): Product {
     }
   }
 
-  // Descrição
+  // Descrição e Nome limpo para o catálogo
   const description = record.short_description || record.description || "";
+  const cleanName = String(record.name || "")
+    .replace(/\s*-\s*Com Lugar Americano\s*\+\s*Guardanapo\s*\+\s*Porta-Guardanapo/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
   return {
     id: record.id,
-    name: record.name,
+    name: cleanName,
     category,
     sku: record.sku || null,
     tray_id: record.tray_product_id ?? null,
-    collection: category === "Porta-guardanapos" ? null : (record.collection || null),
+    collection: record.collection && record.collection !== "Porta-guardanapos" ? record.collection : null,
     color_name: record.color_name || (variants.length > 0 ? "Variações disponíveis" : null),
     color_hex: record.color_hex || null,
     retail_price: record.price != null ? roundPriceToDecile(record.price) : null,

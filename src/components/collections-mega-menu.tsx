@@ -37,7 +37,7 @@ export function CollectionsMegaMenu({ products, categories, onSelect }: CatalogM
     {open && <div className="mega-panel" role="menu">
       <div className="mega-intro"><div><span>Catálogo atacado</span><strong>Organizado para facilitar sua compra.</strong></div><button type="button" onClick={() => select("Todos")}>Ver todo o catálogo</button></div>
       <section className="mega-menu-group"><b>Mesa Posta</b><small>Por tipo de produto</small>{productTypes.map((item) => <button type="button" key={item.category} onClick={() => select(item.category)}>{item.label}<small>{item.count} produtos</small></button>)}</section>
-      <section className="mega-menu-group"><b>Kits e Coleções</b><small>Por estilo e tema</small>{collections.map((item) => <button type="button" key={item.label} onClick={() => select(item.category, item.label)}>{item.label}<small>Ver coleção</small></button>)}</section>
+      <section className="mega-menu-group"><b>Kits e Coleções</b><small>Por estilo e tema</small>{collections.map((item) => <button type="button" key={item.label} onClick={() => select("Todos", item.label)}>{item.label}<small>Ver coleção</small></button>)}</section>
     </div>}
   </div>;
 }
