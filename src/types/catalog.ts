@@ -52,23 +52,579 @@ export type ProductInput = Omit<Product, "id" | "created_at"> & {
 
 export const FEATURED_PRODUCTS: Product[] = [
   {
-    "id": "lugar-americano-lavanda-com-frase-que-nesta-mesa-reine-a-paz-143",
-    "name": "Lugar Americano Lavanda Com Frase \"Que Nesta Mesa Reine a Paz\"",
+    "id": "guardanapo-azul-de-tecido-churrasco-172",
+    "name": "Guardanapo Azul de Tecido Churrasco",
+    "category": "Guardanapos",
+    "sku": "MES-NYL-LAM-172",
+    "tray_id": 172,
+    "collection": "CHURRASCO",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 23.9,
+    "wholesale_price": 16.7,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_2_20260625150039_b4f6a1ba4f92.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_1_20260625150039_2adbceb9e652.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_2_20260625150039_b4f6a1ba4f92.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_1_20260625150039_2adbceb9e652.jpg"
+    ],
+    "description": "Guardanapo em jeans leve com toque macio e acabamento reforçado, o complemento descontraído e elegante para os dias de confraternização.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "JEANS LEVE"
+      },
+      {
+        "label": "Acabamento",
+        "value": "BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:50.436798+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-italia-verde-169",
+    "name": "Guardanapo de Tecido Itália Verde",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-169",
+    "tray_id": 169,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 19.9,
+    "wholesale_price": 13.9,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_2_66bf6f4d12b053e32e4d0273ff75683e.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_1_ec5cdc4807cfcd00132b0f00444c9fa1.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_2_66bf6f4d12b053e32e4d0273ff75683e.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_1_ec5cdc4807cfcd00132b0f00444c9fa1.jpg"
+    ],
+    "description": "Guardanapo em tecido verde com toque suave e acabamento refinado, perfeito para harmonizar com composições inspiradas na Itália e mesas campestres.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bainha costurada e acabamento fino"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:50.002915+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-hot-dog-bordado-171",
+    "name": "Guardanapo de Tecido Hot Dog Bordado",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-171",
+    "tray_id": 171,
+    "collection": "HOTDOG",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 22.9,
+    "wholesale_price": 16,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_2_a2887692c6c4baf924a3bdd3e3ef79d4.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_1_62ad775e1acc9eb95c3039c2e98d8298.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_2_a2887692c6c4baf924a3bdd3e3ef79d4.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_1_62ad775e1acc9eb95c3039c2e98d8298.jpg"
+    ],
+    "description": "Guardanapo temático em tecido macio com bordado exclusivo de hot dog, trazendo um toque divertido e afetivo aos lanches em família.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "OXFORD BRANCO"
+      },
+      {
+        "label": "Acabamento",
+        "value": "BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:50.310849+00:00"
+  },
+  {
+    "id": "lugar-americano-festa-junina-xadrez-laranja-163",
+    "name": "Lugar Americano Festa Junina Xadrez Laranja",
     "category": "Lugar Americano",
-    "sku": "MES-TEC-JAM-143",
-    "tray_id": 143,
-    "collection": "LAVANDA",
+    "sku": "MES-NYL-JAM-163",
+    "tray_id": 163,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 23,
+    "wholesale_price": 16.1,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_2_9913707690c53b8b53642598ed711160.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_1_0fc8cd820697e33e3e12bd1fd2f24ff3.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_2_9913707690c53b8b53642598ed711160.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_1_0fc8cd820697e33e3e12bd1fd2f24ff3.jpg"
+    ],
+    "description": "Lugar americano impermeável em xadrez laranja caloroso, trazendo a alegria e a energia das festas tradicionais para a mesa posta.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bordado exclusivo ou acabamento ondulado"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 x 36 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:49.128978+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-festa-junina-xadrez-azul-162",
+    "name": "Guardanapo de Tecido Festa Junina Xadrez Azul",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-162",
+    "tray_id": 162,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 19.9,
+    "wholesale_price": 13.9,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_2_030734e8a407c1f1dc95dd0e1816fcd8.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_1_409c456bb2025f7f2294bcb3d40d9fa6.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_2_030734e8a407c1f1dc95dd0e1816fcd8.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_1_409c456bb2025f7f2294bcb3d40d9fa6.jpg"
+    ],
+    "description": "Guardanapo xadrez junino em azul com toque suave de algodão, ideal para mesas temáticas alegres e acolhedoras.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bainha costurada e acabamento fino"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:48.992855+00:00"
+  },
+  {
+    "id": "lugar-americano-festa-junina-xadrez-azul-161",
+    "name": "Lugar Americano Festa Junina Xadrez Azul",
+    "category": "Lugar Americano",
+    "sku": "MES-NYL-JAM-161",
+    "tray_id": 161,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 23,
+    "wholesale_price": 16.1,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_2_b2dab6c673773269dcbb888bd6a9fec3.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_1_52121ea5748695cfbba771b3c94fdf99.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_2_b2dab6c673773269dcbb888bd6a9fec3.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_1_52121ea5748695cfbba771b3c94fdf99.jpg"
+    ],
+    "description": "Lugar americano impermeável com estampa xadrez junina em azul, ideal para compor mesas típicas cheias de cor, afeto e tradição.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bordado exclusivo ou acabamento ondulado"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 x 36 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:48.846884+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-festa-junina-xadrez-verde-160",
+    "name": "Guardanapo de Tecido Festa Junina Xadrez Verde",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-160",
+    "tray_id": 160,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 19.9,
+    "wholesale_price": 13.9,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_2_de99465eb6317db22d8c275702f462d2.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_1_b9de10d99053f74af94b4a3f764bf045.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_2_de99465eb6317db22d8c275702f462d2.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_1_b9de10d99053f74af94b4a3f764bf045.jpg"
+    ],
+    "description": "Guardanapo com padronagem xadrez verde em tecido suave, perfeito para compor mesas típicas festivas com delicadeza e cor.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bainha costurada e acabamento fino"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:48.665051+00:00"
+  },
+  {
+    "id": "porta-guardanapo-dourado-com-esferas-metalizadas-157",
+    "name": "Porta Guardanapo Dourado com Esferas Metalizadas",
+    "category": "Porta-guardanapos",
+    "sku": "MES-PGU-DOU-157",
+    "tray_id": 157,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 13.9,
+    "wholesale_price": 9.7,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_2_28114bf08c51a43b9d018df4d65e2e94.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_1_883d4c67b5821887038f4fd78c45db3f.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_2_28114bf08c51a43b9d018df4d65e2e94.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_1_883d4c67b5821887038f4fd78c45db3f.jpg"
+    ],
+    "description": "Porta-guardanapo artesanal com esferas douradas metalizadas, conferindo brilho refinado e sofisticação contemporânea para vestir a mesa.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:48.256927+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-oliveira-com-frase-graca-a-mesa-150",
+    "name": "Guardanapo de Tecido Oliveira Com Frase \"Graça à Mesa\"",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-150",
+    "tray_id": 150,
+    "collection": "RAMO DE OLIVEIRA",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 17.9,
+    "wholesale_price": 12.5,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_2_cd1649a47f72a1cbf26f20c5bf11c151.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_1_dd02281ace5239ee1d0dd8e225c6644b.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_2_cd1649a47f72a1cbf26f20c5bf11c151.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_1_dd02281ace5239ee1d0dd8e225c6644b.jpg"
+    ],
+    "description": "Guardanapo em linho misto com bordado delicado 'Graça à Mesa', perfeito para criar mesas cheias de bênçãos e momentos especiais.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Acabamento",
+        "value": "SEM BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:47.243+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-alecrim-com-frase-em-casa-148",
+    "name": "Guardanapo de Tecido Alecrim Com Frase \"Em Casa\"",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-148",
+    "tray_id": 148,
+    "collection": "ALECRIM",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 17.9,
+    "wholesale_price": 12.5,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_2_520bdc2c71c9675faea4358f0c28c855.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_1_561b67ffe25c91286abb3879889ac90f.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_2_520bdc2c71c9675faea4358f0c28c855.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_1_561b67ffe25c91286abb3879889ac90f.jpg"
+    ],
+    "description": "Guardanapo em linho com caimento nobre e a frase bordada 'Em Casa', evocando a sensação de aconchego, pertencimento e amor.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Acabamento",
+        "value": "SEM BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:46.947015+00:00"
+  },
+  {
+    "id": "kit-mesa-posta-floral-marrom-com-lugar-americano-guardanapo-porta-guardanapo-177",
+    "name": "Kit Mesa Posta Floral Marrom",
+    "category": "Jogos",
+    "sku": "MES-KIT-MPT-177",
+    "tray_id": 177,
+    "collection": "FLOR MARROM",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 51.5,
+    "wholesale_price": 36.1,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_2_eacb8949ca391117ae09070d8473947d.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_1_aad1ea8416f35e8485058ee2c8d4c8d8.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_2_eacb8949ca391117ae09070d8473947d.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_1_aad1ea8416f35e8485058ee2c8d4c8d8.jpg"
+    ],
+    "description": "Composição sofisticada com arabescos florais em tons nobres de marrom, com lugar americano, guardanapo e porta-guardanapo coordenados para receber com elegância e aconchego.",
+    "materials": [
+      {
+        "label": "Lugar Americano",
+        "value": "JACGUARD (BORDADO)"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "TRICOLINE 50% CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "NÓ TURCO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "game_items": [
+      {
+        "label": "Lugar Americano (44 x 36 cm)",
+        "wholesale_price": 16,
+        "retail_price": 22.9,
+        "product_id": "lugar-americano-floral-marrom-com-acabamento-ondulado-183"
+      },
+      {
+        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "wholesale_price": 13.2,
+        "retail_price": 18.9,
+        "product_id": "guardanapo-de-tecido-off-white-184"
+      },
+      {
+        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
+        "wholesale_price": 6.8,
+        "retail_price": 9.7,
+        "product_id": "porta-guardanapo-tassel-marrom-185"
+      }
+    ],
+    "created_at": "2026-10-29T16:35:51.21342+00:00"
+  },
+  {
+    "id": "lugar-americano-alecrim-com-frase-que-nunca-nos-falte-gratidao-a-mesa-147",
+    "name": "Lugar Americano Alecrim Com Frase \"Que Nunca Nos Falte Gratidão à Mesa\"",
+    "category": "Lugar Americano",
+    "sku": "MES-TEC-JAM-147",
+    "tray_id": 147,
+    "collection": "ALECRIM",
     "color_name": null,
     "color_hex": null,
     "retail_price": 26,
     "wholesale_price": 18.2,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_2_cc8052daa44bde82c2d151b622441ae9.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_1_5bc65f75954a67bf684e21e2b75bda6a.jpg",
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_2_500bfbc8c72cfd5e77321d16f504c6ea.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_1_30220bea68546fdc758909fac14bba81.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_2_cc8052daa44bde82c2d151b622441ae9.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_1_5bc65f75954a67bf684e21e2b75bda6a.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_2_500bfbc8c72cfd5e77321d16f504c6ea.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_1_30220bea68546fdc758909fac14bba81.jpg"
     ],
-    "description": "Lugar americano suave em tons de lavanda com a frase 'Que nesta mesa reine a paz', criando uma atmosfera serena e acolhedora para receber.",
+    "description": "Lugar americano acolhedor com a frase 'Que nunca nos falte gratidão à mesa', ideal para inspirar paz e agradecimento nos encontros em família.",
     "materials": [
       {
         "label": "Tecido Principal",
@@ -97,7 +653,55 @@ export const FEATURED_PRODUCTS: Product[] = [
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:46.250969+00:00"
+    "created_at": "2026-10-29T16:35:46.815055+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-costela-de-adao-com-frase-a-mesa-146",
+    "name": "Guardanapo de Tecido Costela de Adão Com Frase \"À Mesa\"",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-146",
+    "tray_id": 146,
+    "collection": "COSTELA DE ADÃO",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 17.9,
+    "wholesale_price": 12.5,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_2_3ab814da72a7cb6b476a11a2bbea3769.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_1_d05a45948874613c75eaed39ab6e5a67.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_2_3ab814da72a7cb6b476a11a2bbea3769.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_1_d05a45948874613c75eaed39ab6e5a67.jpg"
+    ],
+    "description": "Guardanapo em linho misto com toque nobre e a frase 'À Mesa', um detalhe de sensibilidade e carinho para acolher cada convidado.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "LINHO 50%"
+      },
+      {
+        "label": "Acabamento",
+        "value": "SEM BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:46.663189+00:00"
   },
   {
     "id": "guardanapo-de-tecido-lavanda-com-frase-casa-aberta-144",
@@ -146,6 +750,82 @@ export const FEATURED_PRODUCTS: Product[] = [
     "is_visible": true,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:46.38934+00:00"
+  },
+  {
+    "id": "kit-mesa-posta-festa-junina-laranja-com-lugar-americano-guardanapo-porta-guardanapo-85",
+    "name": "Kit Mesa Posta Festa Junina Laranja",
+    "category": "Jogos",
+    "sku": "MES-NYL-COM-085",
+    "tray_id": 85,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 55,
+    "wholesale_price": 38.5,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_2_52eae4b9b37ad4cf4bf8cf3766ef882c.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_1_4ee8ddba425a6ecb0a1aea494a0a21c0.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_2_52eae4b9b37ad4cf4bf8cf3766ef882c.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_1_4ee8ddba425a6ecb0a1aea494a0a21c0.jpg"
+    ],
+    "description": "Composição calorosa em xadrez junino laranja, com lugar americano, guardanapo e porta-guardanapo coordenados para celebrar com alegria e aconchego em família.",
+    "materials": [
+      {
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "game_items": [
+      {
+        "label": "Lugar Americano (44 x 36 cm)",
+        "wholesale_price": 16.7,
+        "retail_price": 23.9,
+        "product_id": "lugar-americano-festa-junina-xadrez-laranja-163"
+      },
+      {
+        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "wholesale_price": 12.1,
+        "retail_price": 17.3,
+        "product_id": "guardanapo-de-tecido-festa-junina-xadrez-laranja-164"
+      },
+      {
+        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
+        "wholesale_price": 9.7,
+        "retail_price": 13.8,
+        "product_id": "porta-guardanapo-chapeu-de-palha-junino"
+      }
+    ],
+    "created_at": "2026-10-29T16:35:43.540983+00:00"
   },
   {
     "id": "jogo-de-4-porta-guardanapos-margarida-fibra-natural-62",
@@ -252,80 +932,52 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:52.44731+00:00"
   },
   {
-    "id": "kit-mesa-posta-floral-marrom-com-lugar-americano-guardanapo-porta-guardanapo-177",
-    "name": "Kit Mesa Posta Floral Marrom",
-    "category": "Jogos",
-    "sku": "MES-KIT-MPT-177",
-    "tray_id": 177,
-    "collection": "FLOR MARROM",
+    "id": "guardanapo-de-tecido-branco-182",
+    "name": "Guardanapo de Tecido Branco",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-182",
+    "tray_id": 182,
+    "collection": "Linha Mesa & Graça",
     "color_name": null,
     "color_hex": null,
-    "retail_price": 51.5,
-    "wholesale_price": 36.1,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_2_eacb8949ca391117ae09070d8473947d.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_1_aad1ea8416f35e8485058ee2c8d4c8d8.jpg",
+    "retail_price": 14.9,
+    "wholesale_price": 10.4,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_2_f9b8133ad34134ea5b3262e6bcf0ecbd.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_1_03bb60ead4509abb8618e3298fcc1674.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_2_eacb8949ca391117ae09070d8473947d.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_floral_marrom_com_lugar_americano_guardanapo_porta_guardanapo_177_1_aad1ea8416f35e8485058ee2c8d4c8d8.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_2_f9b8133ad34134ea5b3262e6bcf0ecbd.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_1_03bb60ead4509abb8618e3298fcc1674.jpg"
     ],
-    "description": "Composição sofisticada com arabescos florais em tons nobres de marrom, com lugar americano, guardanapo e porta-guardanapo coordenados para receber com elegância e aconchego.",
+    "description": "Guardanapo clássico branco com toque macio e caimento impecável, o curinga essencial para enriquecer qualquer estilo de mesa posta.",
     "materials": [
       {
-        "label": "Lugar Americano",
-        "value": "JACGUARD (BORDADO)"
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
       },
       {
-        "label": "Guardanapo",
-        "value": "TRICOLINE 50% CREME"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "NÓ TURCO"
+        "label": "Acabamento",
+        "value": "Bainha costurada e acabamento fino"
       }
     ],
     "dimensions": [
       {
-        "label": "Lugar Americano",
-        "value": "44 X 36 cm"
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
       },
       {
-        "label": "Guardanapo",
-        "value": "44 X 44 cm"
+        "label": "Espessura",
+        "value": "1 cm dobrado"
       },
       {
-        "label": "Porta-guardanapo",
-        "value": "05 X 07 cm"
-      },
-      {
-        "label": "Pacote do Kit Completo",
-        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
+        "label": "Peso Aproximado",
+        "value": "25 g"
       }
     ],
     "image_status": "final",
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "game_items": [
-      {
-        "label": "Lugar Americano (44 x 36 cm)",
-        "wholesale_price": 16,
-        "retail_price": 22.9,
-        "product_id": "lugar-americano-floral-marrom-com-acabamento-ondulado-183"
-      },
-      {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
-        "wholesale_price": 13.2,
-        "retail_price": 18.9,
-        "product_id": "guardanapo-de-tecido-off-white-184"
-      },
-      {
-        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
-        "wholesale_price": 6.8,
-        "retail_price": 9.7,
-        "product_id": "porta-guardanapo-tassel-marrom-185"
-      }
-    ],
-    "created_at": "2026-10-29T16:35:51.21342+00:00"
+    "created_at": "2026-10-29T16:35:52.009497+00:00"
   },
   {
     "id": "lugar-americano-floral-marrom-com-acabamento-ondulado-183",
@@ -376,178 +1028,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:52.171409+00:00"
   },
   {
-    "id": "kit-mesa-posta-festa-junina-laranja-com-lugar-americano-guardanapo-porta-guardanapo-85",
-    "name": "Kit Mesa Posta Festa Junina Laranja",
-    "category": "Jogos",
-    "sku": "MES-NYL-COM-085",
-    "tray_id": 85,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 55,
-    "wholesale_price": 38.5,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_2_52eae4b9b37ad4cf4bf8cf3766ef882c.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_1_4ee8ddba425a6ecb0a1aea494a0a21c0.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_2_52eae4b9b37ad4cf4bf8cf3766ef882c.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_festa_junina_xadrez_laranja_com_guardanapo_e_porta_guardanapo_85_1_4ee8ddba425a6ecb0a1aea494a0a21c0.jpg"
-    ],
-    "description": "Composição calorosa em xadrez junino laranja, com lugar americano, guardanapo e porta-guardanapo coordenados para celebrar com alegria e aconchego em família.",
-    "materials": [
-      {
-        "label": "Lugar Americano",
-        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
-      },
-      {
-        "label": "Guardanapo",
-        "value": "Tricoline 100% Algodão Premium"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "Artesanal com Fibra Natural"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Lugar Americano",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Guardanapo",
-        "value": "44 x 44 cm"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Pacote do Kit Completo",
-        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "game_items": [
-      {
-        "label": "Lugar Americano (44 x 36 cm)",
-        "wholesale_price": 16.7,
-        "retail_price": 23.9,
-        "product_id": "lugar-americano-festa-junina-xadrez-laranja-163"
-      },
-      {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
-        "wholesale_price": 12.1,
-        "retail_price": 17.3,
-        "product_id": "guardanapo-de-tecido-festa-junina-xadrez-laranja-164"
-      },
-      {
-        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
-        "wholesale_price": 9.7,
-        "retail_price": 13.8,
-        "product_id": "porta-guardanapo-chapeu-de-palha-junino"
-      }
-    ],
-    "created_at": "2026-10-29T16:35:43.540983+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-branco-182",
-    "name": "Guardanapo de Tecido Branco",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-182",
-    "tray_id": 182,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 14.9,
-    "wholesale_price": 10.4,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_2_f9b8133ad34134ea5b3262e6bcf0ecbd.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_1_03bb60ead4509abb8618e3298fcc1674.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_2_f9b8133ad34134ea5b3262e6bcf0ecbd.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_branco_182_1_03bb60ead4509abb8618e3298fcc1674.jpg"
-    ],
-    "description": "Guardanapo clássico branco com toque macio e caimento impecável, o curinga essencial para enriquecer qualquer estilo de mesa posta.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Tricoline 100% Algodão com Toque Suave"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bainha costurada e acabamento fino"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:52.009497+00:00"
-  },
-  {
-    "id": "lugar-americano-hot-dog-xadrez-vermelho-175",
-    "name": "Lugar Americano Hot Dog Xadrez Vermelho",
-    "category": "Lugar Americano",
-    "sku": "MES-NYL-LAM-175",
-    "tray_id": 175,
-    "collection": "HOTDOG",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 29.9,
-    "wholesale_price": 20.9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_2_20260625145847_7f0f849ec3df.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_1_20260625145847_7c4277610718.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_2_20260625145847_7f0f849ec3df.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_1_20260625145847_7c4277610718.jpg"
-    ],
-    "description": "Lugar americano temático com detalhe xadrez e bolso exclusivo, trazendo descontração e afeto para lanches e noites divertidas em família.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "NYLON 600 MARROM / OXFORD XADREZ"
-      },
-      {
-        "label": "Acabamento",
-        "value": "BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 X 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:50.896846+00:00"
-  },
-  {
     "id": "lugar-americano-oliveira-com-frase-a-esperanca-floresce-onde-deus-e-centro-149",
     "name": "Lugar Americano Oliveira Com Frase \"A Esperança Floresce Onde Deus é Centro\"",
     "category": "Lugar Americano",
@@ -594,54 +1074,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "is_visible": true,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:47.113502+00:00"
-  },
-  {
-    "id": "lugar-americano-videira-off-white-bordado-verde-245",
-    "name": "Lugar Americano Videira Off White Bordado Verde",
-    "category": "Lugar Americano",
-    "sku": "MES-TEC-LAV-245",
-    "tray_id": 245,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 34.9,
-    "wholesale_price": 24.4,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_2_f5000ec01d86a78aff45e85fb4c4b3cb.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_1_15a3ff30201eca083ef9a1bb94903a83.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_2_f5000ec01d86a78aff45e85fb4c4b3cb.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_1_15a3ff30201eca083ef9a1bb94903a83.jpg"
-    ],
-    "description": "Lugar americano impermeável off white com bordado delicado de videira em verde, simbolizando paz, renovação e bênçãos ao redor da mesa.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bordado exclusivo ou acabamento ondulado"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:54.228834+00:00"
   },
   {
     "id": "lugar-americano-limao-siciliano-azul-marinho-com-borda-amarela-179",
@@ -816,75 +1248,27 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:45.161092+00:00"
   },
   {
-    "id": "guardanapo-de-tecido-hamburguer-individual-215",
-    "name": "Guardanapo de Tecido Hambúrguer Individual",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GTH-215",
-    "tray_id": 215,
-    "collection": "HAMBURGUER",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 21.9,
-    "wholesale_price": 15.3,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_2_8f3514261b1de287d732f9acc8ed9397.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_1_5fe55eec6230db78adfd956d7122ec9b.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_2_8f3514261b1de287d732f9acc8ed9397.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_1_5fe55eec6230db78adfd956d7122ec9b.jpg"
-    ],
-    "description": "Guardanapo temático em jeans leve com toque suave, ideal para compor encontros modernos e descontraídos ao redor de boas refeições.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "JEANS LEVE"
-      },
-      {
-        "label": "Acabamento",
-        "value": "BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 X 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:52.875118+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-hot-dog-bordado-171",
-    "name": "Guardanapo de Tecido Hot Dog Bordado",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-171",
-    "tray_id": 171,
+    "id": "lugar-americano-hot-dog-xadrez-vermelho-175",
+    "name": "Lugar Americano Hot Dog Xadrez Vermelho",
+    "category": "Lugar Americano",
+    "sku": "MES-NYL-LAM-175",
+    "tray_id": 175,
     "collection": "HOTDOG",
     "color_name": null,
     "color_hex": null,
-    "retail_price": 22.9,
-    "wholesale_price": 16,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_2_a2887692c6c4baf924a3bdd3e3ef79d4.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_1_62ad775e1acc9eb95c3039c2e98d8298.jpg",
+    "retail_price": 29.9,
+    "wholesale_price": 20.9,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_2_20260625145847_7f0f849ec3df.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_1_20260625145847_7c4277610718.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_2_a2887692c6c4baf924a3bdd3e3ef79d4.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hot_dog_bordado_171_1_62ad775e1acc9eb95c3039c2e98d8298.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_2_20260625145847_7f0f849ec3df.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hot_dog_xadrez_vermelho_1_20260625145847_7c4277610718.jpg"
     ],
-    "description": "Guardanapo temático em tecido macio com bordado exclusivo de hot dog, trazendo um toque divertido e afetivo aos lanches em família.",
+    "description": "Lugar americano temático com detalhe xadrez e bolso exclusivo, trazendo descontração e afeto para lanches e noites divertidas em família.",
     "materials": [
       {
         "label": "Tecido Principal",
-        "value": "OXFORD BRANCO"
+        "value": "NYLON 600 MARROM / OXFORD XADREZ"
       },
       {
         "label": "Acabamento",
@@ -893,71 +1277,23 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "dimensions": [
       {
-        "label": "Comprimento x Largura",
-        "value": "44 X 44 cm"
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 X 36 cm"
       },
       {
         "label": "Espessura",
-        "value": "1 cm dobrado"
+        "value": "1 cm"
       },
       {
         "label": "Peso Aproximado",
-        "value": "25 g"
+        "value": "50 g"
       }
     ],
     "image_status": "final",
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:50.310849+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-italia-verde-169",
-    "name": "Guardanapo de Tecido Itália Verde",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-169",
-    "tray_id": 169,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 19.9,
-    "wholesale_price": 13.9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_2_66bf6f4d12b053e32e4d0273ff75683e.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_1_ec5cdc4807cfcd00132b0f00444c9fa1.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_2_66bf6f4d12b053e32e4d0273ff75683e.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_italia_verde_169_1_ec5cdc4807cfcd00132b0f00444c9fa1.jpg"
-    ],
-    "description": "Guardanapo em tecido verde com toque suave e acabamento refinado, perfeito para harmonizar com composições inspiradas na Itália e mesas campestres.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Tricoline 100% Algodão com Toque Suave"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bainha costurada e acabamento fino"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:50.002915+00:00"
+    "created_at": "2026-10-29T16:35:50.896846+00:00"
   },
   {
     "id": "lugar-americano-floral-rosa-com-acabamento-bordado-181",
@@ -1008,102 +1344,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:51.822931+00:00"
   },
   {
-    "id": "guardanapo-azul-de-tecido-churrasco-172",
-    "name": "Guardanapo Azul de Tecido Churrasco",
-    "category": "Guardanapos",
-    "sku": "MES-NYL-LAM-172",
-    "tray_id": 172,
-    "collection": "CHURRASCO",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 23.9,
-    "wholesale_price": 16.7,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_2_20260625150039_b4f6a1ba4f92.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_1_20260625150039_2adbceb9e652.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_2_20260625150039_b4f6a1ba4f92.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_hambrguer_azul_1_20260625150039_2adbceb9e652.jpg"
-    ],
-    "description": "Guardanapo em jeans leve com toque macio e acabamento reforçado, o complemento descontraído e elegante para os dias de confraternização.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "JEANS LEVE"
-      },
-      {
-        "label": "Acabamento",
-        "value": "BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 X 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:50.436798+00:00"
-  },
-  {
-    "id": "lugar-americano-festa-junina-xadrez-verde-159",
-    "name": "Lugar Americano Festa Junina Xadrez Verde",
-    "category": "Lugar Americano",
-    "sku": "MES-NYL-JAM-159",
-    "tray_id": 159,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 23,
-    "wholesale_price": 16.1,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_2_0c9a51209634dfebbb87d235f481046c.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_1_ca46eeb0333c67d7333ccbd025abd5d7.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_2_0c9a51209634dfebbb87d235f481046c.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_1_ca46eeb0333c67d7333ccbd025abd5d7.jpg"
-    ],
-    "description": "Lugar americano impermeável em xadrez verde festivo, perfeito para celebrar festividades típicas com praticidade e beleza.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bordado exclusivo ou acabamento ondulado"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:48.53107+00:00"
-  },
-  {
     "id": "lugar-americano-feijoada-marrom-com-acabamento-ondulado-173",
     "name": "Lugar Americano Feijoada Marrom com Acabamento Ondulado",
     "category": "Lugar Americano",
@@ -1150,6 +1390,102 @@ export const FEATURED_PRODUCTS: Product[] = [
     "is_visible": true,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:50.612932+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-hamburguer-individual-215",
+    "name": "Guardanapo de Tecido Hambúrguer Individual",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GTH-215",
+    "tray_id": 215,
+    "collection": "HAMBURGUER",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 21.9,
+    "wholesale_price": 15.3,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_2_8f3514261b1de287d732f9acc8ed9397.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_1_5fe55eec6230db78adfd956d7122ec9b.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_2_8f3514261b1de287d732f9acc8ed9397.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_hamburguer_individual_215_1_5fe55eec6230db78adfd956d7122ec9b.jpg"
+    ],
+    "description": "Guardanapo temático em jeans leve com toque suave, ideal para compor encontros modernos e descontraídos ao redor de boas refeições.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "JEANS LEVE"
+      },
+      {
+        "label": "Acabamento",
+        "value": "BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:52.875118+00:00"
+  },
+  {
+    "id": "guardanapo-de-tecido-azul-marinho-180",
+    "name": "Guardanapo de Tecido Azul Marinho",
+    "category": "Guardanapos",
+    "sku": "MES-TEC-GUA-180",
+    "tray_id": 180,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 16,
+    "wholesale_price": 11.2,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_2_14ff19b4e17861d74654d7f86ce81161.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_1_fd9f5f747ec253861fe0c9226771e9ba.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_2_14ff19b4e17861d74654d7f86ce81161.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_1_fd9f5f747ec253861fe0c9226771e9ba.jpg"
+    ],
+    "description": "Guardanapo em tom azul marinho nobre com textura suave, proporcionando contraste sofisticado e elegância discreta a qualquer composição.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Tricoline 100% Algodão com Toque Suave"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bainha costurada e acabamento fino"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Comprimento x Largura",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm dobrado"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:51.660707+00:00"
   },
   {
     "id": "lugar-americano-flor-de-lottus-rosa-bordado-230",
@@ -1200,52 +1536,100 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:53.160756+00:00"
   },
   {
-    "id": "guardanapo-de-tecido-azul-marinho-180",
-    "name": "Guardanapo de Tecido Azul Marinho",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-180",
-    "tray_id": 180,
-    "collection": "Linha Mesa & Graça",
+    "id": "lugar-americano-lavanda-com-frase-que-nesta-mesa-reine-a-paz-143",
+    "name": "Lugar Americano Lavanda Com Frase \"Que Nesta Mesa Reine a Paz\"",
+    "category": "Lugar Americano",
+    "sku": "MES-TEC-JAM-143",
+    "tray_id": 143,
+    "collection": "LAVANDA",
     "color_name": null,
     "color_hex": null,
-    "retail_price": 16,
-    "wholesale_price": 11.2,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_2_14ff19b4e17861d74654d7f86ce81161.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_1_fd9f5f747ec253861fe0c9226771e9ba.jpg",
+    "retail_price": 26,
+    "wholesale_price": 18.2,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_2_cc8052daa44bde82c2d151b622441ae9.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_1_5bc65f75954a67bf684e21e2b75bda6a.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_2_14ff19b4e17861d74654d7f86ce81161.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_azul_marinho_180_1_fd9f5f747ec253861fe0c9226771e9ba.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_2_cc8052daa44bde82c2d151b622441ae9.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_lavanda_com_frase_que_nesta_mesa_reine_a_paz_143_1_5bc65f75954a67bf684e21e2b75bda6a.jpg"
     ],
-    "description": "Guardanapo em tom azul marinho nobre com textura suave, proporcionando contraste sofisticado e elegância discreta a qualquer composição.",
+    "description": "Lugar americano suave em tons de lavanda com a frase 'Que nesta mesa reine a paz', criando uma atmosfera serena e acolhedora para receber.",
     "materials": [
       {
         "label": "Tecido Principal",
-        "value": "Tricoline 100% Algodão com Toque Suave"
+        "value": "CÓRDOBA ESTAMPADO"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e acabamento fino"
+        "value": "SEM BORDADO"
       }
     ],
     "dimensions": [
       {
-        "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 X 36 cm"
       },
       {
         "label": "Espessura",
-        "value": "1 cm dobrado"
+        "value": "1 cm"
       },
       {
         "label": "Peso Aproximado",
-        "value": "25 g"
+        "value": "50 g"
       }
     ],
     "image_status": "final",
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:51.660707+00:00"
+    "created_at": "2026-10-29T16:35:46.250969+00:00"
+  },
+  {
+    "id": "lugar-americano-festa-junina-xadrez-verde-159",
+    "name": "Lugar Americano Festa Junina Xadrez Verde",
+    "category": "Lugar Americano",
+    "sku": "MES-NYL-JAM-159",
+    "tray_id": 159,
+    "collection": "Linha Mesa & Graça",
+    "color_name": null,
+    "color_hex": null,
+    "retail_price": 23,
+    "wholesale_price": 16.1,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_2_0c9a51209634dfebbb87d235f481046c.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_1_ca46eeb0333c67d7333ccbd025abd5d7.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_2_0c9a51209634dfebbb87d235f481046c.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_verde_159_1_ca46eeb0333c67d7333ccbd025abd5d7.jpg"
+    ],
+    "description": "Lugar americano impermeável em xadrez verde festivo, perfeito para celebrar festividades típicas com praticidade e beleza.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bordado exclusivo ou acabamento ondulado"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 x 36 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 0,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-29T16:35:48.53107+00:00"
   },
   {
     "id": "lugar-americano-bridgerton-azul-floral-com-borda-ondulada-233",
@@ -1344,100 +1728,52 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:53.452879+00:00"
   },
   {
-    "id": "guardanapo-de-tecido-off-white-184",
-    "name": "Guardanapo de Tecido Off White",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-184",
-    "tray_id": 184,
+    "id": "lugar-americano-videira-off-white-bordado-verde-245",
+    "name": "Lugar Americano Videira Off White Bordado Verde",
+    "category": "Lugar Americano",
+    "sku": "MES-TEC-LAV-245",
+    "tray_id": 245,
     "collection": "Linha Mesa & Graça",
     "color_name": null,
     "color_hex": null,
-    "retail_price": 18.9,
-    "wholesale_price": 13.2,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_2_744b835673c64b6b0122af572b717c3b.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_1_5b389c4cc2ab54664852088ce99c860e.jpg",
+    "retail_price": 34.9,
+    "wholesale_price": 24.4,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_2_f5000ec01d86a78aff45e85fb4c4b3cb.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_1_15a3ff30201eca083ef9a1bb94903a83.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_2_744b835673c64b6b0122af572b717c3b.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_1_5b389c4cc2ab54664852088ce99c860e.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_2_f5000ec01d86a78aff45e85fb4c4b3cb.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_videira_off_white_bordado_verde_245_1_15a3ff30201eca083ef9a1bb94903a83.jpg"
     ],
-    "description": "Guardanapo em tom off white neutro com toque macio, ideal para quem busca versatilidade, acolhimento e requinte atemporal.",
+    "description": "Lugar americano impermeável off white com bordado delicado de videira em verde, simbolizando paz, renovação e bênçãos ao redor da mesa.",
     "materials": [
       {
         "label": "Tecido Principal",
-        "value": "Tricoline 100% Algodão com Toque Suave"
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e acabamento fino"
+        "value": "Bordado exclusivo ou acabamento ondulado"
       }
     ],
     "dimensions": [
       {
-        "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 x 36 cm"
       },
       {
         "label": "Espessura",
-        "value": "1 cm dobrado"
+        "value": "1 cm"
       },
       {
         "label": "Peso Aproximado",
-        "value": "25 g"
+        "value": "50 g"
       }
     ],
     "image_status": "final",
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:52.302938+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-feijoada-bordado-com-frase-tradicao-e-reunir-quem-a-gente-ama-170",
-    "name": "Guardanapo de Tecido Feijoada Bordado com Frase \"Tradição é Reunir Quem a Gente Ama\"",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-170",
-    "tray_id": 170,
-    "collection": "FEIJOADA",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 22.9,
-    "wholesale_price": 16,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_2_c56ad070464b21ce7ac6c61e0d1ea072.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_1_1b36477d8b5dbe409b57275a1af9b786.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_2_c56ad070464b21ce7ac6c61e0d1ea072.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_1_1b36477d8b5dbe409b57275a1af9b786.jpg"
-    ],
-    "description": "Guardanapo delicado com a frase bordada 'Tradição é reunir quem a gente ama', expressando o verdadeiro significado de compartilhar a mesa.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "TRICOLINE CREME"
-      },
-      {
-        "label": "Acabamento",
-        "value": "BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 X 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:50.170947+00:00"
+    "created_at": "2026-10-29T16:35:54.228834+00:00"
   },
   {
     "id": "kit-mesa-posta-festa-junina-azul-com-lugar-americano-guardanapo-porta-guardanapo-83",
@@ -2020,23 +2356,23 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:45.493073+00:00"
   },
   {
-    "id": "guardanapo-de-tecido-festa-junina-xadrez-vermelho-bordo-166",
-    "name": "Guardanapo de Tecido Festa Junina Xadrez Vermelho Bordô",
+    "id": "guardanapo-de-tecido-off-white-184",
+    "name": "Guardanapo de Tecido Off White",
     "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-166",
-    "tray_id": 166,
+    "sku": "MES-TEC-GUA-184",
+    "tray_id": 184,
     "collection": "Linha Mesa & Graça",
     "color_name": null,
     "color_hex": null,
-    "retail_price": 19.9,
-    "wholesale_price": 13.9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_2_528864a86d65fdd0823c832d8f4c5ec3.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_1_3b988786c65b8fdf6ab71fe69ddebdb1.jpg",
+    "retail_price": 18.9,
+    "wholesale_price": 13.2,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_2_744b835673c64b6b0122af572b717c3b.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_1_5b389c4cc2ab54664852088ce99c860e.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_2_528864a86d65fdd0823c832d8f4c5ec3.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_1_3b988786c65b8fdf6ab71fe69ddebdb1.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_2_744b835673c64b6b0122af572b717c3b.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_off_white_184_1_5b389c4cc2ab54664852088ce99c860e.jpg"
     ],
-    "description": "Guardanapo em xadrez bordô com caimento suave, o detalhe perfeito para composições temáticas charmosas e aconchegantes.",
+    "description": "Guardanapo em tom off white neutro com toque macio, ideal para quem busca versatilidade, acolhimento e requinte atemporal.",
     "materials": [
       {
         "label": "Tecido Principal",
@@ -2065,7 +2401,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:49.551377+00:00"
+    "created_at": "2026-10-29T16:35:52.302938+00:00"
   },
   {
     "id": "lugar-americano-italia-redondo-verde-com-borda-xadrez-para-mesa-posta-168",
@@ -2446,37 +2782,37 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:54.084952+00:00"
   },
   {
-    "id": "guardanapo-de-tecido-festa-junina-xadrez-laranja-164",
-    "name": "Guardanapo de Tecido Festa Junina Xadrez Laranja",
+    "id": "guardanapo-de-tecido-feijoada-bordado-com-frase-tradicao-e-reunir-quem-a-gente-ama-170",
+    "name": "Guardanapo de Tecido Feijoada Bordado com Frase \"Tradição é Reunir Quem a Gente Ama\"",
     "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-164",
-    "tray_id": 164,
-    "collection": "Linha Mesa & Graça",
+    "sku": "MES-TEC-GUA-170",
+    "tray_id": 170,
+    "collection": "FEIJOADA",
     "color_name": null,
     "color_hex": null,
-    "retail_price": 19.9,
-    "wholesale_price": 13.9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_2_44123d19b0dcba567d8add3ff268b469.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_1_b443c6323211d1b3f06ff7a43a7f3e8e.jpg",
+    "retail_price": 22.9,
+    "wholesale_price": 16,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_2_c56ad070464b21ce7ac6c61e0d1ea072.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_1_1b36477d8b5dbe409b57275a1af9b786.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_2_44123d19b0dcba567d8add3ff268b469.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_1_b443c6323211d1b3f06ff7a43a7f3e8e.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_2_c56ad070464b21ce7ac6c61e0d1ea072.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_feijoada_bordado_com_frase_tradicao_e_reunir_quem_a_gente_ama_170_1_1b36477d8b5dbe409b57275a1af9b786.jpg"
     ],
-    "description": "Guardanapo vibrante em xadrez laranja com toque macio, trazendo calor e personalidade para as comemorações juninas.",
+    "description": "Guardanapo delicado com a frase bordada 'Tradição é reunir quem a gente ama', expressando o verdadeiro significado de compartilhar a mesa.",
     "materials": [
       {
         "label": "Tecido Principal",
-        "value": "Tricoline 100% Algodão com Toque Suave"
+        "value": "TRICOLINE CREME"
       },
       {
         "label": "Acabamento",
-        "value": "Bainha costurada e acabamento fino"
+        "value": "BORDADO"
       }
     ],
     "dimensions": [
       {
         "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
+        "value": "44 X 44 cm"
       },
       {
         "label": "Espessura",
@@ -2491,7 +2827,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:49.258847+00:00"
+    "created_at": "2026-10-29T16:35:50.170947+00:00"
   },
   {
     "id": "kit-mesa-posta-xadrez-vermelho-com-lugar-americano-guardanapo-porta-guardanapo-87",
@@ -2570,71 +2906,23 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-29T16:35:43.823266+00:00"
   },
   {
-    "id": "lugar-americano-festa-junina-xadrez-laranja-163",
-    "name": "Lugar Americano Festa Junina Xadrez Laranja",
-    "category": "Lugar Americano",
-    "sku": "MES-NYL-JAM-163",
-    "tray_id": 163,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 23,
-    "wholesale_price": 16.1,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_2_9913707690c53b8b53642598ed711160.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_1_0fc8cd820697e33e3e12bd1fd2f24ff3.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_2_9913707690c53b8b53642598ed711160.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_laranja_163_1_0fc8cd820697e33e3e12bd1fd2f24ff3.jpg"
-    ],
-    "description": "Lugar americano impermeável em xadrez laranja caloroso, trazendo a alegria e a energia das festas tradicionais para a mesa posta.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bordado exclusivo ou acabamento ondulado"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:49.128978+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-festa-junina-xadrez-azul-162",
-    "name": "Guardanapo de Tecido Festa Junina Xadrez Azul",
+    "id": "guardanapo-de-tecido-festa-junina-xadrez-vermelho-bordo-166",
+    "name": "Guardanapo de Tecido Festa Junina Xadrez Vermelho Bordô",
     "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-162",
-    "tray_id": 162,
+    "sku": "MES-TEC-GUA-166",
+    "tray_id": 166,
     "collection": "Linha Mesa & Graça",
     "color_name": null,
     "color_hex": null,
     "retail_price": 19.9,
     "wholesale_price": 13.9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_2_030734e8a407c1f1dc95dd0e1816fcd8.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_1_409c456bb2025f7f2294bcb3d40d9fa6.jpg",
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_2_528864a86d65fdd0823c832d8f4c5ec3.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_1_3b988786c65b8fdf6ab71fe69ddebdb1.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_2_030734e8a407c1f1dc95dd0e1816fcd8.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_azul_162_1_409c456bb2025f7f2294bcb3d40d9fa6.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_2_528864a86d65fdd0823c832d8f4c5ec3.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_vermelho_bordo_166_1_3b988786c65b8fdf6ab71fe69ddebdb1.jpg"
     ],
-    "description": "Guardanapo xadrez junino em azul com toque suave de algodão, ideal para mesas temáticas alegres e acolhedoras.",
+    "description": "Guardanapo em xadrez bordô com caimento suave, o detalhe perfeito para composições temáticas charmosas e aconchegantes.",
     "materials": [
       {
         "label": "Tecido Principal",
@@ -2663,74 +2951,26 @@ export const FEATURED_PRODUCTS: Product[] = [
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:48.992855+00:00"
+    "created_at": "2026-10-29T16:35:49.551377+00:00"
   },
   {
-    "id": "lugar-americano-festa-junina-xadrez-azul-161",
-    "name": "Lugar Americano Festa Junina Xadrez Azul",
-    "category": "Lugar Americano",
-    "sku": "MES-NYL-JAM-161",
-    "tray_id": 161,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 23,
-    "wholesale_price": 16.1,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_2_b2dab6c673773269dcbb888bd6a9fec3.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_1_52121ea5748695cfbba771b3c94fdf99.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_2_b2dab6c673773269dcbb888bd6a9fec3.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/lugar_americano_festa_junina_xadrez_azul_161_1_52121ea5748695cfbba771b3c94fdf99.jpg"
-    ],
-    "description": "Lugar americano impermeável com estampa xadrez junina em azul, ideal para compor mesas típicas cheias de cor, afeto e tradição.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bordado exclusivo ou acabamento ondulado"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:48.846884+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-festa-junina-xadrez-verde-160",
-    "name": "Guardanapo de Tecido Festa Junina Xadrez Verde",
+    "id": "guardanapo-de-tecido-festa-junina-xadrez-laranja-164",
+    "name": "Guardanapo de Tecido Festa Junina Xadrez Laranja",
     "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-160",
-    "tray_id": 160,
+    "sku": "MES-TEC-GUA-164",
+    "tray_id": 164,
     "collection": "Linha Mesa & Graça",
     "color_name": null,
     "color_hex": null,
     "retail_price": 19.9,
     "wholesale_price": 13.9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_2_de99465eb6317db22d8c275702f462d2.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_1_b9de10d99053f74af94b4a3f764bf045.jpg",
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_2_44123d19b0dcba567d8add3ff268b469.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_1_b443c6323211d1b3f06ff7a43a7f3e8e.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_2_de99465eb6317db22d8c275702f462d2.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_verde_160_1_b9de10d99053f74af94b4a3f764bf045.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_2_44123d19b0dcba567d8add3ff268b469.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_festa_junina_xadrez_laranja_164_1_b443c6323211d1b3f06ff7a43a7f3e8e.jpg"
     ],
-    "description": "Guardanapo com padronagem xadrez verde em tecido suave, perfeito para compor mesas típicas festivas com delicadeza e cor.",
+    "description": "Guardanapo vibrante em xadrez laranja com toque macio, trazendo calor e personalidade para as comemorações juninas.",
     "materials": [
       {
         "label": "Tecido Principal",
@@ -2759,295 +2999,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "sort_order": 0,
     "is_visible": true,
     "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:48.665051+00:00"
-  },
-  {
-    "id": "porta-guardanapo-dourado-com-esferas-metalizadas-157",
-    "name": "Porta Guardanapo Dourado com Esferas Metalizadas",
-    "category": "Porta-guardanapos",
-    "sku": "MES-PGU-DOU-157",
-    "tray_id": 157,
-    "collection": "Linha Mesa & Graça",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 13.9,
-    "wholesale_price": 9.7,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_2_28114bf08c51a43b9d018df4d65e2e94.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_1_883d4c67b5821887038f4fd78c45db3f.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_2_28114bf08c51a43b9d018df4d65e2e94.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_esferas_metalizadas_157_1_883d4c67b5821887038f4fd78c45db3f.jpg"
-    ],
-    "description": "Porta-guardanapo artesanal com esferas douradas metalizadas, conferindo brilho refinado e sofisticação contemporânea para vestir a mesa.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:48.256927+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-oliveira-com-frase-graca-a-mesa-150",
-    "name": "Guardanapo de Tecido Oliveira Com Frase \"Graça à Mesa\"",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-150",
-    "tray_id": 150,
-    "collection": "RAMO DE OLIVEIRA",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 17.9,
-    "wholesale_price": 12.5,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_2_cd1649a47f72a1cbf26f20c5bf11c151.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_1_dd02281ace5239ee1d0dd8e225c6644b.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_2_cd1649a47f72a1cbf26f20c5bf11c151.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_oliveira_com_frase_graca_a_mesa_150_1_dd02281ace5239ee1d0dd8e225c6644b.jpg"
-    ],
-    "description": "Guardanapo em linho misto com bordado delicado 'Graça à Mesa', perfeito para criar mesas cheias de bênçãos e momentos especiais.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "LINHO 50%"
-      },
-      {
-        "label": "Acabamento",
-        "value": "SEM BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:47.243+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-alecrim-com-frase-em-casa-148",
-    "name": "Guardanapo de Tecido Alecrim Com Frase \"Em Casa\"",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-148",
-    "tray_id": 148,
-    "collection": "ALECRIM",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 17.9,
-    "wholesale_price": 12.5,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_2_520bdc2c71c9675faea4358f0c28c855.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_1_561b67ffe25c91286abb3879889ac90f.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_2_520bdc2c71c9675faea4358f0c28c855.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_alecrim_com_frase_em_casa_148_1_561b67ffe25c91286abb3879889ac90f.jpg"
-    ],
-    "description": "Guardanapo em linho com caimento nobre e a frase bordada 'Em Casa', evocando a sensação de aconchego, pertencimento e amor.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "LINHO 50%"
-      },
-      {
-        "label": "Acabamento",
-        "value": "SEM BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:46.947015+00:00"
-  },
-  {
-    "id": "lugar-americano-alecrim-com-frase-que-nunca-nos-falte-gratidao-a-mesa-147",
-    "name": "Lugar Americano Alecrim Com Frase \"Que Nunca Nos Falte Gratidão à Mesa\"",
-    "category": "Lugar Americano",
-    "sku": "MES-TEC-JAM-147",
-    "tray_id": 147,
-    "collection": "ALECRIM",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 26,
-    "wholesale_price": 18.2,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_2_500bfbc8c72cfd5e77321d16f504c6ea.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_1_30220bea68546fdc758909fac14bba81.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_2_500bfbc8c72cfd5e77321d16f504c6ea.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/jogo_americano_alecrim_com_frase_que_nunca_nos_falte_gratidao_a_mesa_147_1_30220bea68546fdc758909fac14bba81.jpg"
-    ],
-    "description": "Lugar americano acolhedor com a frase 'Que nunca nos falte gratidão à mesa', ideal para inspirar paz e agradecimento nos encontros em família.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "CÓRDOBA ESTAMPADO"
-      },
-      {
-        "label": "Acabamento",
-        "value": "SEM BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 X 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:46.815055+00:00"
-  },
-  {
-    "id": "guardanapo-de-tecido-costela-de-adao-com-frase-a-mesa-146",
-    "name": "Guardanapo de Tecido Costela de Adão Com Frase \"À Mesa\"",
-    "category": "Guardanapos",
-    "sku": "MES-TEC-GUA-146",
-    "tray_id": 146,
-    "collection": "COSTELA DE ADÃO",
-    "color_name": null,
-    "color_hex": null,
-    "retail_price": 17.9,
-    "wholesale_price": 12.5,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_2_3ab814da72a7cb6b476a11a2bbea3769.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_1_d05a45948874613c75eaed39ab6e5a67.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_2_3ab814da72a7cb6b476a11a2bbea3769.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/guardanapo_de_tecido_costela_de_adao_com_frase_a_mesa_146_1_d05a45948874613c75eaed39ab6e5a67.jpg"
-    ],
-    "description": "Guardanapo em linho misto com toque nobre e a frase 'À Mesa', um detalhe de sensibilidade e carinho para acolher cada convidado.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "LINHO 50%"
-      },
-      {
-        "label": "Acabamento",
-        "value": "SEM BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Comprimento x Largura",
-        "value": "44 x 44 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm dobrado"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 0,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-29T16:35:46.663189+00:00"
-  },
-  {
-    "id": "porta-guardanapo-lirio-provence",
-    "name": "Porta Guardanapo Lírio Provence",
-    "category": "Porta-guardanapos",
-    "sku": "MES-MAD-CLA-070",
-    "tray_id": 70,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Roxo, verde e vinho",
-    "color_hex": "#765B6A",
-    "retail_price": 15,
-    "wholesale_price": 10.5,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_2_42905d2211971642638d54fbc12f43b9.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_1_67abb5b31686a3eccde08a35b4100883.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_2_42905d2211971642638d54fbc12f43b9.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_1_67abb5b31686a3eccde08a35b4100883.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 1,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
+    "created_at": "2026-10-29T16:35:49.258847+00:00"
   },
   {
     "id": "lugar-americano-redondo-xadrez",
@@ -3172,6 +3124,102 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
+    "id": "porta-guardanapo-lirio-provence",
+    "name": "Porta Guardanapo Lírio Provence",
+    "category": "Porta-guardanapos",
+    "sku": "MES-MAD-CLA-070",
+    "tray_id": 70,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Roxo, verde e vinho",
+    "color_hex": "#765B6A",
+    "retail_price": 15,
+    "wholesale_price": 10.5,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_2_42905d2211971642638d54fbc12f43b9.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_1_67abb5b31686a3eccde08a35b4100883.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_2_42905d2211971642638d54fbc12f43b9.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lirio_provence_70_1_67abb5b31686a3eccde08a35b4100883.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 1,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-lavanda-provencal",
+    "name": "Porta Guardanapo Lavanda Provençal",
+    "category": "Porta-guardanapos",
+    "sku": "MES-MAD-CLA-071",
+    "tray_id": 71,
+    "collection": "LAVANDA",
+    "color_name": "Lilás e verde",
+    "color_hex": "#8B7A8F",
+    "retail_price": 20,
+    "wholesale_price": 14,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_2_6c169bdd781ccc57423060e797ec8382.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_1_a4a884d8b87b9b5e9046f84a3c9e2dc8.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_2_6c169bdd781ccc57423060e797ec8382.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_1_a4a884d8b87b9b5e9046f84a3c9e2dc8.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "LAVANDA"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 2,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
     "id": "kit-fundo-do-mar-convencional",
     "name": "Jogo Fundo do Mar Convencional",
     "category": "Jogos",
@@ -3244,102 +3292,6 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "porta-guardanapo-estrela-nautica"
       }
     ],
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "porta-guardanapo-lavanda-provencal",
-    "name": "Porta Guardanapo Lavanda Provençal",
-    "category": "Porta-guardanapos",
-    "sku": "MES-MAD-CLA-071",
-    "tray_id": 71,
-    "collection": "LAVANDA",
-    "color_name": "Lilás e verde",
-    "color_hex": "#8B7A8F",
-    "retail_price": 20,
-    "wholesale_price": 14,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_2_6c169bdd781ccc57423060e797ec8382.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_1_a4a884d8b87b9b5e9046f84a3c9e2dc8.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_2_6c169bdd781ccc57423060e797ec8382.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_lavanda_provencal_71_1_a4a884d8b87b9b5e9046f84a3c9e2dc8.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "LAVANDA"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 2,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "porta-guardanapo-limone-toscano",
-    "name": "Porta Guardanapo Limone Toscano",
-    "category": "Porta-guardanapos",
-    "sku": "MES-MAD-TRO-072",
-    "tray_id": 72,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Amarelo e verde",
-    "color_hex": "#D5A833",
-    "retail_price": 15.9,
-    "wholesale_price": 11.1,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_2_a4a89e0a8fea4a45cbc2ca6948aed6ae.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_1_8344ead1eba83836e87ecd3834a34741.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_2_a4a89e0a8fea4a45cbc2ca6948aed6ae.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_1_8344ead1eba83836e87ecd3834a34741.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 3,
-    "is_visible": true,
-    "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -3435,27 +3387,27 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-cereja-mediterranea",
-    "name": "Porta Guardanapo Cereja Mediterrânea",
+    "id": "porta-guardanapo-limone-toscano",
+    "name": "Porta Guardanapo Limone Toscano",
     "category": "Porta-guardanapos",
-    "sku": "MES-MAD-CLA-073",
-    "tray_id": 73,
-    "collection": "CEREJINHA",
-    "color_name": "Vermelho e verde",
-    "color_hex": "#B9373A",
+    "sku": "MES-MAD-TRO-072",
+    "tray_id": 72,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Amarelo e verde",
+    "color_hex": "#D5A833",
     "retail_price": 15.9,
     "wholesale_price": 11.1,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_2_1f5ab6ff2f93d45f2659fc11c46aef1c.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_1_54142eeca24c7c5366971f8fdb498b3a.jpg",
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_2_a4a89e0a8fea4a45cbc2ca6948aed6ae.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_1_8344ead1eba83836e87ecd3834a34741.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_2_1f5ab6ff2f93d45f2659fc11c46aef1c.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_1_54142eeca24c7c5366971f8fdb498b3a.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_2_a4a89e0a8fea4a45cbc2ca6948aed6ae.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_limone_toscano_72_1_8344ead1eba83836e87ecd3834a34741.jpg"
     ],
     "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
         "label": "Estrutura e Material",
-        "value": "CEREJINHA"
+        "value": "Artesanal em Fibra Natural e Madeira"
       },
       {
         "label": "Acabamento",
@@ -3477,9 +3429,85 @@ export const FEATURED_PRODUCTS: Product[] = [
       }
     ],
     "image_status": "final",
-    "sort_order": 4,
+    "sort_order": 3,
     "is_visible": true,
     "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "kit-abelhinha",
+    "name": "Kit Mesa Posta Abelinha",
+    "category": "Jogos",
+    "sku": "KIT-TEC-KMP-250",
+    "tray_id": 250,
+    "collection": "ABELINHA",
+    "color_name": "Amarelo",
+    "color_hex": "#E5AA1A",
+    "retail_price": 53.8,
+    "wholesale_price": 37.7,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_2_e4c6922c5183682d97557b12b2b22ea6.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_1_911cacaef696238da5d80505403c90a7.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_2_e4c6922c5183682d97557b12b2b22ea6.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_1_911cacaef696238da5d80505403c90a7.jpg"
+    ],
+    "description": "Jogo delicado com lugar americano temático, guardanapo e porta-guardanapo Florzinha Amarela para uma mesa leve e cheia de charme.",
+    "materials": [
+      {
+        "label": "Lugar Americano",
+        "value": "NYLON 600 (BORDADO)"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "TRICOLINE 50% AMARELO"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "FLOR AMARELA"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 4,
+    "is_visible": false,
+    "kit_quantity": null,
+    "game_items": [
+      {
+        "label": "Lugar Americano (44 x 36 cm)",
+        "wholesale_price": 16.1,
+        "retail_price": 23,
+        "product_id": "lugar-americano-jardim"
+      },
+      {
+        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "wholesale_price": 11.8,
+        "retail_price": 16.9,
+        "product_id": "guardanapo-de-tecido-off-white-184"
+      },
+      {
+        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
+        "wholesale_price": 9.7,
+        "retail_price": 13.9,
+        "product_id": "jogo-de-4-porta-guardanapos-margarida-fibra-natural-62"
+      }
+    ],
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -3574,170 +3602,51 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "kit-abelhinha",
-    "name": "Kit Mesa Posta Abelinha",
-    "category": "Jogos",
-    "sku": "KIT-TEC-KMP-250",
-    "tray_id": 250,
-    "collection": "ABELINHA",
-    "color_name": "Amarelo",
-    "color_hex": "#E5AA1A",
-    "retail_price": 53.8,
-    "wholesale_price": 37.7,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_2_e4c6922c5183682d97557b12b2b22ea6.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_1_911cacaef696238da5d80505403c90a7.jpg",
+    "id": "porta-guardanapo-cereja-mediterranea",
+    "name": "Porta Guardanapo Cereja Mediterrânea",
+    "category": "Porta-guardanapos",
+    "sku": "MES-MAD-CLA-073",
+    "tray_id": 73,
+    "collection": "CEREJINHA",
+    "color_name": "Vermelho e verde",
+    "color_hex": "#B9373A",
+    "retail_price": 15.9,
+    "wholesale_price": 11.1,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_2_1f5ab6ff2f93d45f2659fc11c46aef1c.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_1_54142eeca24c7c5366971f8fdb498b3a.jpg",
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_2_e4c6922c5183682d97557b12b2b22ea6.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_mesa_posta_abelinha_com_lugar_americano_guardanapo_porta_guardanapo_250_1_911cacaef696238da5d80505403c90a7.jpg"
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_2_1f5ab6ff2f93d45f2659fc11c46aef1c.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_cereja_mediterranea_73_1_54142eeca24c7c5366971f8fdb498b3a.jpg"
     ],
-    "description": "Jogo delicado com lugar americano temático, guardanapo e porta-guardanapo Florzinha Amarela para uma mesa leve e cheia de charme.",
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Lugar Americano",
-        "value": "NYLON 600 (BORDADO)"
+        "label": "Estrutura e Material",
+        "value": "CEREJINHA"
       },
       {
-        "label": "Guardanapo",
-        "value": "TRICOLINE 50% AMARELO"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "FLOR AMARELA"
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Lugar Americano",
-        "value": "44 X 36 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
       },
       {
-        "label": "Guardanapo",
-        "value": "44 X 44 cm"
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
-        "label": "Porta-guardanapo",
-        "value": "05 X 07 cm"
-      },
-      {
-        "label": "Pacote do Kit Completo",
-        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
       }
     ],
     "image_status": "final",
     "sort_order": 4,
-    "is_visible": false,
-    "kit_quantity": null,
-    "game_items": [
-      {
-        "label": "Lugar Americano (44 x 36 cm)",
-        "wholesale_price": 16.1,
-        "retail_price": 23,
-        "product_id": "lugar-americano-jardim"
-      },
-      {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
-        "wholesale_price": 11.8,
-        "retail_price": 16.9,
-        "product_id": "guardanapo-de-tecido-off-white-184"
-      },
-      {
-        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
-        "wholesale_price": 9.7,
-        "retail_price": 13.9,
-        "product_id": "jogo-de-4-porta-guardanapos-margarida-fibra-natural-62"
-      }
-    ],
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "lugar-americano-beija-flor",
-    "name": "Beija-Flor",
-    "category": "Lugar Americano",
-    "sku": "MG-LA-BEIJ",
-    "tray_id": null,
-    "collection": "Coleção Essencial",
-    "color_name": "Variações disponíveis",
-    "color_hex": null,
-    "retail_price": 23.9,
-    "wholesale_price": 14.3,
-    "image_url": "/produtos/colecao-essencial/02-Beija-Flor.webp",
-    "editorial_image_url": null,
-    "gallery_urls": [
-      "/produtos/colecao-essencial/02-Beija-Flor.webp"
-    ],
-    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bordado exclusivo ou acabamento ondulado"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 5,
     "is_visible": true,
     "kit_quantity": null,
-    "variations": [
-      {
-        "name": "Rosa pink",
-        "hex": "#D82872",
-        "pattern": "liso",
-        "sku": "MG-LA-BEIJ-PK"
-      },
-      {
-        "name": "Azul marinho",
-        "hex": "#1A2947",
-        "pattern": "liso",
-        "sku": "MG-LA-BEIJ-MR"
-      },
-      {
-        "name": "Marrom",
-        "hex": "#704126",
-        "pattern": "liso",
-        "sku": "MG-LA-BEIJ-MO"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#781F32",
-        "pattern": "liso",
-        "sku": "MG-LA-BEIJ-VI"
-      },
-      {
-        "name": "Amarelo",
-        "hex": "#D99B19",
-        "pattern": "liso",
-        "sku": "MG-LA-BEIJ-AM"
-      },
-      {
-        "name": "Verde",
-        "hex": "#1F5A3D",
-        "pattern": "liso",
-        "sku": "MG-LA-BEIJ-VD"
-      },
-      {
-        "name": "Rosa bebê",
-        "hex": "#E9B7BC",
-        "pattern": "liso",
-        "sku": "MG-LA-BEIJ-RS"
-      }
-    ],
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -3867,20 +3776,20 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "lugar-americano-versailles",
-    "name": "Versailles",
+    "id": "lugar-americano-beija-flor",
+    "name": "Beija-Flor",
     "category": "Lugar Americano",
-    "sku": "MG-LA-VERS",
+    "sku": "MG-LA-BEIJ",
     "tray_id": null,
     "collection": "Coleção Essencial",
     "color_name": "Variações disponíveis",
     "color_hex": null,
     "retail_price": 23.9,
     "wholesale_price": 14.3,
-    "image_url": "/produtos/colecao-essencial/03-Versailles.webp",
+    "image_url": "/produtos/colecao-essencial/02-Beija-Flor.webp",
     "editorial_image_url": null,
     "gallery_urls": [
-      "/produtos/colecao-essencial/03-Versailles.webp"
+      "/produtos/colecao-essencial/02-Beija-Flor.webp"
     ],
     "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
     "materials": [
@@ -3908,7 +3817,7 @@ export const FEATURED_PRODUCTS: Product[] = [
       }
     ],
     "image_status": "final",
-    "sort_order": 6,
+    "sort_order": 5,
     "is_visible": true,
     "kit_quantity": null,
     "variations": [
@@ -3916,43 +3825,43 @@ export const FEATURED_PRODUCTS: Product[] = [
         "name": "Rosa pink",
         "hex": "#D82872",
         "pattern": "liso",
-        "sku": "MG-LA-VERS-PK"
+        "sku": "MG-LA-BEIJ-PK"
       },
       {
         "name": "Azul marinho",
         "hex": "#1A2947",
         "pattern": "liso",
-        "sku": "MG-LA-VERS-MR"
+        "sku": "MG-LA-BEIJ-MR"
       },
       {
         "name": "Marrom",
         "hex": "#704126",
         "pattern": "liso",
-        "sku": "MG-LA-VERS-MO"
+        "sku": "MG-LA-BEIJ-MO"
       },
       {
         "name": "Vinho",
         "hex": "#781F32",
         "pattern": "liso",
-        "sku": "MG-LA-VERS-VI"
+        "sku": "MG-LA-BEIJ-VI"
       },
       {
         "name": "Amarelo",
         "hex": "#D99B19",
         "pattern": "liso",
-        "sku": "MG-LA-VERS-AM"
+        "sku": "MG-LA-BEIJ-AM"
       },
       {
         "name": "Verde",
         "hex": "#1F5A3D",
         "pattern": "liso",
-        "sku": "MG-LA-VERS-VD"
+        "sku": "MG-LA-BEIJ-VD"
       },
       {
         "name": "Rosa bebê",
         "hex": "#E9B7BC",
         "pattern": "liso",
-        "sku": "MG-LA-VERS-RS"
+        "sku": "MG-LA-BEIJ-RS"
       }
     ],
     "created_at": "2026-10-16T22:26:08.953663+00:00"
@@ -4082,6 +3991,97 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
+    "id": "lugar-americano-versailles",
+    "name": "Versailles",
+    "category": "Lugar Americano",
+    "sku": "MG-LA-VERS",
+    "tray_id": null,
+    "collection": "Coleção Essencial",
+    "color_name": "Variações disponíveis",
+    "color_hex": null,
+    "retail_price": 23.9,
+    "wholesale_price": 14.3,
+    "image_url": "/produtos/colecao-essencial/03-Versailles.webp",
+    "editorial_image_url": null,
+    "gallery_urls": [
+      "/produtos/colecao-essencial/03-Versailles.webp"
+    ],
+    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bordado exclusivo ou acabamento ondulado"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 x 36 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 6,
+    "is_visible": true,
+    "kit_quantity": null,
+    "variations": [
+      {
+        "name": "Rosa pink",
+        "hex": "#D82872",
+        "pattern": "liso",
+        "sku": "MG-LA-VERS-PK"
+      },
+      {
+        "name": "Azul marinho",
+        "hex": "#1A2947",
+        "pattern": "liso",
+        "sku": "MG-LA-VERS-MR"
+      },
+      {
+        "name": "Marrom",
+        "hex": "#704126",
+        "pattern": "liso",
+        "sku": "MG-LA-VERS-MO"
+      },
+      {
+        "name": "Vinho",
+        "hex": "#781F32",
+        "pattern": "liso",
+        "sku": "MG-LA-VERS-VI"
+      },
+      {
+        "name": "Amarelo",
+        "hex": "#D99B19",
+        "pattern": "liso",
+        "sku": "MG-LA-VERS-AM"
+      },
+      {
+        "name": "Verde",
+        "hex": "#1F5A3D",
+        "pattern": "liso",
+        "sku": "MG-LA-VERS-VD"
+      },
+      {
+        "name": "Rosa bebê",
+        "hex": "#E9B7BC",
+        "pattern": "liso",
+        "sku": "MG-LA-VERS-RS"
+      }
+    ],
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
     "id": "lugar-americano-imperial",
     "name": "Imperial",
     "category": "Lugar Americano",
@@ -4173,54 +4173,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-medalhao-esmeralda",
-    "name": "Porta Guardanapo Medalhão Mediterrâneo Esmeralda",
-    "category": "Porta-guardanapos",
-    "sku": "MES-MAD-AFE-076",
-    "tray_id": 76,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Verde-esmeralda e dourado",
-    "color_hex": "#39766B",
-    "retail_price": 23,
-    "wholesale_price": 16.1,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_2_fc46e375e48833f734be6ff79eab2c83.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_1_1851eca2e36876d0692f4c8f7e012b52.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_2_fc46e375e48833f734be6ff79eab2c83.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_1_1851eca2e36876d0692f4c8f7e012b52.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 7,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "kit-folhas",
     "name": "Kit Mesa Posta Folhas",
     "category": "Jogos",
@@ -4294,6 +4246,54 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "porta-guardanapo-suculenta-verde-fibra-natural"
       }
     ],
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-medalhao-esmeralda",
+    "name": "Porta Guardanapo Medalhão Mediterrâneo Esmeralda",
+    "category": "Porta-guardanapos",
+    "sku": "MES-MAD-AFE-076",
+    "tray_id": 76,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Verde-esmeralda e dourado",
+    "color_hex": "#39766B",
+    "retail_price": 23,
+    "wholesale_price": 16.1,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_2_fc46e375e48833f734be6ff79eab2c83.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_1_1851eca2e36876d0692f4c8f7e012b52.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_2_fc46e375e48833f734be6ff79eab2c83.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_medalhao_mediterraneo_esmeralda_76_1_1851eca2e36876d0692f4c8f7e012b52.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 7,
+    "is_visible": true,
+    "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -4512,6 +4512,82 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
+    "id": "kit-feijoada",
+    "name": "Kit Mesa Posta Feijoada",
+    "category": "Jogos",
+    "sku": "MES-NYL-TEM-141",
+    "tray_id": 141,
+    "collection": "FEIJOADA",
+    "color_name": "Conforme composição",
+    "color_hex": "#5E4634",
+    "retail_price": 55.4,
+    "wholesale_price": 38.8,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_2_f9be72ea550668a145f271f854e34156.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_1_a8096a3826ce99f95e8310033c06f50f.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_2_f9be72ea550668a145f271f854e34156.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_1_a8096a3826ce99f95e8310033c06f50f.jpg"
+    ],
+    "description": "Jogo completo de inspiração brasileira, com lugar americano em nylon, guardanapo em tricoline e porta-guardanapo coordenado.",
+    "materials": [
+      {
+        "label": "Lugar Americano",
+        "value": "NYLON 600 MARROM (BORDADO)"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "TRICOLINE CREME"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "COURINO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Lugar Americano",
+        "value": "44 X 36 cm"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "44 X 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "05 X 07 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 9,
+    "is_visible": true,
+    "kit_quantity": null,
+    "game_items": [
+      {
+        "label": "Lugar Americano (44 x 36 cm)",
+        "wholesale_price": 17.5,
+        "retail_price": 25,
+        "product_id": "lugar-americano-feijoada-marrom-com-acabamento-ondulado-173"
+      },
+      {
+        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "wholesale_price": 16,
+        "retail_price": 22.9,
+        "product_id": "guardanapo-de-tecido-feijoada-bordado-com-frase-tradicao-e-reunir-quem-a-gente-ama-170"
+      },
+      {
+        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
+        "wholesale_price": 5.3,
+        "retail_price": 7.5,
+        "product_id": "porta-guardanapo-tassel-marrom-185"
+      }
+    ],
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
     "id": "porta-guardanapo-costela-de-adao-mediterranea",
     "name": "Porta Guardanapo Costela de Adão Mediterrânea",
     "category": "Porta-guardanapos",
@@ -4651,35 +4727,82 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "kit-feijoada",
-    "name": "Kit Mesa Posta Feijoada",
-    "category": "Jogos",
-    "sku": "MES-NYL-TEM-141",
-    "tray_id": 141,
-    "collection": "FEIJOADA",
-    "color_name": "Conforme composição",
-    "color_hex": "#5E4634",
-    "retail_price": 55.4,
-    "wholesale_price": 38.8,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_2_f9be72ea550668a145f271f854e34156.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_1_a8096a3826ce99f95e8310033c06f50f.jpg",
+    "id": "lugar-americano-natal-majestosa-vinho",
+    "name": "Lugar Americano Natal Majestosa Vinho",
+    "category": "Lugar Americano",
+    "sku": "MG-LA-MAJV",
+    "tray_id": null,
+    "collection": "Natal",
+    "color_name": "Variações disponíveis",
+    "color_hex": "#7B1C2D",
+    "retail_price": 30.3,
+    "wholesale_price": 16.7,
+    "image_url": "/produtos/natal-majestosa-vinho.webp",
+    "editorial_image_url": null,
     "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_2_f9be72ea550668a145f271f854e34156.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_feijoada_com_guardanapo_bordado_e_acabamento_ondulado_141_1_a8096a3826ce99f95e8310033c06f50f.jpg"
+      "/produtos/natal-majestosa-vinho.webp"
     ],
-    "description": "Jogo completo de inspiração brasileira, com lugar americano em nylon, guardanapo em tricoline e porta-guardanapo coordenado.",
+    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "NYLON 600 CREME"
+      },
+      {
+        "label": "Acabamento",
+        "value": "SEM BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 X 36 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 10,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "kit-hot-dog",
+    "name": "Kit Mesa Posta Hot Dog",
+    "category": "Jogos",
+    "sku": "MES-NYL-TEM-140",
+    "tray_id": 140,
+    "collection": "HOTDOG",
+    "color_name": "Conforme composição",
+    "color_hex": "#C84948",
+    "retail_price": 52.8,
+    "wholesale_price": 37,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_2_0179f7fd8b5129e50ed44b46288b464a.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_1_5f2316d7ee764596291e08afb628d81e.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_2_0179f7fd8b5129e50ed44b46288b464a.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_1_5f2316d7ee764596291e08afb628d81e.jpg"
+    ],
+    "description": "Composição temática com borda xadrez vermelha, guardanapo bordado de hot dog e porta-guardanapo em courino. Ideal para mesas descontraídas.",
     "materials": [
       {
         "label": "Lugar Americano",
-        "value": "NYLON 600 MARROM (BORDADO)"
+        "value": "NYLON 600 MARROM / OXFORD XADREZ (BORDADO)"
       },
       {
         "label": "Guardanapo",
-        "value": "TRICOLINE CREME"
+        "value": "OXFORD BRANCO"
       },
       {
         "label": "Porta-guardanapo",
-        "value": "COURINO"
+        "value": "-"
       }
     ],
     "dimensions": [
@@ -4701,27 +4824,27 @@ export const FEATURED_PRODUCTS: Product[] = [
       }
     ],
     "image_status": "final",
-    "sort_order": 9,
+    "sort_order": 10,
     "is_visible": true,
     "kit_quantity": null,
     "game_items": [
       {
         "label": "Lugar Americano (44 x 36 cm)",
-        "wholesale_price": 17.5,
-        "retail_price": 25,
-        "product_id": "lugar-americano-feijoada-marrom-com-acabamento-ondulado-173"
+        "wholesale_price": 16.1,
+        "retail_price": 23,
+        "product_id": "lugar-americano-hot-dog-xadrez-vermelho-175"
       },
       {
         "label": "Guardanapo de Tecido (44 x 44 cm)",
-        "wholesale_price": 16,
-        "retail_price": 22.9,
-        "product_id": "guardanapo-de-tecido-feijoada-bordado-com-frase-tradicao-e-reunir-quem-a-gente-ama-170"
+        "wholesale_price": 11.7,
+        "retail_price": 16.6,
+        "product_id": "guardanapo-de-tecido-hot-dog-bordado-171"
       },
       {
         "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
-        "wholesale_price": 5.3,
-        "retail_price": 7.5,
-        "product_id": "porta-guardanapo-tassel-marrom-185"
+        "wholesale_price": 9.2,
+        "retail_price": 13.2,
+        "product_id": "porta-guardanapo-esferas-vermelhas-bordo"
       }
     ],
     "created_at": "2026-10-16T22:26:08.953663+00:00"
@@ -4818,82 +4941,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "kit-hot-dog",
-    "name": "Kit Mesa Posta Hot Dog",
-    "category": "Jogos",
-    "sku": "MES-NYL-TEM-140",
-    "tray_id": 140,
-    "collection": "HOTDOG",
-    "color_name": "Conforme composição",
-    "color_hex": "#C84948",
-    "retail_price": 52.8,
-    "wholesale_price": 37,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_2_0179f7fd8b5129e50ed44b46288b464a.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_1_5f2316d7ee764596291e08afb628d81e.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_2_0179f7fd8b5129e50ed44b46288b464a.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/kit_jogo_americano_hot_dog_com_guardanapo_bordado_e_porta_guardanapo_em_courino_140_1_5f2316d7ee764596291e08afb628d81e.jpg"
-    ],
-    "description": "Composição temática com borda xadrez vermelha, guardanapo bordado de hot dog e porta-guardanapo em courino. Ideal para mesas descontraídas.",
-    "materials": [
-      {
-        "label": "Lugar Americano",
-        "value": "NYLON 600 MARROM / OXFORD XADREZ (BORDADO)"
-      },
-      {
-        "label": "Guardanapo",
-        "value": "OXFORD BRANCO"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "-"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Lugar Americano",
-        "value": "44 X 36 cm"
-      },
-      {
-        "label": "Guardanapo",
-        "value": "44 X 44 cm"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "05 X 07 cm"
-      },
-      {
-        "label": "Pacote do Kit Completo",
-        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 10,
-    "is_visible": true,
-    "kit_quantity": null,
-    "game_items": [
-      {
-        "label": "Lugar Americano (44 x 36 cm)",
-        "wholesale_price": 16.1,
-        "retail_price": 23,
-        "product_id": "lugar-americano-hot-dog-xadrez-vermelho-175"
-      },
-      {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
-        "wholesale_price": 11.7,
-        "retail_price": 16.6,
-        "product_id": "guardanapo-de-tecido-hot-dog-bordado-171"
-      },
-      {
-        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
-        "wholesale_price": 9.2,
-        "retail_price": 13.2,
-        "product_id": "porta-guardanapo-esferas-vermelhas-bordo"
-      }
-    ],
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "porta-guardanapo-alecrim",
     "name": "Porta Guardanapo Alecrim",
     "category": "Porta-guardanapos",
@@ -4942,49 +4989,50 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "lugar-americano-natal-majestosa-vinho",
-    "name": "Lugar Americano Natal Majestosa Vinho",
-    "category": "Lugar Americano",
-    "sku": "MG-LA-MAJV",
-    "tray_id": null,
-    "collection": "Natal",
-    "color_name": "Variações disponíveis",
-    "color_hex": "#7B1C2D",
-    "retail_price": 30.3,
-    "wholesale_price": 16.7,
-    "image_url": "/produtos/natal-majestosa-vinho.webp",
-    "editorial_image_url": null,
+    "id": "porta-guardanapo-dalia-rose-provence",
+    "name": "Porta Guardanapo Dália Rosé Provence",
+    "category": "Porta-guardanapos",
+    "sku": "MES-MAD-AFE-080",
+    "tray_id": 80,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Rosé",
+    "color_hex": "#B16D77",
+    "retail_price": 13.9,
+    "wholesale_price": 9.7,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_2_b42df4ce4b3e3f07e60ef2ceca5e03cf.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_1_833e363cbf1a957ff650d7c01cc7140e.jpg",
     "gallery_urls": [
-      "/produtos/natal-majestosa-vinho.webp"
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_2_b42df4ce4b3e3f07e60ef2ceca5e03cf.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_1_833e363cbf1a957ff650d7c01cc7140e.jpg"
     ],
-    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
     "materials": [
       {
-        "label": "Tecido Principal",
-        "value": "NYLON 600 CREME"
+        "label": "Estrutura e Material",
+        "value": "FLOR ROSA"
       },
       {
         "label": "Acabamento",
-        "value": "SEM BORDADO"
+        "value": "Confecção artesanal exclusiva para mesa posta"
       }
     ],
     "dimensions": [
       {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 X 36 cm"
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
       },
       {
-        "label": "Espessura",
-        "value": "1 cm"
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
       },
       {
-        "label": "Peso Aproximado",
-        "value": "50 g"
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
       }
     ],
     "image_status": "final",
-    "sort_order": 10,
-    "is_visible": true,
+    "sort_order": 11,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
@@ -5156,54 +5204,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-dalia-rose-provence",
-    "name": "Porta Guardanapo Dália Rosé Provence",
-    "category": "Porta-guardanapos",
-    "sku": "MES-MAD-AFE-080",
-    "tray_id": 80,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Rosé",
-    "color_hex": "#B16D77",
-    "retail_price": 13.9,
-    "wholesale_price": 9.7,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_2_b42df4ce4b3e3f07e60ef2ceca5e03cf.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_1_833e363cbf1a957ff650d7c01cc7140e.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_2_b42df4ce4b3e3f07e60ef2ceca5e03cf.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dalia_rose_provence_80_1_833e363cbf1a957ff650d7c01cc7140e.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "FLOR ROSA"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 11,
-    "is_visible": false,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "lugar-americano-natal-majestosa-verde",
     "name": "Lugar Americano Natal Majestosa Verde",
     "category": "Lugar Americano",
@@ -5246,6 +5246,101 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 11,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-orquidea-sauvage",
+    "name": "Porta Guardanapo Orquídea Sauvage",
+    "category": "Porta-guardanapos",
+    "sku": "MES-MAD-AFE-081",
+    "tray_id": 81,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Rosa e lilás",
+    "color_hex": "#B47A91",
+    "retail_price": 17.9,
+    "wholesale_price": 12.5,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_2_77b744167b8d48381a8c42e8f50ea284.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_1_c988d41d6badd1efa2385eedb82389ed.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_2_77b744167b8d48381a8c42e8f50ea284.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_1_c988d41d6badd1efa2385eedb82389ed.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 12,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "lugar-americano-natal-floresta-encantada",
+    "name": "Lugar Americano Natal Floresta Encantada",
+    "category": "Lugar Americano",
+    "sku": "MG-LA-NTFL",
+    "tray_id": null,
+    "collection": "Natal",
+    "color_name": "Variações disponíveis",
+    "color_hex": "#2F5938",
+    "retail_price": 28.9,
+    "wholesale_price": 15.9,
+    "image_url": "/produtos/natal-floresta-encantada.webp",
+    "editorial_image_url": null,
+    "gallery_urls": [
+      "/produtos/natal-floresta-encantada.webp"
+    ],
+    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "NYLON 600 CREME"
+      },
+      {
+        "label": "Acabamento",
+        "value": "SEM BORDADO"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 X 36 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 12,
     "is_visible": true,
     "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
@@ -5324,53 +5419,6 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "porta-guardanapo-no-trancado-courino"
       }
     ],
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "lugar-americano-natal-floresta-encantada",
-    "name": "Lugar Americano Natal Floresta Encantada",
-    "category": "Lugar Americano",
-    "sku": "MG-LA-NTFL",
-    "tray_id": null,
-    "collection": "Natal",
-    "color_name": "Variações disponíveis",
-    "color_hex": "#2F5938",
-    "retail_price": 28.9,
-    "wholesale_price": 15.9,
-    "image_url": "/produtos/natal-floresta-encantada.webp",
-    "editorial_image_url": null,
-    "gallery_urls": [
-      "/produtos/natal-floresta-encantada.webp"
-    ],
-    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "NYLON 600 CREME"
-      },
-      {
-        "label": "Acabamento",
-        "value": "SEM BORDADO"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 X 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 12,
-    "is_visible": true,
-    "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -5465,54 +5513,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-orquidea-sauvage",
-    "name": "Porta Guardanapo Orquídea Sauvage",
-    "category": "Porta-guardanapos",
-    "sku": "MES-MAD-AFE-081",
-    "tray_id": 81,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Rosa e lilás",
-    "color_hex": "#B47A91",
-    "retail_price": 17.9,
-    "wholesale_price": 12.5,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_2_77b744167b8d48381a8c42e8f50ea284.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_1_c988d41d6badd1efa2385eedb82389ed.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_2_77b744167b8d48381a8c42e8f50ea284.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_orquidea_sauvage_81_1_c988d41d6badd1efa2385eedb82389ed.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 12,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "lugar-americano-natal-classico-borda-xadrez",
     "name": "Lugar Americano Natal Clássico Borda Xadrez",
     "category": "Lugar Americano",
@@ -5551,6 +5551,54 @@ export const FEATURED_PRODUCTS: Product[] = [
       {
         "label": "Peso Aproximado",
         "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 13,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-estrela-nautica-provence",
+    "name": "Porta Guardanapo Estrela Náutica Provence",
+    "category": "Porta-guardanapos",
+    "sku": "MES-MAD-NAU-082",
+    "tray_id": 82,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Bege e dourado",
+    "color_hex": "#B89C70",
+    "retail_price": 18.5,
+    "wholesale_price": 13,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_2_a278b948fd6d28e394a4265f420fbb83.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_1_3bb629e8d7a984df92f29c36eb831282.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_2_a278b948fd6d28e394a4265f420fbb83.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_1_3bb629e8d7a984df92f29c36eb831282.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
       }
     ],
     "image_status": "final",
@@ -5727,149 +5775,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-estrela-nautica-provence",
-    "name": "Porta Guardanapo Estrela Náutica Provence",
-    "category": "Porta-guardanapos",
-    "sku": "MES-MAD-NAU-082",
-    "tray_id": 82,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Bege e dourado",
-    "color_hex": "#B89C70",
-    "retail_price": 18.5,
-    "wholesale_price": 13,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_2_a278b948fd6d28e394a4265f420fbb83.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_1_3bb629e8d7a984df92f29c36eb831282.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_2_a278b948fd6d28e394a4265f420fbb83.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_estrela_nautica_provence_82_1_3bb629e8d7a984df92f29c36eb831282.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 13,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "porta-guardanapo-chapeu-de-palha-junino",
-    "name": "Porta Guardanapo Chapéu de Palha Junino",
-    "category": "Porta-guardanapos",
-    "sku": "MES-PGU-CHA-153",
-    "tray_id": 153,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Palha e bege",
-    "color_hex": "#B99B6E",
-    "retail_price": 12.9,
-    "wholesale_price": 9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_2_7b05c504d516b7bd2ad8c4e35c774363.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_1_429829d30c1fb92db1645f34b938d869.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_2_7b05c504d516b7bd2ad8c4e35c774363.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_1_429829d30c1fb92db1645f34b938d869.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 14,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "lugar-americano-canto-da-graca",
-    "name": "Canto da Graça",
-    "category": "Lugar Americano",
-    "sku": "MG-LA-CANT",
-    "tray_id": null,
-    "collection": null,
-    "color_name": "Variações disponíveis",
-    "color_hex": "#B59471",
-    "retail_price": 38.9,
-    "wholesale_price": 19.5,
-    "image_url": "/produtos/canto-da-graca.webp",
-    "editorial_image_url": null,
-    "gallery_urls": [
-      "/produtos/canto-da-graca.webp"
-    ],
-    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
-    "materials": [
-      {
-        "label": "Tecido Principal",
-        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Bordado exclusivo ou acabamento ondulado"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões (Comp x Larg)",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Espessura",
-        "value": "1 cm"
-      },
-      {
-        "label": "Peso Aproximado",
-        "value": "50 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 14,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "kit-quadrado-xadrez",
     "name": "Jogo Americano Quadrado Xadrez Dupla Face",
     "category": "Jogos",
@@ -5943,6 +5848,149 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "porta-guardanapo-no-trancado-courino"
       }
     ],
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "lugar-americano-canto-da-graca",
+    "name": "Canto da Graça",
+    "category": "Lugar Americano",
+    "sku": "MG-LA-CANT",
+    "tray_id": null,
+    "collection": null,
+    "color_name": "Variações disponíveis",
+    "color_hex": "#B59471",
+    "retail_price": 38.9,
+    "wholesale_price": 19.5,
+    "image_url": "/produtos/canto-da-graca.webp",
+    "editorial_image_url": null,
+    "gallery_urls": [
+      "/produtos/canto-da-graca.webp"
+    ],
+    "description": "Lugar americano avulso para compor a mesa posta com acabamento exclusivo Mesa & Graça.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável com Detalhe Estruturado"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Bordado exclusivo ou acabamento ondulado"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Comp x Larg)",
+        "value": "44 x 36 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 14,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-chapeu-de-palha-junino",
+    "name": "Porta Guardanapo Chapéu de Palha Junino",
+    "category": "Porta-guardanapos",
+    "sku": "MES-PGU-CHA-153",
+    "tray_id": 153,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Palha e bege",
+    "color_hex": "#B99B6E",
+    "retail_price": 12.9,
+    "wholesale_price": 9,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_2_7b05c504d516b7bd2ad8c4e35c774363.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_1_429829d30c1fb92db1645f34b938d869.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_2_7b05c504d516b7bd2ad8c4e35c774363.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_chapeu_de_palha_junino_153_1_429829d30c1fb92db1645f34b938d869.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 14,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-esferas-vermelhas-bordo",
+    "name": "Porta Guardanapo de Esferas Vermelhas Bordô",
+    "category": "Porta-guardanapos",
+    "sku": "MES-PGU-VER-154",
+    "tray_id": 154,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Vermelho rubi",
+    "color_hex": "#A41E2D",
+    "retail_price": 12.9,
+    "wholesale_price": 9,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_2_cfce5bbb00ce5c12f647242f35b32bd5.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_1_8b7282756edd6ed5ad1ba9fd3d4cdd2c.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_2_cfce5bbb00ce5c12f647242f35b32bd5.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_1_8b7282756edd6ed5ad1ba9fd3d4cdd2c.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 15,
+    "is_visible": true,
+    "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -6022,102 +6070,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-esferas-vermelhas-bordo",
-    "name": "Porta Guardanapo de Esferas Vermelhas Bordô",
-    "category": "Porta-guardanapos",
-    "sku": "MES-PGU-VER-154",
-    "tray_id": 154,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Vermelho rubi",
-    "color_hex": "#A41E2D",
-    "retail_price": 12.9,
-    "wholesale_price": 9,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_2_cfce5bbb00ce5c12f647242f35b32bd5.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_1_8b7282756edd6ed5ad1ba9fd3d4cdd2c.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_2_cfce5bbb00ce5c12f647242f35b32bd5.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_de_esferas_vermelhas_bordo_154_1_8b7282756edd6ed5ad1ba9fd3d4cdd2c.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 15,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "porta-guardanapo-dourado-com-perolas",
-    "name": "Porta Guardanapo Dourado com Pérolas",
-    "category": "Porta-guardanapos",
-    "sku": "MES-PGU-PER-152",
-    "tray_id": 152,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Dourado",
-    "color_hex": "#BE8B33",
-    "retail_price": 13.9,
-    "wholesale_price": 9.7,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_2_3e5ec1cd5a77627bd1550c795ff4bfb0.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_1_e52056ab2bd09e102f6d12966ceaaa3f.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_2_3e5ec1cd5a77627bd1550c795ff4bfb0.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_1_e52056ab2bd09e102f6d12966ceaaa3f.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 16,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "kit-essence-campestre",
     "name": "Jogo Essence Campestre Dupla Face",
     "category": "Jogos",
@@ -6191,6 +6143,54 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "porta-guardanapo-orquidea-sauvage"
       }
     ],
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-dourado-com-perolas",
+    "name": "Porta Guardanapo Dourado com Pérolas",
+    "category": "Porta-guardanapos",
+    "sku": "MES-PGU-PER-152",
+    "tray_id": 152,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Dourado",
+    "color_hex": "#BE8B33",
+    "retail_price": 13.9,
+    "wholesale_price": 9.7,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_2_3e5ec1cd5a77627bd1550c795ff4bfb0.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_1_e52056ab2bd09e102f6d12966ceaaa3f.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_2_3e5ec1cd5a77627bd1550c795ff4bfb0.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_dourado_com_perolas_152_1_e52056ab2bd09e102f6d12966ceaaa3f.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 16,
+    "is_visible": true,
+    "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -6318,54 +6318,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-rosa-coral-fibra-natural",
-    "name": "Porta Guardanapo Rosa Coral com Fibra Natural",
-    "category": "Porta-guardanapos",
-    "sku": "MES-PGU-ROS-151",
-    "tray_id": 151,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Pêssego e verde",
-    "color_hex": "#D98973",
-    "retail_price": 13.9,
-    "wholesale_price": 9.7,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_2_ca4dea7103ff0052a972d89cbae1658b.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_1_536247d87258987f9f60eb3604e18af7.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_2_ca4dea7103ff0052a972d89cbae1658b.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_1_536247d87258987f9f60eb3604e18af7.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 18,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "kit-alecrim",
     "name": "Kit Mesa Posta Alecrim",
     "category": "Jogos",
@@ -6442,6 +6394,102 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
+    "id": "porta-guardanapo-rosa-coral-fibra-natural",
+    "name": "Porta Guardanapo Rosa Coral com Fibra Natural",
+    "category": "Porta-guardanapos",
+    "sku": "MES-PGU-ROS-151",
+    "tray_id": 151,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Pêssego e verde",
+    "color_hex": "#D98973",
+    "retail_price": 13.9,
+    "wholesale_price": 9.7,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_2_ca4dea7103ff0052a972d89cbae1658b.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_1_536247d87258987f9f60eb3604e18af7.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_2_ca4dea7103ff0052a972d89cbae1658b.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_rosa_coral_com_fibra_natural_151_1_536247d87258987f9f60eb3604e18af7.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 18,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-flor-azul-fibra-natural",
+    "name": "Porta Guardanapo Flor Azul com Fibra Natural",
+    "category": "Porta-guardanapos",
+    "sku": "MES-PGU-FLA-158",
+    "tray_id": 158,
+    "collection": "Linha Mesa & Graça",
+    "color_name": "Azul serenity",
+    "color_hex": "#5489B3",
+    "retail_price": 13.9,
+    "wholesale_price": 9.7,
+    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_2_d44db69305ba492e968b1ce957d18f75.jpg",
+    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_1_d4f7635b8752b3237552b918a3ef05b0.jpg",
+    "gallery_urls": [
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_2_d44db69305ba492e968b1ce957d18f75.jpg",
+      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_1_d4f7635b8752b3237552b918a3ef05b0.jpg"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 19,
+    "is_visible": true,
+    "kit_quantity": null,
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
     "id": "kit-lavanda",
     "name": "Kit Mesa Posta Lavanda",
     "category": "Jogos",
@@ -6515,54 +6563,6 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "porta-guardanapo-lavanda-provencal"
       }
     ],
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "porta-guardanapo-flor-azul-fibra-natural",
-    "name": "Porta Guardanapo Flor Azul com Fibra Natural",
-    "category": "Porta-guardanapos",
-    "sku": "MES-PGU-FLA-158",
-    "tray_id": 158,
-    "collection": "Linha Mesa & Graça",
-    "color_name": "Azul serenity",
-    "color_hex": "#5489B3",
-    "retail_price": 13.9,
-    "wholesale_price": 9.7,
-    "image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_2_d44db69305ba492e968b1ce957d18f75.jpg",
-    "editorial_image_url": "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_1_d4f7635b8752b3237552b918a3ef05b0.jpg",
-    "gallery_urls": [
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_2_d44db69305ba492e968b1ce957d18f75.jpg",
-      "https://images.tcdn.com.br/img/img_prod/1483700/porta_guardanapo_flor_azul_com_fibra_natural_158_1_d4f7635b8752b3237552b918a3ef05b0.jpg"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 19,
-    "is_visible": true,
-    "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -7076,54 +7076,6 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
-    "id": "porta-guardanapo-flor-rosa",
-    "name": "Flor Rosa",
-    "category": "Porta-guardanapos",
-    "sku": "MG-PG-FLRO",
-    "tray_id": null,
-    "collection": null,
-    "color_name": "Rosa",
-    "color_hex": "#C45E7E",
-    "retail_price": 13.9,
-    "wholesale_price": 9,
-    "image_url": "/produtos/flor-rosa.webp",
-    "editorial_image_url": "/produtos/editorial-flor-rosa.webp",
-    "gallery_urls": [
-      "/produtos/flor-rosa.webp",
-      "/produtos/editorial-flor-rosa.webp"
-    ],
-    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
-    "materials": [
-      {
-        "label": "Estrutura e Material",
-        "value": "Artesanal em Fibra Natural e Madeira"
-      },
-      {
-        "label": "Acabamento",
-        "value": "Confecção artesanal exclusiva para mesa posta"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Dimensões Unitárias",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Aro do Guardanapo",
-        "value": "Diâmetro interno de 4 cm (padrão)"
-      },
-      {
-        "label": "Peso Unitário Aproximado",
-        "value": "25 g"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 24,
-    "is_visible": true,
-    "kit_quantity": null,
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
     "id": "kit-flor-de-lottus",
     "name": "Kit Mesa Posta Flor de Lóttus",
     "category": "Jogos",
@@ -7197,6 +7149,54 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "porta-guardanapo-rosa-coral-fibra-natural"
       }
     ],
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
+    "id": "porta-guardanapo-flor-rosa",
+    "name": "Flor Rosa",
+    "category": "Porta-guardanapos",
+    "sku": "MG-PG-FLRO",
+    "tray_id": null,
+    "collection": null,
+    "color_name": "Rosa",
+    "color_hex": "#C45E7E",
+    "retail_price": 13.9,
+    "wholesale_price": 9,
+    "image_url": "/produtos/flor-rosa.webp",
+    "editorial_image_url": "/produtos/editorial-flor-rosa.webp",
+    "gallery_urls": [
+      "/produtos/flor-rosa.webp",
+      "/produtos/editorial-flor-rosa.webp"
+    ],
+    "description": "Porta-guardanapo para finalizar a composição da mesa com praticidade e cuidado nos detalhes.",
+    "materials": [
+      {
+        "label": "Estrutura e Material",
+        "value": "Artesanal em Fibra Natural e Madeira"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Confecção artesanal exclusiva para mesa posta"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões Unitárias",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Aro do Guardanapo",
+        "value": "Diâmetro interno de 4 cm (padrão)"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "25 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 24,
+    "is_visible": true,
+    "kit_quantity": null,
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
@@ -7448,6 +7448,81 @@ export const FEATURED_PRODUCTS: Product[] = [
     "created_at": "2026-10-16T22:26:08.953663+00:00"
   },
   {
+    "id": "kit-fundo-do-mar-premium",
+    "name": "Jogo Fundo do Mar Premium",
+    "category": "Jogos",
+    "sku": "MG-KT-FUNP",
+    "tray_id": null,
+    "collection": "Fundo do Mar Premium",
+    "color_name": "Conforme composição",
+    "color_hex": "#213C68",
+    "retail_price": 80.5,
+    "wholesale_price": 48.8,
+    "image_url": "/produtos/placeholder-mesaegraca.webp",
+    "editorial_image_url": null,
+    "gallery_urls": [
+      "/produtos/placeholder-mesaegraca.webp"
+    ],
+    "description": "Versão premium da linha Fundo do Mar, com lugar americano, guardanapo e porta-guardanapo coordenados em uma composição sofisticada.",
+    "materials": [
+      {
+        "label": "Lugar Americano",
+        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "Tricoline 100% Algodão Premium"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "Artesanal com Fibra Natural"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Lugar Americano",
+        "value": "44 x 36 cm"
+      },
+      {
+        "label": "Guardanapo",
+        "value": "44 x 44 cm"
+      },
+      {
+        "label": "Porta-guardanapo",
+        "value": "07 x 05 x 05 cm"
+      },
+      {
+        "label": "Pacote do Kit Completo",
+        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 27,
+    "is_visible": true,
+    "kit_quantity": null,
+    "game_items": [
+      {
+        "label": "Lugar Americano (44 x 36 cm)",
+        "wholesale_price": 24.5,
+        "retail_price": 35,
+        "product_id": "lugar-americano-versailles"
+      },
+      {
+        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "wholesale_price": 11.2,
+        "retail_price": 16,
+        "product_id": "guardanapo-de-tecido-off-white-184"
+      },
+      {
+        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
+        "wholesale_price": 10.3,
+        "retail_price": 14.7,
+        "product_id": "porta-guardanapo-estrela-nautica-provence"
+      }
+    ],
+    "created_at": "2026-10-16T22:26:08.953663+00:00"
+  },
+  {
     "id": "porta-guardanapo-laco-elegance",
     "name": "Laço Elegance",
     "category": "Porta-guardanapos",
@@ -7553,81 +7628,6 @@ export const FEATURED_PRODUCTS: Product[] = [
         "hex": "#292929",
         "pattern": "liso",
         "sku": "MG-PG-ELEG-PR-LS"
-      }
-    ],
-    "created_at": "2026-10-16T22:26:08.953663+00:00"
-  },
-  {
-    "id": "kit-fundo-do-mar-premium",
-    "name": "Jogo Fundo do Mar Premium",
-    "category": "Jogos",
-    "sku": "MG-KT-FUNP",
-    "tray_id": null,
-    "collection": "Fundo do Mar Premium",
-    "color_name": "Conforme composição",
-    "color_hex": "#213C68",
-    "retail_price": 80.5,
-    "wholesale_price": 48.8,
-    "image_url": "/produtos/placeholder-mesaegraca.webp",
-    "editorial_image_url": null,
-    "gallery_urls": [
-      "/produtos/placeholder-mesaegraca.webp"
-    ],
-    "description": "Versão premium da linha Fundo do Mar, com lugar americano, guardanapo e porta-guardanapo coordenados em uma composição sofisticada.",
-    "materials": [
-      {
-        "label": "Lugar Americano",
-        "value": "Nylon 600 Impermeável com Detalhes (Acabamento refinado)"
-      },
-      {
-        "label": "Guardanapo",
-        "value": "Tricoline 100% Algodão Premium"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "Artesanal com Fibra Natural"
-      }
-    ],
-    "dimensions": [
-      {
-        "label": "Lugar Americano",
-        "value": "44 x 36 cm"
-      },
-      {
-        "label": "Guardanapo",
-        "value": "44 x 44 cm"
-      },
-      {
-        "label": "Porta-guardanapo",
-        "value": "07 x 05 x 05 cm"
-      },
-      {
-        "label": "Pacote do Kit Completo",
-        "value": "44 x 36 x 05 cm (Peso aprox.: 100 g)"
-      }
-    ],
-    "image_status": "final",
-    "sort_order": 27,
-    "is_visible": true,
-    "kit_quantity": null,
-    "game_items": [
-      {
-        "label": "Lugar Americano (44 x 36 cm)",
-        "wholesale_price": 24.5,
-        "retail_price": 35,
-        "product_id": "lugar-americano-versailles"
-      },
-      {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
-        "wholesale_price": 11.2,
-        "retail_price": 16,
-        "product_id": "guardanapo-de-tecido-off-white-184"
-      },
-      {
-        "label": "Porta-guardanapo Artesanal (07 x 05 cm)",
-        "wholesale_price": 10.3,
-        "retail_price": 14.7,
-        "product_id": "porta-guardanapo-estrela-nautica-provence"
       }
     ],
     "created_at": "2026-10-16T22:26:08.953663+00:00"
@@ -8165,7 +8165,7 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "lugar-americano-redondo-vermelho-borda-pregueada-xadrez"
       },
       {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "label": "Guardanapo de Tecido Verde Pinheiro (44 x 44 cm)",
         "wholesale_price": 13.6,
         "retail_price": 16,
         "product_id": "guardanapo-tecido-verde-pinheiro-liso"
@@ -8199,7 +8199,7 @@ export const FEATURED_PRODUCTS: Product[] = [
       "/produtos/natal4-pg-gengibre-marrom-studio.webp",
       "/produtos/natal-guardanapo-verde-pinheiro-studio.webp"
     ],
-    "description": "Composição natalina acolhedora em xadrez vermelho com fios dourados e borda ondulada, com lugar americano, guardanapo e porta-guardanapo Gengibre Marrom coordenados para reunir a família com afeto.",
+    "description": "Composição natalina acolhedora em xadrez vermelho com fios dourados e borda ondulada, com lugar americano, guardanapo verde pinheiro e porta-guardanapo Gengibre Marrom coordenados para reunir a família com afeto.",
     "materials": [
       {
         "label": "Lugar Americano",
@@ -8244,7 +8244,7 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "lugar-americano-redondo-xadrez-vermelho-borda-ondulada"
       },
       {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "label": "Guardanapo de Tecido Verde Pinheiro (44 x 44 cm)",
         "wholesale_price": 13.6,
         "retail_price": 16,
         "product_id": "guardanapo-tecido-verde-pinheiro-liso"
@@ -8324,7 +8324,7 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "lugar-americano-retangular-xadrez-verde-borda-ondulada"
       },
       {
-        "label": "Guardanapo de Tecido (44 x 44 cm)",
+        "label": "Guardanapo de Tecido Vermelho Clássico (44 x 44 cm)",
         "wholesale_price": 13.6,
         "retail_price": 16,
         "product_id": "guardanapo-tecido-vermelho-classico-liso"
