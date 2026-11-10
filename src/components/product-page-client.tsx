@@ -270,14 +270,7 @@ export function ProductPageClient({
                 {product.game_items!.map((item) => {
                   const rowContent = (
                     <>
-                      <span className="game-item-label">
-                        {item.label}
-                        {item.product_id && (
-                          <span className="game-item-link-badge" aria-hidden="true">
-                            Ver avulso ↗
-                          </span>
-                        )}
-                      </span>
+                      <span className="game-item-label">{item.label}</span>
                       <div className="game-item-values">
                         {item.retail_price != null && (
                           <s className="game-item-retail">

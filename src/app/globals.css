@@ -306,25 +306,8 @@ html,body{width:100%;max-width:100%;overflow-x:clip}body{position:relative}.cata
   background: #fdf6ef;
   transform: translateX(2px);
 }
-.game-item-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.game-item-link-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
+.game-item-row-link:hover .game-item-label {
   color: var(--clay);
-  background: rgb(178 90 61 / 10%);
-  padding: 0.12rem 0.42rem;
-  border-radius: 999px;
-  letter-spacing: 0.02em;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-.game-item-row-link:hover .game-item-link-badge {
-  background: var(--clay);
-  color: #fffdfa;
 }
 .game-price-list .game-item-card-link {
   display: flex;

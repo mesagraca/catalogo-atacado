@@ -146,7 +146,7 @@ export function ProductCard({
                   key={item.label}
                   title={`Ver ${labelShort} avulso`}
                 >
-                  <small>{labelShort} ↗</small>
+                  <small>{labelShort}</small>
                   {pricesSpan}
                 </Link>
               ) : (
