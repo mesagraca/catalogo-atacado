@@ -101,18 +101,21 @@ export default async function ProductPage({
     sku: product.sku,
     productID: product.id,
     category: product.category,
-    image: [
-      product.image_url
-        ? (product.image_url.startsWith("http")
-            ? product.image_url
-            : `https://catalogo.mesaegraca.com.br${product.image_url}`)
-        : null,
-      product.editorial_image_url
-        ? (product.editorial_image_url.startsWith("http")
-            ? product.editorial_image_url
-            : `https://catalogo.mesaegraca.com.br${product.editorial_image_url}`)
-        : null,
-    ].filter(Boolean),
+    image: Array.from(
+      new Set(
+        [
+          ...(product.gallery_urls ?? []),
+          product.image_url,
+          product.editorial_image_url,
+        ]
+          .filter(Boolean)
+          .map((u) =>
+            u!.startsWith("http")
+              ? u!
+              : `https://catalogo.mesaegraca.com.br${u}`,
+          ),
+      ),
+    ),
     description: product.description,
     brand: {
       "@type": "Brand",

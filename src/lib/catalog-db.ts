@@ -68,7 +68,7 @@ export function dbRecordToCanonical(record: any, baseUrl: string): CanonicalProd
       promotional_price: record.promotional_price != null ? Number(record.promotional_price) : null,
     },
     logistics: {
-      weight_grams: Number(record.weight_grams ?? 150),
+      weight_grams: Number(record.weight_grams ?? (record.category === "Jogos" ? 100 : (record.category === "Lugar Americano" || record.category === "Jogos Americanos") ? 50 : 25)),
       length_cm: Number(record.length_cm ?? 38),
       width_cm: Number(record.width_cm ?? 38),
       height_cm: Number(record.height_cm ?? 2),
@@ -371,6 +371,19 @@ export function dbRecordToUIProduct(record: any): Product {
     return u.replace(/^https?:\/\/catalogo\.mesaegraca\.com\.br/, "");
   };
 
+  // Galeria completa de fotos (todas as fotos ordenadas por sort_order, sem duplicatas)
+  const sortedPhotos = [...photos].sort((a: any, b: any) => (a.sort_order ?? 99) - (b.sort_order ?? 99));
+  const sortedMedia = [...images].sort((a: any, b: any) => (a.sort_order ?? 99) - (b.sort_order ?? 99));
+  const rawGallery = [
+    coverUrl,
+    editorialUrl,
+    ...sortedPhotos.map((p: any) => p.url_webp || p.url),
+    ...sortedMedia.map((m: any) => m.url_webp || m.url),
+  ]
+    .map((u) => cleanUrl(u))
+    .filter((u): u is string => Boolean(u));
+  const galleryUrls = Array.from(new Set(rawGallery));
+
   // Variantes (tabela relacional ou objeto jsonb)
   const rawVariantsList = (record.variants && record.variants.length > 0)
     ? record.variants
@@ -399,6 +412,7 @@ export function dbRecordToUIProduct(record: any): Product {
     label: g.label,
     wholesale_price: g.wholesale_price != null ? roundPriceToDecile(g.wholesale_price) : null,
     retail_price: g.retail_price != null ? roundPriceToDecile(g.retail_price) : null,
+    product_id: g.product_id || null,
   }));
 
   // Categoria
@@ -441,7 +455,8 @@ export function dbRecordToUIProduct(record: any): Product {
     const len = record.length_cm || 44;
     const wid = record.width_cm || 36;
     const hgt = record.height_cm || 1;
-    const wgt = record.weight_grams || 150;
+    const defaultWeight = category === "Jogos" ? 100 : category === "Lugar Americano" ? 50 : 25;
+    const wgt = record.weight_grams || defaultWeight;
 
     if (category === "Jogos") {
       dimensions = [
@@ -487,6 +502,7 @@ export function dbRecordToUIProduct(record: any): Product {
     wholesale_price: record.wholesale_price != null ? roundPriceToDecile(record.wholesale_price) : null,
     image_url: cleanUrl(coverUrl),
     editorial_image_url: cleanUrl(editorialUrl),
+    gallery_urls: galleryUrls.length > 0 ? galleryUrls : undefined,
     description,
     materials: materials && materials.length > 0 ? materials : undefined,
     dimensions: dimensions && dimensions.length > 0 ? dimensions : undefined,

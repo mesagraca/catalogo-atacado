@@ -49,17 +49,15 @@ export function ProductPageClient({
     (initialProduct ?? product)?.variations?.[0],
   );
   const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState<"studio" | "editorial">("studio");
-  const [editorialImage, setEditorialImage] = useState<string | null>(
-    (initialProduct ?? product)?.editorial_image_url ?? null,
-  );
+  const [selectedImageIdx, setSelectedImageIdx] = useState(0);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const [zoomPosition, setZoomPosition] = useState("50% 50%");
 
   useEffect(() => {
     if (initialProduct) {
       setProduct(initialProduct);
       setVariation(initialProduct.variations?.[0]);
-      setEditorialImage(initialProduct.editorial_image_url ?? null);
+      setSelectedImageIdx(0);
       if (initialCatalog && initialCatalog.length > 0) {
         setCatalogProducts(initialCatalog);
       }
@@ -73,6 +71,9 @@ export function ProductPageClient({
       .then((data) => {
         if (data.product) {
           const p = data.product;
+          const allImgs = (p.media?.images || [])
+            .map((img: any) => img.url_webp || img.url)
+            .filter(Boolean);
           const mapped: Product = {
             id: p.sync_control?.catalog_product_id || p.id,
             name: p.general?.name || p.name,
@@ -86,6 +87,7 @@ export function ProductPageClient({
             wholesale_price: p.pricing?.wholesale_price ?? p.wholesale_price ?? null,
             image_url: p.media?.images?.find((img: any) => img.is_cover)?.url_webp || p.media?.images?.[0]?.url_webp || p.media?.images?.[0]?.url || null,
             editorial_image_url: p.media?.images?.find((img: any) => !img.is_cover)?.url_webp || p.media?.images?.[1]?.url_webp || null,
+            gallery_urls: Array.from(new Set(allImgs)),
             description: p.general?.description || p.general?.short_description || p.description || "",
             materials: p.technical_specifications?.materials || p.materials,
             dimensions: p.technical_specifications?.dimensions || p.dimensions,
@@ -98,7 +100,7 @@ export function ProductPageClient({
           };
           setProduct(mapped);
           setVariation(mapped.variations?.[0]);
-          setEditorialImage(mapped.editorial_image_url ?? null);
+          setSelectedImageIdx(0);
         }
         setLoading(false);
       })
@@ -138,6 +140,17 @@ export function ProductPageClient({
     )
     .slice(0, 3);
   const hasColorInfo = Boolean(product.variations && product.variations.length > 1);
+  const galleryList = Array.from(
+    new Set(
+      [
+        ...(product.gallery_urls ?? []),
+        product.image_url,
+        product.editorial_image_url,
+      ].filter((u): u is string => Boolean(u) && !failedImages[u!]),
+    ),
+  );
+  const currentImageUrl = galleryList[selectedImageIdx] || galleryList[0] || product.image_url;
+
   return (
     <>
       <SiteHeader products={catalogProducts} />
@@ -151,8 +164,51 @@ export function ProductPageClient({
       </nav>
       <article className="product-page">
         <section className="product-page-image">
-          {product.image_url ? (
-            <><div className="product-zoom" onMouseMove={(event) => { const rect = event.currentTarget.getBoundingClientRect(); setZoomPosition(`${((event.clientX - rect.left) / rect.width) * 100}% ${((event.clientY - rect.top) / rect.height) * 100}%`); }} onMouseLeave={() => setZoomPosition("50% 50%")}><img style={{ transformOrigin: zoomPosition }} src={activeImage === "editorial" && editorialImage ? editorialImage : product.image_url} alt={activeImage === "editorial" ? `Produto ${product.name} em uso` : product.name} onError={() => { if (activeImage === "editorial") { setEditorialImage(null); setActiveImage("studio"); } }} /></div>{editorialImage && <div className="product-image-gallery"><button className={activeImage === "studio" ? "selected" : ""} onClick={() => setActiveImage("studio")} aria-label="Ver foto do produto"><img src={product.image_url} alt="" /></button><button className={activeImage === "editorial" ? "selected" : ""} onClick={() => setActiveImage("editorial")} aria-label="Ver foto editorial"><img src={editorialImage} alt="" onError={() => setEditorialImage(null)} /></button></div>}</>
+          {currentImageUrl ? (
+            <>
+              <div
+                className="product-zoom"
+                onMouseMove={(event) => {
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  setZoomPosition(
+                    `${((event.clientX - rect.left) / rect.width) * 100}% ${((event.clientY - rect.top) / rect.height) * 100}%`,
+                  );
+                }}
+                onMouseLeave={() => setZoomPosition("50% 50%")}
+              >
+                <img
+                  style={{ transformOrigin: zoomPosition }}
+                  src={currentImageUrl}
+                  alt={`${product.name} - Foto ${selectedImageIdx + 1}`}
+                  onError={() => {
+                    if (currentImageUrl) {
+                      setFailedImages((prev) => ({ ...prev, [currentImageUrl]: true }));
+                      setSelectedImageIdx(0);
+                    }
+                  }}
+                />
+              </div>
+              {galleryList.length > 1 && (
+                <div className="product-image-gallery">
+                  {galleryList.map((imgUrl, idx) => (
+                    <button
+                      key={imgUrl}
+                      className={selectedImageIdx === idx ? "selected" : ""}
+                      onClick={() => setSelectedImageIdx(idx)}
+                      aria-label={`Ver foto ${idx + 1} do produto`}
+                    >
+                      <img
+                        src={imgUrl}
+                        alt=""
+                        onError={() =>
+                          setFailedImages((prev) => ({ ...prev, [imgUrl]: true }))
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
           ) : (
             <div className="image-placeholder">Imagem em atualização</div>
           )}
@@ -211,21 +267,45 @@ export function ProductPageClient({
                 <span>Jogo completo · discriminação por peça</span>
               </div>
               <div className="game-items-table">
-                {product.game_items!.map((item) => (
-                  <div className="game-item-row" key={item.label}>
-                    <span className="game-item-label">{item.label}</span>
-                    <div className="game-item-values">
-                      {item.retail_price != null && (
-                        <s className="game-item-retail">
-                          {money(item.retail_price)}
-                        </s>
-                      )}
-                      <b className="game-item-wholesale">
-                        {money(item.wholesale_price)}
-                      </b>
+                {product.game_items!.map((item) => {
+                  const rowContent = (
+                    <>
+                      <span className="game-item-label">
+                        {item.label}
+                        {item.product_id && (
+                          <span className="game-item-link-badge" aria-hidden="true">
+                            Ver avulso ↗
+                          </span>
+                        )}
+                      </span>
+                      <div className="game-item-values">
+                        {item.retail_price != null && (
+                          <s className="game-item-retail">
+                            {money(item.retail_price)}
+                          </s>
+                        )}
+                        <b className="game-item-wholesale">
+                          {money(item.wholesale_price)}
+                        </b>
+                      </div>
+                    </>
+                  );
+
+                  return item.product_id ? (
+                    <Link
+                      className="game-item-row game-item-row-link"
+                      href={`/catalogo/${item.product_id}`}
+                      key={item.label}
+                      title={`Ver ${item.label} avulso`}
+                    >
+                      {rowContent}
+                    </Link>
+                  ) : (
+                    <div className="game-item-row" key={item.label}>
+                      {rowContent}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}

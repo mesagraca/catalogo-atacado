@@ -128,17 +128,34 @@ export function ProductCard({
         {isGame ? (
           <div className="game-price-list" aria-label="Valores por item do jogo">
             <span>Jogo completo · preços por item</span>
-            {product.game_items!.map((item) => (
-              <p key={item.label}>
-                <small>{item.label.replace(/\s*\(.*?\)/, "").trim()}</small>
+            {product.game_items!.map((item) => {
+              const labelShort = item.label.replace(/\s*\(.*?\)/, "").trim();
+              const pricesSpan = (
                 <span className="game-item-card-prices">
                   {item.retail_price != null && (
                     <s className="game-item-card-retail">{money(item.retail_price)}</s>
                   )}
                   <b>{money(item.wholesale_price)}</b>
                 </span>
-              </p>
-            ))}
+              );
+
+              return item.product_id && !print ? (
+                <Link
+                  className="game-item-card-link"
+                  href={`/catalogo/${item.product_id}`}
+                  key={item.label}
+                  title={`Ver ${labelShort} avulso`}
+                >
+                  <small>{labelShort} ↗</small>
+                  {pricesSpan}
+                </Link>
+              ) : (
+                <p key={item.label}>
+                  <small>{labelShort}</small>
+                  {pricesSpan}
+                </p>
+              );
+            })}
           </div>
         ) : (
           <div className="product-commerce">
