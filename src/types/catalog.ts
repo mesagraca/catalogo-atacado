@@ -239,7 +239,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:49.128978+00:00"
   },
@@ -287,7 +287,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:48.992855+00:00"
   },
@@ -335,7 +335,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:48.846884+00:00"
   },
@@ -383,7 +383,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:48.665051+00:00"
   },
@@ -803,7 +803,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -1223,7 +1223,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -1627,7 +1627,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:48.53107+00:00"
   },
@@ -1827,7 +1827,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -1903,7 +1903,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -1979,7 +1979,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -2055,7 +2055,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -2131,7 +2131,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -2199,7 +2199,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:49.412812+00:00"
   },
@@ -2255,7 +2255,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -2331,7 +2331,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "game_items": [
       {
@@ -2949,7 +2949,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:49.551377+00:00"
   },
@@ -2997,7 +2997,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 0,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-10-29T16:35:49.258847+00:00"
   },
