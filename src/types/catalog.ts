@@ -8117,10 +8117,10 @@ export const FEATURED_PRODUCTS: Product[] = [
       "/produtos/natal5-la-vermelho-pregueado-mesa-2.webp",
       "/produtos/natal5-la-vermelho-pregueado-mesa-1.webp",
       "/produtos/natal5-la-vermelho-pregueado-studio.webp",
-      "/produtos/natal5-pg-gengibre-branco-studio.webp",
+      "/produtos/natal4-pg-gengibre-marrom-studio.webp",
       "/produtos/natal-guardanapo-verde-pinheiro-studio.webp"
     ],
-    "description": "Composição natalina sofisticada em vermelho com borda pregueada xadrez e fios dourados, com lugar americano, guardanapo e porta-guardanapo Gengibre Branco coordenados para celebrar a Ceia de Natal com encanto.",
+    "description": "Composição natalina sofisticada em vermelho com borda pregueada xadrez e fios dourados, com lugar americano, guardanapo e porta-guardanapo Gengibre Marrom coordenados para celebrar a Ceia de Natal com encanto.",
     "materials": [
       {
         "label": "Lugar Americano",
