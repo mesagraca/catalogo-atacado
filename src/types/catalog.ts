@@ -8063,7 +8063,7 @@ export const FEATURED_PRODUCTS: Product[] = [
     "color_hex": "#E0D7C6",
     "retail_price": 13.9,
     "wholesale_price": 11.8,
-    "image_url": "/produtos/natal5-pg-gengibre-branco-studio.webp",
+    "image_url": "/produtos/natal4-pg-gengibre-marrom-studio.webp",
     "editorial_image_url": null,
     "gallery_urls": [
       "/produtos/natal5-pg-gengibre-branco-studio.webp"
@@ -8095,13 +8095,13 @@ export const FEATURED_PRODUCTS: Product[] = [
     ],
     "image_status": "final",
     "sort_order": 36,
-    "is_visible": true,
+    "is_visible": false,
     "kit_quantity": null,
     "created_at": "2026-11-10T13:53:08.4+00:00"
   },
   {
     "id": "kit-mesa-posta-natal-premium-vermelho-pregueado",
-    "name": "Kit Mesa Posta Vermelho Borda Pregueada Xadrez e Gengibre Branco",
+    "name": "Kit Mesa Posta Vermelho Borda Pregueada Xadrez e Gengibre Marrom",
     "category": "Jogos",
     "sku": "MES-TEC-KIT-298",
     "tray_id": 307,
@@ -8110,10 +8110,10 @@ export const FEATURED_PRODUCTS: Product[] = [
     "color_hex": "#C51F2A",
     "retail_price": 65.8,
     "wholesale_price": 55.9,
-    "image_url": "/produtos/natal5-kit-vermelho-pregueado-gengibre-branco-studio.webp",
+    "image_url": "/produtos/natal5-kit-vermelho-pregueado-gengibre-marrom-studio.webp",
     "editorial_image_url": "/produtos/natal5-la-vermelho-pregueado-mesa-2.webp",
     "gallery_urls": [
-      "/produtos/natal5-kit-vermelho-pregueado-gengibre-branco-studio.webp",
+      "/produtos/natal5-kit-vermelho-pregueado-gengibre-marrom-studio.webp",
       "/produtos/natal5-la-vermelho-pregueado-mesa-2.webp",
       "/produtos/natal5-la-vermelho-pregueado-mesa-1.webp",
       "/produtos/natal5-la-vermelho-pregueado-studio.webp",
@@ -8132,7 +8132,7 @@ export const FEATURED_PRODUCTS: Product[] = [
       },
       {
         "label": "Porta-guardanapo",
-        "value": "Gengibre Branco Bordado Artesanal (05 x 07 cm)"
+        "value": "Gengibre Marrom Bordado Artesanal (05 x 07 cm)"
       }
     ],
     "dimensions": [
@@ -8171,10 +8171,10 @@ export const FEATURED_PRODUCTS: Product[] = [
         "product_id": "guardanapo-tecido-verde-pinheiro-liso"
       },
       {
-        "label": "Porta-Guardanapo Gengibre Branco Bordado (05 x 07 cm)",
+        "label": "Porta-Guardanapo Gengibre Marrom Bordado (05 x 07 cm)",
         "wholesale_price": 11.8,
         "retail_price": 13.9,
-        "product_id": "porta-guardanapo-gengibre-branco-bordado"
+        "product_id": "porta-guardanapo-gengibre-marrom-bordado"
       }
     ],
     "created_at": "2026-11-10T13:53:08.4+00:00"
