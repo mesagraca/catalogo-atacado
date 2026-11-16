@@ -52,6 +52,60 @@ export type ProductInput = Omit<Product, "id" | "created_at"> & {
 
 export const FEATURED_PRODUCTS: Product[] = [
   {
+    "id": "lugar-americano-natalino-bordado-ramos-estrelas",
+    "name": "Lugar Americano Natalino Bordado Ramos e Estrelas Borda Ondulada",
+    "category": "Lugar Americano",
+    "sku": "MES-TEC-JAM-301",
+    "tray_id": 313,
+    "collection": "Natal",
+    "color_name": "Vinho, Vermelho ou Verde",
+    "color_hex": "#781F32",
+    "retail_price": 38.5,
+    "wholesale_price": 23.9,
+    "image_url": "/produtos/natal-la-redondo-bordado-ramos-estrelas-trio-estudio.webp",
+    "editorial_image_url": "/produtos/natal-la-redondo-bordado-ramos-estrelas-vinho-estudio.webp",
+    "gallery_urls": [
+      "/produtos/natal-la-redondo-bordado-ramos-estrelas-trio-estudio.webp",
+      "/produtos/natal-la-redondo-bordado-ramos-estrelas-vinho-estudio.webp",
+      "/produtos/natal-la-redondo-bordado-ramos-estrelas-vermelho-estudio.webp",
+      "/produtos/natal-la-redondo-bordado-ramos-estrelas-verde-estudio.webp"
+    ],
+    "description": "Lugar americano natalino redondo com acabamento em borda ondulada e bordado temático de ramos festivos com azevinho e estrelas douradas. Confeccionado em Nylon 600 impermeável de alta resistência com centro creme. Produzido sob demanda com envio em até 2 dias úteis.",
+    "materials": [
+      {
+        "label": "Tecido Principal",
+        "value": "Nylon 600 Impermeável Creme com Borda Estruturada"
+      },
+      {
+        "label": "Acabamento",
+        "value": "Borda ondulada recortada com bordado de ramos e estrelas douradas"
+      },
+      {
+        "label": "Produção",
+        "value": "Sob demanda (1 a 2 dias úteis de confecção)"
+      }
+    ],
+    "dimensions": [
+      {
+        "label": "Dimensões (Diâmetro)",
+        "value": "42 x 42 cm"
+      },
+      {
+        "label": "Espessura",
+        "value": "1 cm"
+      },
+      {
+        "label": "Peso Unitário Aproximado",
+        "value": "50 g"
+      }
+    ],
+    "image_status": "final",
+    "sort_order": 35,
+    "is_visible": true,
+    "kit_quantity": 2,
+    "created_at": "2026-11-16T11:00:00.000Z"
+  },
+  {
     "id": "guardanapo-azul-de-tecido-churrasco-172",
     "name": "Guardanapo Azul de Tecido Churrasco",
     "category": "Guardanapos",
