@@ -237,6 +237,75 @@ export async function GET(request: Request) {
       }
     }
 
+    // 3.1. Buscar dados de estoque e catálogo 100% AO VIVO direto da Tray API
+    const uniqueProductIds = new Set<number>();
+    for (const item of completeOrders) {
+      for (const pSold of item.Order.ProductsSold || []) {
+        const pId = Number(pSold.ProductsSold.product_id);
+        if (pId > 0) uniqueProductIds.add(pId);
+      }
+    }
+
+    interface TrayProductDirect {
+      id: string | number;
+      name: string;
+      reference?: string;
+      stock: string | number;
+      price?: string | number;
+      cost_price?: string | number;
+      available?: string | number;
+      ProductImage?: Array<{
+        https?: string;
+        http?: string;
+        thumbs?: {
+          "90"?: { https?: string; http?: string };
+          "180"?: { https?: string; http?: string };
+        };
+      }>;
+    }
+
+    const liveTrayProductsMap = new Map<
+      number,
+      {
+        stock: number;
+        name?: string;
+        sku?: string;
+        image_url?: string;
+        cost_price?: number;
+      }
+    >();
+
+    const productIdsArray = Array.from(uniqueProductIds);
+    const prodConcurrency = 6;
+    for (let i = 0; i < productIdsArray.length; i += prodConcurrency) {
+      const chunk = productIdsArray.slice(i, i + prodConcurrency);
+      const chunkPromises = chunk.map(async (pid) => {
+        try {
+          const res = await trayApiFetch<{ Product: TrayProductDirect }>(`products/${pid}`);
+          if (res && res.Product) {
+            const p = res.Product;
+            const stockNum = Math.max(0, Number(p.stock || 0));
+            const img =
+              p.ProductImage?.[0]?.thumbs?.["90"]?.https ||
+              p.ProductImage?.[0]?.thumbs?.["90"]?.http ||
+              p.ProductImage?.[0]?.https ||
+              p.ProductImage?.[0]?.http;
+
+            liveTrayProductsMap.set(pid, {
+              stock: stockNum,
+              name: p.name,
+              sku: p.reference,
+              image_url: img,
+              cost_price: Number(p.cost_price || 0),
+            });
+          }
+        } catch {
+          // Fallback gracioso para dados do Supabase
+        }
+      });
+      await Promise.all(chunkPromises);
+    }
+
     // 4. Estruturas para acumulação
     const channelStats: Record<
       SalesChannel,
@@ -315,6 +384,8 @@ export async function GET(request: Request) {
         const trayId = Number(prod.product_id);
         const skuKey = (prod.reference || "").toUpperCase();
 
+        const liveTrayProduct = liveTrayProductsMap.get(trayId);
+
         let dbCost = 0;
         let dbImg: string | undefined = undefined;
         let dbStock: number | undefined = undefined;
@@ -331,16 +402,21 @@ export async function GET(request: Request) {
           dbStock = entry.stock;
         }
 
-        // Custo unitário rigorosamente conferido contra a planilha oficial Google Sheets
+        // Prioridade de Estoque: 100% DIRETO DA TRAY API AO VIVO
+        let resolvedStock: number | undefined = undefined;
+        if (liveTrayProduct && liveTrayProduct.stock != null) {
+          resolvedStock = liveTrayProduct.stock;
+        } else if (dbStock != null) {
+          resolvedStock = Math.max(0, dbStock);
+        }
+
+        // Custo unitário rigorosamente conferido contra a planilha oficial Google Sheets (com fallback Tray)
         const unitCost = resolveExactProductCost(
-          prod.name,
-          prod.reference,
-          dbCost || Number(prod.cost_price || 0),
+          liveTrayProduct?.name || prod.name,
+          liveTrayProduct?.sku || prod.reference,
+          dbCost || liveTrayProduct?.cost_price || Number(prod.cost_price || 0),
           effectivePrice,
         );
-
-        // Garantir que o estoque nunca seja exibido negativo
-        const safeStock = dbStock != null ? Math.max(0, dbStock) : undefined;
 
         const itemCost = unitCost * qty;
         const itemCommission = itemRevenue * commissionRate;
@@ -356,6 +432,7 @@ export async function GET(request: Request) {
         const itemThumb =
           prod.ProductSoldImage?.[0]?.thumbs?.["90"]?.https ||
           prod.ProductSoldImage?.[0]?.thumbs?.["90"]?.http ||
+          liveTrayProduct?.image_url ||
           prod.ProductSoldImage?.[0]?.https ||
           prod.ProductSoldImage?.[0]?.http ||
           dbImg;
@@ -367,8 +444,8 @@ export async function GET(request: Request) {
 
         orderItems.push({
           product_id: prod.product_id,
-          name: prod.name,
-          sku: prod.reference || "S/ REF",
+          name: liveTrayProduct?.name || prod.name,
+          sku: liveTrayProduct?.sku || prod.reference || "S/ REF",
           price: itemPrice,
           quantity: qty,
           unit_cost: unitCost,
@@ -380,16 +457,16 @@ export async function GET(request: Request) {
           net_margin_percent: itemMarginPercent,
           image_url: itemThumb,
           product_url: itemProdUrl,
-          stock_quantity: safeStock,
+          stock_quantity: resolvedStock,
         });
 
-        const statKey = prod.reference || `ID-${prod.product_id}`;
+        const statKey = liveTrayProduct?.sku || prod.reference || `ID-${prod.product_id}`;
         const existing = productStats.get(statKey) || {
           id: prod.product_id,
-          sku: prod.reference || "S/ REF",
-          name: prod.name,
+          sku: liveTrayProduct?.sku || prod.reference || "S/ REF",
+          name: liveTrayProduct?.name || prod.name,
           image_url: itemThumb,
-          stock_quantity: safeStock,
+          stock_quantity: resolvedStock,
           channel,
           units: 0,
           revenue: 0,
@@ -400,8 +477,11 @@ export async function GET(request: Request) {
         if (!existing.image_url && itemThumb) {
           existing.image_url = itemThumb;
         }
-        if (existing.stock_quantity == null && safeStock != null) {
-          existing.stock_quantity = safeStock;
+        if (existing.stock_quantity == null && resolvedStock != null) {
+          existing.stock_quantity = resolvedStock;
+        } else if (resolvedStock != null) {
+          // Atualiza sempre com o estoque oficial mais recente da Tray
+          existing.stock_quantity = resolvedStock;
         }
 
         existing.units += qty;
