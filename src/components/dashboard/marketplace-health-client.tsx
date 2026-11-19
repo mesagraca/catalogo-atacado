@@ -171,6 +171,16 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
   const [openOrderAccordions, setOpenOrderAccordions] = useState<Record<string, boolean>>({});
   const [orderSortCol, setOrderSortCol] = useState<"id" | "date" | "deadline" | "status" | "amount">("date");
   const [orderSortAsc, setOrderSortAsc] = useState<boolean>(false);
+  const [copiedOrderId, setCopiedOrderId] = useState<string | null>(null);
+
+  const handleCopyOrderId = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(id);
+      setCopiedOrderId(id);
+      setTimeout(() => setCopiedOrderId(null), 2000);
+    }
+  };
 
   const toggleOrderAccordion = (id: string) => {
     setOpenOrderAccordions((prev) => ({
@@ -810,28 +820,62 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                           {/* Acordeão de Detalhes da Compra */}
                           {isOpen && (
                             <tr className="bg-stone-50/70 border-b border-stone-200">
-                              <td colSpan={6} className="p-4 sm:p-5">
-                                <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-xs space-y-4">
-                                  {/* Cabeçalho do Detalhe */}
-                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-bold text-sm text-stone-900">
-                                        Detalhes da Compra #{ord.order_id}
-                                      </span>
+                              <td colSpan={6} className="p-3 sm:p-5">
+                                <div className="bg-white rounded-2xl border-2 border-amber-300/80 p-4 sm:p-6 shadow-sm space-y-5">
+                                  {/* Cabeçalho do Card de Detalhe */}
+                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200">
+                                    <div className="flex items-center gap-2 flex-wrap">
                                       <ChannelBadge channel={ord.channel} pointSale={ord.point_sale} />
+                                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-stone-100 text-stone-700 border border-stone-200">
+                                        {ord.status}
+                                      </span>
                                     </div>
-                                    <div className="text-xs text-stone-500 font-mono">
-                                      {ord.status} · Valor Total: <strong className="text-stone-900 font-bold">{money(ord.total_amount)}</strong>
+                                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                                      <span className="font-mono font-bold text-stone-900 text-sm">
+                                        #{ord.order_id}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => handleCopyOrderId(ord.order_id, e)}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 transition cursor-pointer"
+                                        title="Copiar ID do Pedido"
+                                      >
+                                        <span>{copiedOrderId === ord.order_id ? "✓ Copiado" : "📋 Copiar ID"}</span>
+                                      </button>
                                     </div>
                                   </div>
 
+                                  {/* Resumo do Faturamento & Lucro Limpo */}
+                                  <div className="grid grid-cols-2 gap-4 p-3.5 bg-stone-50 rounded-xl border border-stone-200/80">
+                                    <div>
+                                      <span className="text-xs text-stone-500 font-medium block">Pago pelo Cliente</span>
+                                      <strong className="text-stone-900 font-extrabold text-lg sm:text-xl tabular-nums">
+                                        {money(ord.customer_paid || ord.total_amount)}
+                                      </strong>
+                                    </div>
+                                    <div className="text-right">
+                                      <span className="text-xs text-stone-500 font-medium block">Lucro Limpo no Bolso</span>
+                                      <strong className={`font-extrabold text-lg sm:text-xl tabular-nums ${
+                                        (ord.net_profit ?? 0) < 0 ? "text-rose-700" : "text-emerald-700"
+                                      }`}>
+                                        {money(ord.net_profit || 0)}
+                                      </strong>
+                                      {ord.net_margin_percent != null && (
+                                        <span className="text-[11px] text-stone-500 block">
+                                          Margem real: {percent(ord.net_margin_percent)}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Grid de 3 Colunas: Cliente, Linha do Tempo e Diagnóstico */}
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     {/* 1. Cliente & Expedição */}
-                                    <div className="bg-stone-50/80 rounded-xl p-3 border border-stone-200/80 space-y-2 text-xs">
-                                      <h5 className="font-bold text-stone-800 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                                    <div className="bg-stone-50/90 rounded-xl p-3.5 border border-stone-200 space-y-2 text-xs">
+                                      <h5 className="font-bold text-stone-800 uppercase text-[11px] tracking-wider flex items-center gap-1.5 pb-1 border-b border-stone-200/60">
                                         <span>📍 Cliente &amp; Expedição</span>
                                       </h5>
-                                      <div className="space-y-1 text-stone-700">
+                                      <div className="space-y-1.5 text-stone-700">
                                         <div className="flex justify-between">
                                           <span className="text-stone-400">Nome:</span>
                                           <strong className="font-semibold text-stone-900 truncate max-w-[170px]" title={ord.customer_name}>
@@ -840,9 +884,9 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-stone-400">Destino:</span>
-                                          <span>
+                                          <strong className="font-semibold text-stone-800">
                                             {ord.customer_city ? `${ord.customer_city} / ${ord.customer_state || ""}` : "Não informado"}
-                                          </span>
+                                          </strong>
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-stone-400">Envio:</span>
@@ -851,22 +895,22 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                                         <div className="flex justify-between">
                                           <span className="text-stone-400">Rastreio:</span>
                                           <span className="font-mono text-[11px] font-semibold text-amber-950">
-                                            {ord.tracking_code || "Aguardando etiqueta"}
+                                            {ord.tracking_code || "Aguardando postagem"}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
 
                                     {/* 2. Diagnóstico & SLA */}
-                                    <div className="bg-stone-50/80 rounded-xl p-3 border border-stone-200/80 space-y-2 text-xs">
-                                      <h5 className="font-bold text-stone-800 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                                    <div className="bg-stone-50/90 rounded-xl p-3.5 border border-stone-200 space-y-2 text-xs">
+                                      <h5 className="font-bold text-stone-800 uppercase text-[11px] tracking-wider flex items-center gap-1.5 pb-1 border-b border-stone-200/60">
                                         <span>⏱️ Linha do Tempo &amp; SLA</span>
                                       </h5>
-                                      <div className="space-y-1 text-stone-700">
+                                      <div className="space-y-1.5 text-stone-700">
                                         <div className="flex justify-between">
                                           <span className="text-stone-400">Compra Realizada:</span>
                                           <span className="font-mono text-[11px]">
-                                            {formatFullDateBR(ord.order_date)} {ord.order_hour ? ord.order_hour.slice(0, 5) : ""}
+                                            {formatFullDateBR(ord.order_date)} {ord.order_hour ? `às ${ord.order_hour.slice(0, 5)}` : ""}
                                           </span>
                                         </div>
                                         <div className="flex justify-between">
@@ -883,7 +927,7 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                                         </div>
                                         <div className="flex justify-between pt-1 border-t border-stone-200/60 font-semibold">
                                           <span className="text-stone-500">Resultado:</span>
-                                          <span className={isCancelled ? "text-stone-700" : isLateDispatched || isLatePending ? "text-rose-700" : "text-emerald-700"}>
+                                          <span className={isCancelled ? "text-stone-700" : isLateDispatched || isLatePending ? "text-rose-700 font-bold" : "text-emerald-700 font-bold"}>
                                             {isCancelled ? "Cancelado" : ord.delay_business_days > 0 ? `+${ord.delay_business_days} dias de atraso` : "Dentro do SLA"}
                                           </span>
                                         </div>
@@ -891,15 +935,15 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                                     </div>
 
                                     {/* 3. Motivo da Inclusão Crítica */}
-                                    <div className={`rounded-xl p-3 border text-xs flex flex-col justify-between ${
+                                    <div className={`rounded-xl p-3.5 border text-xs flex flex-col justify-between ${
                                       isCancelled
                                         ? "bg-stone-100/70 border-stone-200 text-stone-800"
                                         : isLatePending || isLateDispatched
-                                        ? "bg-rose-50/60 border-rose-200 text-rose-950"
-                                        : "bg-amber-50/60 border-amber-200 text-amber-950"
+                                        ? "bg-rose-50/70 border-rose-200 text-rose-950"
+                                        : "bg-amber-50/70 border-amber-200 text-amber-950"
                                     }`}>
                                       <div>
-                                        <h5 className="font-bold uppercase text-[10px] tracking-wider mb-1">
+                                        <h5 className="font-bold uppercase text-[11px] tracking-wider mb-1.5 pb-1 border-b border-current/20">
                                           Diagnóstico Operacional
                                         </h5>
                                         <p className="text-[11px] leading-relaxed">
@@ -918,57 +962,170 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                                     </div>
                                   </div>
 
-                                  {/* Itens Comprados */}
-                                  <div>
-                                    <h5 className="text-xs font-bold text-stone-800 mb-2 flex items-center justify-between">
-                                      <span>Itens do Pedido ({ord.items?.length || 1})</span>
-                                      <span className="text-stone-400 font-normal">
-                                        Total de {ord.units_sold} unidade(s) comprada(s)
+                                  {/* Itens Comprados (Layout Rico com Foto 1:1, Nome e SKU) */}
+                                  <div className="bg-white rounded-xl border border-stone-200 overflow-hidden shadow-2xs">
+                                    <div className="bg-stone-50 px-4 py-2.5 border-b border-stone-200 flex justify-between items-center text-xs">
+                                      <span className="font-semibold text-stone-800 flex items-center gap-1.5">
+                                        <span>Itens do Pedido</span>
+                                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-bold">
+                                          {ord.items?.length || 1}
+                                        </span>
                                       </span>
-                                    </h5>
-                                    <div className="divide-y divide-stone-100 border border-stone-200 rounded-xl overflow-hidden bg-stone-50/30">
+                                      <div className="text-right">
+                                        <span className="text-[11px] text-stone-500 mr-1.5 font-normal">Subtotal:</span>
+                                        <strong className="text-stone-900 tabular-nums text-sm font-bold">
+                                          {money(ord.products_subtotal || ord.total_amount)}
+                                        </strong>
+                                      </div>
+                                    </div>
+
+                                    <div className="divide-y divide-stone-100">
                                       {ord.items && ord.items.length > 0 ? (
                                         ord.items.map((it, idx) => (
-                                          <div key={`${it.product_id}-${idx}`} className="p-3 flex items-center justify-between gap-3 bg-white">
+                                          <div key={`${it.product_id}-${idx}`} className="p-3.5 flex items-center justify-between gap-3 bg-white hover:bg-stone-50/60 transition">
                                             <div className="flex items-center gap-3 min-w-0">
-                                              <div className="w-10 h-10 rounded-lg border border-stone-200 bg-stone-100 overflow-hidden shrink-0 flex items-center justify-center">
+                                              <div className="relative w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 overflow-hidden shrink-0 flex items-center justify-center">
                                                 {it.image_url ? (
                                                   <img src={it.image_url} alt={it.name} className="w-full h-full object-cover" />
                                                 ) : (
-                                                  <span className="text-stone-400 text-xs">📷</span>
+                                                  <span className="text-stone-400 text-sm">📦</span>
                                                 )}
+                                                <span className="absolute top-0.5 left-0.5 bg-stone-900/80 text-white text-[9px] font-bold px-1 rounded">
+                                                  {it.quantity}x
+                                                </span>
                                               </div>
                                               <div className="min-w-0">
-                                                <div className="font-semibold text-stone-900 text-xs truncate" title={it.name}>
+                                                <div className="font-semibold text-stone-900 text-xs sm:text-sm line-clamp-1" title={it.name}>
                                                   {it.name}
                                                 </div>
-                                                <div className="text-[10px] font-mono text-stone-400">
-                                                  SKU: {it.reference || it.product_id}
+                                                <div className="text-[11px] font-mono text-stone-400 flex items-center gap-2 mt-0.5">
+                                                  <span>SKU: {it.reference || it.product_id}</span>
+                                                  {it.pack_description && (
+                                                    <span className="text-amber-800 bg-amber-50 px-1.5 rounded font-sans text-[10px]">
+                                                      {it.pack_description}
+                                                    </span>
+                                                  )}
                                                 </div>
                                               </div>
                                             </div>
                                             <div className="text-right shrink-0 text-xs">
-                                              <div className="font-semibold text-stone-900 tabular-nums">
+                                              <div className="font-bold text-stone-900 text-sm tabular-nums">
                                                 {money(it.price * it.quantity)}
                                               </div>
-                                              <div className="text-[10px] text-stone-400 font-mono">
+                                              <div className="text-[11px] text-stone-400 font-mono">
                                                 {it.quantity}x {money(it.price)}
                                               </div>
                                             </div>
                                           </div>
                                         ))
                                       ) : (
-                                        <div className="p-3 text-xs text-stone-500 bg-white">
+                                        <div className="p-3.5 text-xs text-stone-500 bg-white">
                                           {ord.items_summary} ({ord.units_sold} unidades)
                                         </div>
                                       )}
+                                    </div>
+                                  </div>
+
+                                  {/* Decomposição Financeira do Pedido (DRE Completo) */}
+                                  <div className="space-y-2 text-xs">
+                                    {/* Descontos Concedidos */}
+                                    {Boolean(ord.discount && ord.discount > 0) && (
+                                      <div className="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200 flex justify-between items-center text-rose-950">
+                                        <span className="font-medium">Descontos concedidos pelo Vendedor:</span>
+                                        <strong className="text-rose-700 font-bold tabular-nums">
+                                          -{money(ord.discount)}
+                                        </strong>
+                                      </div>
+                                    )}
+
+                                    {/* Frete / Logística */}
+                                    <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200 flex justify-between items-center text-stone-700">
+                                      <span className="font-medium flex items-center gap-1.5">
+                                        <span>Frete / Logística:</span>
+                                      </span>
+                                      <div className="flex items-center gap-2">
+                                        {ord.is_free_shipping ? (
+                                          <>
+                                            <strong className="text-amber-800 font-bold tabular-nums">
+                                              ⚠️ -{money(ord.shipping_cost || 0)}
+                                            </strong>
+                                            <span className="text-[9px] font-semibold bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded">
+                                              Pago pela Loja
+                                            </span>
+                                          </>
+                                        ) : ord.channel !== "site" ? (
+                                          <>
+                                            <strong className="text-emerald-700 font-bold tabular-nums">
+                                              R$ 0,00
+                                            </strong>
+                                            <span className="text-[9px] font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 px-1.5 py-0.5 rounded">
+                                              Custeado
+                                            </span>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <strong className="text-sky-800 font-bold tabular-nums">
+                                              +{money(ord.shipping_cost || 0)}
+                                            </strong>
+                                            <span className="text-[9px] font-semibold bg-sky-100 text-sky-900 border border-sky-300 px-1.5 py-0.5 rounded">
+                                              Pago pelo Cliente
+                                            </span>
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* Taxas e Encargos da Plataforma */}
+                                    <div className="p-2.5 rounded-xl bg-orange-50/80 border border-orange-200 flex justify-between items-center text-orange-950">
+                                      <span className="font-semibold flex items-center gap-1.5">
+                                        <span>Taxas e Encargos ({ord.channel === "shopee" ? "Shopee" : ord.channel === "mercadolivre" ? "Mercado Livre" : ord.channel === "tiktok" ? "TikTok Shop" : "Loja Virtual"} - {percent(ord.channel_tax_percent || 0)}):</span>
+                                      </span>
+                                      <strong className="text-orange-700 font-bold tabular-nums text-sm">
+                                        -{money(ord.channel_tax || 0)}
+                                      </strong>
+                                    </div>
+
+                                    {/* Renda Estimada do Pedido (Repasse Líquido) */}
+                                    <div className="p-3 rounded-xl bg-orange-100/70 border border-orange-300/80 flex justify-between items-center shadow-2xs">
+                                      <div>
+                                        <span className="font-bold text-stone-900 text-xs block">Renda estimada do pedido</span>
+                                        <span className="text-[10px] text-stone-600">Valor líquido repassado no caixa</span>
+                                      </div>
+                                      <strong className="text-orange-700 font-extrabold text-base sm:text-lg tabular-nums">
+                                        {money(ord.net_revenue || ((ord.products_subtotal || ord.total_amount) - (ord.channel_tax || 0)))}
+                                      </strong>
+                                    </div>
+
+                                    {/* Custo Fábrica (CMV) */}
+                                    <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200 flex justify-between items-center text-stone-700">
+                                      <span className="font-medium">Custo Fábrica (CMV):</span>
+                                      <strong className="text-stone-800 font-bold tabular-nums">
+                                        -{money(ord.factory_cost || 0)}
+                                      </strong>
+                                    </div>
+
+                                    {/* Lucro Limpo no Bolso Final */}
+                                    <div className={`p-3.5 rounded-xl border-2 flex justify-between items-center shadow-xs ${
+                                      (ord.net_profit ?? 0) < 0
+                                        ? "bg-rose-50 border-rose-300 text-rose-950"
+                                        : "bg-emerald-50 border-emerald-300 text-emerald-950"
+                                    }`}>
+                                      <div>
+                                        <span className="font-bold text-xs sm:text-sm block">Lucro Limpo no Bolso</span>
+                                        <span className="text-[10px] text-stone-600">Margem real: {percent(ord.net_margin_percent || 0)}</span>
+                                      </div>
+                                      <strong className={`font-extrabold text-base sm:text-xl tabular-nums ${
+                                        (ord.net_profit ?? 0) < 0 ? "text-rose-700" : "text-emerald-700"
+                                      }`}>
+                                        {money(ord.net_profit || 0)}
+                                      </strong>
                                     </div>
                                   </div>
                                 </div>
                               </td>
                             </tr>
                           )}
-                        </React.Fragment>
+</React.Fragment>
                       );
                     })}
                   </tbody>

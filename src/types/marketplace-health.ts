@@ -24,7 +24,9 @@ export interface SlaOrderItem {
   reference?: string;
   price: number;
   quantity: number;
+  cost?: number;
   image_url?: string;
+  pack_description?: string;
 }
 
 export interface SlaOrderMetrics {
@@ -40,8 +42,19 @@ export interface SlaOrderMetrics {
   shipment_name?: string;
   tracking_code?: string;
   total_amount: number;
+  customer_paid: number;
   items_summary: string;
   units_sold: number;
+  products_subtotal: number;
+  discount: number;
+  shipping_cost: number;
+  is_free_shipping: boolean;
+  channel_tax: number;
+  channel_tax_percent: number;
+  net_revenue: number;
+  factory_cost: number;
+  net_profit: number;
+  net_margin_percent: number;
   items?: SlaOrderItem[];
   
   // SLA Fields

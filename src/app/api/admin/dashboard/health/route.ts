@@ -2,12 +2,14 @@ import { NextResponse } from "next/server";
 import { hasAdminAccess } from "@/lib/admin-access";
 import { supabaseAdmin } from "@/lib/supabase";
 import { trayApiFetch } from "@/lib/tray-client";
+import { resolveExactProductCostDetails } from "@/lib/sheet-costs";
 import type {
   MarketplaceHealthDashboardResponse,
   ChannelHealthSummary,
   OfficialMarketplaceRule,
   ActivePenaltyRecord,
   SlaOrderMetrics,
+  SlaOrderItem,
   PerformanceDropHypothesis,
   StockoutLossItem,
   RecoveryActionPlanItem,
@@ -115,6 +117,64 @@ function addBusinessDays(date: Date, days: number): Date {
   return result;
 }
 
+
+/**
+ * Calcula a comissão detalhada exata da plataforma com base nas regras canônicas de marketplace.
+ */
+function calculateDetailedCommission(
+  channel: SalesChannel,
+  itemPrice: number,
+  quantity: number,
+): {
+  rate_percent: number;
+  percentage_amount: number;
+  fixed_fee: number;
+  total_fee: number;
+  effective_rate_percent: number;
+  rule_description: string;
+} {
+  const itemRevenue = itemPrice * quantity;
+  let rate_percent = 3.5;
+  let fixed_fee = 0;
+  let rule_description = "";
+
+  if (channel === "shopee") {
+    rate_percent = 20.0;
+    fixed_fee = 4.5 * quantity;
+    rule_description = "20% (18,60% comissão líquida + 1,40% transação) + R$ 4,50 taxa fixa por un.";
+  } else if (channel === "mercadolivre") {
+    rate_percent = 16.0;
+    fixed_fee = itemPrice < 79.0 ? 6.0 * quantity : 0;
+    rule_description =
+      itemPrice < 79.0
+        ? "16% comissão + R$ 6,00 taxa fixa por un. (< R$ 79)"
+        : "16% comissão padrão (anúncio ≥ R$ 79 sem taxa fixa de R$ 6)";
+  } else if (channel === "tiktok") {
+    rate_percent = 7.0;
+    fixed_fee = 2.0 * quantity;
+    rule_description = "7% comissão + R$ 2,00 taxa de transação por un.";
+  } else {
+    // site / loja virtual
+    rate_percent = 3.5;
+    fixed_fee = 0.5 * (quantity > 0 ? 1 : 0);
+    rule_description = "3,5% taxa gateway/cartão + R$ 0,50 taxa de transação";
+  }
+
+  const percentage_amount = itemRevenue * (rate_percent / 100);
+  const total_fee = percentage_amount + fixed_fee;
+  const effective_rate_percent =
+    itemRevenue > 0 ? (total_fee / itemRevenue) * 100 : rate_percent;
+
+  return {
+    rate_percent,
+    percentage_amount,
+    fixed_fee,
+    total_fee,
+    effective_rate_percent,
+    rule_description,
+  };
+}
+
 export async function GET(req: Request) {
   const isAuthorized = await hasAdminAccess();
   if (!isAuthorized) {
@@ -143,8 +203,74 @@ export async function GET(req: Request) {
     const periodStart = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
     const periodStartStr = periodStart.toISOString().split("T")[0];
 
+    // 1.1 Carregar catálogo e custos do Supabase para enriquecimento com mídias e CMV auditado
+    const costMapByTrayId = new Map<number, { cost: number; sku: string; name: string; image_url?: string; stock?: number }>();
+    const costMapBySku = new Map<string, { cost: number; name: string; image_url?: string; stock?: number }>();
+
+    if (supabaseAdmin) {
+      const { data: dbProducts } = await supabaseAdmin
+        .from("produtos")
+        .select("id, name, sku, cost_price, tray_product_id, media, stock");
+
+      if (dbProducts) {
+        for (const p of dbProducts) {
+          const cost = Number(p.cost_price || 0);
+          let image_url: string | undefined = undefined;
+          if (Array.isArray(p.media) && p.media.length > 0) {
+            const first = p.media[0];
+            image_url =
+              typeof first === "string"
+                ? first
+                : first?.url || first?.https || first?.http;
+          } else if (p.media && typeof p.media === "object") {
+            const mediaObj = p.media as any;
+            const imagesArr = Array.isArray(mediaObj.images) ? mediaObj.images : [];
+            if (imagesArr.length > 0) {
+              const first = imagesArr[0];
+              image_url =
+                typeof first === "string"
+                  ? first
+                  : first?.url || first?.https || first?.http || first?.url_webp;
+            }
+          }
+          const stock = p.stock != null ? Number(p.stock) : undefined;
+          if (p.tray_product_id) {
+            costMapByTrayId.set(Number(p.tray_product_id), {
+              cost,
+              sku: p.sku,
+              name: p.name,
+              image_url,
+              stock,
+            });
+          }
+          if (p.sku) {
+            costMapBySku.set(p.sku.toUpperCase(), {
+              cost,
+              name: p.name,
+              image_url,
+              stock,
+            });
+          }
+        }
+      }
+    }
+
     // 2. Análise de SLAs e Atrasos dos Pedidos no Período
-    const criticalOrders: SlaOrderMetrics[] = [];
+    const criticalOrderCandidates: Array<{
+      rawOrder: any;
+      channel: SalesChannel;
+      deadlineStr: string;
+      officialSendingLimit?: string;
+      actualDispatchStr?: string;
+      isDelayed: boolean;
+      isDispatchedLate: boolean;
+      isAtRiskToday: boolean;
+      isAtRiskTomorrow: boolean;
+      isCancelled: boolean;
+      delayDays: number;
+      slaStatus: SlaOrderMetrics["sla_status"];
+    }> = [];
+
     const channelStats: Record<SalesChannel, { total: number; delayed: number; atRisk: number; delivered: number; cancelled: number }> = {
       shopee: { total: 0, delayed: 0, atRisk: 0, delivered: 0, cancelled: 0 },
       mercadolivre: { total: 0, delayed: 0, atRisk: 0, delivered: 0, cancelled: 0 },
@@ -245,64 +371,198 @@ export async function GET(req: Request) {
         }
       }
 
-      // Se o pedido está atrasado, foi despachado com atraso, está em risco ou cancelado, adiciona na lista crítica
+      // Se o pedido está atrasado, foi despachado com atraso, está em risco ou cancelado, guarda para busca completa
       if (isDelayed || isDispatchedLate || isAtRiskToday || isAtRiskTomorrow || isCancelled) {
-        const mappedItems = (o.ProductsSold || []).map((pItem: any) => {
-          const prod = pItem.ProductsSold || pItem;
-          const img =
-            prod.ProductSoldImage?.[0]?.thumbs?.["90"]?.https ||
-            prod.ProductSoldImage?.[0]?.thumbs?.["90"]?.http ||
-            prod.ProductSoldImage?.[0]?.https ||
-            prod.ProductSoldImage?.[0]?.http ||
-            prod.url?.https ||
-            prod.url?.http;
-
-          return {
-            product_id: String(prod.product_id || ""),
-            name: prod.name || "Produto",
-            reference: prod.reference || "",
-            price: Number(prod.price || 0),
-            quantity: Number(prod.quantity || 1),
-            image_url: img,
-          };
-        });
-
-        const tracking =
-          o.tracking_code ||
-          o.shipment_code ||
-          o.sending_code ||
-          o.shipment_integrator_code ||
-          undefined;
-
-        criticalOrders.push({
-          order_id: String(o.id),
+        criticalOrderCandidates.push({
+          rawOrder: o,
           channel,
-          point_sale: o.point_sale || "Loja Virtual",
-          order_date: o.date,
-          order_hour: o.hour,
-          customer_name: o.Customer?.name || "Cliente",
-          customer_city: o.Customer?.city,
-          customer_state: o.Customer?.state,
-          status: o.status,
-          shipment_name: o.shipment || "Padrão",
-          tracking_code: tracking,
-          total_amount: Number(o.total || 0),
-          items_summary: `${o.ProductsSold?.length || 1} item(ns)`,
-          units_sold: (o.ProductsSold || []).reduce((acc: number, p: any) => acc + Number(p.ProductsSold?.quantity || 1), 0),
-          items: mappedItems,
-          payment_confirmed_at: isCancelled ? "" : `${o.date} ${o.hour || "10:00"}`,
-          expected_dispatch_deadline: isCancelled ? "" : deadlineStr,
-          official_sending_limit: isCancelled || !officialSendingLimit ? undefined : String(officialSendingLimit),
-          dispatch_cutoff_hour: isCancelled ? "" : (officialSendingLimit ? String(officialSendingLimit).split(" ")[1] || "23:59" : "18:00"),
-          actual_dispatched_at: isCancelled ? undefined : (actualDispatchStr && !actualDispatchStr.includes("0000-00-00") ? actualDispatchStr : undefined),
-          is_delayed: isCancelled ? false : (isDelayed || isDispatchedLate),
-          is_at_risk_today: isCancelled ? false : isAtRiskToday,
-          is_at_risk_tomorrow: isCancelled ? false : isAtRiskTomorrow,
-          is_cancelled: isCancelled,
-          delay_business_days: isCancelled ? 0 : delayDays,
-          sla_status: slaStatus,
+          deadlineStr,
+          officialSendingLimit: officialSendingLimit ? String(officialSendingLimit) : undefined,
+          actualDispatchStr,
+          isDelayed,
+          isDispatchedLate,
+          isAtRiskToday,
+          isAtRiskTomorrow,
+          isCancelled,
+          delayDays,
+          slaStatus,
         });
       }
+    }
+
+    // 2.1 Buscar detalhes completos via 'orders/{id}/complete' para todos os pedidos críticos
+    const completeOrdersMap = new Map<string, any>();
+    const completeConcurrency = 5;
+    for (let i = 0; i < criticalOrderCandidates.length; i += completeConcurrency) {
+      const chunk = criticalOrderCandidates.slice(i, i + completeConcurrency);
+      const chunkPromises = chunk.map(async (candidate) => {
+        try {
+          const res = await trayApiFetch<{ Order: any }>(`orders/${candidate.rawOrder.id}/complete`);
+          return res?.Order || null;
+        } catch {
+          return null;
+        }
+      });
+      const resolved = await Promise.all(chunkPromises);
+      for (const compOrder of resolved) {
+        if (compOrder?.id) {
+          completeOrdersMap.set(String(compOrder.id), compOrder);
+        }
+      }
+    }
+
+    // 2.2 Processar pedidos críticos enriquecidos com DRE completo e produtos auditados
+    const criticalOrders: SlaOrderMetrics[] = [];
+
+    for (const cand of criticalOrderCandidates) {
+      const o = cand.rawOrder;
+      const orderId = String(o.id);
+      const comp = completeOrdersMap.get(orderId) || o;
+
+      const customerName = comp.Customer?.name || o.Customer?.name || "Cliente";
+      const customerCity = comp.Customer?.city || o.Customer?.city || undefined;
+      const customerState = comp.Customer?.state || o.Customer?.state || undefined;
+      const shipmentName = comp.shipment || o.shipment || "Padrão";
+
+      const tracking =
+        comp.tracking_code ||
+        comp.shipment_code ||
+        comp.sending_code ||
+        comp.shipment_integrator_code ||
+        o.tracking_code ||
+        o.shipment_code ||
+        o.sending_code ||
+        o.shipment_integrator_code ||
+        undefined;
+
+      const productsSubtotal = Number(comp.partial_total || o.partial_total || 0);
+      const shipmentValue = Number(comp.shipment_value || o.shipment_value || 0);
+      const discountValue = Number(comp.discount || o.discount || 0);
+      const discountRatio =
+        productsSubtotal > 0 && discountValue > 0
+          ? Math.max(0, (productsSubtotal - discountValue) / productsSubtotal)
+          : 1;
+
+      let orderRevenue = 0;
+      let orderCmv = 0;
+      let orderUnits = 0;
+      let orderTotalCommission = 0;
+      const mappedItems: SlaOrderItem[] = [];
+
+      const rawProductsList = comp.ProductsSold || o.ProductsSold || [];
+      for (const pItem of rawProductsList) {
+        const prod = pItem.ProductsSold || pItem;
+        const qty = Number(prod.quantity || 1);
+        const itemPrice = Number(prod.price || 0);
+        const effectivePrice = itemPrice * discountRatio;
+        const itemRevenue = effectivePrice * qty;
+
+        const trayId = Number(prod.product_id);
+        const skuKey = (prod.reference || "").toUpperCase();
+
+        let dbCost = 0;
+        let dbImg: string | undefined = undefined;
+        let dbName: string | undefined = undefined;
+
+        if (costMapByTrayId.has(trayId)) {
+          const entry = costMapByTrayId.get(trayId)!;
+          dbCost = entry.cost;
+          dbImg = entry.image_url;
+          dbName = entry.name;
+        } else if (costMapBySku.has(skuKey)) {
+          const entry = costMapBySku.get(skuKey)!;
+          dbCost = entry.cost;
+          dbImg = entry.image_url;
+          dbName = entry.name;
+        }
+
+        const costDetails = resolveExactProductCostDetails(
+          dbName || prod.name || "Produto",
+          prod.reference || skuKey,
+          dbCost || Number(prod.cost_price || 0),
+          effectivePrice,
+        );
+
+        const comm = calculateDetailedCommission(cand.channel, effectivePrice, qty);
+        const itemCost = costDetails.cost * qty;
+
+        orderRevenue += itemRevenue;
+        orderCmv += itemCost;
+        orderUnits += qty;
+        orderTotalCommission += comm.total_fee;
+
+        const itemImg =
+          dbImg ||
+          prod.ProductSoldImage?.[0]?.thumbs?.["90"]?.https ||
+          prod.ProductSoldImage?.[0]?.thumbs?.["90"]?.http ||
+          prod.ProductSoldImage?.[0]?.https ||
+          prod.ProductSoldImage?.[0]?.http ||
+          prod.url?.https ||
+          prod.url?.http;
+
+        mappedItems.push({
+          product_id: String(prod.product_id || ""),
+          name: dbName || prod.name || "Produto",
+          reference: prod.reference || skuKey || "",
+          price: itemPrice,
+          quantity: qty,
+          cost: costDetails.cost,
+          image_url: itemImg,
+          pack_description: costDetails.pack_description,
+        });
+      }
+
+      // Frete vendedor no Mercado Livre (subtotal >= R$ 79)
+      const isML = cand.channel === "mercadolivre" || (o.point_sale || "").toLowerCase().includes("mercado");
+      const isMLFreeShippingSeller = isML && productsSubtotal >= 79 && (shipmentValue > 0 || discountValue > 0);
+      const sellerShippingCost = isMLFreeShippingSeller ? (shipmentValue || discountValue || 0) : 0;
+
+      const orderEffectiveTotal = orderRevenue > 0 ? orderRevenue : Number(comp.total || o.total || 0);
+      const netProfit = orderEffectiveTotal - orderCmv - orderTotalCommission - sellerShippingCost;
+      const netRevenue = orderEffectiveTotal - orderTotalCommission - sellerShippingCost;
+      const customerPaid = Number(comp.total || o.total || (orderEffectiveTotal + shipmentValue));
+      const channelTaxPercent = orderEffectiveTotal > 0 ? (orderTotalCommission / orderEffectiveTotal) * 100 : 0;
+      const netMarginPercent = orderEffectiveTotal > 0 ? (netProfit / orderEffectiveTotal) * 100 : 0;
+
+      criticalOrders.push({
+        order_id: orderId,
+        channel: cand.channel,
+        point_sale: o.point_sale || "Loja Virtual",
+        order_date: o.date,
+        order_hour: o.hour,
+        customer_name: customerName,
+        customer_city: customerCity,
+        customer_state: customerState,
+        status: comp.status || o.status,
+        shipment_name: shipmentName,
+        tracking_code: tracking,
+        total_amount: Number(comp.total || o.total || orderEffectiveTotal),
+        customer_paid: customerPaid,
+        items_summary: `${mappedItems.length || 1} item(ns)`,
+        units_sold: orderUnits || 1,
+        products_subtotal: productsSubtotal || orderEffectiveTotal,
+        discount: discountValue,
+        shipping_cost: shipmentValue,
+        is_free_shipping: isMLFreeShippingSeller,
+        channel_tax: orderTotalCommission,
+        channel_tax_percent: channelTaxPercent,
+        net_revenue: netRevenue,
+        factory_cost: orderCmv,
+        net_profit: netProfit,
+        net_margin_percent: netMarginPercent,
+        items: mappedItems,
+        payment_confirmed_at: cand.isCancelled ? "" : `${o.date} ${o.hour || "10:00"}`,
+        expected_dispatch_deadline: cand.isCancelled ? "" : cand.deadlineStr,
+        official_sending_limit: cand.isCancelled || !cand.officialSendingLimit ? undefined : String(cand.officialSendingLimit),
+        dispatch_cutoff_hour: cand.isCancelled ? "" : (cand.officialSendingLimit ? String(cand.officialSendingLimit).split(" ")[1] || "23:59" : "18:00"),
+        actual_dispatched_at: cand.isCancelled ? undefined : (cand.actualDispatchStr && !cand.actualDispatchStr.includes("0000-00-00") ? cand.actualDispatchStr : undefined),
+        is_delayed: cand.isCancelled ? false : (cand.isDelayed || cand.isDispatchedLate),
+        is_at_risk_today: cand.isCancelled ? false : cand.isAtRiskToday,
+        is_at_risk_tomorrow: cand.isCancelled ? false : cand.isAtRiskTomorrow,
+        is_cancelled: cand.isCancelled,
+        delay_business_days: cand.isCancelled ? 0 : cand.delayDays,
+        sla_status: cand.slaStatus,
+      });
     }
 
     // 3. Montar Resumo de Saúde por Canal
@@ -437,7 +697,10 @@ export async function GET(req: Request) {
           const currentStock = Number(p.stock ?? 0);
           if (currentStock <= 2) {
             let img: string | undefined = undefined;
-            if (Array.isArray(p.media) && p.media.length > 0) {
+            const mappedSku = costMapBySku.get((p.sku || "").toUpperCase());
+            if (mappedSku?.image_url) {
+              img = mappedSku.image_url;
+            } else if (Array.isArray(p.media) && p.media.length > 0) {
               const first = p.media[0];
               img = typeof first === "string" ? first : first?.url || first?.https || first?.http;
             } else if (p.media && typeof p.media === "object") {
