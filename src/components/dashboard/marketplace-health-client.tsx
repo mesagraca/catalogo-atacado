@@ -1143,8 +1143,8 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
             <div>
               <h3 className="text-base font-bold text-stone-900 flex items-center gap-2">
                 <span>🔍 Diagnóstico de Queda de Faturamento</span>
-                <span className="text-xs bg-stone-100 px-2.5 py-0.5 rounded-full text-stone-600 font-mono">
-                  R$ 15k ➔ R$ 6k
+                <span className="text-xs bg-stone-100 px-2.5 py-0.5 rounded-full text-stone-700 font-mono font-bold">
+                  {data?.historical_comparison ? `${money(data.historical_comparison.baseline_revenue_brl)} ➔ ${money(data.historical_comparison.current_revenue_brl)}` : "Comparativo Histórico"}
                 </span>
               </h3>
               <p className="text-xs text-stone-500 mt-0.5">
@@ -1162,44 +1162,68 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
           </div>
         </div>
 
-        {/* Comparativo de Períodos */}
+        {/* Comparativo de Períodos com Datas Explícitas */}
         {data?.historical_comparison && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-            <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
-                1. Período de Pico (Referência)
-              </span>
-              <div className="text-xl font-extrabold text-emerald-950 mt-1 tabular-nums">
-                {money(data.historical_comparison.baseline_revenue_brl)}
+            {/* 1. Período de Pico (Referência) */}
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 flex flex-col justify-between space-y-2">
+              <div>
+                <div className="flex items-center justify-between gap-1 flex-wrap">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
+                    1. Período de Pico (Referência)
+                  </span>
+                  {data.historical_comparison.baseline_start_date && (
+                    <span className="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-950 px-2 py-0.5 rounded border border-emerald-300">
+                      📅 {formatFullDateBR(data.historical_comparison.baseline_start_date)} a {formatFullDateBR(data.historical_comparison.baseline_end_date)}
+                    </span>
+                  )}
+                </div>
+                <div className="text-2xl font-black text-emerald-950 mt-1.5 tabular-nums">
+                  {money(data.historical_comparison.baseline_revenue_brl)}
+                </div>
               </div>
-              <span className="text-[11px] text-emerald-700 block mt-0.5">
-                {data.historical_comparison.baseline_orders_count} pedidos finalizados (alta tração Shopee)
+              <span className="text-[11px] text-emerald-800 font-medium block">
+                {data.historical_comparison.baseline_orders_count} pedidos finalizados · {data.historical_comparison.baseline_period_label}
               </span>
             </div>
 
-            <div className="bg-rose-50/70 border border-rose-200 rounded-xl p-4">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800 block">
-                2. Período Recente (Atual)
-              </span>
-              <div className="text-xl font-extrabold text-rose-950 mt-1 tabular-nums">
-                {money(data.historical_comparison.current_revenue_brl)}
+            {/* 2. Período Recente (Atual) */}
+            <div className="bg-rose-50/70 border border-rose-200 rounded-xl p-4 flex flex-col justify-between space-y-2">
+              <div>
+                <div className="flex items-center justify-between gap-1 flex-wrap">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800 block">
+                    2. Período Recente (Atual)
+                  </span>
+                  {data.historical_comparison.current_start_date && (
+                    <span className="text-[10px] font-mono font-bold bg-rose-100 text-rose-950 px-2 py-0.5 rounded border border-rose-300">
+                      📅 {formatFullDateBR(data.historical_comparison.current_start_date)} a {formatFullDateBR(data.historical_comparison.current_end_date)}
+                    </span>
+                  )}
+                </div>
+                <div className="text-2xl font-black text-rose-950 mt-1.5 tabular-nums">
+                  {money(data.historical_comparison.current_revenue_brl)}
+                </div>
               </div>
-              <span className="text-[11px] text-rose-700 block mt-0.5">
-                {data.historical_comparison.current_orders_count} pedidos finalizados (volume reduzido)
+              <span className="text-[11px] text-rose-800 font-medium block">
+                {data.historical_comparison.current_orders_count} pedidos finalizados · {data.historical_comparison.current_period_label}
               </span>
             </div>
 
-            <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 flex flex-col justify-between">
+            {/* 3. Decomposição do Déficit */}
+            <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 flex flex-col justify-between space-y-2">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block">
                   3. Decomposição do Déficit
                 </span>
-                <div className="text-xl font-extrabold text-stone-900 mt-1 tabular-nums">
-                  -{money(Math.abs(data.historical_comparison.revenue_delta_brl))}
+                <div className="text-2xl font-black text-stone-900 mt-1.5 tabular-nums flex items-baseline gap-2">
+                  <span>-{money(Math.abs(data.historical_comparison.revenue_delta_brl))}</span>
+                  <span className="text-xs font-bold text-rose-700">
+                    ({percent(data.historical_comparison.revenue_delta_percent)})
+                  </span>
                 </div>
               </div>
-              <span className="text-[11px] text-stone-600 block mt-0.5">
-                Investigação aponta perda combinada entre ruptura e visibilidade.
+              <span className="text-[11px] text-stone-600 block">
+                Investigação aponta perda combinada entre ruptura nos líderes e visibilidade.
               </span>
             </div>
           </div>
@@ -1259,31 +1283,40 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
           </div>
         </div>
 
-        {/* Tabela de Ruptura de Estoque nos SKUs Campeões */}
+        {/* Tabela de Ruptura de Estoque nos SKUs Campeões Reais */}
         {data?.top_stockout_losses && data.top_stockout_losses.length > 0 && (
           <div className="pt-4 border-t border-stone-100">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3 flex items-center justify-between">
-              <span>📦 SKUs Campeões com Estoque Esgotado ou Crítico (Impacto Direto nas Vendas)</span>
-              <span className="text-stone-400 font-normal">Estoque ≤ 2 unidades</span>
-            </h4>
+            <div className="mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-2">
+                  <span>📦 SKUs Campeões com Estoque Esgotado ou Crítico (Impacto Direto nas Vendas)</span>
+                </h4>
+                <p className="text-[11px] text-stone-500 mt-0.5">
+                  Produtos líderes comprovados de vendas na história da Tray que atingiram estoque crítico (≤ 3 un) ou zerado.
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-1 rounded-lg shrink-0">
+                Filtro: Estoque ≤ 3 unidades
+              </span>
+            </div>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto border border-stone-200 rounded-xl">
               <table className="w-full text-left text-xs">
                 <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] whitespace-nowrap">
                   <tr>
-                    <th className="py-2.5 px-4 min-w-[240px]">Produto / SKU</th>
+                    <th className="py-2.5 px-4 min-w-[250px]">Produto / SKU</th>
                     <th className="py-2.5 px-3 text-center whitespace-nowrap">Estoque Atual</th>
-                    <th className="py-2.5 px-3 text-center whitespace-nowrap">Queda de Vendas</th>
-                    <th className="py-2.5 px-3 text-right whitespace-nowrap">Preço de Venda</th>
-                    <th className="py-2.5 px-4 text-right whitespace-nowrap">Perda Estimada</th>
+                    <th className="py-2.5 px-3 text-center whitespace-nowrap min-w-[170px]">Vendas Comprovadas</th>
+                    <th className="py-2.5 px-3 text-right whitespace-nowrap">Preço Médio de Venda</th>
+                    <th className="py-2.5 px-4 text-right whitespace-nowrap">Perda Estimada (Ruptura)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100 text-stone-700">
-                  {data.top_stockout_losses.slice(0, 5).map((loss) => (
-                    <tr key={loss.sku} className="hover:bg-stone-50 transition">
+                <tbody className="divide-y divide-stone-100 text-stone-700 bg-white">
+                  {data.top_stockout_losses.map((loss) => (
+                    <tr key={loss.sku} className="hover:bg-stone-50/80 transition">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg border border-stone-200 bg-stone-100 overflow-hidden shrink-0 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 overflow-hidden shrink-0 flex items-center justify-center">
                             {loss.image_url ? (
                               <img
                                 src={loss.image_url}
@@ -1294,38 +1327,46 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                                 }}
                               />
                             ) : (
-                              <span className="text-stone-400 text-xs">📷</span>
+                              <span className="text-stone-400 text-sm">📦</span>
                             )}
                           </div>
                           <div className="min-w-0">
-                            <div className="font-semibold text-stone-900 truncate" title={loss.name}>
-                              {loss.name}
+                            <div className="font-semibold text-stone-900 truncate max-w-[280px]" title={loss.name}>
+                              {loss.name.replace(/<[^>]+>/g, " ")}
                             </div>
-                            <span className="text-[10px] font-mono text-stone-400">SKU: {loss.sku}</span>
+                            <span className="text-[11px] font-mono text-stone-400">SKU: {loss.sku}</span>
                           </div>
                         </div>
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         <span
-                          className={`font-bold px-2 py-0.5 rounded-full text-[11px] ${
+                          className={`font-bold px-2.5 py-1 rounded-full text-xs ${
                             loss.current_stock <= 0
-                              ? "bg-rose-100 text-rose-800"
-                              : "bg-amber-100 text-amber-800"
+                              ? "bg-rose-100 text-rose-800 border border-rose-300"
+                              : "bg-amber-100 text-amber-900 border border-amber-300"
                           }`}
                         >
-                          {loss.current_stock} un
+                          {loss.current_stock <= 0 ? "0 un (Esgotado)" : `${loss.current_stock} un (Crítico)`}
                         </span>
                       </td>
-                      <td className="py-3 px-3 text-center whitespace-nowrap tabular-nums">
-                        <span className="text-stone-500">
-                          {loss.peak_period_units_sold} un ➔{" "}
-                          <strong className="text-rose-700 font-bold">{loss.recent_period_units_sold} un</strong>
-                        </span>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        <div className="text-stone-800 font-bold tabular-nums">
+                          {loss.all_time_units_sold || loss.peak_period_units_sold} un na história
+                        </div>
+                        {loss.recent_period_units_sold === 0 ? (
+                          <span className="text-[10px] text-rose-700 font-semibold block">
+                            0 un no período (estoque travado)
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-emerald-700 font-medium block">
+                            {loss.recent_period_units_sold} un nos últimos {data.period_selected_days}d
+                          </span>
+                        )}
                       </td>
-                      <td className="py-3 px-3 text-right whitespace-nowrap tabular-nums font-medium text-stone-900">
+                      <td className="py-3 px-3 text-right whitespace-nowrap tabular-nums font-semibold text-stone-900">
                         {money(loss.unit_price)}
                       </td>
-                      <td className="py-3 px-4 text-right whitespace-nowrap tabular-nums font-bold text-rose-700">
+                      <td className="py-3 px-4 text-right whitespace-nowrap tabular-nums font-bold text-rose-700 text-sm">
                         ~{money(loss.estimated_revenue_lost_brl)}
                       </td>
                     </tr>

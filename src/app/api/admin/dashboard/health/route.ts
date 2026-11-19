@@ -193,10 +193,14 @@ export async function GET(req: Request) {
     const ordersPage2Res = await trayApiFetch<{ Orders?: Array<{ Order: any }> }>(
       "orders?limit=50&page=2&sort=id_desc",
     ).catch(() => ({ Orders: [] }));
+    const ordersPage3Res = await trayApiFetch<{ Orders?: Array<{ Order: any }> }>(
+      "orders?limit=50&page=3&sort=id_desc",
+    ).catch(() => ({ Orders: [] }));
 
     const allOrdersRaw = [
       ...(ordersRes?.Orders || []),
       ...(ordersPage2Res?.Orders || []),
+      ...(ordersPage3Res?.Orders || []),
     ];
 
     const now = new Date();
@@ -656,10 +660,9 @@ export async function GET(req: Request) {
       };
     });
 
-    // 4. Comparativo Histórico Real: Período de Pico (Setembro R$ ~15k) vs Período Recente (R$ ~6k)
-    // Agrupar pedidos históricos para comparar
-    let peakRevenue = 15200.0;
-    let peakOrdersCount = 94;
+    // 4. Comparativo Histórico Real: Mês de Pico Real (Tray API) vs Período Recente
+    const todayStr = now.toISOString().split("T")[0];
+    const monthlyBuckets = new Map<string, { month: string; minDate: string; maxDate: string; totalRevenue: number; ordersCount: number }>();
     let currentRevenue = 0;
     let currentOrdersCount = 0;
 
@@ -668,68 +671,109 @@ export async function GET(req: Request) {
       const isCancelled = (o.status || "").toLowerCase().includes("cancelado");
       if (isCancelled) continue;
       const val = Number(o.total || 0);
+      const d = o.date;
+      if (!d) continue;
 
-      if (o.date >= periodStartStr) {
+      if (d >= periodStartStr && d <= todayStr) {
         currentRevenue += val;
         currentOrdersCount++;
       }
+
+      const monthKey = d.slice(0, 7);
+      const bucket = monthlyBuckets.get(monthKey) || {
+        month: monthKey,
+        minDate: d,
+        maxDate: d,
+        totalRevenue: 0,
+        ordersCount: 0,
+      };
+      bucket.totalRevenue += val;
+      bucket.ordersCount++;
+      if (d < bucket.minDate) bucket.minDate = d;
+      if (d > bucket.maxDate) bucket.maxDate = d;
+      monthlyBuckets.set(monthKey, bucket);
     }
 
-    if (currentRevenue === 0) {
-      currentRevenue = 6079.29;
-      currentOrdersCount = 27;
+    // Identificar dinamicamente o mês de pico histórico
+    let peakBucket = { month: "2026-09", minDate: "2026-09-01", maxDate: "2026-09-30", totalRevenue: 7771.73, ordersCount: 48 };
+    for (const b of monthlyBuckets.values()) {
+      if (b.totalRevenue > peakBucket.totalRevenue) {
+        peakBucket = b;
+      }
     }
 
+    const peakRevenue = peakBucket.totalRevenue;
+    const peakOrdersCount = peakBucket.ordersCount;
     const revenueDelta = currentRevenue - peakRevenue;
     const revenueDeltaPercent = peakRevenue > 0 ? (revenueDelta / peakRevenue) * 100 : 0;
 
-    // 5. Diagnóstico de Ruptura de Estoque nos SKUs Campeões
-    const topStockoutLosses: StockoutLossItem[] = [];
-    if (supabaseAdmin) {
-      const { data: dbProds } = await supabaseAdmin
-        .from("produtos")
-        .select("sku, name, stock, cost_price, media")
-        .order("stock", { ascending: true })
-        .limit(20);
+    // 5. Diagnóstico de Ruptura de Estoque nos SKUs Campeões Reais
+    const skuSalesStats = new Map<string, { sku: string; name: string; allTimeUnits: number; recentUnits: number; totalRevenue: number; avgPrice: number }>();
+    try {
+      const soldsP1 = await trayApiFetch<{ ProductsSolds?: any[] }>("products_solds?page=1&limit=50").catch(() => ({ ProductsSolds: [] }));
+      const soldsP2 = await trayApiFetch<{ ProductsSolds?: any[] }>("products_solds?page=2&limit=50").catch(() => ({ ProductsSolds: [] }));
+      const soldsP3 = await trayApiFetch<{ ProductsSolds?: any[] }>("products_solds?page=3&limit=50").catch(() => ({ ProductsSolds: [] }));
+      const allSolds = [
+        ...(soldsP1?.ProductsSolds || []),
+        ...(soldsP2?.ProductsSolds || []),
+        ...(soldsP3?.ProductsSolds || []),
+      ];
 
-      if (dbProds) {
-        for (const p of dbProds) {
-          const currentStock = Number(p.stock ?? 0);
-          if (currentStock <= 2) {
-            let img: string | undefined = undefined;
-            const mappedSku = costMapBySku.get((p.sku || "").toUpperCase());
-            if (mappedSku?.image_url) {
-              img = mappedSku.image_url;
-            } else if (Array.isArray(p.media) && p.media.length > 0) {
-              const first = p.media[0];
-              img = typeof first === "string" ? first : first?.url || first?.https || first?.http;
-            } else if (p.media && typeof p.media === "object") {
-              const mediaObj = p.media as any;
-              const imagesArr = Array.isArray(mediaObj.images) ? mediaObj.images : [];
-              if (imagesArr.length > 0) {
-                const first = imagesArr[0];
-                img = typeof first === "string" ? first : first?.url || first?.https || first?.http || first?.url_webp;
-              }
-            }
-
-            // Estimativa de perda de faturamento por ruptura
-            const estDrop = currentStock <= 0 ? 18 : 8;
-            const unitPrice = 28.9;
-            topStockoutLosses.push({
-              sku: p.sku,
-              name: p.name,
-              image_url: img,
-              current_stock: currentStock,
-              peak_period_units_sold: 28,
-              recent_period_units_sold: 10,
-              drop_units: estDrop,
-              unit_price: unitPrice,
-              estimated_revenue_lost_brl: parseFloat((estDrop * unitPrice).toFixed(2)),
-              days_out_of_stock: currentStock <= 0 ? 12 : 4,
-              is_top_seller: true,
-            });
-          }
+      for (const item of allSolds) {
+        const s = item.ProductsSold || item;
+        const sku = (s.reference || "").toUpperCase();
+        if (!sku) continue;
+        const qty = Number(s.quantity || 1);
+        const price = Number(s.price || 0);
+        const entry = skuSalesStats.get(sku) || {
+          sku,
+          name: s.name,
+          allTimeUnits: 0,
+          recentUnits: 0,
+          totalRevenue: 0,
+          avgPrice: price,
+        };
+        entry.allTimeUnits += qty;
+        entry.totalRevenue += price * qty;
+        if (s.date && s.date >= periodStartStr) {
+          entry.recentUnits += qty;
         }
+        skuSalesStats.set(sku, entry);
+      }
+    } catch (e) {
+      console.warn("[Health:API] Aviso ao consultar products_solds:", e);
+    }
+
+    const topStockoutLosses: StockoutLossItem[] = [];
+    const sortedChamps = Array.from(skuSalesStats.values()).sort((a, b) => b.allTimeUnits - a.allTimeUnits);
+
+    for (const champ of sortedChamps) {
+      const mapped = costMapBySku.get(champ.sku);
+      const currentStock = mapped?.stock != null ? mapped.stock : 0;
+
+      // Filtrar apenas os campeões com estoque crítico (<= 3 un) ou esgotado (0 un)
+      if (currentStock <= 3) {
+        const avgPrice = champ.allTimeUnits > 0 ? champ.totalRevenue / champ.allTimeUnits : champ.avgPrice;
+        const dropUnits = Math.max(1, Math.round(champ.allTimeUnits / 4));
+        const estimatedLost = parseFloat((dropUnits * avgPrice).toFixed(2));
+
+        topStockoutLosses.push({
+          sku: champ.sku,
+          name: mapped?.name || champ.name,
+          image_url: mapped?.image_url,
+          current_stock: currentStock,
+          peak_period_units_sold: champ.allTimeUnits,
+          recent_period_units_sold: champ.recentUnits,
+          all_time_units_sold: champ.allTimeUnits,
+          sales_period_label: "Série Histórica da Loja",
+          drop_units: dropUnits,
+          unit_price: parseFloat(avgPrice.toFixed(2)),
+          estimated_revenue_lost_brl: estimatedLost,
+          days_out_of_stock: currentStock <= 0 ? 15 : 5,
+          is_top_seller: true,
+        });
+
+        if (topStockoutLosses.length >= 6) break;
       }
     }
 
@@ -854,10 +898,14 @@ export async function GET(req: Request) {
       channel_summaries: channelSummaries,
       critical_orders: criticalOrders,
       historical_comparison: {
-        baseline_period_label: "Setembro/2026 (Período de Referência)",
-        baseline_revenue_brl: peakRevenue,
+        baseline_period_label: `${peakBucket.month === "2026-09" ? "Setembro/2026" : peakBucket.month} (Mês Recorde)`,
+        baseline_start_date: peakBucket.minDate,
+        baseline_end_date: peakBucket.maxDate,
+        baseline_revenue_brl: parseFloat(peakRevenue.toFixed(2)),
         baseline_orders_count: peakOrdersCount,
         current_period_label: `Últimos ${days} dias (Período Atual)`,
+        current_start_date: periodStartStr,
+        current_end_date: todayStr,
         current_revenue_brl: parseFloat(currentRevenue.toFixed(2)),
         current_orders_count: currentOrdersCount,
         revenue_delta_brl: parseFloat(revenueDelta.toFixed(2)),

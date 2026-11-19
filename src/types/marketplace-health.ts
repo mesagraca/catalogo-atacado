@@ -145,6 +145,8 @@ export interface StockoutLossItem {
   current_stock: number;
   peak_period_units_sold: number;
   recent_period_units_sold: number;
+  all_time_units_sold?: number;
+  sales_period_label?: string;
   drop_units: number;
   unit_price: number;
   estimated_revenue_lost_brl: number;
@@ -177,12 +179,16 @@ export interface MarketplaceHealthDashboardResponse {
   // Pedidos em Risco e Atrasados
   critical_orders: SlaOrderMetrics[];
   
-  // Diagnóstico Comparativo (R$ 15k vs R$ 6k)
+  // Diagnóstico Comparativo
   historical_comparison: {
-    baseline_period_label: string; // Ex: "Setembro/2026 (Período de Referência)"
+    baseline_period_label: string; // Ex: "Setembro/2026 (Mês Recorde)"
+    baseline_start_date?: string;  // Ex: "2026-09-01"
+    baseline_end_date?: string;    // Ex: "2026-09-30"
     baseline_revenue_brl: number;
     baseline_orders_count: number;
     current_period_label: string;  // Ex: "Últimos 30 dias (Período Recente)"
+    current_start_date?: string;   // Ex: "2026-10-20"
+    current_end_date?: string;     // Ex: "2026-11-19"
     current_revenue_brl: number;
     current_orders_count: number;
     revenue_delta_brl: number;
