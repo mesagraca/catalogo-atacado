@@ -144,79 +144,78 @@ export const SHEET_COSTS_CATALOG: Record<string, SheetCollectionCost> = {
     porta_guardanapo: { unit: 6.35, kit2: 12.7 },
     kit_completo_6pecas: 58.16,
   },
-  "LAVANDA": {
-    title: "LAVANDA",
-    lugar_americano: { unit: 13.98, kit2: 27.96 },
-    guardanapo: { unit: 9.6, kit2: 19.2 },
-    porta_guardanapo: { unit: 6.35, kit2: 12.7 },
-    kit_completo_6pecas: 59.86,
-  },
-  "COSTELA DE ADÃO": {
-    title: "COSTELA DE ADÃO",
-    lugar_americano: { unit: 13.98, kit2: 27.96 },
-    guardanapo: { unit: 9.6, kit2: 19.2 },
-    porta_guardanapo: { unit: 6.35, kit2: 12.7 },
-    kit_completo_6pecas: 59.86,
-  },
-  "ALECRIM": {
-    title: "ALECRIM",
-    lugar_americano: { unit: 13.98, kit2: 27.96 },
-    guardanapo: { unit: 9.6, kit2: 19.2 },
-    porta_guardanapo: { unit: 6.35, kit2: 12.7 },
-    kit_completo_6pecas: 59.86,
-  },
-  "RAMO DE OLIVEIRA": {
-    title: "RAMO DE OLIVEIRA",
-    lugar_americano: { unit: 13.98, kit2: 27.96 },
-    guardanapo: { unit: 9.6, kit2: 19.2 },
-    porta_guardanapo: { unit: 7.35, kit2: 14.7 },
-    kit_completo_6pecas: 61.86,
-  },
   "NATAL 1": {
-    title: "NATAL 1",
-    lugar_americano: { unit: 16.5, kit2: 33.0 },
-    guardanapo: { unit: 10.0, kit2: 20.0 },
+    title: "NATAL 1 - FLORESTA",
+    lugar_americano: { unit: 16.14, kit2: 32.28 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
     porta_guardanapo: { unit: 7.35, kit2: 14.7 },
-    kit_completo_6pecas: 67.7,
+    kit_completo_6pecas: 66.18,
   },
   "NATAL 2": {
-    title: "NATAL 2",
-    lugar_americano: { unit: 16.5, kit2: 33.0 },
-    guardanapo: { unit: 10.0, kit2: 20.0 },
+    title: "NATAL 2 - LAÇO",
+    lugar_americano: { unit: 16.14, kit2: 32.28 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
     porta_guardanapo: { unit: 7.35, kit2: 14.7 },
-    kit_completo_6pecas: 67.7,
+    kit_completo_6pecas: 66.18,
   },
   "NATAL 3": {
-    title: "NATAL 3",
-    lugar_americano: { unit: 19.74, kit2: 39.48 },
-    guardanapo: { unit: 10.0, kit2: 20.0 },
+    title: "NATAL 3 - QUEBRA NOZES",
+    lugar_americano: { unit: 20.14, kit2: 40.28 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
     porta_guardanapo: { unit: 7.35, kit2: 14.7 },
     kit_completo_6pecas: 74.18,
   },
   "NATAL 4": {
-    title: "NATAL 4",
-    lugar_americano: { unit: 18.92, kit2: 37.84 },
-    guardanapo: { unit: 10.0, kit2: 20.0 },
+    title: "NATAL 4 - GENGIBRE MARROM",
+    lugar_americano: { unit: 20.32, kit2: 40.64 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
     porta_guardanapo: { unit: 7.35, kit2: 14.7 },
-    kit_completo_6pecas: 72.54,
+    kit_completo_6pecas: 74.54,
   },
   "NATAL 5": {
-    title: "NATAL 5",
-    lugar_americano: { unit: 13.8, kit2: 27.6 },
-    guardanapo: { unit: 10.0, kit2: 20.0 },
+    title: "NATAL 5 - PREGUEADO",
+    lugar_americano: { unit: 17.1, kit2: 34.2 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
     porta_guardanapo: { unit: 7.35, kit2: 14.7 },
-    kit_completo_6pecas: 62.3,
+    kit_completo_6pecas: 68.1,
+  },
+  "ALECRIM": {
+    title: "ALECRIM",
+    lugar_americano: { unit: 14.89, kit2: 29.78 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
+    porta_guardanapo: { unit: 6.35, kit2: 12.7 },
+    kit_completo_6pecas: 61.68,
+  },
+  "LAVANDA": {
+    title: "LAVANDA",
+    lugar_americano: { unit: 14.89, kit2: 29.78 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
+    porta_guardanapo: { unit: 6.35, kit2: 12.7 },
+    kit_completo_6pecas: 61.68,
+  },
+  "COSTELA DE ADÃO": {
+    title: "COSTELA DE ADÃO",
+    lugar_americano: { unit: 14.89, kit2: 29.78 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
+    porta_guardanapo: { unit: 6.35, kit2: 12.7 },
+    kit_completo_6pecas: 61.68,
+  },
+  "RAMO DE OLIVEIRA": {
+    title: "RAMO DE OLIVEIRA",
+    lugar_americano: { unit: 14.89, kit2: 29.78 },
+    guardanapo: { unit: 9.6, kit2: 19.2 },
+    porta_guardanapo: { unit: 6.35, kit2: 12.7 },
+    kit_completo_6pecas: 61.68,
   },
 };
 
 /**
  * Tabela de custos de SKUs específicos vendidos na loja.
- * Mapeia diretamente produtos de terceiros (Lyor, Cerâmica, Fibra, etc.) e kits canônicos.
+ * Mapeia diretamente produtos de terceiros e kits canônicos com custos auditados.
  */
 export const SPECIFIC_SKU_COSTS: Record<string, number> = {
   "MES-MAD-AFE-080": 17.80, // Porta Guardanapo Dália Rosé Provence - Kit 2 Un (Planilha ROSE IMPERIAL)
-  "MES-NYL-LAM-168": 30.98, // Lugar Americano Itália Redondo Verde com Borda Xadrez - Kit 2 Un
-  "MES-TEC-KIT-298": 62.30, // Kit Mesa Posta Natal Completo Pregueado 6 Peças (NATAL 5)
+  "MES-TEC-KIT-298": 68.10, // Kit Mesa Posta Natal Completo Pregueado 6 Peças (NATAL 5)
   "MES-TEC-JAM-291": 40.64, // Kit Mesa Posta Natal 2x Lugar Americano Redondo
   "MES-NYL-JAM-159": 30.98, // Lugar Americano Xadrez Verde - Kit 2 Un
   "MES-NYL-JAM-165": 30.98, // Lugar Americano Xadrez Bordô - Kit 2 Un
@@ -226,61 +225,146 @@ export const SPECIFIC_SKU_COSTS: Record<string, number> = {
   "MES-PGU-PER-152": 11.20, // Porta Guardanapo Dourado com Pérolas - Kit 2 Un (2 x 5.60)
   "MES-CER-NAU-049": 22.00, // Prato Raso de Cerâmica Caranguejo Mesa Posta
   "MES-PGU-SUC-155": 14.70, // Porta Guardanapo Suculenta Verde com Fibra - Kit 2 Un (2 x 7.35)
-  "MES-MET-PGU-211": 16.50, // Porta Guardanapo Orelle Dourado Lyor - Kit 2 Un (Par no atacado Lyor)
+  "MES-MET-PGU-211": 16.50, // Porta Guardanapo Orelle Dourado Lyor - Kit 2 Un
   "MES-BOR-PGU-214": 12.70, // Porta Guardanapo Pizza Bordado - Kit 2 Un (2 x 6.35)
-  "MES-COU-LAF-230": 26.26, // Lugar Americano Flor de Lóttus Rosa Bordado - Kit 2 Un
   "KIT-TEC-KMP-251": 62.74, // Kit Mesa Posta Ovinho 6 Peças (Planilha OVINHO)
-  "MES-CER-AFE-050": 7.00,  // Tigelinha Bowl Coração em Cerâmica Vermelha
-  "MES-VID-TAC-097": 85.00, // Taça de Vidro Âmbar com Base Mármore
-  "MES-CRI-LEI-197": 10.20, // Leiteira Lavanda Hand Painting 240ml Cristal Lyor
-  "DEC-MAD-NAU-061": 18.00, // Enfeite de Mesa Relax Navy e Conchas
-  "MES-NYL-LAM-179": 24.00, // Lugar Americano Limão Siciliano Azul com Borda Amarela - Kit 2 Un
   "KIT-TEC-KMP-250": 62.70, // Kit Mesa Posta Abelinha 6 Peças (Planilha ABELINHA)
+  "MES-KIT-MPT-176": 60.00, // Kit Mesa Posta Limão Siciliano 2 Lugares Completo (Tray cost_price)
+  "KIT-MPT-176": 60.00,
 };
 
 /**
- * Resolve o custo unitário exato de um produto vendido com base na planilha e catálogo.
+ * Determina se o produto é têxtil e de confecção própria da Mesa & Graça.
+ *
+ * @param {string} [name] - Nome do produto
+ * @param {string} [sku] - Referência/SKU
+ * @returns {boolean} True se for confecção têxtil própria
+ * @category Costs
+ * @since v3.2.0
+ */
+export function isOwnProductionTextile(name?: string, sku?: string): boolean {
+  const norm = (name || "").toLowerCase();
+  const skuUp = (sku || "").toUpperCase();
+
+  // Excluir expressamente produtos de terceiros (cerâmicas, vidros, enfeites e Lyor)
+  if (
+    norm.includes("cerâmica") ||
+    norm.includes("ceramica") ||
+    norm.includes("bowl") ||
+    norm.includes("tigelinha") ||
+    norm.includes("prato") ||
+    norm.includes("taça") ||
+    norm.includes("taca") ||
+    norm.includes("leiteira") ||
+    norm.includes("copo") ||
+    norm.includes("lyor") ||
+    norm.includes("enfeite") ||
+    norm.includes("relax navy") ||
+    norm.includes("conchas") ||
+    skuUp.includes("CER") ||
+    skuUp.includes("VID") ||
+    skuUp.includes("CRI") ||
+    skuUp.includes("MAD-NAU")
+  ) {
+    return false;
+  }
+
+  // Têxteis de produção própria da Mesa & Graça
+  if (
+    norm.includes("lugar americano") ||
+    norm.includes("guardanapo") ||
+    norm.includes("porta guardanapo") ||
+    norm.includes("kit mesa posta") ||
+    norm.includes("jogo americano") ||
+    norm.includes("abelinha") ||
+    norm.includes("ovinho") ||
+    norm.includes("limão") ||
+    norm.includes("flor de lótus") ||
+    norm.includes("flor de lottus") ||
+    norm.includes("pizza") ||
+    norm.includes("natal") ||
+    norm.includes("bridgerton") ||
+    norm.includes("cerejinha") ||
+    norm.includes("magnólia") ||
+    norm.includes("feijoada") ||
+    norm.includes("churrasco") ||
+    norm.includes("hambúrguer") ||
+    norm.includes("hotdog") ||
+    skuUp.includes("LAM") ||
+    skuUp.includes("JAM") ||
+    skuUp.includes("GUA") ||
+    skuUp.includes("PGU") ||
+    skuUp.includes("KMP") ||
+    skuUp.includes("TEC") ||
+    skuUp.includes("COU") ||
+    skuUp.includes("NYL") ||
+    skuUp.includes("KIT-")
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+export interface ProductCostResult {
+  cost: number;
+  is_own_production: boolean;
+  has_missing_cost: boolean;
+  pack_description: string;
+}
+
+/**
+ * Resolve o custo exato de um produto vendido com base na planilha e catálogo,
+ * diferenciando vendas unitárias avulsas de vendas em kit/par e kits completos.
  *
  * @param {string} name - Nome completo do produto
  * @param {string} sku - Referência ou SKU
  * @param {number} [fallbackCost] - Custo cadastrado no Supabase ou Tray
  * @param {number} [effectivePrice] - Preço efetivo de venda
- * @returns {number} Custo unitário em reais
+ * @returns {ProductCostResult} Resultado com custo, classificação e status
  * @category Costs
- * @since v3.1.0
+ * @since v3.2.0
  */
-export function resolveExactProductCost(
+export function resolveExactProductCostDetails(
   name: string,
   sku?: string,
   fallbackCost?: number,
   effectivePrice?: number,
-): number {
+): ProductCostResult {
   const norm = (name || "").toLowerCase();
   const skuUp = (sku || "").toUpperCase().trim();
+  const isOwn = isOwnProductionTextile(name, sku);
+  const effPrice = Number(effectivePrice || 0);
 
-  // 1. Verificação direta por SKU override
+  // 1. Verificação direta por SKU override (apenas se não conflitar com venda unitária)
   if (skuUp && SPECIFIC_SKU_COSTS[skuUp]) {
-    return SPECIFIC_SKU_COSTS[skuUp];
+    const rawCost = SPECIFIC_SKU_COSTS[skuUp];
+    // Se o preço de venda for muito inferior ao custo do kit (ex: venda unitária avulsa)
+    if (effPrice > 0 && effPrice < rawCost * 0.75) {
+      return {
+        cost: Number((rawCost / 2).toFixed(2)),
+        is_own_production: isOwn,
+        has_missing_cost: false,
+        pack_description: "Unidade Avulsa (1 un)",
+      };
+    }
+    return {
+      cost: rawCost,
+      is_own_production: isOwn,
+      has_missing_cost: false,
+      pack_description: "Kit / Par (2 un)",
+    };
   }
 
-  // 2. Kit Fundo do Mar Premium (caso venha sem SKU na ordem legada)
+  // 2. Kit Fundo do Mar Premium
   if (norm.includes("fundo do mar") && (norm.includes("kit") || norm.includes("premium"))) {
-    return 34.52; // Custo de confecção 2 lugares da planilha FUNDO DO MAR - PREMIUM
+    return {
+      cost: 34.52,
+      is_own_production: true,
+      has_missing_cost: false,
+      pack_description: "Kit 2 Lugares",
+    };
   }
-
-  const isKit2 =
-    norm.includes("kit 2") ||
-    norm.includes("2 un") ||
-    norm.includes("2un") ||
-    norm.includes("par ");
-
-  const isKit6 =
-    norm.includes("kit mesa posta") ||
-    norm.includes("jogo e lugar") ||
-    norm.includes("6 peças") ||
-    norm.includes("6 pçs") ||
-    norm.includes("6pcs") ||
-    norm.includes("completo");
 
   // 3. Mapeamento por tema da planilha
   let sheetKey: string | null = null;
@@ -298,8 +382,9 @@ export function resolveExactProductCost(
   else if (norm.includes("natal 2")) sheetKey = "NATAL 2";
   else if (norm.includes("xadrez verde") || skuUp.includes("159")) sheetKey = "PIZZA";
   else if (norm.includes("xadrez bordô") || skuUp.includes("165") || skuUp.includes("166")) sheetKey = "PIZZA";
-  else if (norm.includes("limão azul") || skuUp.includes("179")) sheetKey = "LIMÃO AZUL";
-  else if (norm.includes("limão branco")) sheetKey = "LIMÃO BRANCO";
+  else if (norm.includes("limão azul") || norm.includes("limão siciliano azul") || skuUp.includes("179")) sheetKey = "LIMÃO AZUL";
+  else if (norm.includes("limão branco") || norm.includes("limão siciliano branco")) sheetKey = "LIMÃO BRANCO";
+  else if (norm.includes("limão") || skuUp.includes("176")) sheetKey = "LIMÃO BRANCO";
   else if (norm.includes("flor de lóttus") || norm.includes("flor de lotus") || skuUp.includes("230")) sheetKey = "FLOR DE LÓTUS";
   else if (norm.includes("ovinho") || skuUp.includes("251")) sheetKey = "OVINHO";
   else if (norm.includes("abelinha") || skuUp.includes("250")) sheetKey = "ABELINHA";
@@ -316,25 +401,141 @@ export function resolveExactProductCost(
 
   if (sheetKey && SHEET_COSTS_CATALOG[sheetKey]) {
     const s = SHEET_COSTS_CATALOG[sheetKey];
-    if (isKit6) return s.kit_completo_6pecas;
-    if (norm.includes("porta guardanapo") || skuUp.includes("PGU") || skuUp.includes("AFE")) {
-      return isKit2 ? s.porta_guardanapo.kit2 : s.porta_guardanapo.unit;
+
+    // 1. Kit Completo de 2 Lugares (6 peças completas)
+    const is6Pecas =
+      norm.includes("6 peças") ||
+      norm.includes("6 pçs") ||
+      norm.includes("6pcs") ||
+      norm.includes("2 lugares") ||
+      norm.includes("2lugares");
+
+    if (is6Pecas) {
+      return {
+        cost: s.kit_completo_6pecas,
+        is_own_production: true,
+        has_missing_cost: false,
+        pack_description: "Kit Mesa Posta 2 Lugares (6 peças)",
+      };
     }
-    if (norm.includes("guardanapo") || skuUp.includes("GUA")) {
-      return isKit2 ? s.guardanapo.kit2 : s.guardanapo.unit;
+
+    // 2. Kit Completo de 1 Lugar (3 peças: Lugar Americano + Guardanapo + Porta-Guardanapo)
+    const hasLA = norm.includes("lugar americano") || norm.includes("jogo americano") || skuUp.includes("LAM") || skuUp.includes("JAM");
+    const hasGUA = norm.includes("guardanapo") || skuUp.includes("GUA");
+    const hasPGU = norm.includes("porta") || skuUp.includes("PGU");
+
+    if (hasLA && hasGUA && hasPGU) {
+      const kit3Cost = Number((s.lugar_americano.unit + s.guardanapo.unit + s.porta_guardanapo.unit).toFixed(2));
+      return {
+        cost: kit3Cost,
+        is_own_production: true,
+        has_missing_cost: false,
+        pack_description: "Kit Mesa Posta 1 Lugar (3 peças)",
+      };
     }
+
+    // 3. Kit genérico de mesa posta
+    if (norm.includes("kit mesa posta") && !norm.includes("lugar americano") && !norm.includes("guardanapo") && !norm.includes("porta")) {
+      return {
+        cost: s.kit_completo_6pecas,
+        is_own_production: true,
+        has_missing_cost: false,
+        pack_description: "Kit Mesa Posta 2 Lugares (6 peças)",
+      };
+    }
+
+    // Lugar Americano
     if (norm.includes("lugar americano") || skuUp.includes("LAM") || skuUp.includes("JAM") || skuUp.includes("LAF")) {
-      return isKit2 ? s.lugar_americano.kit2 : s.lugar_americano.unit;
+      const isExplicitKit = norm.includes("kit 2") || norm.includes("2 un") || norm.includes("2un") || norm.includes("par ");
+      const isUnitaryByPrice = effPrice > 0 && effPrice < s.lugar_americano.kit2 * 0.70;
+
+      if (isUnitaryByPrice && !isExplicitKit) {
+        return {
+          cost: s.lugar_americano.unit,
+          is_own_production: true,
+          has_missing_cost: false,
+          pack_description: "Lugar Americano (1 un avulsa)",
+        };
+      }
+      return {
+        cost: s.lugar_americano.kit2,
+        is_own_production: true,
+        has_missing_cost: false,
+        pack_description: "Par de Lugar Americano (2 un)",
+      };
+    }
+
+    // Guardanapo
+    if (norm.includes("guardanapo") && !norm.includes("porta guardanapo")) {
+      const isExplicitKit = norm.includes("kit 2") || norm.includes("2 un") || norm.includes("2un") || norm.includes("par ");
+      const isUnitaryByPrice = effPrice > 0 && effPrice < s.guardanapo.kit2 * 0.70;
+
+      if (isUnitaryByPrice && !isExplicitKit) {
+        return {
+          cost: s.guardanapo.unit,
+          is_own_production: true,
+          has_missing_cost: false,
+          pack_description: "Guardanapo (1 un avulsa)",
+        };
+      }
+      return {
+        cost: s.guardanapo.kit2,
+        is_own_production: true,
+        has_missing_cost: false,
+        pack_description: "Par de Guardanapos (2 un)",
+      };
+    }
+
+    // Porta Guardanapo
+    if (norm.includes("porta guardanapo") || skuUp.includes("PGU")) {
+      const isExplicitKit = norm.includes("kit 2") || norm.includes("2 un") || norm.includes("2un") || norm.includes("par ");
+      const isUnitaryByPrice = effPrice > 0 && effPrice < s.porta_guardanapo.kit2 * 0.70;
+
+      if (isUnitaryByPrice && !isExplicitKit) {
+        return {
+          cost: s.porta_guardanapo.unit,
+          is_own_production: true,
+          has_missing_cost: false,
+          pack_description: "Porta Guardanapo (1 un avulsa)",
+        };
+      }
+      return {
+        cost: s.porta_guardanapo.kit2,
+        is_own_production: true,
+        has_missing_cost: false,
+        pack_description: "Par de Porta Guardanapo (2 un)",
+      };
     }
   }
 
-  // 4. Fallback para custo cadastrado
-  let base = Number(fallbackCost || 0);
+  // 4. Fallback de custo cadastrado no Supabase ou Tray
+  const base = Number(fallbackCost || 0);
   if (base > 0) {
-    if (isKit2 && base <= 15) return base * 2;
-    return base;
+    return {
+      cost: base,
+      is_own_production: isOwn,
+      has_missing_cost: false,
+      pack_description: isOwn ? "Confecção Própria" : "Produto de Terceiro",
+    };
   }
 
-  // 5. Estimativa conservadora de CMV (40%)
-  return Number(effectivePrice || 0) * 0.4;
+  // 5. Produto de terceiro sem custo cadastrado na Tray
+  return {
+    cost: 0,
+    is_own_production: isOwn,
+    has_missing_cost: true,
+    pack_description: "Produto s/ Custo Cadastrado",
+  };
+}
+
+/**
+ * Função mantida para retrocompatibilidade com chamadas simples.
+ */
+export function resolveExactProductCost(
+  name: string,
+  sku?: string,
+  fallbackCost?: number,
+  effectivePrice?: number,
+): number {
+  return resolveExactProductCostDetails(name, sku, fallbackCost, effectivePrice).cost;
 }

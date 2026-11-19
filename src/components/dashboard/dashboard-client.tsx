@@ -1,5 +1,7 @@
 "use client";
 
+import { MarketplaceHealthClient } from "./marketplace-health-client";
+
 import { useEffect, useState, useTransition, Fragment } from "react";
 import Link from "next/link";
 import type {
@@ -20,89 +22,310 @@ const money = (v?: number | null) =>
 const percent = (v?: number | null) =>
   v == null ? "0,0%" : `${v.toFixed(1).replace(".", ",")}%`;
 
+function ShieldCheckIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon({ open, className = "w-4 h-4" }: { open?: boolean; className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={`transition-transform duration-200 ${open ? "rotate-180" : ""} ${className}`}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function ClockIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+}
+
+function SearchIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
+
+function ArrowLeftIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="m12 19-7-7 7-7" />
+      <path d="M19 12H5" />
+    </svg>
+  );
+}
+
+function DownloadIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
+function PlusIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+function RefreshIcon({ loading, className = "w-4 h-4" }: { loading?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`${loading ? "animate-spin" : ""} ${className}`}>
+      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+      <path d="M16 21h5v-5" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+function CopyIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+    </svg>
+  );
+}
+
+function InfoIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </svg>
+  );
+}
+
+function PackageIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="m7.5 4.27 9 5.15" />
+      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+      <path d="m3.3 7 8.7 5 8.7-5" />
+      <path d="M12 22V12" />
+    </svg>
+  );
+}
+
+function TruckIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <rect width="16" height="13" x="1" y="3" rx="2" />
+      <polygon points="17 8 20 8 23 11 23 16 17 16 17 8" />
+      <circle cx="5.5" cy="18.5" r="2.5" />
+      <circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  );
+}
+
+function TrophyIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.45 1-1 1H7" />
+      <path d="M14 14.66V17c0 .55.45 1 1 1h2" />
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+    </svg>
+  );
+}
+
+function LightbulbIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+    </svg>
+  );
+}
+
+function SparklesIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
+}
+
+function BarChartIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <line x1="12" y1="20" x2="12" y2="10" />
+      <line x1="18" y1="20" x2="18" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="16" />
+    </svg>
+  );
+}
+
+function TagIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+      <path d="M7 7h.01" />
+    </svg>
+  );
+}
+
+function MegaphoneIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path d="m3 11 18-5v12L3 14v-3z" />
+      <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+    </svg>
+  );
+}
+
 /**
- * Ícone oficial vetorizado da Shopee (Bolsa oficial com monograma S).
+ * Ícone oficial de canal de vendas usando os arquivos oficiais em /icons/.
  */
+function ChannelBadgeIcon({ channel, className = "w-4 h-4" }: { channel: SalesChannel | string; className?: string }) {
+  const ch = typeof channel === "string" ? getChannelKey(channel) : channel;
+  const iconSrc =
+    ch === "shopee"
+      ? "/icons/shopee.png"
+      : ch === "mercadolivre"
+      ? "/icons/mercadolivre.png"
+      : ch === "tiktok"
+      ? "/icons/tiktok.ico"
+      : "/icons/tray.png";
+
+  return (
+    <img
+      src={iconSrc}
+      alt={ch}
+      className={`inline-block object-contain rounded-xs ${className}`}
+      loading="lazy"
+    />
+  );
+}
+
 function ShopeeIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path
-        fill="#EE4D2D"
-        d="M15.9414 17.9633c.229-1.879-.981-3.077-4.1758-4.0969-1.548-.528-2.277-1.22-2.26-2.1719.065-1.056 1.048-1.825 2.352-1.85a5.2898 5.2898 0 0 1 2.8838.89c.116.072.197.06.263-.039.09-.145.315-.494.39-.62.051-.081.061-.187-.068-.281-.185-.1369-.704-.4149-.983-.5319a6.4697 6.4697 0 0 0-2.5118-.514c-1.909.008-3.4129 1.215-3.5389 2.826-.082 1.1629.494 2.1078 1.73 2.8278.262.152 1.6799.716 2.2438.892 1.774.552 2.695 1.5419 2.478 2.6969-.197 1.047-1.299 1.7239-2.818 1.7439-1.2039-.046-2.2878-.537-3.1278-1.19l-.141-.11c-.104-.08-.218-.075-.287.03-.05.077-.376.547-.458.67-.077.108-.035.168.045.234.35.293.817.613 1.134.775a6.7097 6.7097 0 0 0 2.8289.727 4.9048 4.9048 0 0 0 2.0759-.354c1.095-.465 1.8029-1.394 1.9449-2.554zM11.9986 1.4009c-2.068 0-3.7539 1.95-3.8329 4.3899h7.6657c-.08-2.44-1.765-4.3899-3.8328-4.3899zm7.8516 22.5981-.08.001-15.7843-.002c-1.074-.04-1.863-.91-1.971-1.991l-.01-.195L1.298 6.2858a.459.459 0 0 1 .45-.494h4.9748C6.8448 2.568 9.1607 0 11.9996 0c2.8388 0 5.1537 2.5689 5.2757 5.7898h4.9678a.459.459 0 0 1 .458.483l-.773 15.5883-.007.131c-.094 1.094-.979 1.9769-2.0709 2.0059z"
-      />
-    </svg>
-  );
+  return <ChannelBadgeIcon channel="shopee" className={className} />;
 }
 
 /**
- * Ícone oficial vetorizado do Mercado Livre (Aperto de Mãos com Fundo Amarelo).
+ * Formata data para formato curto brasileiro DD/MM (usado no eixo X do gráfico).
  */
+function formatShortDateBR(dateStr?: string | null): string {
+  if (!dateStr) return "";
+  const clean = dateStr.split(" ")[0];
+  const parts = clean.split("-");
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}`;
+  }
+  const slashParts = clean.split("/");
+  if (slashParts.length === 3) {
+    if (slashParts[0].length === 4) return `${slashParts[2]}/${slashParts[1]}`;
+    return `${slashParts[0]}/${slashParts[1]}`;
+  }
+  return dateStr;
+}
+
+/**
+ * Formata data para formato completo brasileiro DD/MM/AAAA.
+ */
+function formatFullDateBR(dateStr?: string | null): string {
+  if (!dateStr) return "";
+  const clean = dateStr.split(" ")[0];
+  const parts = clean.split("-");
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  const slashParts = clean.split("/");
+  if (slashParts.length === 3) {
+    if (slashParts[0].length === 4) return `${slashParts[2]}/${slashParts[1]}/${slashParts[0]}`;
+    return clean;
+  }
+  return dateStr;
+}
+
 function MercadoLivreIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="7" fill="#FFE600" />
-      <g transform="translate(4, 7)">
-        <path
-          d="M0 10.5l4-3.5c.8-.7 2-.6 2.7.2l1.6 1.8c.4.4 1 .4 1.4 0l1.8-1.6c.8-.7 2-.7 2.8 0l1.6 1.5c.4.4 1 .4 1.4 0l1.8-1.6c.7-.6 1.8-.6 2.5.1L24 9.5"
-          stroke="#2D3277"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M3 13.5l3.8-3.3c.7-.6 1.8-.6 2.5.1l1.8 1.9c.4.4 1 .4 1.4 0l1.8-1.6c.7-.6 1.8-.6 2.5.1l1.8 1.9c.4.4 1 .4 1.4 0l2-1.8"
-          stroke="#2D3277"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </g>
-    </svg>
-  );
+  return <ChannelBadgeIcon channel="mercadolivre" className={className} />;
 }
 
-/**
- * Ícone oficial vetorizado do TikTok Shop (Cromático ciano/magenta sobre preto).
- */
-function TikTokIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none">
-      <rect width="24" height="24" rx="6" fill="#000000" />
-      <g transform="scale(0.85) translate(2, 2)">
-        <path
-          d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"
-          fill="#25F4EE"
-          transform="translate(-0.5, -0.5)"
-        />
-        <path
-          d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"
-          fill="#FE2C55"
-          transform="translate(0.5, 0.5)"
-        />
-        <path
-          d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"
-          fill="#FFFFFF"
-        />
-      </g>
-    </svg>
-  );
-}
-
-/**
- * Ícone oficial da Loja Virtual (Tray Commerce em Azul #00A3E0).
- */
 function TrayStoreIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none">
-      <rect width="24" height="24" rx="6" fill="#00A3E0" />
-      <path
-        d="M6 7.5h12M12 7.5v9.5M8.5 17h7"
-        stroke="#FFFFFF"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <circle cx="17.5" cy="16.5" r="1.5" fill="#FFFFFF" />
-    </svg>
-  );
+  return <ChannelBadgeIcon channel="site" className={className} />;
+}
+
+function TikTokIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return <ChannelBadgeIcon channel="tiktok" className={className} />;
+}
+
+/**
+ * Converte array de coordenadas [x, y] em caminho SVG Bézier cúbico suave.
+ */
+function getBezierCurvePath(points: [number, number][], closeBottomY?: number): string {
+  if (!points || points.length === 0) return "";
+  if (points.length === 1) return `M ${points[0][0]},${points[0][1]}`;
+
+  let d = `M ${points[0][0]},${points[0][1]}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i === 0 ? 0 : i - 1];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] || p2;
+
+    const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+
+    const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+
+    d += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+  }
+
+  if (closeBottomY != null) {
+    const last = points[points.length - 1];
+    const first = points[0];
+    d += ` L ${last[0]},${closeBottomY} L ${first[0]},${closeBottomY} Z`;
+  }
+  return d;
 }
 
 const CHANNEL_CONFIG: Record<
@@ -153,9 +376,6 @@ const PLATFORM_LABELS: Record<AdPlatform, string> = {
   google_ads: "Google Ads",
 };
 
-/**
- * Retorna o canal normalizado para mapear com o ícone.
- */
 function getChannelKey(channelName: string): SalesChannel {
   const norm = channelName.toLowerCase();
   if (norm.includes("shopee")) return "shopee";
@@ -164,42 +384,95 @@ function getChannelKey(channelName: string): SalesChannel {
   return "site";
 }
 
+type DashboardTab = "caixa" | "produtos" | "pedidos" | "anuncios" | "saude";
+
 /**
- * Painel Administrativo de Métricas de Vendas, Lucratividade e Investimento em Anúncios.
+ * Dashboard Financeira Operacional da Mesa & Graça — Versão Ultra-Simples e Transparente.
  *
  * @description
- * Interface interativa que consolida pedidos da Tray Commerce e campanhas publicitárias:
- * 1. KPIs financeiros em tempo real (Faturamento Bruto, CMV, Comissões e Lucro Líquido)
- * 2. Miniaturas das fotos de prévia dos produtos (Thumbnails 44x44px)
- * 3. Ícones vetorizados oficiais por canal (Shopee, Mercado Livre, TikTok Shop e Loja Virtual)
- * 4. Tabela de rentabilidade por produto ordenado pelo maior lucro líquido acumulado
- * 5. Aba dedicada de Anúncios com cálculo de ROAS, CAC e Lucro Real pós-marketing
- * 6. Modal integrado para lançamento de gastos de campanhas no Supabase
+ * Apresenta a verdade única do caixa financeiro sincronizado com o relatório oficial da Tray Commerce:
+ * - Faturamento Oficial Canônico (R$ 6.043,46 nos 30 dias de pedidos aprovados)
+ * - Esteira Transparente do Dinheiro: Recebido ➔ Frete ➔ Fábrica ➔ Taxas ➔ Lucro Limpo
+ * - 4 Abas Especializadas: Caixa & Canais, Produtos Mais Lucrativos, Pedidos & Clientes, Anúncios & ROAS
+ * - Navegação simples, rápida e autoexplicativa até para uma criança.
  *
- * @returns {JSX.Element} Dashboard operacional completa
- * @since v3.0.0
+ * @since v4.0.0
  * @category Dashboard
  */
 export function DashboardClient() {
   const [days, setDays] = useState<number>(30);
   const [channel, setChannel] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"vendas" | "anuncios">("vendas");
+  const [activeTab, setActiveTab] = useState<DashboardTab>("caixa");
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Estados para itens expansíveis / clicáveis (drill-down de pedidos e produtos)
-  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
-  const [expandedProductSku, setExpandedProductSku] = useState<string | null>(null);
-  const [copiedOrderId, setCopiedOrderId] = useState<string | null>(null);
+  // Estados expansíveis
+  const [expandedOrderIds, setExpandedOrderIds] = useState<Record<string, boolean>>({});
+  const [expandedProductSkus, setExpandedProductSkus] = useState<Record<string, boolean>>({});
+  const [showAllTimeProducts, setShowAllTimeProducts] = useState<boolean>(false);
 
-  // Estados de busca rápida e filtros operacionais
+  type ProductSortField = "name" | "channel" | "units" | "revenue" | "cost" | "commissions" | "profit" | "margin";
+  const [productSortField, setProductSortField] = useState<ProductSortField>("units");
+  const [productSortAsc, setProductSortAsc] = useState<boolean>(false);
+
+  const handleProductSort = (field: ProductSortField) => {
+    if (productSortField === field) {
+      setProductSortAsc((prev) => !prev);
+    } else {
+      setProductSortField(field);
+      setProductSortAsc(field === "name" || field === "channel");
+    }
+  };
+
+  const toggleOrderExpanded = (id: string) => {
+    setExpandedOrderIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleProductExpanded = (sku: string) => {
+    setExpandedProductSkus((prev) => ({ ...prev, [sku]: !prev[sku] }));
+  };
+  const [copiedOrderId, setCopiedOrderId] = useState<string | null>(null);
+  const [expandedFeeSku, setExpandedFeeSku] = useState<string | null>(null);
+  const [expandedOrderFeeId, setExpandedOrderFeeId] = useState<string | null>(null);
+  const [expandedOrderSection, setExpandedOrderSection] = useState<string | null>(null);
+  const [expandedProductMetric, setExpandedProductMetric] = useState<string | null>(null);
+  const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({});
+  const toggleAccordion = (key: string) => {
+    setOpenAccordions((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const toggleAllProductDetails = (sku: string) => {
+    setOpenAccordions((prev) => {
+      const current = !!prev[`prod-details-${sku}`];
+      const next = !current;
+      return {
+        ...prev,
+        [`prod-details-${sku}`]: next,
+        [`prod-rev-${sku}`]: next,
+        [`prod-cost-${sku}`]: next,
+        [`prod-tax-${sku}`]: next,
+        [`prod-profit-${sku}`]: next,
+      };
+    });
+  };
+
+  // Filtros operacionais
   const [productSearch, setProductSearch] = useState<string>("");
   const [orderSearch, setOrderSearch] = useState<string>("");
   const [orderStatusFilter, setOrderStatusFilter] = useState<"todos" | "a_enviar" | "enviados">("todos");
   const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
+  const [pinnedPointIndex, setPinnedPointIndex] = useState<number | null>(null);
 
-  // Exportação para planilha Excel / CSV
+  // Modo de visualização de pedidos: "approved" (padrão - caixa real) ou "all"
+  const [orderViewMode, setOrderViewMode] = useState<"approved" | "all" | "pending" | "cancelled">("approved");
+
+  // Filtro de escopo: "all" (todos os produtos) ou "textil" (apenas fabricação própria)
+  const [scope, setScope] = useState<"all" | "textil">("all");
+
+  const [isPending, startTransition] = useTransition();
+
+  // Exportação CSV
   const handleExportCsv = () => {
     if (!data?.products || data.products.length === 0) {
       alert("Nenhum dado disponível para exportar.");
@@ -208,14 +481,14 @@ export function DashboardClient() {
 
     const headers = [
       "Produto",
-      "SKU / Referencia",
+      "SKU",
       "Canal Principal",
       "Unidades Vendidas",
-      "Faturamento Bruto (R$)",
-      "Custo Total CMV (R$)",
-      "Comissoes Canal (R$)",
-      "Lucro Liquido (R$)",
-      "Margem Liquida (%)",
+      "Faturamento (R$)",
+      "Custo Tecido/Fabrica (R$)",
+      "Taxas Marketplace (R$)",
+      "Lucro Limpo (R$)",
+      "Margem (%)",
       "Estoque Atual",
     ];
 
@@ -243,7 +516,7 @@ export function DashboardClient() {
     document.body.removeChild(link);
   };
 
-  // Modal de Novo Lançamento de Anúncio
+  // Modal de Anúncios
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [savingAd, setSavingAd] = useState<boolean>(false);
   const [adForm, setAdForm] = useState<{
@@ -266,17 +539,12 @@ export function DashboardClient() {
     notes: "",
   });
 
-  // Modo de visualização de pedidos: "all" (bater 1:1 com a Tray) ou "approved" (somente válidos)
-  const [orderViewMode, setOrderViewMode] = useState<"all" | "approved">("all");
-
-  const [isPending, startTransition] = useTransition();
-
   const loadDashboard = async () => {
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(
-        `/api/admin/dashboard?days=${days}&channel=${channel}&status=${orderViewMode}`
+        `/api/admin/dashboard?days=${days}&channel=${channel}&status=${orderViewMode}&scope=${scope}`
       );
       if (!res.ok) {
         throw new Error(`Erro ${res.status}: não foi possível carregar a dashboard.`);
@@ -295,7 +563,7 @@ export function DashboardClient() {
 
   useEffect(() => {
     loadDashboard();
-  }, [days, channel, orderViewMode]);
+  }, [days, channel, orderViewMode, scope]);
 
   const handleSaveAd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -347,18 +615,55 @@ export function DashboardClient() {
   };
 
   const kpis = data?.kpis;
+  const grossRevenue = kpis?.gross_revenue || 0;
+  const shippingCost = kpis?.shipping_cost || 0;
+  const productCost = kpis?.product_cost_cmv || 0;
+  const commissions = kpis?.platform_commissions || 0;
+  const netProfit = kpis?.final_net_profit || 0;
+
+  // Cálculo percentual para a esteira
+  const shippingPct = grossRevenue > 0 ? (shippingCost / grossRevenue) * 100 : 0;
+  const productCostPct = grossRevenue > 0 ? (productCost / grossRevenue) * 100 : 0;
+  const commissionsPct = grossRevenue > 0 ? (commissions / grossRevenue) * 100 : 0;
+  const netProfitPct = grossRevenue > 0 ? (netProfit / grossRevenue) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 pb-16 font-sans">
+      {/* Overlay Global de Carregamento com Fundo Escurecido e Animação Central */}
+      {loading && (
+        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 transition-opacity animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl border border-stone-200 p-6 sm:p-8 max-w-sm w-full text-center space-y-4">
+            <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border-4 border-amber-200 border-t-amber-600 animate-spin" />
+              <span className="text-2xl animate-pulse">📊</span>
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-stone-900 tracking-tight">
+                Atualizando Métricas em Tempo Real
+              </h3>
+              <p className="text-xs text-stone-500 mt-1.5 leading-relaxed">
+                Consultando pedidos, taxas oficiais, estoques e preços na Tray Commerce e marketplaces...
+              </p>
+            </div>
+            <div className="w-full bg-stone-100 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-amber-600 h-1.5 rounded-full w-2/3 animate-[pulse_1.5s_ease-in-out_infinite]" />
+            </div>
+            <span className="text-[10px] text-stone-400 font-medium block">
+              Mesa &amp; Graça · Inteligência de Vendas
+            </span>
+          </div>
+        </div>
+      )}
       {/* Top Header */}
       <header className="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Link
               href="/admin"
-              className="text-stone-500 hover:text-stone-900 text-sm font-medium flex items-center gap-1 transition"
+              className="text-stone-500 hover:text-stone-900 text-sm font-medium inline-flex items-center gap-1.5 transition min-h-[44px] sm:min-h-[38px] px-2 py-1 -ml-2 rounded-lg hover:bg-stone-50"
             >
-              <span>←</span> Painel Catálogo
+              <ArrowLeftIcon className="w-4 h-4 text-stone-500" />
+              <span>Painel Catálogo</span>
             </Link>
             <span className="text-stone-300">|</span>
             <div className="flex items-center gap-2">
@@ -366,32 +671,35 @@ export function DashboardClient() {
                 Mesa &amp; Graça
               </span>
               <span className="text-xs bg-amber-100 text-amber-900 font-semibold px-2 py-0.5 rounded-full border border-amber-200">
-                Financial Hub
+                Painel do Caixa
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <button
               onClick={handleExportCsv}
-              className="border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs sm:text-sm font-medium px-3 py-2 rounded-lg transition flex items-center gap-1.5"
-              title="Baixar planilha compatível com Excel"
+              className="border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs sm:text-sm font-medium px-3 py-2 rounded-lg transition inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-[38px] active:scale-[0.98]"
+              title="Baixar planilha para Excel"
             >
-              <span>📥</span> Exportar CSV
+              <DownloadIcon className="w-4 h-4 text-stone-600" />
+              <span>Exportar</span>
             </button>
             <button
               onClick={() => setModalOpen(true)}
-              className="bg-stone-900 hover:bg-stone-800 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg shadow-xs transition flex items-center gap-1.5"
+              className="bg-stone-900 hover:bg-stone-800 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg shadow-xs transition inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-[38px] active:scale-[0.98]"
             >
-              <span>+</span> Lançar Anúncio
+              <PlusIcon className="w-4 h-4 text-white" />
+              <span>Lançar Anúncio</span>
             </button>
             <button
               onClick={loadDashboard}
               disabled={loading}
-              className="border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs sm:text-sm font-medium px-3 py-2 rounded-lg transition"
+              className="border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs sm:text-sm font-medium px-3 py-2 rounded-lg transition inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-[38px] active:scale-[0.98]"
               title="Recarregar dados"
             >
-              {loading ? "Atualizando..." : "↻ Atualizar"}
+              <RefreshIcon className={`w-4 h-4 text-stone-600 ${loading ? "animate-spin" : ""}`} />
+              <span>{loading ? "Atualizando..." : "Atualizar"}</span>
             </button>
           </div>
         </div>
@@ -399,39 +707,69 @@ export function DashboardClient() {
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        {/* Page Title & Subtitle */}
-        <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
+        {/* Título & Filtros de Período e Canal */}
+        <div className="mb-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="min-w-0">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">
-              Dashboard de Vendas &amp; Lucratividade
+              O Caixa Real da Sua Loja
             </h1>
             <p className="text-sm text-stone-600 mt-1">
-              Visão unificada das vendas nos 4 canais (Site, Shopee, Mercado Livre, TikTok Shop) e retorno de anúncios.
+              Entenda exatamente quanto entrou, quanto foi para tecido e fábrica, as taxas dos canais e o que sobrou limpo no seu bolso.
             </p>
           </div>
 
-          {/* Quick Filters */}
-          <div className="flex flex-wrap items-center gap-2 bg-white p-1.5 rounded-xl border border-stone-200 shadow-xs">
-            <div className="flex items-center gap-1 pr-2 border-r border-stone-200">
+          {/* Filtros de Topo (Linha Única sem quebra) */}
+          <div className="flex flex-nowrap items-center gap-2 bg-white p-1.5 rounded-xl border border-stone-200 shadow-xs flex-shrink-0 overflow-x-auto whitespace-nowrap scrollbar-none">
+            {/* Dias */}
+            <div className="flex items-center gap-1 pr-2 border-r border-stone-200 flex-shrink-0">
               {[7, 15, 30, 60].map((d) => (
                 <button
                   key={d}
                   onClick={() => setDays(d)}
-                  className={`text-xs font-semibold px-2.5 py-1.5 rounded-lg transition ${
+                  className={`text-xs font-semibold px-3 py-1.5 min-h-[44px] sm:min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
                     days === d
                       ? "bg-amber-950 text-white shadow-xs"
                       : "text-stone-600 hover:bg-stone-100"
                   }`}
                 >
-                  {d} dias
+                  {d}d
                 </button>
               ))}
             </div>
 
+            {/* Escopo Têxtil */}
+            <div className="flex items-center gap-1 pr-2 border-r border-stone-200 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => setScope("all")}
+                className={`text-xs font-semibold px-3 py-1.5 min-h-[44px] sm:min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
+                  scope === "all"
+                    ? "bg-stone-900 text-white shadow-xs"
+                    : "text-stone-600 hover:bg-stone-100"
+                }`}
+              >
+                Todos
+              </button>
+              <button
+                type="button"
+                onClick={() => setScope("textil")}
+                className={`text-xs font-semibold px-3 py-1.5 min-h-[44px] sm:min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
+                  scope === "textil"
+                    ? "bg-emerald-800 text-white shadow-xs"
+                    : "text-stone-600 hover:bg-emerald-50 hover:text-emerald-900"
+                }`}
+                title="Apenas peças produzidas na sua confecção têxtil"
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${scope === "textil" ? "bg-emerald-300" : "bg-emerald-600"}`} />
+                Só Confecção
+              </button>
+            </div>
+
+            {/* Canal */}
             <select
               value={channel}
               onChange={(e) => setChannel(e.target.value)}
-              className="text-xs font-medium bg-transparent text-stone-700 border-none focus:ring-0 cursor-pointer pl-1 pr-6 py-1.5"
+              className="text-xs font-medium bg-transparent text-stone-700 border-none focus:ring-0 cursor-pointer pl-2 pr-6 py-1.5 min-h-[44px] sm:min-h-[36px] flex-shrink-0"
             >
               <option value="all">Todos os Canais</option>
               <option value="site">🛒 Loja Virtual</option>
@@ -442,39 +780,340 @@ export function DashboardClient() {
           </div>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex border-b border-stone-200 mb-6 gap-2">
+        {/* ========================================================================= */}
+        {/* HERO CARD MESTRE: A ESTEIRA TRANSPARENTE DO DINHEIRO                      */}
+        {/* ========================================================================= */}
+        <section className="bg-white rounded-2xl border border-stone-200/90 shadow-sm p-5 sm:p-6 mb-8">
+          {/* Topo do Hero: Faturamento Oficial Canônico e Status da Sincronização */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-stone-100">
+            <div>
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
+                  Total Recebido das Vendas
+                </span>
+                <span className="text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  Conferência Oficial Tray: 100% Sincronizado
+                </span>
+              </div>
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="text-3xl sm:text-4xl font-extrabold text-stone-900 tracking-tight">
+                  {loading ? "..." : money(grossRevenue)}
+                </span>
+                <span className="text-xs text-stone-500 font-medium">
+                  {kpis?.total_orders || 0} pedidos pagos e aprovados no período · Ticket Médio: {money(kpis?.average_ticket)}
+                </span>
+              </div>
+            </div>
+
+            {/* Alternador de Visualização de Pedidos da Tray */}
+            <div className="flex items-center gap-1.5 bg-stone-50 p-1 rounded-xl border border-stone-200 text-xs self-start lg:self-auto flex-wrap">
+              <button
+                type="button"
+                onClick={() => setOrderViewMode("approved")}
+                className={`font-semibold px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 ${
+                  orderViewMode === "approved"
+                    ? "bg-emerald-700 text-white shadow-xs"
+                    : "text-stone-600 hover:bg-stone-200/70"
+                }`}
+                title="Apenas pedidos com pagamentos concluídos e aprovados (caixa real)"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                Aprovados ({data?.tray_kpis?.active_orders_count || kpis?.total_orders || 0})
+              </button>
+              <button
+                type="button"
+                onClick={() => setOrderViewMode("all")}
+                className={`font-semibold px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 ${
+                  orderViewMode === "all"
+                    ? "bg-sky-600 text-white shadow-xs"
+                    : "text-stone-600 hover:bg-stone-200/70"
+                }`}
+                title="Todos os pedidos registrados na Tray incluindo pendentes e cancelados"
+              >
+                Todos ({data?.tray_kpis?.total_orders_count || 0})
+              </button>
+            </div>
+          </div>
+
+          {/* A ESTEIRA VISUAL: Fluxo de Entrada até o Bolso */}
+          <div className="pt-6">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3 flex items-center gap-1.5">
+              <span>Para onde foi cada real recebido? (Esteira do Caixa)</span>
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {/* Etapa 1: Venda do Cliente */}
+              <div className="bg-stone-50 rounded-xl p-4 border border-stone-200 flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-stone-200/30 rounded-bl-full pointer-events-none" />
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 block">
+                    1. Entrou na Loja
+                  </span>
+                  <div className="text-xl font-extrabold text-stone-900 mt-1 tabular-nums whitespace-nowrap">
+                    {loading ? "..." : money(grossRevenue)}
+                  </div>
+                  <span className="text-[11px] text-stone-500 block mt-0.5 whitespace-nowrap">
+                    100% do total pago pelos clientes
+                  </span>
+                </div>
+                <div className="mt-3 pt-2 border-t border-stone-200/80 text-[11px] text-stone-600 whitespace-nowrap">
+                  {kpis?.total_orders || 0} compras finalizadas
+                </div>
+              </div>
+
+              {/* Etapa 2: Frete Repassado */}
+              <div className="bg-sky-50/60 rounded-xl p-4 border border-sky-200 flex flex-col justify-between">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-900 block">
+                    2. Frete Suportado pela Loja
+                  </span>
+                  <div className="text-xl font-extrabold text-sky-950 mt-1 tabular-nums whitespace-nowrap">
+                    -{loading ? "..." : money(shippingCost)}
+                  </div>
+                  <span className="text-[11px] text-sky-700 font-medium block mt-0.5 whitespace-nowrap tabular-nums">
+                    {percent(shippingPct)} das vendas brutas
+                  </span>
+                </div>
+                <div className="mt-3 pt-2 border-t border-sky-200/80 text-[10px] text-sky-800 space-y-0.5 leading-tight">
+                  <div className="font-semibold text-sky-950">
+                    Mercado Envios (pedidos ≥ R$ 79)
+                  </div>
+                  <div className="text-sky-700">
+                    +R$ {money(data?.kpis?.third_party_shipping || 0)} custeado por compradores / plataformas (custo R$ 0)
+                  </div>
+                </div>
+              </div>
+
+              {/* Etapa 3: Tecido & Fábrica */}
+              <div className="bg-stone-100/70 rounded-xl p-4 border border-stone-300 flex flex-col justify-between">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-700 block">
+                    3. Tecido &amp; Fábrica
+                  </span>
+                  <div className="text-xl font-extrabold text-stone-800 mt-1 tabular-nums whitespace-nowrap">
+                    -{loading ? "..." : money(productCost)}
+                  </div>
+                  <span className="text-[11px] text-stone-600 font-medium block mt-0.5 whitespace-nowrap tabular-nums">
+                    {percent(productCostPct)} custo de produção (CMV)
+                  </span>
+                </div>
+                <div className="mt-3 pt-2 border-t border-stone-200/80 text-[11px] text-stone-600">
+                  Tecido, bordado, linha e costura
+                </div>
+              </div>
+
+              {/* Etapa 4: Taxas dos Marketplaces */}
+              <div className="bg-orange-50/70 rounded-xl p-4 border border-orange-200 flex flex-col justify-between">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-orange-900 block">
+                    4. Taxas dos Canais
+                  </span>
+                  <div className="text-xl font-extrabold text-orange-900 mt-1 tabular-nums whitespace-nowrap">
+                    -{loading ? "..." : money(commissions)}
+                  </div>
+                  <span className="text-[11px] text-orange-700 font-medium block mt-0.5 whitespace-nowrap tabular-nums">
+                    {percent(commissionsPct)} retido pelas plataformas
+                  </span>
+                </div>
+                <div className="mt-3 pt-2 border-t border-orange-200/80 text-[11px] text-orange-800">
+                  Comissões da Shopee, ML e TikTok
+                </div>
+              </div>
+
+              {/* Etapa 5: Lucro Limpo no Bolso */}
+              <div className="bg-emerald-700 text-white rounded-xl p-4 shadow-sm flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-200 block">
+                    5. Lucro no Bolso
+                  </span>
+                  <div className="text-2xl font-black text-white mt-1 tabular-nums whitespace-nowrap">
+                    {loading ? "..." : money(netProfit)}
+                  </div>
+                  <span className="text-[11px] text-emerald-100 font-semibold block mt-0.5 tabular-nums whitespace-nowrap">
+                    {percent(netProfitPct)} margem líquida real
+                  </span>
+                </div>
+                <div className="mt-3 pt-2 border-t border-emerald-600/80 text-[11px] text-emerald-100">
+                  Dinheiro 100% livre após pagar tudo
+                </div>
+              </div>
+            </div>
+
+            {/* O Cartão Didático: Tradução do Caixa em R$ 100 */}
+            <div className="mt-4 bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 sm:p-4 text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0 text-amber-800">
+                  <LightbulbIcon className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="font-bold">Em termos simples:</span> A cada{" "}
+                  <strong className="tabular-nums">R$ 100,00</strong> que entram na loja:
+                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-amber-900">
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                      <TruckIcon className="w-3.5 h-3.5 text-sky-700 flex-shrink-0" />
+                      <span><strong className="tabular-nums">{money(shippingPct)}</strong> vão para frete</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                      <PackageIcon className="w-3.5 h-3.5 text-stone-700 flex-shrink-0" />
+                      <span><strong className="tabular-nums">{money(productCostPct)}</strong> pagam tecido e costura</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                      <TagIcon className="w-3.5 h-3.5 text-orange-700 flex-shrink-0" />
+                      <span><strong className="tabular-nums">{money(commissionsPct)}</strong> ficam com os canais</span>
+                    </span>
+                    <span className="text-emerald-900 font-bold bg-emerald-100 px-2 py-0.5 rounded inline-flex items-center gap-1 whitespace-nowrap">
+                      <SparklesIcon className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0" />
+                      <span><strong className="tabular-nums">{money(netProfitPct)}</strong> sobram limpos no bolso!</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {data?.missing_costs_count != null && data.missing_costs_count > 0 && scope === "all" && (
+                <button
+                  type="button"
+                  onClick={() => setScope("textil")}
+                  className="px-3 py-1.5 min-h-[38px] bg-emerald-800 hover:bg-emerald-900 text-white font-semibold rounded-lg text-xs whitespace-nowrap shadow-xs transition active:scale-[0.98] inline-flex items-center gap-1.5 self-start sm:self-auto flex-shrink-0"
+                >
+                  <SparklesIcon className="w-3.5 h-3.5" />
+                  <span>Ver Apenas Produção Própria</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* ALERTA DE ESTOQUE CRÍTICO (Apenas produtos ativos e com alto giro)         */}
+        {/* ========================================================================= */}
+        {(() => {
+          const lowStockProducts = (data?.products || []).filter(
+            (p) =>
+              p.is_active !== false && // Apenas produtos ATIVOS e VISÍVEIS na loja
+              p.stock_quantity != null &&
+              p.stock_quantity <= 8 &&
+              p.units_sold >= 2
+          );
+          if (lowStockProducts.length === 0) return null;
+
+          return (
+            <div className="bg-amber-50/80 border border-amber-300 rounded-2xl p-4 sm:p-5 shadow-xs mb-8">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl flex-shrink-0">⚠️</span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-bold text-amber-950">
+                    Alerta de Estoque Crítico em Produtos de Alta Rentabilidade
+                  </h3>
+                  <p className="text-xs text-amber-900/80 mt-0.5 mb-3">
+                    Estes produtos possuem alta saída e excelente margem, mas estão com estoque reduzido no catálogo. Reponha para evitar pausa nos marketplaces.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    {lowStockProducts.slice(0, 3).map((lp) => (
+                      <div
+                        key={lp.sku}
+                        className="bg-white rounded-xl border border-amber-200 p-2.5 flex items-center gap-2.5 text-xs shadow-2xs"
+                      >
+                        <div className="w-10 h-10 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                          {lp.image_url ? (
+                            <img src={lp.image_url} alt={lp.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span>🖼️</span>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-stone-900 line-clamp-1">{lp.name}</div>
+                          <div className="text-[11px] text-amber-800 font-medium">
+                            Restam apenas: <strong className="font-bold text-rose-700">{lp.stock_quantity} un</strong>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* ========================================================================= */}
+        {/* AS 4 ABAS ESPECIALIZADAS                                                  */}
+        {/* ========================================================================= */}
+        <nav className="flex border-b border-stone-200 mb-6 gap-1 sm:gap-2 md:gap-3 lg:gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-stone-300 pb-px">
           <button
-            onClick={() => setActiveTab("vendas")}
-            className={`pb-3 text-sm font-semibold border-b-2 transition flex items-center gap-2 ${
-              activeTab === "vendas"
-                ? "border-amber-950 text-amber-950"
+            onClick={() => setActiveTab("caixa")}
+            className={`min-h-[44px] py-2.5 px-2.5 sm:px-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition inline-flex items-center gap-1.5 sm:gap-2 active:scale-[0.98] ${
+              activeTab === "caixa"
+                ? "border-amber-950 text-amber-950 font-bold"
                 : "border-transparent text-stone-500 hover:text-stone-800"
             }`}
           >
-            <span>📊 Vendas, Margens &amp; Lucro por Produto</span>
+            <BarChartIcon className="w-4 h-4 flex-shrink-0" />
+            <span>Caixa &amp; Canais</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("produtos")}
+            className={`min-h-[44px] py-2.5 px-2.5 sm:px-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition inline-flex items-center gap-1.5 sm:gap-2 active:scale-[0.98] ${
+              activeTab === "produtos"
+                ? "border-amber-950 text-amber-950 font-bold"
+                : "border-transparent text-stone-500 hover:text-stone-800"
+            }`}
+          >
+            <TagIcon className="w-4 h-4 flex-shrink-0" />
+            <span>Produtos</span>
+            {data?.products && (
+              <span className="text-[11px] sm:text-xs bg-stone-100 text-stone-700 px-1.5 sm:px-2 py-0.5 rounded-full font-medium">
+                {data.products.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("pedidos")}
+            className={`min-h-[44px] py-2.5 px-2.5 sm:px-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition inline-flex items-center gap-1.5 sm:gap-2 active:scale-[0.98] ${
+              activeTab === "pedidos"
+                ? "border-amber-950 text-amber-950 font-bold"
+                : "border-transparent text-stone-500 hover:text-stone-800"
+            }`}
+          >
+            <PackageIcon className="w-4 h-4 flex-shrink-0" />
+            <span>Pedidos</span>
             {kpis && (
-              <span className="text-xs bg-stone-100 text-stone-700 px-2 py-0.5 rounded-full font-medium">
-                {kpis.total_orders} pedidos
+              <span className="text-[11px] sm:text-xs bg-stone-100 text-stone-700 px-1.5 sm:px-2 py-0.5 rounded-full font-medium">
+                {kpis.total_orders}
               </span>
             )}
           </button>
           <button
             onClick={() => setActiveTab("anuncios")}
-            className={`pb-3 text-sm font-semibold border-b-2 transition flex items-center gap-2 ${
+            className={`min-h-[44px] py-2.5 px-2.5 sm:px-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition inline-flex items-center gap-1.5 sm:gap-2 active:scale-[0.98] ${
               activeTab === "anuncios"
-                ? "border-amber-950 text-amber-950"
+                ? "border-amber-950 text-amber-950 font-bold"
                 : "border-transparent text-stone-500 hover:text-stone-800"
             }`}
           >
-            <span>📢 Investimento em Anúncios &amp; ROAS</span>
+            <MegaphoneIcon className="w-4 h-4 flex-shrink-0" />
+            <span>Anúncios (Ads)</span>
             {kpis && kpis.total_ad_spend > 0 && (
-              <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium">
+              <span className="text-[11px] sm:text-xs bg-emerald-100 text-emerald-800 px-1.5 sm:px-2 py-0.5 rounded-full font-medium">
                 ROAS {kpis.overall_roas.toFixed(1)}x
               </span>
             )}
           </button>
-        </div>
+          <button
+            onClick={() => setActiveTab("saude")}
+            className={`min-h-[44px] py-2.5 px-2.5 sm:px-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition inline-flex items-center gap-1.5 sm:gap-2 active:scale-[0.98] ${
+              activeTab === "saude"
+                ? "border-amber-950 text-amber-950 font-bold"
+                : "border-transparent text-stone-500 hover:text-stone-800"
+            }`}
+          >
+            <ShieldCheckIcon className="w-4 h-4 flex-shrink-0 text-emerald-700" />
+            <span>Saúde dos Marketplaces</span>
+            <span className="text-[11px] sm:text-xs bg-amber-100 text-amber-900 border border-amber-300 px-1.5 sm:px-2 py-0.5 rounded-full font-bold">
+              Diagnóstico
+            </span>
+          </button>
+        </nav>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
@@ -482,392 +1121,30 @@ export function DashboardClient() {
           </div>
         )}
 
-        {/* TAB 1: VENDAS & MARGENS */}
-        {activeTab === "vendas" && (
+        {/* ------------------------------------------------------------------------- */}
+        {/* ABA 1: CAIXA & CANAIS DE VENDA                                            */}
+        {/* ------------------------------------------------------------------------- */}
+        {activeTab === "caixa" && (
           <div className="space-y-6">
-            {/* Bloco de Conferência Oficial com o Painel da Tray */}
-            {data?.tray_kpis && (
-              <div className="bg-gradient-to-br from-white via-sky-50/30 to-amber-50/20 rounded-2xl border border-sky-200/90 p-5 shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-sky-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white text-lg shadow-xs flex-shrink-0">
-                      🛒
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h2 className="text-base font-bold text-stone-900 tracking-tight">
-                          Conferência com o Painel da Tray (Últimos 30 Dias)
-                        </h2>
-                        <span className="text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                          100% Sincronizado com a Tray
-                        </span>
-                      </div>
-                      <p className="text-xs text-stone-500 mt-0.5">
-                        Valores oficiais informados diretamente no topo da lista de pedidos da sua loja Tray.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Seletor Amigável de Visão */}
-                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-stone-200 shadow-xs self-start sm:self-auto">
-                    <button
-                      type="button"
-                      onClick={() => setOrderViewMode("all")}
-                      className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
-                        orderViewMode === "all"
-                          ? "bg-sky-600 text-white shadow-xs"
-                          : "text-stone-600 hover:bg-stone-100"
-                      }`}
-                      title="Exibe todos os pedidos exatamente como no painel da Tray"
-                    >
-                      Todos ({data.tray_kpis.total_orders_count}) · Igual Tray
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setOrderViewMode("approved")}
-                      className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
-                        orderViewMode === "approved"
-                          ? "bg-emerald-700 text-white shadow-xs"
-                          : "text-stone-600 hover:bg-stone-100"
-                      }`}
-                      title="Exclui pedidos cancelados para apuração do caixa efetivado"
-                    >
-                      Aprovados ({data.tray_kpis.active_orders_count}) · Caixa Real
-                    </button>
-                  </div>
-                </div>
-
-                {/* Os 4 Cards Oficiais Idênticos à Tray */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-4">
-                  <div className="bg-white rounded-xl p-3.5 border border-stone-200 shadow-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
-                        Pedidos
-                      </span>
-                      <span className="text-stone-400 text-xs">📦</span>
-                    </div>
-                    <p className="text-2xl font-bold text-stone-900 mt-1">
-                      {data.tray_kpis.total_orders_count}
-                    </p>
-                    <span className="text-[10px] text-stone-500 block mt-0.5">
-                      {data.tray_kpis.active_orders_count} válidos · {data.tray_kpis.cancelled_orders_count} cancelado
-                    </span>
-                  </div>
-
-                  <div className="bg-white rounded-xl p-3.5 border border-stone-200 shadow-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
-                        Total dos Pedidos
-                      </span>
-                      <span className="text-sky-500 text-xs">💵</span>
-                    </div>
-                    <p className="text-2xl font-bold text-sky-950 mt-1">
-                      {money(data.tray_kpis.total_orders_revenue)}
-                    </p>
-                    <span className="text-[10px] text-stone-500 block mt-0.5">
-                      Faturamento total pago pelos clientes
-                    </span>
-                  </div>
-
-                  <div className="bg-white rounded-xl p-3.5 border border-stone-200 shadow-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
-                        Produtos Vendidos
-                      </span>
-                      <span className="text-amber-500 text-xs">🏷️</span>
-                    </div>
-                    <p className="text-2xl font-bold text-amber-950 mt-1">
-                      {money(data.tray_kpis.products_sold_revenue)}
-                    </p>
-                    <span className="text-[10px] text-stone-500 block mt-0.5">
-                      Subtotal de produtos (sem fretes/cupons)
-                    </span>
-                  </div>
-
-                  <div className="bg-white rounded-xl p-3.5 border border-stone-200 shadow-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
-                        Ticket Médio
-                      </span>
-                      <span className="text-emerald-500 text-xs">🎯</span>
-                    </div>
-                    <p className="text-2xl font-bold text-emerald-950 mt-1">
-                      {money(data.tray_kpis.average_ticket)}
-                    </p>
-                    <span className="text-[10px] text-stone-500 block mt-0.5">
-                      Gasto médio por pedido
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Régua Didática e Visual: "Como Funciona o Cálculo do Lucro" */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-4 sm:p-5 shadow-xs">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg">💡</span>
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-stone-800">
-                    Como o Lucro é Calculado? (Passo a Passo Visual)
-                  </h3>
-                  <p className="text-[11px] text-stone-500">
-                    Todas as informações são calculadas de forma transparente sem fórmulas escondidas.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
-                <div className="bg-stone-50/90 p-3 rounded-xl border border-stone-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-5 h-5 rounded-full bg-stone-900 text-white font-bold text-[10px] flex items-center justify-center">
-                      1
-                    </span>
-                    <span className="font-bold text-stone-900 text-sm">Venda do Cliente</span>
-                  </div>
-                  <p className="text-stone-500 leading-relaxed text-[11px]">
-                    O total recebido no pedido na Shopee, Mercado Livre, TikTok Shop ou Site.
-                  </p>
-                </div>
-
-                <div className="bg-stone-50/90 p-3 rounded-xl border border-stone-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-5 h-5 rounded-full bg-stone-700 text-white font-bold text-[10px] flex items-center justify-center">
-                      2
-                    </span>
-                    <span className="font-bold text-stone-800 text-sm">− Custo da Peça</span>
-                  </div>
-                  <p className="text-stone-500 leading-relaxed text-[11px]">
-                    Tecido, bordado, linha e costura com base direta na sua <strong>Planilha de Custos</strong>.
-                  </p>
-                </div>
-
-                <div className="bg-stone-50/90 p-3 rounded-xl border border-stone-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-5 h-5 rounded-full bg-orange-700 text-white font-bold text-[10px] flex items-center justify-center">
-                      3
-                    </span>
-                    <span className="font-bold text-orange-800 text-sm">− Taxa do Canal</span>
-                  </div>
-                  <p className="text-stone-500 leading-relaxed text-[11px]">
-                    A comissão que o marketplace retém (Shopee 18%, ML 16%, TikTok 7%, Loja 3,5%).
-                  </p>
-                </div>
-
-                <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-5 h-5 rounded-full bg-emerald-700 text-white font-bold text-[10px] flex items-center justify-center">
-                      4
-                    </span>
-                    <span className="font-bold text-emerald-900 text-sm">= Lucro no Bolso</span>
-                  </div>
-                  <p className="text-emerald-800 leading-relaxed text-[11px]">
-                    O dinheiro limpo que realmente fica no caixa da Mesa &amp; Graça após pagar tudo.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Cards Financeiros Principais com Linguagem Amigável */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {/* Card 1: Faturamento Bruto */}
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 block">
-                  Total Faturado
-                </span>
-                <p className="text-2xl font-bold text-stone-900 mt-2">
-                  {loading ? "..." : money(kpis?.gross_revenue)}
-                </p>
-                <div className="text-xs text-stone-500 mt-1 flex items-center gap-1">
-                  <span>{kpis?.total_orders || 0} pedidos</span> ·{" "}
-                  <span>Méd.: {money(kpis?.average_ticket)}</span>
-                </div>
-              </div>
-
-              {/* Card 2: Custo das Peças */}
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 block">
-                  Custo das Peças (Tecido &amp; Confecção)
-                </span>
-                <p className="text-2xl font-bold text-stone-800 mt-2">
-                  {loading ? "..." : money(kpis?.product_cost_cmv)}
-                </p>
-                <p className="text-xs text-stone-500 mt-1">
-                  {kpis && kpis.gross_revenue > 0
-                    ? `${percent((kpis.product_cost_cmv / kpis.gross_revenue) * 100)} do total vendido`
-                    : "—"}
-                </p>
-              </div>
-
-              {/* Card 3: Taxas dos Marketplaces */}
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 block">
-                  Taxas dos Marketplaces
-                </span>
-                <p className="text-2xl font-bold text-orange-800 mt-2">
-                  {loading ? "..." : money(kpis?.platform_commissions)}
-                </p>
-                <p className="text-xs text-stone-500 mt-1">
-                  {kpis && kpis.gross_revenue > 0
-                    ? `${percent((kpis.platform_commissions / kpis.gross_revenue) * 100)} retido pelos canais`
-                    : "—"}
-                </p>
-              </div>
-
-              {/* Card 4: Lucro das Vendas */}
-              <div className="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-200 shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 block">
-                  Lucro das Vendas
-                </span>
-                <p className="text-2xl font-bold text-emerald-900 mt-2">
-                  {loading ? "..." : money(kpis?.operational_profit)}
-                </p>
-                <div className="text-xs font-medium text-emerald-700 mt-1">
-                  Margem: {percent(kpis?.operational_margin_percent)}
-                </div>
-              </div>
-
-              {/* Card 5: Lucro Final Pós-Ads */}
-              <div className="bg-amber-950 text-white p-5 rounded-2xl shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-amber-200 block">
-                  Lucro Líquido no Bolso
-                </span>
-                <p className="text-2xl font-bold text-white mt-2">
-                  {loading ? "..." : money(kpis?.final_net_profit)}
-                </p>
-                <div className="text-xs text-amber-300 mt-1">
-                  Margem Líquida Real: {percent(kpis?.final_net_margin_percent)}
-                </div>
-              </div>
-            </div>
-
-            {/* Alerta Inteligente de Ruptura de Estoque para Produtos com Alto Lucro */}
-            {(() => {
-              const lowStockProducts = (data?.products || []).filter(
-                (p) => p.stock_quantity != null && p.stock_quantity <= 8 && p.units_sold >= 2
-              );
-              if (lowStockProducts.length === 0) return null;
-
-              return (
-                <div className="bg-amber-50/70 border border-amber-300/80 rounded-2xl p-4 sm:p-5 shadow-xs">
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl flex-shrink-0">⚠️</span>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-bold text-amber-950">
-                        Alerta de Estoque Crítico em Produtos de Alta Rentabilidade
-                      </h3>
-                      <p className="text-xs text-amber-900/80 mt-0.5 mb-3">
-                        Estes produtos possuem alta saída e excelente margem, mas estão com estoque reduzido no catálogo. Reponha para evitar pausa nos marketplaces.
-                      </p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                        {lowStockProducts.slice(0, 3).map((lp) => (
-                          <div
-                            key={lp.sku}
-                            className="bg-white rounded-xl border border-amber-200 p-2.5 flex items-center gap-2.5 text-xs shadow-2xs"
-                          >
-                            <div className="w-10 h-10 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                              {lp.image_url ? (
-                                <img src={lp.image_url} alt={lp.name} className="w-full h-full object-cover" />
-                              ) : (
-                                <span>🖼️</span>
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="font-semibold text-stone-900 line-clamp-1">{lp.name}</div>
-                              <div className="text-[11px] text-amber-800 font-medium">
-                                Restam apenas: <strong className="font-bold text-rose-700">{lp.stock_quantity} un</strong>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Barra de Participação de Mercado (Market Share dos Canais) */}
-            {data?.channels && data.channels.length > 0 && kpis && kpis.gross_revenue > 0 && (
-              <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-sm font-bold text-stone-900">
-                      Participação por Canal de Venda (Market Share)
-                    </h3>
-                    <p className="text-xs text-stone-500">
-                      Divisão percentual do faturamento total de {money(kpis.gross_revenue)}
-                    </p>
-                  </div>
-                  <span className="text-xs text-stone-500 font-mono font-medium">
-                    {kpis.total_orders} pedidos
-                  </span>
-                </div>
-
-                <div className="h-4 rounded-full overflow-hidden flex bg-stone-100 shadow-inner">
-                  {data.channels.map((ch) => {
-                    const pct = (ch.gross_revenue / kpis.gross_revenue) * 100;
-                    if (pct <= 0) return null;
-                    const colors: Record<SalesChannel, string> = {
-                      shopee: "bg-[#EE4D2D]",
-                      mercadolivre: "bg-[#FFE600]",
-                      tiktok: "bg-black",
-                      site: "bg-[#00A3E0]",
-                    };
-                    return (
-                      <div
-                        key={ch.channel}
-                        style={{ width: `${pct}%` }}
-                        className={`${colors[ch.channel]} transition-all duration-300`}
-                        title={`${ch.channel_name}: ${percent(pct)} (${money(ch.gross_revenue)})`}
-                      />
-                    );
-                  })}
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-3 border-t border-stone-100 text-xs">
-                  {data.channels.map((ch) => {
-                    const cfg = CHANNEL_CONFIG[ch.channel];
-                    const Icon = cfg.Icon;
-                    const pct = kpis.gross_revenue > 0 ? (ch.gross_revenue / kpis.gross_revenue) * 100 : 0;
-                    return (
-                      <div key={ch.channel} className="flex items-center gap-2">
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <div className="min-w-0">
-                          <div className="font-semibold text-stone-900 flex items-center gap-1">
-                            <span>{cfg.label}:</span>
-                            <span className="text-stone-700">{percent(pct)}</span>
-                          </div>
-                          <div className="text-[11px] text-stone-400 font-mono">
-                            {money(ch.gross_revenue)} · {ch.orders_count} ped.
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Gráfico Interativo de Evolução Diária (Faturamento vs Lucro Líquido) */}
+            {/* Gráfico de Evolução Diária */}
             {data?.daily_timeline && data.daily_timeline.length > 0 && (
               <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                   <div>
-                    <h2 className="text-lg font-bold text-stone-900">
+                    <h2 className="text-base font-bold text-stone-900">
                       Curva de Faturamento &amp; Lucro Diário
                     </h2>
                     <p className="text-xs text-stone-500">
-                      Passe o mouse ou toque nos pontos para ver os valores e pedidos de cada data.
+                      Passe o mouse ou toque nos pontos para ver os valores e pedidos de cada dia (datas no padrão brasileiro DD/MM).
                     </p>
                   </div>
                   <div className="flex items-center gap-4 text-xs font-semibold self-start sm:self-auto">
                     <span className="flex items-center gap-1.5 text-stone-700">
-                      <span className="w-3 h-3 rounded-full bg-amber-700 inline-block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-700 inline-block flex-shrink-0" />
                       Faturamento Bruto
                     </span>
                     <span className="flex items-center gap-1.5 text-emerald-700">
-                      <span className="w-3 h-3 rounded-full bg-emerald-600 inline-block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block flex-shrink-0" />
                       Lucro Líquido
                     </span>
                   </div>
@@ -877,27 +1154,28 @@ export function DashboardClient() {
                   {(() => {
                     const timeline = data.daily_timeline;
                     const maxVal = Math.max(100, ...timeline.map((d) => d.gross_revenue)) * 1.15;
-                    const W = 720;
+                    const W = 690;
                     const H = 150;
-                    const padX = 40;
+                    const padX = 75;
                     const padY = 25;
 
                     const getX = (idx: number) =>
                       timeline.length === 1 ? padX + W / 2 : padX + (idx / (timeline.length - 1)) * W;
                     const getY = (val: number) => padY + H - (Math.max(0, val) / maxVal) * H;
 
-                    const grossPoints = timeline.map((d, i) => `${getX(i)},${getY(d.gross_revenue)}`);
-                    const netPoints = timeline.map((d, i) => `${getX(i)},${getY(d.net_profit)}`);
+                    const grossCoords: [number, number][] = timeline.map((d, i) => [getX(i), getY(d.gross_revenue)]);
+                    const netCoords: [number, number][] = timeline.map((d, i) => [getX(i), getY(d.net_profit)]);
 
-                    const grossArea = `${padX},${padY + H} ${grossPoints.join(" ")} ${getX(
-                      timeline.length - 1
-                    )},${padY + H}`;
-                    const netArea = `${padX},${padY + H} ${netPoints.join(" ")} ${getX(
-                      timeline.length - 1
-                    )},${padY + H}`;
+                    const grossLinePath = getBezierCurvePath(grossCoords);
+                    const netLinePath = getBezierCurvePath(netCoords);
+                    const grossAreaPath = getBezierCurvePath(grossCoords, padY + H);
+                    const netAreaPath = getBezierCurvePath(netCoords, padY + H);
+
+                    const activePointIndex = pinnedPointIndex !== null ? pinnedPointIndex : hoveredPointIndex;
+                    const isPinned = pinnedPointIndex !== null;
 
                     return (
-                      <div className="flex flex-col">
+                      <div className="relative w-full">
                         <svg
                           viewBox="0 0 800 210"
                           className="w-full h-44 sm:h-52 overflow-visible select-none"
@@ -913,7 +1191,7 @@ export function DashboardClient() {
                             </linearGradient>
                           </defs>
 
-                          {/* Linhas de Grade Horizontais */}
+                          {/* Linhas de Grade */}
                           {[0, 0.33, 0.66, 1].map((pct, gIdx) => {
                             const y = padY + H * (1 - pct);
                             const val = maxVal * pct;
@@ -931,7 +1209,7 @@ export function DashboardClient() {
                                   x={padX - 8}
                                   y={y + 3}
                                   textAnchor="end"
-                                  className="text-[9px] fill-stone-400 font-mono"
+                                  className="text-[10px] fill-stone-500 font-mono tabular-nums"
                                 >
                                   {money(val)}
                                 </text>
@@ -939,23 +1217,21 @@ export function DashboardClient() {
                             );
                           })}
 
-                          {/* Áreas Preenchidas */}
-                          <polygon points={grossArea} fill="url(#grossGrad)" />
-                          <polygon points={netArea} fill="url(#netGrad)" />
+                          {/* Áreas Bézier Suaves */}
+                          <path d={grossAreaPath} fill="url(#grossGrad)" />
+                          <path d={netAreaPath} fill="url(#netGrad)" />
 
-                          {/* Linha Faturamento Bruto */}
-                          <polyline
-                            points={grossPoints.join(" ")}
+                          {/* Linhas Bézier Suaves (Linear / Stripe Style) */}
+                          <path
+                            d={grossLinePath}
                             fill="none"
                             stroke="#b45309"
                             strokeWidth="2.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                           />
-
-                          {/* Linha Lucro Líquido */}
-                          <polyline
-                            points={netPoints.join(" ")}
+                          <path
+                            d={netLinePath}
                             fill="none"
                             stroke="#059669"
                             strokeWidth="2.5"
@@ -963,35 +1239,60 @@ export function DashboardClient() {
                             strokeLinejoin="round"
                           />
 
-                          {/* Pontos Interativos */}
+                          {/* Pontos */}
                           {timeline.map((d, i) => {
                             const cx = getX(i);
                             const cyGross = getY(d.gross_revenue);
                             const cyNet = getY(d.net_profit);
-                            const isHovered = hoveredPointIndex === i;
+                            const isPointActive = activePointIndex === i;
 
                             return (
                               <g
                                 key={i}
                                 onMouseEnter={() => setHoveredPointIndex(i)}
                                 onMouseLeave={() => setHoveredPointIndex(null)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setPinnedPointIndex((prev) => (prev === i ? null : i));
+                                }}
                                 className="cursor-pointer"
                               >
-                                {isHovered && (
-                                  <line
-                                    x1={cx}
-                                    y1={padY}
-                                    x2={cx}
-                                    y2={padY + H}
-                                    stroke="#78716c"
-                                    strokeWidth="1"
-                                    strokeDasharray="2 2"
-                                  />
+                                {isPointActive && (
+                                  <>
+                                    <line
+                                      x1={cx}
+                                      y1={padY}
+                                      x2={cx}
+                                      y2={padY + H}
+                                      stroke="#78716c"
+                                      strokeWidth="1.2"
+                                      strokeDasharray="3 3"
+                                    />
+                                    {/* Halos de Destaque Pulsante */}
+                                    <circle
+                                      cx={cx}
+                                      cy={cyGross}
+                                      r={9}
+                                      fill="none"
+                                      stroke="#b45309"
+                                      strokeWidth="2"
+                                      opacity="0.45"
+                                    />
+                                    <circle
+                                      cx={cx}
+                                      cy={cyNet}
+                                      r={9}
+                                      fill="none"
+                                      stroke="#059669"
+                                      strokeWidth="2"
+                                      opacity="0.45"
+                                    />
+                                  </>
                                 )}
                                 <circle
                                   cx={cx}
                                   cy={cyGross}
-                                  r={isHovered ? 5.5 : 3.5}
+                                  r={isPointActive ? 6 : 3.5}
                                   fill="#b45309"
                                   stroke="#ffffff"
                                   strokeWidth="2"
@@ -999,7 +1300,7 @@ export function DashboardClient() {
                                 <circle
                                   cx={cx}
                                   cy={cyNet}
-                                  r={isHovered ? 5.5 : 3.5}
+                                  r={isPointActive ? 6 : 3.5}
                                   fill="#059669"
                                   stroke="#ffffff"
                                   strokeWidth="2"
@@ -1008,35 +1309,72 @@ export function DashboardClient() {
                                   x={cx}
                                   y={padY + H + 18}
                                   textAnchor="middle"
-                                  className={`text-[10px] font-mono ${
-                                    isHovered ? "fill-stone-900 font-bold" : "fill-stone-400"
+                                  className={`text-[10px] font-mono transition-colors ${
+                                    isPointActive ? "fill-stone-900 font-bold" : "fill-stone-400"
                                   }`}
                                 >
-                                  {d.date.slice(5).replace("-", "/")}
+                                  {formatShortDateBR(d.date)}
                                 </text>
                               </g>
                             );
                           })}
                         </svg>
 
-                        {/* Tooltip Dinâmico ao passar o mouse */}
-                        {hoveredPointIndex != null && timeline[hoveredPointIndex] && (
-                          <div className="mt-2 p-2.5 bg-stone-900 text-white rounded-xl shadow-lg flex items-center justify-between text-xs max-w-sm mx-auto">
-                            <div>
-                              <span className="text-[10px] text-stone-400 block font-mono">
-                                Data: {timeline[hoveredPointIndex].date}
-                              </span>
-                              <span className="font-semibold text-amber-200">
-                                {timeline[hoveredPointIndex].orders_count} pedidos registrados
-                              </span>
+                        {/* Tooltip Dinâmico Flutuante (Não Empurra o Layout) */}
+                        {activePointIndex != null && timeline[activePointIndex] && (
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute top-2 sm:top-3 right-2 sm:right-4 z-20 p-3 bg-stone-900/95 backdrop-blur-md text-white rounded-xl shadow-2xl border border-stone-700/70 text-xs max-w-[280px] sm:max-w-xs select-none pointer-events-auto transition-all"
+                          >
+                            <div className="flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-stone-800">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] text-stone-400 font-mono">
+                                  {formatFullDateBR(timeline[activePointIndex].date)}
+                                </span>
+                                {isPinned ? (
+                                  <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                    📌 Fixado
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] text-stone-500">
+                                    (clique p/ fixar)
+                                  </span>
+                                )}
+                              </div>
+                              {isPinned && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setPinnedPointIndex(null);
+                                  }}
+                                  className="text-stone-400 hover:text-white p-0.5 rounded hover:bg-stone-800 transition text-[11px] leading-none"
+                                  title="Desafixar"
+                                >
+                                  ✕
+                                </button>
+                              )}
                             </div>
-                            <div className="text-right">
-                              <span className="text-stone-300 block">
-                                Faturamento: <strong className="text-white">{money(timeline[hoveredPointIndex].gross_revenue)}</strong>
-                              </span>
-                              <span className="text-emerald-300 font-bold block">
-                                Lucro Real: {money(timeline[hoveredPointIndex].net_profit)}
-                              </span>
+
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-stone-400 text-[11px]">Pedidos:</span>
+                                <span className="font-semibold text-amber-200 tabular-nums">
+                                  {timeline[activePointIndex].orders_count} {timeline[activePointIndex].orders_count === 1 ? "pedido" : "pedidos"}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-stone-400 text-[11px]">Faturamento:</span>
+                                <strong className="text-white tabular-nums">
+                                  {money(timeline[activePointIndex].gross_revenue)}
+                                </strong>
+                              </div>
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-stone-400 text-[11px]">Lucro Real:</span>
+                                <strong className="text-emerald-300 font-bold tabular-nums">
+                                  {money(timeline[activePointIndex].net_profit)}
+                                </strong>
+                              </div>
                             </div>
                           </div>
                         )}
@@ -1047,11 +1385,14 @@ export function DashboardClient() {
               </div>
             )}
 
-            {/* Comparativo de Desempenho por Canal com Ícones Oficiais */}
+            {/* Comparativo dos 4 Canais de Venda */}
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
-              <h2 className="text-lg font-bold text-stone-900 mb-4">
+              <h2 className="text-base font-bold text-stone-900 mb-1">
                 Desempenho por Canal de Venda
               </h2>
+              <p className="text-xs text-stone-500 mb-4">
+                Veja onde você mais vendeu, quanto cada canal cobrou de taxa e qual foi o mais rentável.
+              </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {data?.channels.map((ch) => {
@@ -1060,42 +1401,62 @@ export function DashboardClient() {
                   return (
                     <div
                       key={ch.channel}
-                      className="border border-stone-200 rounded-xl p-4 bg-stone-50/40 hover:bg-stone-50 transition"
+                      className="border border-stone-200 rounded-xl p-4 bg-stone-50/50 hover:bg-stone-50 transition flex flex-col justify-between"
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <span
-                          className={`text-xs font-semibold px-2.5 py-1 rounded-full border flex items-center gap-1.5 ${cfg.bg}`}
-                        >
-                          <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span>{cfg.label}</span>
-                        </span>
-                        <span className="text-xs font-medium text-stone-500">
-                          {ch.orders_count} {ch.orders_count === 1 ? "pedido" : "pedidos"}
-                        </span>
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span
+                            className={`text-xs font-semibold px-2.5 py-1 rounded-full border flex items-center gap-1.5 ${cfg.bg}`}
+                          >
+                            <Icon className="w-4 h-4 flex-shrink-0" />
+                            <span>{cfg.label}</span>
+                          </span>
+                          <span className="text-xs font-medium text-stone-500">
+                            {ch.orders_count} {ch.orders_count === 1 ? "pedido" : "pedidos"}
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5 text-xs text-stone-600">
+                          <div className="flex justify-between items-center">
+                            <span>Vendido:</span>
+                            <strong className="text-stone-900 tabular-nums whitespace-nowrap">{money(ch.gross_revenue)}</strong>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span>Tecido &amp; Fábrica:</span>
+                            <span className="tabular-nums whitespace-nowrap text-stone-700 font-medium">-{money(ch.product_cost)}</span>
+                          </div>
+                          {(() => {
+                            const chRate = ch.gross_revenue > 0 ? (ch.commissions / ch.gross_revenue) * 100 : 0;
+                            return (
+                              <div className="flex justify-between items-center text-orange-700 font-medium">
+                                <span className="whitespace-nowrap">Taxa do Canal ({percent(chRate)}):</span>
+                                <span className="tabular-nums whitespace-nowrap">-{money(ch.commissions)}</span>
+                              </div>
+                            );
+                          })()}
+                        </div>
                       </div>
 
-                      <div className="space-y-1.5 text-xs text-stone-600">
-                        <div className="flex justify-between">
-                          <span>Faturamento:</span>
-                          <strong className="text-stone-900">{money(ch.gross_revenue)}</strong>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Custo (CMV):</span>
-                          <span>{money(ch.product_cost)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Taxas do Canal:</span>
-                          <span className="text-orange-700">-{money(ch.commissions)}</span>
-                        </div>
-                        <div className="pt-2 border-t border-stone-200 flex justify-between items-center text-sm">
-                          <span className="font-semibold text-stone-800">Lucro Líquido:</span>
-                          <strong className="text-emerald-700 font-bold">
+                      <div className="mt-3 pt-2.5 border-t border-stone-200 flex justify-between items-center text-xs">
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-stone-400 block whitespace-nowrap">
+                            Lucro Líquido
+                          </span>
+                          <strong className={`${ch.net_profit < 0 ? "text-rose-700" : "text-emerald-700"} font-bold text-sm tabular-nums whitespace-nowrap`}>
                             {money(ch.net_profit)}
                           </strong>
                         </div>
-                        <div className="text-right text-[11px] text-stone-400">
-                          Margem: {percent(ch.net_margin_percent)}
-                        </div>
+                        <span
+                          className={`font-semibold px-2 py-0.5 rounded text-[11px] tabular-nums whitespace-nowrap ${
+                            ch.net_margin_percent >= 30
+                              ? "bg-emerald-100 text-emerald-800"
+                              : ch.net_margin_percent >= 15
+                              ? "bg-amber-100 text-amber-800"
+                              : "bg-rose-100 text-rose-800"
+                          }`}
+                        >
+                          {percent(ch.net_margin_percent)} margem
+                        </span>
                       </div>
                     </div>
                   );
@@ -1103,91 +1464,398 @@ export function DashboardClient() {
               </div>
             </div>
 
-            {/* Tabela de Lucro por Produto com Miniaturas e Ícones */}
+            {/* Barra de Participação de Mercado */}
+            {data?.channels && data.channels.length > 0 && (() => {
+              const totalChannelsRevenue = data.channels.reduce((sum, ch) => sum + (ch.gross_revenue || 0), 0);
+              if (totalChannelsRevenue <= 0) return null;
+              return (
+                <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700">
+                        Participação das Vendas por Canal (Market Share)
+                      </h3>
+                    </div>
+                    <span className="text-xs text-stone-500 font-mono font-medium">
+                      {kpis?.total_orders || 0} pedidos
+                    </span>
+                  </div>
+
+                  <div className="h-4 rounded-full overflow-hidden flex bg-stone-100 shadow-inner w-full">
+                    {data.channels.map((ch) => {
+                      const pct = (ch.gross_revenue / totalChannelsRevenue) * 100;
+                      if (pct <= 0) return null;
+                      const colors: Record<SalesChannel, string> = {
+                        shopee: "bg-[#EE4D2D]",
+                        mercadolivre: "bg-[#FFE600]",
+                        tiktok: "bg-black",
+                        site: "bg-[#00A3E0]",
+                      };
+                      return (
+                        <div
+                          key={ch.channel}
+                          style={{ width: `${pct}%` }}
+                          className={`${colors[ch.channel]} transition-all duration-300`}
+                          title={`${ch.channel_name}: ${percent(pct)} (${money(ch.gross_revenue)})`}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-3 border-t border-stone-100 text-xs">
+                    {data.channels.map((ch) => {
+                      const cfg = CHANNEL_CONFIG[ch.channel];
+                      const Icon = cfg.Icon;
+                      const pct = (ch.gross_revenue / totalChannelsRevenue) * 100;
+                      return (
+                        <div key={ch.channel} className="flex items-center gap-2">
+                          <Icon className="w-4 h-4 flex-shrink-0" />
+                          <div className="min-w-0">
+                            <div className="font-semibold text-stone-900 flex items-center gap-1">
+                              <span>{cfg.label}:</span>
+                              <span className="text-stone-700">{percent(pct)}</span>
+                            </div>
+                            <div className="text-[11px] text-stone-400 font-mono">
+                              {money(ch.gross_revenue)} · {ch.orders_count} ped.
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ------------------------------------------------------------------------- */}
+        {/* ABA 2: PRODUTOS MAIS LUCRATIVOS                                           */}
+        {/* ------------------------------------------------------------------------- */}
+        {activeTab === "produtos" && (
+          <div className="space-y-6">
+            {/* Top 3 Campeões de Lucro (Sincronizado dinamicamente com Toda Série Histórica e ordenado por lucro limpo) */}
+            {(() => {
+              const baseList = showAllTimeProducts
+                ? (data?.all_time_products || [])
+                : (data?.products || []);
+
+              const validProfitProducts = baseList
+                .filter((p) => !p.has_missing_cost && p.total_cost > 0)
+                .sort((a, b) => b.net_profit - a.net_profit);
+
+              const champions = validProfitProducts.slice(0, 3);
+              if (champions.length === 0) return null;
+
+              return (
+                <div className="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200 shadow-xs">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xl">🏆</span>
+                    <div>
+                      <h3 className="font-bold text-sm uppercase tracking-wider text-amber-900">
+                        Campeões de Lucro Limpo no Bolso
+                      </h3>
+                      <p className="text-xs text-stone-500">
+                        {showAllTimeProducts
+                          ? "Os 3 produtos que mais colocaram dinheiro líquido no caixa da loja em toda a série histórica."
+                          : "Os 3 produtos que mais colocaram dinheiro líquido no caixa da loja no período."}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {champions.map((p, pIdx) => (
+                      <div
+                        key={p.sku || pIdx}
+                        className="bg-stone-50 hover:bg-stone-100/80 rounded-xl p-3 border border-stone-200/80 flex items-center gap-3 transition"
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-white border border-stone-200 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                          {p.image_url ? (
+                            <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span>🖼️</span>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs font-bold text-stone-900 line-clamp-1">
+                            {p.name.replace(/<br\s*\/?>/gi, " - ")}
+                          </div>
+                          <div className="text-[11px] text-stone-500 mt-0.5">
+                            {p.units_sold} {p.name.toLowerCase().includes("kit") ? "kits vendidos" : "un vendidas"}
+                          </div>
+                          <div className={`text-xs font-extrabold ${p.net_profit < 0 ? "text-rose-700" : "text-emerald-700"} mt-1`}>
+                            Lucro: {money(p.net_profit)} ({percent(p.net_margin_percent)})
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Tabela de Produtos */}
             <div className="bg-white rounded-2xl border border-stone-200 shadow-xs overflow-hidden">
               <div className="px-6 py-4 border-b border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-lg font-bold text-stone-900">
-                    Rentabilidade &amp; Lucro por Produto
-                  </h2>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-base font-bold text-stone-900">
+                      Todos os Produtos Vendidos &amp; Lucratividade
+                    </h2>
+                    {showAllTimeProducts && (
+                      <span className="text-[10px] bg-amber-100 text-amber-950 font-bold px-2 py-0.5 rounded-full border border-amber-300 flex items-center gap-1">
+                        <ClockIcon className="w-3 h-3 text-amber-900" />
+                        Histórico Completo (Desde Ago/2026)
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-stone-500">
-                    Calculado deduzindo custo de fabricação e comissão exata do canal onde o item foi vendido.
+                    {showAllTimeProducts
+                      ? "Exibindo o ranking acumulado de todos os produtos vendidos em toda a série histórica da loja."
+                      : "Clique em qualquer produto para ver o detalhamento unitário de custo, taxa e lucro por peça."}
                   </p>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 w-full sm:w-auto">
-                  <div className="relative">
+                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                  {/* Botão Discreto: Toda Série Histórica */}
+                  <button
+                    type="button"
+                    onClick={() => setShowAllTimeProducts((prev) => !prev)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border transition cursor-pointer select-none shrink-0 ${
+                      showAllTimeProducts
+                        ? "bg-amber-950 text-white border-amber-950 shadow-xs"
+                        : "bg-stone-50 text-stone-700 hover:text-stone-900 hover:bg-stone-100/80 border-stone-300"
+                    }`}
+                    title={
+                      showAllTimeProducts
+                        ? "Mostrando toda a série histórica da loja. Clique para voltar ao período selecionado."
+                        : "Clique para mostrar os produtos mais vendidos em toda a série histórica da empresa (desde Ago/2026)"
+                    }
+                  >
+                    <ClockIcon className="w-3.5 h-3.5" />
+                    <span>{showAllTimeProducts ? "Toda Série Histórica" : "Série Histórica"}</span>
+                    {showAllTimeProducts && (
+                      <span className="text-[10px] bg-amber-800 text-amber-100 px-1.5 py-0.2 rounded-full font-mono ml-0.5">
+                        All
+                      </span>
+                    )}
+                  </button>
+
+                  <div className="relative w-full sm:w-64">
                     <input
                       type="text"
                       placeholder="Buscar produto ou SKU..."
                       value={productSearch}
                       onChange={(e) => setProductSearch(e.target.value)}
-                      className="text-xs border border-stone-300 rounded-lg pl-8 pr-3 py-1.5 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-amber-950 w-full sm:w-60"
+                      className="text-xs border border-stone-300 rounded-lg pl-9 pr-3 py-2 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-amber-950 w-full min-h-[38px]"
                     />
-                    <span className="absolute left-2.5 top-1.5 text-stone-400 text-xs">🔍</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none flex items-center justify-center">
+                      <SearchIcon className="w-3.5 h-3.5" />
+                    </span>
                   </div>
-                  <span className="text-xs bg-stone-100 text-stone-600 px-3 py-1 rounded-lg font-medium self-start sm:self-auto whitespace-nowrap">
-                    {data?.products?.filter((p) => !productSearch || p.name.toLowerCase().includes(productSearch.toLowerCase().trim()) || p.sku.toLowerCase().includes(productSearch.toLowerCase().trim())).length || 0} de {data?.products.length || 0} produtos
-                  </span>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider">
+                <table className="w-full text-left text-xs sm:text-sm min-w-[980px]">
+                  <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider whitespace-nowrap">
                     <tr>
-                      <th className="py-3 px-4">Produto &amp; SKU</th>
-                      <th className="py-3 px-3">Canal</th>
-                      <th className="py-3 px-3 text-center">Unidades</th>
-                      <th className="py-3 px-3 text-right">Faturamento</th>
-                      <th className="py-3 px-3 text-right">Custo da Peça</th>
-                      <th className="py-3 px-3 text-right">Taxa Canal</th>
-                      <th className="py-3 px-4 text-right">Lucro Líquido</th>
-                      <th className="py-3 px-3 text-center hidden md:table-cell">Divisão Visual</th>
-                      <th className="py-3 px-4 text-right">Margem</th>
-                      <th className="py-3 px-3 text-center">Detalhes</th>
+                      <th
+                        onClick={() => handleProductSort("name")}
+                        className="py-3 px-3.5 min-w-[200px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Nome do Produto"
+                      >
+                        <div className="inline-flex items-center gap-1">
+                          <span>Produto</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "name" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleProductSort("channel")}
+                        className="py-3 px-2.5 whitespace-nowrap min-w-[85px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Canal de Venda"
+                      >
+                        <div className="inline-flex items-center gap-1">
+                          <span>Canal</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "channel" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleProductSort("units")}
+                        className="py-3 px-2.5 text-center whitespace-nowrap min-w-[70px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Quantidade Vendida"
+                      >
+                        <div className="inline-flex items-center gap-1 justify-center">
+                          <span>Qtd</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "units" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleProductSort("revenue")}
+                        className="py-3 px-3 text-right whitespace-nowrap min-w-[95px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Faturamento Bruto"
+                      >
+                        <div className="inline-flex items-center gap-1 justify-end">
+                          <span>Faturamento</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "revenue" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleProductSort("cost")}
+                        className="py-3 px-3 text-right whitespace-nowrap min-w-[105px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Custo de Fábrica (CMV)"
+                      >
+                        <div className="inline-flex items-center gap-1 justify-end">
+                          <span>Fábrica (CMV)</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "cost" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleProductSort("commissions")}
+                        className="py-3 px-3 text-right whitespace-nowrap min-w-[95px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Taxas do Canal"
+                      >
+                        <div className="inline-flex items-center gap-1 justify-end">
+                          <span>Taxa Canal</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "commissions" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleProductSort("profit")}
+                        className="py-3 px-3.5 text-right whitespace-nowrap min-w-[95px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Lucro Limpo"
+                      >
+                        <div className="inline-flex items-center gap-1 justify-end">
+                          <span>Lucro Limpo</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "profit" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleProductSort("margin")}
+                        className="py-3 px-3 text-right whitespace-nowrap min-w-[65px] cursor-pointer hover:bg-stone-100 transition select-none"
+                        title="Clique para ordenar por Margem Líquida"
+                      >
+                        <div className="inline-flex items-center gap-1 justify-end">
+                          <span>Margem</span>
+                          <span className="text-[10px] text-stone-400">
+                            {productSortField === "margin" ? (productSortAsc ? "▲" : "▼") : "↕"}
+                          </span>
+                        </div>
+                      </th>
+                      <th className="py-3 px-2.5 text-center whitespace-nowrap min-w-[44px]">Detalhes</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-100 text-stone-700">
                     {(() => {
-                      const list = (data?.products || []).filter((p) => {
+                      const baseList = showAllTimeProducts
+                        ? (data?.all_time_products || [])
+                        : (data?.products || []);
+
+                      const list = baseList.filter((p) => {
                         if (!productSearch) return true;
                         const q = productSearch.toLowerCase().trim();
                         return p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
                       });
 
-                      if (list.length === 0) {
+                      const sortedList = [...list].sort((a, b) => {
+                        let comparison = 0;
+                        switch (productSortField) {
+                          case "name":
+                            comparison = a.name.localeCompare(b.name, "pt-BR");
+                            break;
+                          case "channel":
+                            comparison = a.main_channel.localeCompare(b.main_channel, "pt-BR");
+                            break;
+                          case "units":
+                            comparison = a.units_sold - b.units_sold;
+                            break;
+                          case "revenue":
+                            comparison = a.total_revenue - b.total_revenue;
+                            break;
+                          case "cost":
+                            comparison = a.total_cost - b.total_cost;
+                            break;
+                          case "commissions":
+                            comparison = a.total_commissions - b.total_commissions;
+                            break;
+                          case "profit":
+                            if (a.has_missing_cost && !b.has_missing_cost) return 1;
+                            if (!a.has_missing_cost && b.has_missing_cost) return -1;
+                            comparison = a.net_profit - b.net_profit;
+                            break;
+                          case "margin":
+                            if (a.has_missing_cost && !b.has_missing_cost) return 1;
+                            if (!a.has_missing_cost && b.has_missing_cost) return -1;
+                            comparison = a.net_margin_percent - b.net_margin_percent;
+                            break;
+                        }
+                        return productSortAsc ? comparison : -comparison;
+                      });
+
+                      if (sortedList.length === 0) {
                         return (
                           <tr>
-                            <td colSpan={10} className="py-8 text-center text-stone-400 text-xs">
+                            <td colSpan={9} className="py-8 text-center text-stone-400 text-xs">
                               {productSearch
                                 ? `Nenhum produto encontrado para "${productSearch}".`
+                                : showAllTimeProducts
+                                ? "Nenhum produto encontrado na série histórica."
                                 : "Nenhum produto vendido no período selecionado."}
                             </td>
                           </tr>
                         );
                       }
 
-                      return list.map((p, idx) => {
+                      return sortedList.map((p, idx) => {
                         const channelKey = getChannelKey(p.main_channel);
                         const cfg = CHANNEL_CONFIG[channelKey];
                         const Icon = cfg.Icon;
-                        const isExpanded = expandedProductSku === p.sku;
+                        const isExpanded = !!expandedProductSkus[p.sku];
                         const unitAvgPrice = p.units_sold > 0 ? p.total_revenue / p.units_sold : 0;
                         const unitCost = p.units_sold > 0 ? p.total_cost / p.units_sold : 0;
                         const unitCommission = p.units_sold > 0 ? p.total_commissions / p.units_sold : 0;
                         const unitProfit = p.units_sold > 0 ? p.net_profit / p.units_sold : 0;
+                        const nameLower = (p.name || "").toLowerCase();
+                        const isKit = nameLower.includes("kit");
+                        const packMatch = nameLower.match(/kit\s*(\d+)/i) || nameLower.match(/(\d+)\s*(?:peças|unidades|un|pcs)/i);
+                        let packSize = packMatch ? Number(packMatch[1]) : (nameLower.includes("par") ? 2 : 1);
+                        const hasLA = nameLower.includes("lugar americano") || nameLower.includes("jogo americano") || (p.sku || "").toUpperCase().includes("LAM");
+                        const hasGUA = nameLower.includes("guardanapo") || (p.sku || "").toUpperCase().includes("GUA");
+                        const hasPGU = nameLower.includes("porta") || (p.sku || "").toUpperCase().includes("PGU");
+                        if (hasLA && hasGUA && hasPGU && packSize === 1) {
+                          if (nameLower.includes("2 lugares") || nameLower.includes("2lugares") || nameLower.includes("6 peças")) {
+                            packSize = 6;
+                          } else {
+                            packSize = 3;
+                          }
+                        }
 
                         return (
                           <Fragment key={p.sku || idx}>
                             <tr
-                              onClick={() => setExpandedProductSku(isExpanded ? null : p.sku)}
-                              className={`transition cursor-pointer select-none ${
+                              onClick={() => {
+                                if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                toggleProductExpanded(p.sku);
+                              }}
+                              className={`transition cursor-pointer ${
                                 isExpanded ? "bg-amber-50/50" : "hover:bg-stone-50/80"
                               }`}
                             >
                               <td className="py-3 px-4">
                                 <div className="flex items-center gap-3">
-                                  {/* Miniatura de Prévia do Produto */}
                                   <div className="w-11 h-11 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
                                     {p.image_url ? (
                                       <img
@@ -1208,7 +1876,7 @@ export function DashboardClient() {
                                       {p.name.replace(/<br\s*\/?>/gi, " - ")}
                                     </div>
                                     <div className="text-[11px] font-mono text-stone-400">
-                                      REF: {p.sku}
+                                      REF: {p.sku} {p.is_own_production ? "· Confecção Própria" : "· Revenda"}
                                     </div>
                                   </div>
                                 </div>
@@ -1221,171 +1889,598 @@ export function DashboardClient() {
                                   <span>{cfg.label}</span>
                                 </span>
                               </td>
-                              <td className="py-3 px-3 text-center font-bold text-stone-900">
-                                {p.units_sold} un
+                              <td className="py-3 px-2.5 text-center whitespace-nowrap min-w-[70px]">
+                                <div className="whitespace-nowrap">
+                                  <span className="font-bold text-stone-900 block whitespace-nowrap">
+                                    {isKit ? `${p.units_sold} kits` : `${p.units_sold} un`}
+                                  </span>
+                                  {isKit && packSize > 1 && (
+                                    <span className="text-[10px] text-stone-400 block whitespace-nowrap">
+                                      ({p.units_sold * packSize} peças)
+                                    </span>
+                                  )}
+                                </div>
                               </td>
-                              <td className="py-3 px-3 text-right font-medium text-stone-900">
+                              <td className="py-3 px-3 text-right font-medium text-stone-900 whitespace-nowrap tabular-nums min-w-[95px]">
                                 {money(p.total_revenue)}
                               </td>
-                              <td className="py-3 px-3 text-right text-stone-500">
-                                {money(p.total_cost)}
-                              </td>
-                              <td className="py-3 px-3 text-right text-orange-700">
-                                -{money(p.total_commissions)}
-                              </td>
-                              <td className="py-3 px-4 text-right font-bold text-emerald-700">
-                                {money(p.net_profit)}
-                              </td>
-                              <td className="py-3 px-3 hidden md:table-cell">
-                                {(() => {
-                                  const profitPct = p.total_revenue > 0 ? Math.max(0, (p.net_profit / p.total_revenue) * 100) : 0;
-                                  const costPct = p.total_revenue > 0 ? Math.max(0, (p.total_cost / p.total_revenue) * 100) : 0;
-                                  const commPct = p.total_revenue > 0 ? Math.max(0, (p.total_commissions / p.total_revenue) * 100) : 0;
-                                  return (
-                                    <div className="flex flex-col items-center gap-1">
-                                      <div
-                                        className="w-24 bg-stone-100 rounded-full h-2 flex overflow-hidden border border-stone-200"
-                                        title={`Lucro: ${profitPct.toFixed(0)}% | Custo: ${costPct.toFixed(0)}% | Taxa Canal: ${commPct.toFixed(0)}%`}
-                                      >
-                                        <div style={{ width: `${profitPct}%` }} className="bg-emerald-500 h-full" />
-                                        <div style={{ width: `${costPct}%` }} className="bg-stone-400 h-full" />
-                                        <div style={{ width: `${commPct}%` }} className="bg-orange-400 h-full" />
+                              <td className="py-3 px-3 text-right text-stone-500 font-medium whitespace-nowrap min-w-[105px]">
+                                {p.has_missing_cost || (unitCost === 0 && !p.is_own_production) ? (
+                                  <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                                    Sem custo
+                                  </span>
+                                ) : (
+                                  <>
+                                    <div className="tabular-nums whitespace-nowrap font-semibold text-stone-700">-{money(p.total_cost)}</div>
+                                    {p.units_sold > 0 && unitCost > 0 && (
+                                      <div className="text-[10px] text-stone-500 font-mono tabular-nums whitespace-nowrap">
+                                        {isKit && packSize > 1 ? (
+                                          <>
+                                            <span className="font-medium text-stone-600">(-{money(unitCost)}/kit</span>
+                                            <span className="text-stone-400"> · {money(unitCost / packSize)}/peça)</span>
+                                          </>
+                                        ) : (
+                                          <span>(-{money(unitCost)}/un)</span>
+                                        )}
                                       </div>
-                                      <span className="text-[10px] text-emerald-700 font-semibold">
-                                        {profitPct.toFixed(0)}% lucro
-                                      </span>
-                                    </div>
-                                  );
-                                })()}
+                                    )}
+                                  </>
+                                )}
                               </td>
-                              <td className="py-3 px-4 text-right font-semibold text-stone-800">
-                                {percent(p.net_margin_percent)}
+                              <td className="py-3 px-3 text-right font-medium text-orange-700 whitespace-nowrap min-w-[95px]">
+                                <div className="tabular-nums whitespace-nowrap font-semibold">-{money(p.total_commissions)}</div>
+                                {p.total_revenue > 0 && (
+                                  <div className="text-[10px] text-orange-600/80 font-mono tabular-nums whitespace-nowrap">
+                                    ({percent((p.total_commissions / p.total_revenue) * 100)})
+                                  </div>
+                                )}
+                              </td>
+                              <td className={`py-3 px-3.5 text-right font-bold whitespace-nowrap tabular-nums min-w-[95px] ${
+                                p.has_missing_cost ? "text-stone-400" : p.net_profit < 0 ? "text-rose-700" : "text-emerald-700"
+                              }`}>
+                                {p.has_missing_cost ? (
+                                  <div>
+                                    <span className="text-stone-400 font-bold">—</span>
+                                    <span className="block text-[9px] font-normal text-amber-700">Requer custo</span>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <div>{money(p.net_profit)}</div>
+                                    {p.units_sold > 0 && (
+                                      <div className="text-[10px] font-mono font-normal text-stone-500 whitespace-nowrap">
+                                        {isKit && packSize > 1 ? (
+                                          <>
+                                            <span className="text-emerald-700 font-medium">+{money(unitProfit)}/kit</span>
+                                            <span className="text-stone-400"> · +{money(unitProfit / packSize)}/pç</span>
+                                          </>
+                                        ) : (
+                                          <span>+{money(unitProfit)}/un</span>
+                                        )}
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </td>
+                              <td className="py-3 px-3 text-right whitespace-nowrap min-w-[65px]">
+                                {p.has_missing_cost ? (
+                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border border-stone-200 bg-stone-50 text-stone-400 whitespace-nowrap">
+                                    —
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={`text-xs font-bold px-2 py-0.5 rounded-full border whitespace-nowrap tabular-nums ${
+                                      p.net_margin_percent >= 30
+                                        ? "bg-emerald-100 text-emerald-800 border-emerald-200"
+                                        : p.net_margin_percent >= 15
+                                        ? "bg-amber-100 text-amber-800 border-amber-200"
+                                        : "bg-rose-100 text-rose-800 border-rose-200"
+                                    }`}
+                                  >
+                                    {percent(p.net_margin_percent)}
+                                  </span>
+                                )}
                               </td>
                               <td className="py-3 px-3 text-center">
-                                <button
-                                  type="button"
-                                  className="text-stone-400 hover:text-stone-700 transition p-1"
-                                  title={isExpanded ? "Recolher detalhes" : "Expandir detalhes"}
-                                >
-                                  <svg
-                                    className={`w-4 h-4 transform transition-transform duration-200 ${
-                                      isExpanded ? "rotate-180 text-amber-800" : ""
+                                <span className="text-stone-400 hover:text-stone-700 inline-flex items-center justify-center">
+                                  <ChevronDownIcon
+                                    className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                                      isExpanded ? "rotate-180 text-stone-700" : ""
                                     }`}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M19 9l-7 7-7-7"
-                                    />
-                                  </svg>
-                                </button>
+                                  />
+                                </span>
                               </td>
                             </tr>
 
-                            {/* Sub-painel expansível com detalhes completos do produto */}
+                            {/* Detalhes Unitários Expansíveis */}
                             {isExpanded && (
                               <tr className="bg-amber-50/25 border-y border-amber-200/60">
-                                <td colSpan={10} className="p-4 sm:p-5">
-                                  <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-                                    <div className="flex items-center gap-4 min-w-0">
-                                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                        {p.image_url ? (
-                                          <img
-                                            src={p.image_url}
-                                            alt={p.name}
-                                            className="w-full h-full object-cover"
-                                          />
-                                        ) : (
-                                          <span className="text-3xl">🖼️</span>
-                                        )}
-                                      </div>
-                                      <div className="min-w-0">
-                                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                          <span
-                                            className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1 ${cfg.bg}`}
-                                          >
-                                            <Icon className="w-3.5 h-3.5" />
-                                            <span>Canal Principal: {cfg.label}</span>
-                                          </span>
-                                          <span className="text-xs font-mono text-stone-500 bg-stone-100 px-2 py-0.5 rounded-md">
-                                            ID Tray: #{p.product_id}
-                                          </span>
-                                          {p.stock_quantity != null && (
-                                            <span
-                                              className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
-                                                p.stock_quantity <= 8
-                                                  ? "bg-rose-100 text-rose-800 border border-rose-200"
-                                                  : "bg-emerald-100 text-emerald-800"
-                                              }`}
+                                <td colSpan={9} className="p-3 sm:p-4">
+                                  {(() => {
+                                    const isKit = p.name.toLowerCase().includes("kit");
+                                    const packMatch = p.name.match(/kit\s*(\d+)/i);
+                                    const packSize = packMatch ? Number(packMatch[1]) : 1;
+                                    const unitPctComm = p.units_sold > 0 && p.percentage_commissions ? p.percentage_commissions / p.units_sold : 0;
+                                    const unitFixFee = p.units_sold > 0 && p.fixed_fees ? p.fixed_fees / p.units_sold : (unitCommission - unitPctComm);
+                                    const isFeeUnitExpanded = expandedFeeSku === `unit-${p.sku}`;
+
+                                    const channelRateStr =
+                                      unitAvgPrice > 0 && unitPctComm > 0
+                                        ? `${Math.round((unitPctComm / unitAvgPrice) * 100)}%`
+                                        : channelKey === "shopee"
+                                        ? "20%"
+                                        : channelKey === "mercadolivre"
+                                        ? "16%"
+                                        : channelKey === "tiktok"
+                                        ? "7%"
+                                        : "3,5%";
+
+                                    const isNegativeProfit = unitProfit < 0 || p.net_profit < 0;
+                                    const marginColorStyle =
+                                      isNegativeProfit
+                                        ? {
+                                            bg: "bg-rose-50 border-rose-200",
+                                            label: "text-rose-700",
+                                            val: "text-rose-900 font-bold",
+                                            sub: "text-rose-700 font-semibold",
+                                          }
+                                        : p.net_margin_percent >= 30
+                                        ? {
+                                            bg: "bg-emerald-50 border-emerald-200",
+                                            label: "text-emerald-700",
+                                            val: "text-emerald-900",
+                                            sub: "text-emerald-700 font-semibold",
+                                          }
+                                        : p.net_margin_percent >= 15
+                                        ? {
+                                            bg: "bg-amber-50 border-amber-200",
+                                            label: "text-amber-800",
+                                            val: "text-amber-900",
+                                            sub: "text-amber-800 font-semibold",
+                                          }
+                                        : {
+                                            bg: "bg-rose-50 border-rose-200",
+                                            label: "text-rose-700",
+                                            val: "text-rose-900",
+                                            sub: "text-rose-700 font-semibold",
+                                          };
+
+                                    return (
+                                      <div className="space-y-4">
+                                        <div className="bg-white rounded-xl border border-stone-200 p-4 sm:p-5 shadow-xs space-y-4">
+                                          {/* Linha Superior: Foto, Título, Estoque e Botão de Ação */}
+                                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-100">
+                                            <div className="flex items-center gap-3.5 min-w-0">
+                                              <div className="w-14 h-14 rounded-xl border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                {p.image_url ? (
+                                                  <img
+                                                    src={p.image_url}
+                                                    alt={p.name}
+                                                    className="w-full h-full object-cover"
+                                                  />
+                                                ) : (
+                                                  <span className="text-2xl">🖼️</span>
+                                                )}
+                                              </div>
+                                              <div className="min-w-0">
+                                                <h4 className="font-bold text-stone-900 text-sm sm:text-base line-clamp-1">
+                                                  {p.name.replace(/<br\s*\/?>/gi, " - ")}
+                                                </h4>
+                                                <p className="text-xs text-stone-500 font-mono mt-0.5">
+                                                  SKU: <span className="text-stone-700 font-semibold">{p.sku}</span> · Estoque: <span className="text-stone-700 font-semibold">{p.stock_quantity ?? "—"} un</span> · <span className="text-stone-700 font-medium">{isKit ? `${p.units_sold} kits vendidos (${p.units_sold * packSize} peças)` : `${p.units_sold} unidades vendidas`}</span>
+                                                </p>
+                                              </div>
+                                            </div>
+
+                                            <button
+                                              type="button"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                                    toggleAllProductDetails(p.sku);
+                                              }}
+                                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200/80 px-3 py-1.5 rounded-lg border border-stone-200 transition select-none cursor-pointer flex-shrink-0 self-start sm:self-auto"
+                                              title="Expandir ou recolher todos os 4 blocos de detalhes ao mesmo tempo"
                                             >
-                                              Estoque: {p.stock_quantity} un
-                                            </span>
-                                          )}
+                                              <ChevronDownIcon
+                                                className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                  openAccordions[`prod-details-${p.sku}`] ? "rotate-180 text-stone-800" : "text-stone-500"
+                                                }`}
+                                              />
+                                              <span>
+                                                {openAccordions[`prod-details-${p.sku}`]
+                                                  ? "Recolher todos os detalhes"
+                                                  : "Expandir todos os detalhes"}
+                                              </span>
+                                            </button>
+                                          </div>
+
+                                          {/* Métricas Unitárias - 4 Colunas com 100% da Largura da Tabela */}
+                                          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 w-full text-xs">
+                                            {/* 1. Preço Médio Realizado com Referência do Anúncio */}
+                                            {(() => {
+                                              const isDetailsOpen = !!openAccordions[`prod-details-${p.sku}`];
+                                              const isRevOpen = isDetailsOpen;
+                                              const listingPrice = p.channel_listing_price;
+                                              const hasListingPrice = listingPrice != null && listingPrice > 0;
+                                              const unitPricePerPiece = isKit && packSize > 1 ? unitAvgPrice / packSize : unitAvgPrice;
+                                              const baseCatalogPrice = p.base_price;
+                                              const discountDiff = hasListingPrice && listingPrice > unitAvgPrice ? listingPrice - unitAvgPrice : 0;
+                                              const discountPct = hasListingPrice && listingPrice > 0 ? Math.round((discountDiff / listingPrice) * 100) : 0;
+
+                                              return (
+                                                <div
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                                    toggleAllProductDetails(p.sku);
+                                                  }}
+                                                  className="bg-stone-50 hover:bg-stone-100/70 p-2.5 rounded-lg border border-stone-200 cursor-pointer transition flex flex-col justify-between min-w-0 overflow-hidden"
+                                                  title="Clique para expandir ou recolher todos os detalhes deste produto"
+                                                >
+                                                  <div>
+                                                    <div className="flex items-center justify-between">
+                                                      <span className="text-stone-500 block text-[10px] uppercase font-bold truncate">
+                                                        Valor Médio ({cfg.label})
+                                                      </span>
+                                                      <ChevronDownIcon
+                                                        className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
+                                                          isRevOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                                        }`}
+                                                      />
+                                                    </div>
+                                                    <div className="flex items-baseline gap-1 mt-0.5">
+                                                      <strong className="text-stone-900 text-sm tabular-nums whitespace-nowrap font-bold">
+                                                        {money(unitAvgPrice)}
+                                                      </strong>
+                                                      <span className="text-[10px] text-stone-600 font-medium">
+                                                        / {isKit ? "kit" : "peça"}
+                                                      </span>
+                                                    </div>
+                                                    <span className="text-[10px] text-stone-500 block tabular-nums">
+                                                      {isKit && packSize > 1
+                                                        ? `(${money(unitPricePerPiece)} por peça · ${packSize} un/kit)`
+                                                        : "preço médio de venda"}
+                                                    </span>
+                                                  </div>
+
+                                                  {isRevOpen && (
+                                                    <div className="mt-2 pt-2 border-t border-stone-200 text-[10px] space-y-1 text-stone-700">
+                                                      {hasListingPrice && (
+                                                        <div className="flex justify-between items-center gap-1 min-w-0 pb-0.5 border-b border-stone-100">
+                                                          <span className="truncate">Preço Anunciado no Canal:</span>
+                                                          <strong className="text-stone-900 tabular-nums shrink-0">
+                                                            {money(listingPrice)} / {isKit ? "kit" : "un"}
+                                                          </strong>
+                                                        </div>
+                                                      )}
+                                                      <div className="flex justify-between items-center gap-1 min-w-0">
+                                                        <span className="truncate">Preço Médio Realizado:</span>
+                                                        <strong className="text-stone-900 tabular-nums shrink-0">
+                                                          {money(unitAvgPrice)} / {isKit ? "kit" : "un"}
+                                                        </strong>
+                                                      </div>
+                                                      {isKit && packSize > 1 && (
+                                                        <div className="flex justify-between items-center gap-1 min-w-0 text-stone-600">
+                                                          <span className="truncate">Média Realizada / Peça:</span>
+                                                          <span className="tabular-nums shrink-0 font-medium">
+                                                            {money(unitPricePerPiece)} / peça
+                                                          </span>
+                                                        </div>
+                                                      )}
+                                                      {discountDiff > 0 && (
+                                                        <div className="flex justify-between items-center gap-1 min-w-0 text-rose-700">
+                                                          <span className="truncate">Desconto Promocional / Cupom:</span>
+                                                          <span className="tabular-nums shrink-0 font-semibold">
+                                                            -{money(discountDiff)} / kit (-{discountPct}%)
+                                                          </span>
+                                                        </div>
+                                                      )}
+                                                      {baseCatalogPrice != null && baseCatalogPrice > 0 && (
+                                                        <div className="flex justify-between items-center gap-1 min-w-0 text-stone-500">
+                                                          <span className="truncate">Preço Base Catálogo (Tray):</span>
+                                                          <span className="text-stone-700 tabular-nums shrink-0 font-medium">
+                                                            {money(baseCatalogPrice)}
+                                                          </span>
+                                                        </div>
+                                                      )}
+                                                      <div className="flex justify-between items-center gap-1 min-w-0 text-stone-600">
+                                                        <span className="truncate">Volume no Período:</span>
+                                                        <span className="tabular-nums shrink-0 font-medium">
+                                                          {p.units_sold} {isKit ? `kits (${p.units_sold * packSize} peças)` : "unidades"}
+                                                        </span>
+                                                      </div>
+                                                      <div className="flex justify-between items-center gap-1 min-w-0 pt-1 border-t border-stone-200/80 font-bold text-stone-900">
+                                                        <span className="truncate">Total Faturamento:</span>
+                                                        <strong className="tabular-nums shrink-0">{money(p.total_revenue)}</strong>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              );
+                                            })()}
+
+                                            {/* 2. Custo Fábrica (Sanfona) */}
+                                            {(() => {
+                                              const isCostOpen = !!openAccordions[`prod-details-${p.sku}`];
+                                              const isMissingCost = p.has_missing_cost || (unitCost === 0 && !p.is_own_production);
+
+                                              return (
+                                                <div
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                                    toggleAllProductDetails(p.sku);
+                                                  }}
+                                                  className="bg-stone-50 hover:bg-stone-100/70 p-2.5 rounded-lg border border-stone-200 cursor-pointer transition flex flex-col justify-between min-w-0 overflow-hidden"
+                                                  title="Clique para expandir ou recolher todos os detalhes deste produto"
+                                                >
+                                                  {isMissingCost ? (
+                                                    <div>
+                                                      <div className="flex items-center justify-between">
+                                                        <span className="text-stone-500 block text-[10px] uppercase font-bold">
+                                                          Custo Fábrica
+                                                        </span>
+                                                        <ChevronDownIcon
+                                                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                            isCostOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                                          }`}
+                                                        />
+                                                      </div>
+                                                      <div className="mt-1">
+                                                        <span className="inline-flex items-center text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                                                          Não informado
+                                                        </span>
+                                                      </div>
+                                                      <span className="text-[10px] text-stone-400 block mt-0.5">
+                                                        custo não cadastrado
+                                                      </span>
+                                                    </div>
+                                                  ) : (
+                                                    <div>
+                                                      <div className="flex items-center justify-between">
+                                                        <span className="text-stone-500 block text-[10px] uppercase font-bold">
+                                                          Custo Fábrica
+                                                        </span>
+                                                        <ChevronDownIcon
+                                                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                            isCostOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                                          }`}
+                                                        />
+                                                      </div>
+                                                      <div className="flex items-baseline gap-1 mt-0.5">
+                                                        <strong className="text-stone-700 text-sm tabular-nums whitespace-nowrap font-bold">
+                                                          -{money(unitCost)}
+                                                        </strong>
+                                                        <span className="text-[10px] text-stone-600 font-medium">
+                                                          / {isKit ? "kit" : "peça"}
+                                                        </span>
+                                                      </div>
+                                                      <span className="text-[10px] text-stone-500 block">
+                                                        {isKit && packSize > 1
+                                                          ? `(-${money(unitCost / packSize)} por peça · ${packSize} un/kit)`
+                                                          : isKit ? "por kit confecção" : "por peça confecção"}
+                                                      </span>
+                                                    </div>
+                                                  )}
+
+                                                  {isCostOpen && (
+                                                    <div className="mt-2 pt-2 border-t border-stone-200 text-[10px] space-y-1 text-stone-700">
+                                                      {isMissingCost ? (
+                                                        <div className="p-2 bg-amber-50 rounded border border-amber-200 text-amber-900 text-[11px]">
+                                                          ⚠️ Produto sem custo cadastrado. Cadastre o preço de custo na Tray ou na planilha para habilitar o cálculo de CMV e Lucro Real.
+                                                        </div>
+                                                      ) : (
+                                                        <>
+                                                          <div className="flex justify-between gap-1">
+                                                            <span>Custo do Kit:</span>
+                                                            <strong className="text-stone-900 tabular-nums">-{money(unitCost)} / kit</strong>
+                                                          </div>
+                                                          {isKit && packSize > 1 && (
+                                                            <div className="flex justify-between gap-1 text-stone-600">
+                                                              <span>Custo por Peça:</span>
+                                                              <strong className="text-stone-900 tabular-nums">-{money(unitCost / packSize)} / peça</strong>
+                                                            </div>
+                                                          )}
+                                                          <div className="flex justify-between gap-1">
+                                                            <span>Origem:</span>
+                                                            <strong className="text-stone-900">
+                                                              {p.is_own_production ? "Confecção Própria" : "Cerâmica / Terceiro"}
+                                                            </strong>
+                                                          </div>
+                                                          <div className="flex justify-between items-center gap-1 min-w-0 pt-1 border-t border-stone-200/80 font-bold text-stone-900">
+                                                            <span className="truncate">Total Custo (CMV):</span>
+                                                            <strong className="tabular-nums shrink-0">-{money(p.total_cost)}</strong>
+                                                          </div>
+                                                        </>
+                                                      )}
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              );
+                                            })()}
+
+                                            {/* 3. Sanfona Interativa da Taxa do Canal */}
+                                            {(() => {
+                                              const isTaxOpen = !!openAccordions[`prod-details-${p.sku}`] || isFeeUnitExpanded;
+                                              const isShopee = channelKey === "shopee";
+                                              const shopeeCommLiquid = isShopee ? unitAvgPrice * 0.186 : unitPctComm;
+                                              const shopeeTransFee = isShopee ? unitAvgPrice * 0.014 : 0;
+                                              const effectiveFeePerUnit = isShopee ? 4.5 : (unitFixFee > 0 ? unitFixFee : 0);
+                                              const effectiveRatePercent = unitAvgPrice > 0 ? (unitCommission / unitAvgPrice) * 100 : (isShopee ? 20 : 16);
+                                              const fixedFeePct = unitAvgPrice > 0 ? (effectiveFeePerUnit / unitAvgPrice) * 100 : 0;
+
+                                              return (
+                                                <div
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                                    toggleAllProductDetails(p.sku);
+                                                  }}
+                                                  className="bg-orange-50/70 hover:bg-orange-50 p-2.5 rounded-lg border border-orange-200 cursor-pointer transition flex flex-col justify-between min-w-0 overflow-hidden"
+                                                  title="Clique para expandir ou recolher todos os detalhes deste produto"
+                                                >
+                                                  <div className="flex items-center justify-between">
+                                                    <span className="text-orange-900 block text-[10px] uppercase font-bold">
+                                                      Taxa ({percent(effectiveRatePercent)})
+                                                    </span>
+                                                    <ChevronDownIcon
+                                                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                        isTaxOpen ? "rotate-180 text-orange-700" : "text-orange-400"
+                                                      }`}
+                                                    />
+                                                  </div>
+                                                  <strong className="text-orange-700 text-sm mt-0.5 tabular-nums whitespace-nowrap">
+                                                    -{money(unitCommission)}
+                                                  </strong>
+                                                  <span className="text-[10px] text-orange-600/80 block">
+                                                    retenção por venda
+                                                  </span>
+
+                                                  {isTaxOpen && (
+                                                    <div className="mt-2 pt-2 border-t border-orange-200 text-[10px] space-y-1 text-orange-950">
+                                                      <div className="flex justify-between gap-1 items-center">
+                                                        <span>Comissão Líquida ({isShopee ? "18,6%" : channelRateStr}):</span>
+                                                        <strong className="text-orange-900 tabular-nums whitespace-nowrap">
+                                                          -{money(shopeeCommLiquid)}
+                                                        </strong>
+                                                      </div>
+                                                      {isShopee && (
+                                                        <div className="flex justify-between gap-1 pl-1 text-stone-600 items-center">
+                                                          <span>Transação (1,40%):</span>
+                                                          <strong className="text-orange-900 tabular-nums whitespace-nowrap">-{money(shopeeTransFee)}</strong>
+                                                        </div>
+                                                      )}
+                                                      <div className="flex justify-between gap-1 items-center">
+                                                        <span>Taxa Fixa ({percent(fixedFeePct)}):</span>
+                                                        <strong className="text-orange-900 tabular-nums whitespace-nowrap">
+                                                          -{money(effectiveFeePerUnit)}
+                                                        </strong>
+                                                      </div>
+                                                      <div className="flex justify-between gap-1 pt-1 border-t border-orange-200/80 font-bold items-center">
+                                                        <span>Total Taxas:</span>
+                                                        <span className="tabular-nums whitespace-nowrap">-{money(p.total_commissions)}</span>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              );
+                                            })()}
+
+                                            {/* 4. Lucro Líquido Unitário (Sanfona e cor dinâmica) */}
+                                            {(() => {
+                                              const isProfitOpen = !!openAccordions[`prod-details-${p.sku}`];
+                                              const isMissingCost = p.has_missing_cost || (unitCost === 0 && !p.is_own_production);
+
+                                              if (isMissingCost) {
+                                                return (
+                                                  <div
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                                      toggleAllProductDetails(p.sku);
+                                                    }}
+                                                    className="bg-stone-50 hover:bg-stone-100/70 p-2.5 rounded-lg border border-stone-200 cursor-pointer transition flex flex-col justify-between min-w-0 overflow-hidden"
+                                                    title="Clique para expandir ou recolher todos os detalhes deste produto"
+                                                  >
+                                                    <div>
+                                                      <div className="flex items-center justify-between">
+                                                        <span className="text-stone-500 block text-[10px] uppercase font-bold">
+                                                          Lucro por {isKit ? "Kit" : "Peça"}
+                                                        </span>
+                                                        <ChevronDownIcon
+                                                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                            isProfitOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                                          }`}
+                                                        />
+                                                      </div>
+                                                      <div className="mt-1">
+                                                        <span className="text-stone-400 font-bold text-sm">—</span>
+                                                      </div>
+                                                      <span className="text-amber-700 text-[10px] block font-medium mt-0.5">
+                                                        Requer custo de produção
+                                                      </span>
+                                                    </div>
+
+                                                    {isProfitOpen && (
+                                                      <div className="mt-2 pt-2 border-t border-stone-200 text-[10px] text-stone-600 space-y-1">
+                                                        <p className="text-amber-800 font-semibold">
+                                                          ⚠️ Preço de custo não informado
+                                                        </p>
+                                                        <p>
+                                                          Cadastre o custo na Tray ou na planilha para apurar o lucro líquido real deste produto.
+                                                        </p>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                );
+                                              }
+
+                                              return (
+                                                <div
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                                    toggleAllProductDetails(p.sku);
+                                                  }}
+                                                  className={`${marginColorStyle.bg} hover:brightness-98 p-2.5 rounded-lg border cursor-pointer transition flex flex-col justify-between min-w-0 overflow-hidden`}
+                                                  title="Clique para expandir ou recolher todos os detalhes deste produto"
+                                                >
+                                                  <div>
+                                                    <div className="flex items-center justify-between">
+                                                      <span className={`${marginColorStyle.label} block text-[10px] uppercase font-bold`}>
+                                                        Lucro por {isKit ? "Kit" : "Peça"}
+                                                      </span>
+                                                      <ChevronDownIcon
+                                                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                          isProfitOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                                        }`}
+                                                      />
+                                                    </div>
+                                                    <div className="flex items-baseline gap-1 mt-0.5">
+                                                      <strong className={`${marginColorStyle.val} text-sm tabular-nums font-bold`}>
+                                                        {money(unitProfit)}
+                                                      </strong>
+                                                      <span className="text-[10px] font-medium opacity-80">
+                                                        / {isKit ? "kit" : "peça"}
+                                                      </span>
+                                                    </div>
+                                                    <span className={`${marginColorStyle.sub} text-[10px] block tabular-nums`}>
+                                                      {isKit && packSize > 1
+                                                        ? `(+${money(unitProfit / packSize)}/pç · Margem ${percent(p.net_margin_percent)})`
+                                                        : `Margem ${percent(p.net_margin_percent)}`}
+                                                    </span>
+                                                  </div>
+
+                                                  {isProfitOpen && (
+                                                    <div className="mt-2 pt-2 border-t border-current/20 text-[10px] space-y-1">
+                                                      <div className="flex justify-between gap-1">
+                                                        <span>Lucro do Kit:</span>
+                                                        <strong className="tabular-nums">{money(unitProfit)} / kit</strong>
+                                                      </div>
+                                                      {isKit && packSize > 1 && (
+                                                        <div className="flex justify-between gap-1">
+                                                          <span>Lucro por Peça:</span>
+                                                          <strong className="tabular-nums">{money(unitProfit / packSize)} / peça</strong>
+                                                        </div>
+                                                      )}
+                                                      <div className="flex justify-between gap-1">
+                                                        <span>Margem Real:</span>
+                                                        <strong className="tabular-nums">{percent(p.net_margin_percent)}</strong>
+                                                      </div>
+                                                      <div className="flex justify-between items-center gap-1 min-w-0 pt-1 border-t border-current/30 font-bold">
+                                                        <span className="truncate">Total Lucro Limpo:</span>
+                                                        <strong className="tabular-nums shrink-0">{money(p.net_profit)}</strong>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              );
+                                            })()}
+                                          </div>
                                         </div>
-                                        <h4 className="font-bold text-stone-900 text-sm sm:text-base">
-                                          {p.name.replace(/<br\s*\/?>/gi, " - ")}
-                                        </h4>
-                                        <p className="text-xs text-stone-500 font-mono mt-0.5">
-                                          SKU / Referência: {p.sku}
-                                        </p>
                                       </div>
-                                    </div>
-
-                                    {/* Métricas Unitárias de Rentabilidade */}
-                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full md:w-auto text-xs">
-                                      <div className="bg-stone-50 p-2.5 rounded-lg border border-stone-200">
-                                        <span className="text-stone-400 block text-[10px] uppercase font-semibold">
-                                          Preço Médio
-                                        </span>
-                                        <strong className="text-stone-900 text-sm">
-                                          {money(unitAvgPrice)}
-                                        </strong>
-                                        <span className="text-[10px] text-stone-400 block">
-                                          por peça
-                                        </span>
-                                      </div>
-
-                                      <div className="bg-stone-50 p-2.5 rounded-lg border border-stone-200">
-                                        <span className="text-stone-400 block text-[10px] uppercase font-semibold">
-                                          Custo (CMV)
-                                        </span>
-                                        <strong className="text-stone-700 text-sm">
-                                          {money(unitCost)}
-                                        </strong>
-                                        <span className="text-[10px] text-stone-400 block">
-                                          por peça
-                                        </span>
-                                      </div>
-
-                                      <div className="bg-stone-50 p-2.5 rounded-lg border border-stone-200">
-                                        <span className="text-stone-400 block text-[10px] uppercase font-semibold">
-                                          Comissão Canal
-                                        </span>
-                                        <strong className="text-orange-700 text-sm">
-                                          -{money(unitCommission)}
-                                        </strong>
-                                        <span className="text-[10px] text-stone-400 block">
-                                          por peça
-                                        </span>
-                                      </div>
-
-                                      <div className="bg-emerald-50 p-2.5 rounded-lg border border-emerald-200">
-                                        <span className="text-emerald-700 block text-[10px] uppercase font-semibold">
-                                          Lucro por Peça
-                                        </span>
-                                        <strong className="text-emerald-800 text-sm">
-                                          {money(unitProfit)}
-                                        </strong>
-                                        <span className="text-[10px] text-emerald-600 block">
-                                          Margem {percent(p.net_margin_percent)}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
+                                    );
+                                  })()}
                                 </td>
                               </tr>
                             )}
@@ -1397,8 +2492,14 @@ export function DashboardClient() {
                 </table>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* Feed de Últimos Pedidos com Fotos, Ícones Reais e Detalhamento Expansível */}
+        {/* ------------------------------------------------------------------------- */}
+        {/* ABA 3: PEDIDOS & CLIENTES                                                 */}
+        {/* ------------------------------------------------------------------------- */}
+        {activeTab === "pedidos" && (
+          <div className="space-y-6">
             {(() => {
               const filteredOrders = (data?.recent_orders || []).filter((o) => {
                 if (orderStatusFilter === "a_enviar") {
@@ -1422,22 +2523,21 @@ export function DashboardClient() {
                 <div className="bg-white rounded-2xl border border-stone-200 shadow-xs p-6">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-5">
                     <div>
-                      <h2 className="text-lg font-bold text-stone-900">
-                        Últimos Pedidos Recebidos (Tray &amp; Marketplaces)
+                      <h2 className="text-base font-bold text-stone-900">
+                        Últimos Pedidos Recebidos
                       </h2>
                       <p className="text-xs text-stone-500">
-                        Clique em qualquer pedido para expandir os produtos, fotos e conferência contábil completa.
+                        Clique em qualquer pedido para conferir os produtos, frete, taxa e lucro de cada compra.
                       </p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                      {/* Filtros rápidos de Status */}
                       <div className="flex items-center bg-stone-100 p-1 rounded-xl gap-1 text-xs font-semibold">
                         <button
                           onClick={() => setOrderStatusFilter("todos")}
-                          className={`px-3 py-1 rounded-lg transition ${
+                          className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
                             orderStatusFilter === "todos"
-                              ? "bg-white text-stone-900 shadow-2xs"
+                              ? "bg-white text-stone-900 shadow-2xs font-semibold"
                               : "text-stone-500 hover:text-stone-800"
                           }`}
                         >
@@ -1445,9 +2545,9 @@ export function DashboardClient() {
                         </button>
                         <button
                           onClick={() => setOrderStatusFilter("a_enviar")}
-                          className={`px-3 py-1 rounded-lg transition flex items-center gap-1.5 ${
+                          className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
                             orderStatusFilter === "a_enviar"
-                              ? "bg-emerald-700 text-white shadow-2xs"
+                              ? "bg-emerald-700 text-white shadow-2xs font-semibold"
                               : "text-emerald-800 hover:bg-emerald-50"
                           }`}
                         >
@@ -1456,9 +2556,9 @@ export function DashboardClient() {
                         </button>
                         <button
                           onClick={() => setOrderStatusFilter("enviados")}
-                          className={`px-3 py-1 rounded-lg transition ${
+                          className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
                             orderStatusFilter === "enviados"
-                              ? "bg-white text-stone-900 shadow-2xs"
+                              ? "bg-white text-stone-900 shadow-2xs font-semibold"
                               : "text-stone-500 hover:text-stone-800"
                           }`}
                         >
@@ -1466,449 +2566,725 @@ export function DashboardClient() {
                         </button>
                       </div>
 
-                      {/* Busca de Pedidos */}
                       <div className="relative">
                         <input
                           type="text"
-                          placeholder="Buscar pedido, cidade, item..."
+                          placeholder="Buscar pedido, cliente, cidade..."
                           value={orderSearch}
                           onChange={(e) => setOrderSearch(e.target.value)}
-                          className="text-xs border border-stone-300 rounded-lg pl-7 pr-3 py-1.5 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-amber-950 w-44 sm:w-56"
+                          className="text-xs border border-stone-300 rounded-lg pl-9 pr-3 py-2 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-amber-950 w-48 sm:w-56 min-h-[38px]"
                         />
-                        <span className="absolute left-2.5 top-1.5 text-stone-400 text-xs">🔍</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none flex items-center justify-center">
+                          <SearchIcon className="w-3.5 h-3.5" />
+                        </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                     {filteredOrders.length > 0 ? (
                       filteredOrders.map((o) => {
-                    const cfg = CHANNEL_CONFIG[o.channel];
-                    const Icon = cfg.Icon;
-                    const isExpanded = expandedOrderId === o.id;
+                        const cfg = CHANNEL_CONFIG[o.channel];
+                        const Icon = cfg.Icon;
+                        const isExpanded = !!expandedOrderIds[o.id];
 
-                    return (
-                      <div
-                        key={o.id}
-                        onClick={() => setExpandedOrderId(isExpanded ? null : o.id)}
-                        className={`p-3.5 rounded-xl border transition cursor-pointer select-none flex flex-col justify-between gap-3 ${
-                          isExpanded
-                            ? "border-amber-400 bg-amber-50/20 shadow-xs ring-1 ring-amber-300"
-                            : "border-stone-200 bg-stone-50/50 hover:bg-stone-50 hover:border-stone-300"
-                        }`}
-                      >
-                        {/* Cabeçalho do Pedido */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span
-                              className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1.5 ${cfg.bg}`}
-                            >
-                              <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                              <span>{cfg.label}</span>
-                            </span>
-                            {o.status && (
-                              <span
-                                className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
-                                  (o.status || "").toLowerCase().includes("a enviar") ||
-                                  (o.status || "").toLowerCase().includes("aguardando")
-                                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                                    : (o.status || "").toLowerCase().includes("cancel")
-                                    ? "bg-rose-50 text-rose-800 border-rose-200"
-                                    : "bg-stone-100 text-stone-700 border-stone-200"
-                                }`}
-                              >
-                                {o.status}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-xs text-stone-600 font-mono font-bold">
-                              Pedido #{o.id}
-                            </span>
-                            <svg
-                              className={`w-3.5 h-3.5 text-stone-400 transform transition-transform duration-200 ${
-                                isExpanded ? "rotate-180 text-amber-800" : ""
-                              }`}
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        {/* Fotos e Miniaturas dos Produtos do Pedido */}
-                        <div className="py-1">
-                          {o.items && o.items.length > 0 ? (
-                            o.items.length === 1 ? (
-                              <div className="flex items-center gap-2.5">
-                                <div className="w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                  {o.items[0].image_url ? (
-                                    <img
-                                      src={o.items[0].image_url}
-                                      alt={o.items[0].name}
-                                      className="w-full h-full object-cover"
-                                      loading="lazy"
-                                      onError={(e) => {
-                                        (e.target as HTMLElement).style.display = "none";
-                                      }}
-                                    />
-                                  ) : (
-                                    <span className="text-stone-300 text-sm">📦</span>
-                                  )}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <div className="text-xs font-semibold text-stone-900 line-clamp-1">
-                                    {o.items[0].name.replace(/<br\s*\/?>/gi, " - ")}
-                                  </div>
-                                  <div className="text-[11px] text-stone-500 font-mono">
-                                    Qtd: {o.items[0].quantity} {o.items[0].quantity === 1 ? "peça" : "peças"} · {o.items[0].sku}
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
-                                  {o.items.slice(0, 3).map((it, iIdx) => (
-                                    <div
-                                      key={iIdx}
-                                      className="relative w-10 h-10 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center"
-                                      title={`${it.name} (${it.quantity}x)`}
-                                    >
-                                      {it.image_url ? (
-                                        <img
-                                          src={it.image_url}
-                                          alt={it.name}
-                                          className="w-full h-full object-cover"
-                                          loading="lazy"
-                                          onError={(e) => {
-                                            (e.target as HTMLElement).style.display = "none";
-                                          }}
-                                        />
-                                      ) : (
-                                        <span className="text-stone-300 text-xs">📦</span>
-                                      )}
-                                      {it.quantity > 1 && (
-                                        <span className="absolute bottom-0 right-0 bg-stone-900/80 text-white text-[9px] font-bold px-1 rounded-tl-sm">
-                                          {it.quantity}x
-                                        </span>
-                                      )}
-                                    </div>
-                                  ))}
-                                  {o.items.length > 3 && (
-                                    <span className="text-[10px] font-semibold text-stone-500 bg-stone-200/80 px-1.5 py-1 rounded-md flex-shrink-0">
-                                      +{o.items.length - 3} mais
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="text-[11px] text-stone-500 min-w-0 flex-1 pl-1 line-clamp-1">
-                                  {o.items[0].name.replace(/<br\s*\/?>/gi, " - ")}
-                                </div>
-                              </div>
-                            )
-                          ) : (
-                            <div className="text-xs text-stone-400 italic">
-                              {o.items_count} {o.items_count === 1 ? "peça" : "peças"}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Metadados: Data, Hora, Localidade e Transportadora */}
-                        <div className="text-xs text-stone-600 flex justify-between items-center gap-2 flex-wrap">
-                          <span className="font-medium">
-                            {o.date} {o.hour ? `às ${o.hour}` : ""} · {o.items_count} {o.items_count === 1 ? "peça" : "peças"}
-                          </span>
-                          <div className="flex items-center gap-1.5 text-[11px] text-stone-500">
-                            {o.customer_city && (
-                              <span>
-                                {o.customer_city}/{o.customer_state}
-                              </span>
-                            )}
-                            {o.shipment_name && (
-                              <span className="bg-stone-200/80 px-1.5 py-0.5 rounded text-[10px] font-medium text-stone-700">
-                                📦 {o.shipment_name}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Valores Resumidos */}
-                        <div className="pt-2 border-t border-stone-200 flex justify-between items-start text-xs">
-                          <div>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-stone-500 text-[11px]">Total: </span>
-                              <strong className="text-stone-900 font-bold text-sm">
-                                {money(o.total)}
-                              </strong>
-                            </div>
-                            {o.shipment_value != null && o.shipment_value > 0 && o.products_subtotal != null && (
-                              <span className="text-[10px] text-stone-400 block mt-0.5">
-                                Prods: {money(o.products_subtotal)} · Frete: +{money(o.shipment_value)}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-right">
-                            <div className="flex items-baseline justify-end gap-1">
-                              <span className="text-stone-500 text-[11px]">Lucro est.: </span>
-                              <strong className="text-emerald-700 font-bold text-sm">
-                                {money(o.net_profit)}
-                              </strong>
-                            </div>
-                            {o.net_margin_percent != null && (
-                              <span className="text-[10px] text-emerald-800 font-semibold block mt-0.5">
-                                Margem: {percent(o.net_margin_percent)}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Detalhamento Expansível do Pedido */}
-                        {isExpanded && (
+                        return (
                           <div
-                            onClick={(e) => e.stopPropagation()}
-                            className="mt-2 pt-3 border-t border-stone-200/80 space-y-3 cursor-default"
+                            key={o.id}
+                            onClick={() => {
+                                if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                toggleOrderExpanded(o.id);
+                              }}
+                            className={`p-3.5 rounded-xl border transition cursor-pointer flex flex-col justify-between gap-3 ${
+                              isExpanded
+                                ? "border-amber-400 bg-amber-50/20 shadow-xs ring-1 ring-amber-300"
+                                : "border-stone-200 bg-stone-50/50 hover:bg-stone-50 hover:border-stone-300"
+                            }`}
                           >
-                            <div>
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-[11px] font-bold uppercase tracking-wider text-stone-600">
-                                  Itens do Pedido ({o.items?.length || 0})
+                            {/* Cabeçalho */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span
+                                  className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1.5 ${cfg.bg}`}
+                                >
+                                  <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                                  <span>{cfg.label}</span>
                                 </span>
-                                <span className="text-[10px] text-stone-400">
-                                  Detalhamento Unitário & Total
-                                </span>
-                              </div>
-                              <div className="space-y-2.5">
-                                {o.items?.map((it, itemIdx) => {
-                                  const itemQty = it.quantity || 1;
-                                  const unitPrice = it.price || 0;
-                                  const unitCost = it.unit_cost ?? it.cost ?? 0;
-                                  const unitComm = it.unit_commission ?? 0;
-                                  const unitProfit = it.unit_net_profit ?? (unitPrice - unitCost - unitComm);
-                                  const marginPct = it.net_margin_percent ?? (unitPrice > 0 ? (unitProfit / unitPrice) * 100 : 0);
-
-                                  const totalItemRevenue = unitPrice * itemQty;
-                                  const totalItemCost = unitCost * itemQty;
-                                  const totalItemComm = it.total_commission ?? (unitComm * itemQty);
-                                  const totalItemProfit = it.total_net_profit ?? (unitProfit * itemQty);
-
-                                  return (
-                                    <div
-                                      key={itemIdx}
-                                      className="bg-white rounded-xl border border-stone-200 p-2.5 shadow-xs space-y-2 text-xs"
-                                    >
-                                      {/* Topo do Item: Miniatura, Título, SKU e Estoque */}
-                                      <div className="flex items-start gap-2.5">
-                                        <div className="relative w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                          {it.image_url ? (
-                                            <img
-                                              src={it.image_url}
-                                              alt={it.name}
-                                              className="w-full h-full object-cover"
-                                            />
-                                          ) : (
-                                            <span className="text-stone-300 text-sm">📦</span>
-                                          )}
-                                          <span className="absolute bottom-0 right-0 bg-stone-900/85 text-white font-mono text-[9px] px-1 rounded-tl">
-                                            {itemQty}x
-                                          </span>
-                                        </div>
-
-                                        <div className="min-w-0 flex-1">
-                                          <div className="font-semibold text-stone-900 leading-snug line-clamp-2">
-                                            {it.name.replace(/<br\s*\/?>/gi, " - ")}
-                                          </div>
-                                          <div className="flex items-center gap-1.5 mt-1 flex-wrap text-[10px]">
-                                            <span className="text-stone-500 font-mono font-medium bg-stone-100 px-1.5 py-0.5 rounded">
-                                              REF: {it.sku}
-                                            </span>
-                                            {it.stock_quantity != null && (
-                                              <span
-                                                className={`px-1.5 py-0.5 rounded font-semibold ${
-                                                  it.stock_quantity <= 8
-                                                    ? "bg-rose-100 text-rose-800 border border-rose-200"
-                                                    : "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                                                }`}
-                                              >
-                                                Estoque: {it.stock_quantity} un
-                                              </span>
-                                            )}
-                                            {it.product_url && (
-                                              <a
-                                                href={it.product_url}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                onClick={(e) => e.stopPropagation()}
-                                                className="text-amber-800 hover:text-amber-950 font-medium underline inline-flex items-center gap-0.5"
-                                              >
-                                                Ver no Site ↗
-                                              </a>
-                                            )}
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {/* Grade de Decomposição Financeira do Item: Unitário vs Total */}
-                                      <div className="bg-stone-50/80 rounded-lg p-2 border border-stone-200/70 text-[11px] grid grid-cols-2 gap-2.5">
-                                        {/* Coluna 1: Métricas Unitárias */}
-                                        <div className="space-y-0.5 border-r border-stone-200/80 pr-2">
-                                          <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-0.5">
-                                            Unitário ({money(unitPrice)})
-                                          </span>
-                                          <div className="flex justify-between text-stone-600">
-                                            <span>Custo (CMV un.):</span>
-                                            <span className="text-stone-800 font-medium">-{money(unitCost)}</span>
-                                          </div>
-                                          <div className="flex justify-between text-stone-600">
-                                            <span>Comissão un.:</span>
-                                            <span className="text-orange-700">-{money(unitComm)}</span>
-                                          </div>
-                                          <div className="flex justify-between pt-1 border-t border-stone-200/60 font-semibold">
-                                            <span className="text-stone-700">Lucro Unit.:</span>
-                                            <span className="text-emerald-700">{money(unitProfit)}</span>
-                                          </div>
-                                          <div className="flex justify-between text-[10px] text-stone-500">
-                                            <span>Margem Unit.:</span>
-                                            <span className="font-semibold text-emerald-800">{percent(marginPct)}</span>
-                                          </div>
-                                        </div>
-
-                                        {/* Coluna 2: Totais do Item */}
-                                        <div className="space-y-0.5 pl-1">
-                                          <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-0.5">
-                                            Total Item ({itemQty} {itemQty === 1 ? "un" : "uns"})
-                                          </span>
-                                          <div className="flex justify-between text-stone-600">
-                                            <span>Subtotal:</span>
-                                            <span className="text-stone-900 font-semibold">{money(totalItemRevenue)}</span>
-                                          </div>
-                                          <div className="flex justify-between text-stone-600">
-                                            <span>CMV Total:</span>
-                                            <span className="text-stone-700">-{money(totalItemCost)}</span>
-                                          </div>
-                                          <div className="flex justify-between text-stone-600">
-                                            <span>Comissão:</span>
-                                            <span className="text-orange-700">-{money(totalItemComm)}</span>
-                                          </div>
-                                          <div className="flex justify-between pt-1 border-t border-stone-200/60 font-bold">
-                                            <span className="text-stone-900">Lucro Item:</span>
-                                            <span className="text-emerald-700">{money(totalItemProfit)}</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-
-                            {/* Decomposição Financeira do Pedido */}
-                            <div className="bg-white rounded-lg border border-stone-200 p-2.5 space-y-1.5 text-xs">
-                              <div className="flex justify-between items-center mb-1">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
-                                  Fechamento Financeiro Consolidado
-                                </span>
-                                {o.shipment_name && (
-                                  <span className="text-[10px] text-stone-500 font-medium">
-                                    Envio: {o.shipment_name}
+                                {o.status && (
+                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-stone-100 text-stone-700 border-stone-200">
+                                    {o.status}
                                   </span>
                                 )}
                               </div>
-                              {o.products_subtotal != null && o.products_subtotal > 0 && (
-                                <div className="flex justify-between text-stone-600">
-                                  <span>Subtotal dos Produtos:</span>
-                                  <span className="text-stone-800 font-medium">{money(o.products_subtotal)}</span>
+                              <span className="text-xs text-stone-600 font-mono font-bold">
+                                #{o.id}
+                              </span>
+                            </div>
+
+                            {/* Miniaturas dos Produtos */}
+                            <div className="py-1">
+                              {o.items && o.items.length > 0 ? (
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                    {o.items[0].image_url ? (
+                                      <img
+                                        src={o.items[0].image_url}
+                                        alt={o.items[0].name}
+                                        className="w-full h-full object-cover"
+                                        loading="lazy"
+                                        onError={(e) => {
+                                          (e.target as HTMLElement).style.display = "none";
+                                        }}
+                                      />
+                                    ) : (
+                                      <span className="text-stone-300 text-sm">📦</span>
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="text-xs font-semibold text-stone-900 line-clamp-1">
+                                      {o.items[0].name.replace(/<br\s*\/?>/gi, " - ")}
+                                    </div>
+                                    <div className="text-[11px] text-stone-500 font-mono">
+                                      Qtd: {o.items[0].quantity}x {o.items.length > 1 ? `(+${o.items.length - 1} outros)` : ""}
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="text-xs text-stone-400 italic">
+                                  {o.items_count} {o.items_count === 1 ? "peça" : "peças"}
                                 </div>
                               )}
-                              {o.shipment_value != null && o.shipment_value > 0 && (
-                                <div className="flex justify-between text-stone-600">
-                                  <span>Frete Pago pelo Cliente:</span>
-                                  <span className="text-stone-800 font-medium">+{money(o.shipment_value)}</span>
-                                </div>
-                              )}
-                              {o.discount_value != null && o.discount_value > 0 && (
-                                <div className="flex justify-between text-stone-600">
-                                  <span>Desconto / Cupom da Plataforma:</span>
-                                  <span className="text-rose-700 font-medium">-{money(o.discount_value)}</span>
-                                </div>
-                              )}
-                              <div className="flex justify-between text-stone-800 pt-1 border-t border-stone-100 font-semibold">
-                                <span>Total do Pedido (Tray):</span>
-                                <strong className="text-stone-900 font-bold">{money(o.total)}</strong>
+                            </div>
+
+                            {/* Metadados: Data, Localidade, Frete */}
+                            <div className="text-xs text-stone-600 flex justify-between items-center gap-2 flex-wrap">
+                              <span className="font-medium whitespace-nowrap">
+                                {formatFullDateBR(o.date)} {o.hour ? `às ${o.hour}` : ""}
+                              </span>
+                              <div className="flex items-center gap-1.5 text-[11px] text-stone-500 flex-wrap">
+                                {o.customer_city && (
+                                  <span className="whitespace-nowrap">
+                                    {o.customer_city}/{o.customer_state}
+                                  </span>
+                                )}
+                                {o.shipment_name && (
+                                  <span className="bg-stone-200/80 px-1.5 py-0.5 rounded text-[10px] font-medium text-stone-700 whitespace-nowrap">
+                                    📦 {o.shipment_name}
+                                  </span>
+                                )}
                               </div>
-                              <div className="flex justify-between text-stone-600">
-                                <span>Comissão Canal ({cfg.label}):</span>
-                                <span className="text-orange-700 font-medium">
-                                  -{money(o.commission_amount || 0)}
-                                </span>
+                            </div>
+
+                            {/* Valores do Pedido */}
+                            <div className="pt-2 border-t border-stone-200 flex justify-between items-start text-xs">
+                              <div>
+                                <span className="text-stone-500 text-[11px] block">Pago pelo Cliente</span>
+                                <strong className="text-stone-900 font-bold text-sm tabular-nums">
+                                  {money(o.total)}
+                                </strong>
                               </div>
-                              <div className="flex justify-between text-stone-600">
-                                <span>Custo dos Produtos (CMV Consolidado):</span>
-                                <span className="text-stone-700 font-medium">
-                                  -{money(o.cost_amount || 0)}
-                                </span>
-                              </div>
-                              <div className="pt-2 border-t border-stone-200 flex justify-between items-center text-xs">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="font-bold text-stone-900">Lucro Líquido Real:</span>
-                                  {o.net_margin_percent != null && (
-                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                      Margem: {percent(o.net_margin_percent)}
-                                    </span>
-                                  )}
-                                </div>
-                                <strong className="text-emerald-700 font-bold text-base">
+                              <div className="text-right">
+                                <span className="text-stone-500 text-[11px] block">Lucro Limpo</span>
+                                <strong className={`${o.net_profit < 0 ? "text-rose-700" : "text-emerald-700"} font-bold text-sm tabular-nums`}>
                                   {money(o.net_profit)}
                                 </strong>
                               </div>
                             </div>
 
-                            {/* Ações e Status */}
-                            <div className="flex items-center justify-between text-[11px] pt-1">
-                              <span className="text-stone-500">
-                                Status: <strong className="text-stone-800">{o.status || "Aprovado"}</strong>
-                              </span>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigator.clipboard?.writeText(o.id);
-                                  setCopiedOrderId(o.id);
-                                  setTimeout(() => setCopiedOrderId(null), 2000);
-                                }}
-                                className="text-amber-900 hover:text-amber-950 font-semibold underline"
+                            {/* Detalhamento Expansível Estilo Shopee com Sanfonas */}
+                            {isExpanded && (
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="mt-3 pt-3 border-t border-stone-200 space-y-2 cursor-default text-xs"
                               >
-                                {copiedOrderId === o.id ? "ID Copiado! ✓" : `Copiar ID #${o.id}`}
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-stone-400 text-sm col-span-3 text-center py-8">
-                    {orderSearch || orderStatusFilter !== "todos"
-                      ? "Nenhum pedido encontrado com os filtros aplicados."
-                      : "Nenhum pedido recente registrado."}
-                  </p>
-                )}
-              </div>
-            </div>
-          );
-        })()}
-      </div>
-    )}
+                                {(() => {
+                                  const isShopee = o.channel === "shopee" || cfg.label.toLowerCase().includes("shopee");
+                                  const isML = o.channel === "mercadolivre" || cfg.label.toLowerCase().includes("mercado");
+                                  const isTikTok = o.channel === "tiktok" || cfg.label.toLowerCase().includes("tiktok");
+                                  const isMarketplace = isShopee || isML || isTikTok;
 
-        {/* TAB 2: INVESTIMENTO EM ANÚNCIOS (ADS & ROAS) */}
+                                  let orderKitsCount = 0;
+                                  let orderPiecesCount = 0;
+                                  let orderHasKits = false;
+                                  let dominantPack = 1;
+
+                                  (o.items || []).forEach((it) => {
+                                    const name = it.name || "";
+                                    const match = name.match(/kit\s*(\d+)/i) || name.match(/(\d+)\s*(?:peças|unidades|un|pcs)/i);
+                                    const pack = match ? parseInt(match[1], 10) : (name.toLowerCase().includes("par") ? 2 : 1);
+                                    const qty = it.quantity || 1;
+                                    if (pack > 1 || name.toLowerCase().includes("kit")) {
+                                      orderHasKits = true;
+                                      if (pack > dominantPack) dominantPack = pack;
+                                    }
+                                    orderKitsCount += qty;
+                                    orderPiecesCount += qty * pack;
+                                  });
+
+                                  const totalUnits = o.items_count || (o.items || []).reduce((acc, it) => acc + (it.quantity || 1), 0) || 1;
+                                  if (orderPiecesCount === 0) {
+                                    orderPiecesCount = totalUnits;
+                                    orderKitsCount = totalUnits;
+                                  }
+
+                                  const unitCost = totalUnits > 0 ? (o.cost_amount || 0) / totalUnits : 0;
+                                  const unitPieceCost = orderPiecesCount > 0 ? (o.cost_amount || 0) / orderPiecesCount : unitCost;
+                                  const unitProfit = totalUnits > 0 ? (o.net_profit || 0) / totalUnits : 0;
+                                  const unitPieceProfit = orderPiecesCount > 0 ? (o.net_profit || 0) / orderPiecesCount : unitProfit;
+                                  const baseForPct = (o.products_subtotal ?? 0) > 0 ? o.products_subtotal! : (o.total || 0);
+
+                                  // Regra Mercado Livre: Se o valor dos produtos for >= 79, o frete é obrigatório grátis para o comprador e custeado pelo vendedor (Mesa & Graça)
+                                  const isMLFreeShippingSeller = isML && ((o.products_subtotal || o.total) >= 79) && ((o.shipment_value || 0) > 0 || (o.discount_value || 0) > 0);
+                                  const shippingSellerCost = isMLFreeShippingSeller ? (o.shipment_value || o.discount_value || 0) : 0;
+
+                                  // Decomposição Shopee oficial (18,60% comissão líquida + 1,40% taxa de transação + R$ 4,50 fixa por item)
+                                  const shopeeCommLiquid = isShopee ? baseForPct * 0.186 : (o.commission_percentage_amount ?? ((o.commission_amount || 0) - (o.commission_fixed_fee || 0)));
+                                  const shopeeTransFee = isShopee ? baseForPct * 0.014 : 0;
+                                  const fixedFeeTotal = isShopee ? (totalUnits * 4.5) : (o.commission_fixed_fee ?? 0);
+                                  const totalCommission = isShopee ? (shopeeCommLiquid + shopeeTransFee + fixedFeeTotal) : (o.commission_amount || 0);
+                                  const netEstimatedRevenue = baseForPct - totalCommission - shippingSellerCost;
+
+                                  const commPctAmount = isShopee ? (shopeeCommLiquid + shopeeTransFee) : (o.commission_percentage_amount ?? ((o.commission_amount || 0) - (o.commission_fixed_fee || 0)));
+                                  const calculatedRate = baseForPct > 0 && commPctAmount > 0 ? Math.round((commPctAmount / baseForPct) * 100) : 0;
+                                  const fallbackRate = isShopee ? 20 : isML ? 16 : isTikTok ? 7 : 3.5;
+                                  const orderCommRate = calculatedRate > 0 ? calculatedRate : fallbackRate;
+                                  const effectiveTotalPct = baseForPct > 0 ? Math.round((totalCommission / baseForPct) * 100) : orderCommRate;
+
+                                  const isShippingOpen = !!openAccordions[`ord-ship-${o.id}`];
+                                  const isFeesOpen = !!openAccordions[`ord-tax-${o.id}`] || expandedOrderFeeId === o.id;
+                                  const isCostOpen = !!openAccordions[`ord-cost-${o.id}`];
+                                  const isProfitOpen = !!openAccordions[`ord-profit-${o.id}`];
+
+                                  return (
+                                    <div className="space-y-2">
+                                      {/* Container Unificado: Itens do Pedido & Detalhamento Interativo */}
+                                      <div className="bg-white rounded-lg border border-stone-200 overflow-hidden text-[11px] shadow-2xs">
+                                        {/* Cabeçalho Unificado */}
+                                        <div className="bg-stone-50 px-3 py-2 border-b border-stone-200 flex justify-between items-center">
+                                          <span className="font-semibold text-stone-700 flex items-center gap-1.5">
+                                            <span>Itens do Pedido</span>
+                                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-stone-200 text-stone-700 font-mono">
+                                              {o.items?.length || 0}
+                                            </span>
+                                          </span>
+                                          <div className="text-right">
+                                            <span className="text-[10px] text-stone-500 mr-1.5 font-normal">Subtotal:</span>
+                                            <strong className="text-stone-900 tabular-nums text-xs">
+                                              {money(o.products_subtotal || o.total)}
+                                            </strong>
+                                          </div>
+                                        </div>
+
+                                        {/* Lista de Itens com Expansão por Clique */}
+                                        <div className="divide-y divide-stone-100">
+                                          {o.items && o.items.length > 0 ? (
+                                            o.items.map((it, idx) => {
+                                              const itemKey = `ord-item-${o.id}-${idx}`;
+                                              const isItemExpanded = !!openAccordions[itemKey];
+                                              const itNameLower = (it.name || "").toLowerCase();
+                                              const itMatch = itNameLower.match(/kit\s*(\d+)/i) || itNameLower.match(/(\d+)\s*(?:peças|unidades|un|pcs)/i);
+                                              let itPackSize = itMatch ? parseInt(itMatch[1], 10) : (itNameLower.includes("par") ? 2 : 1);
+                                              const itHasLA = itNameLower.includes("lugar americano") || itNameLower.includes("jogo americano") || (it.sku || "").toUpperCase().includes("LAM");
+                                              const itHasGUA = itNameLower.includes("guardanapo") || (it.sku || "").toUpperCase().includes("GUA");
+                                              const itHasPGU = itNameLower.includes("porta") || (it.sku || "").toUpperCase().includes("PGU");
+                                              if (itHasLA && itHasGUA && itHasPGU && itPackSize === 1) {
+                                                if (itNameLower.includes("2 lugares") || itNameLower.includes("2lugares") || itNameLower.includes("6 peças")) {
+                                                  itPackSize = 6;
+                                                } else {
+                                                  itPackSize = 3;
+                                                }
+                                              }
+                                              const isItKit = itPackSize > 1 || itNameLower.includes("kit");
+
+                                              return (
+                                                <div key={it.sku || idx} className="transition-colors">
+                                                  {/* Linha Principal do Produto (Clicável) */}
+                                                  <div
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      toggleAccordion(itemKey);
+                                                    }}
+                                                    className="p-2.5 flex items-center gap-2.5 hover:bg-stone-50/80 cursor-pointer transition"
+                                                    title="Clique para ver o detalhamento deste produto"
+                                                  >
+                                                    {/* Foto do Produto */}
+                                                    <div className="w-10 h-10 rounded border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                      {it.image_url ? (
+                                                        <img src={it.image_url} alt={it.name} className="w-full h-full object-cover" />
+                                                      ) : (
+                                                        <span className="text-xs">📦</span>
+                                                      )}
+                                                    </div>
+
+                                                    {/* Conteúdo Central e Lateral em 2 Linhas Exatas */}
+                                                    <div className="min-w-0 flex-1 space-y-1">
+                                                      {/* 1ª Linha: Quantidade + Nome do Produto (esq) e Total (dir) */}
+                                                      <div className="flex items-center justify-between gap-2">
+                                                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                                                          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-stone-100 border border-stone-300 font-bold text-stone-800 text-[10px] tabular-nums shadow-2xs flex-shrink-0">
+                                                            {it.quantity}x
+                                                          </span>
+                                                          <span className="font-semibold text-stone-900 truncate text-[11px]" title={it.name}>
+                                                            {it.name.replace(/<br\s*\/?>/gi, " - ")}
+                                                          </span>
+                                                        </div>
+                                                        <strong className="text-stone-900 tabular-nums font-bold text-xs flex-shrink-0">
+                                                          {money(it.price * it.quantity)}
+                                                        </strong>
+                                                      </div>
+
+                                                      {/* 2ª Linha: SKU (esq) e Ver detalhes com Chevron (dir) */}
+                                                      <div className="flex items-center justify-between gap-2 text-[10px]">
+                                                        <span className="text-stone-500 font-mono">
+                                                          SKU: {it.sku}
+                                                        </span>
+                                                        <span className="text-stone-500 hover:text-stone-800 flex items-center gap-1 font-medium transition-colors flex-shrink-0">
+                                                          <span>{isItemExpanded ? "recolher" : "ver detalhes"}</span>
+                                                          <ChevronDownIcon
+                                                            className={`w-3 h-3 transition-transform duration-200 ${
+                                                              isItemExpanded ? "rotate-180 text-stone-700" : "text-stone-400"
+                                                            }`}
+                                                          />
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+
+                                                  {/* Detalhes Unitários Expandidos */}
+                                                  {isItemExpanded && (
+                                                    <div className="bg-stone-50/70 px-3 py-2 border-t border-stone-100 text-[10px] space-y-1.5 text-stone-600">
+                                                      <div className="flex justify-between">
+                                                        <span>Preço unitário:</span>
+                                                        <span className="tabular-nums font-medium text-stone-900">
+                                                          {money(it.price)} / {isItKit ? "kit" : "un"}
+                                                          {isItKit && itPackSize > 1 && (
+                                                            <span className="text-stone-400 font-normal"> ({money(it.price / itPackSize)} / peça)</span>
+                                                          )}
+                                                        </span>
+                                                      </div>
+                                                      <div className="flex justify-between">
+                                                        <span>Quantidade comprada:</span>
+                                                        <span className="tabular-nums font-medium text-stone-900">
+                                                          {it.quantity} {isItKit ? `kits (${it.quantity * itPackSize} peças)` : "unidades"}
+                                                        </span>
+                                                      </div>
+                                                      <div className="flex justify-between pt-1 border-t border-stone-200/50 font-semibold text-stone-800">
+                                                        <span>Subtotal:</span>
+                                                        <strong className="text-stone-900 tabular-nums">{money(it.price * it.quantity)}</strong>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              );
+                                            })
+                                          ) : (
+                                            <div className="p-3 text-stone-500 italic text-[11px]">Itens não discriminados</div>
+                                          )}
+                                        </div>
+
+                                        {/* Rodapé: Desconto do vendedor */}
+                                        {o.discount_value != null && o.discount_value > 0 && (
+                                          <div className="bg-stone-50/60 px-3 py-1.5 border-t border-stone-200 flex justify-between text-[10px] text-rose-700 font-medium">
+                                            <span>Descontos concedidos pelo Vendedor:</span>
+                                            <strong className="tabular-nums">-{money(o.discount_value)}</strong>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Sanfona 2: Subtotal estimado do frete com regra inteligente por canal */}
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                            toggleAccordion(`ord-ship-${o.id}`);
+                                        }}
+                                        className="p-2 rounded-lg bg-stone-50 hover:bg-stone-100/70 border border-stone-200 cursor-pointer transition"
+                                        title="Clique para ver os detalhes da operação de frete"
+                                      >
+                                        <div className="flex justify-between items-center gap-2 text-stone-700 min-w-0">
+                                          <span className="flex items-center gap-1.5 font-medium whitespace-nowrap shrink-0 text-[11px]">
+                                            <span>Frete / Logística:</span>
+                                            <ChevronDownIcon
+                                              className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
+                                                isShippingOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                              }`}
+                                            />
+                                          </span>
+                                          <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                                            {isMLFreeShippingSeller ? (
+                                              <>
+                                                <strong className="text-amber-800 tabular-nums whitespace-nowrap font-bold text-xs">
+                                                  ⚠️ -{money(shippingSellerCost)}
+                                                </strong>
+                                                <span className="text-[9px] font-semibold bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded whitespace-nowrap">
+                                                  Pago pela Loja
+                                                </span>
+                                              </>
+                                            ) : isMarketplace ? (
+                                              <>
+                                                <strong className="text-emerald-700 tabular-nums whitespace-nowrap font-bold text-xs">
+                                                  R$ 0,00
+                                                </strong>
+                                                <span className="text-[9px] font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 px-1.5 py-0.2 rounded whitespace-nowrap">
+                                                  Custeado
+                                                </span>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <strong className="text-sky-800 tabular-nums whitespace-nowrap font-bold text-xs">
+                                                  +{money(o.shipment_value || 0)}
+                                                </strong>
+                                                <span className="text-[9px] font-semibold bg-sky-100 text-sky-900 border border-sky-300 px-1.5 py-0.2 rounded whitespace-nowrap">
+                                                  Pago pelo Cliente
+                                                </span>
+                                              </>
+                                            )}
+                                          </div>
+                                        </div>
+                                        {isShippingOpen && (
+                                          <div className="mt-1.5 pt-1.5 border-t border-stone-200 text-[10px] space-y-1 text-stone-600">
+                                            {isMLFreeShippingSeller ? (
+                                              <div className="p-2 rounded bg-amber-50 border border-amber-200 text-amber-900 text-[10px] space-y-1">
+                                                <div className="font-bold flex items-center gap-1 text-amber-950">
+                                                  <span>⚠️ Frete Grátis Mercado Envios (Custeado pelo Vendedor):</span>
+                                                </div>
+                                                <p className="text-amber-900/90 leading-relaxed">
+                                                  Em compras a partir de R$ 79,00 no Mercado Livre, o frete grátis ao comprador é obrigatório e custeado pela Mesa &amp; Graça via Mercado Envios ({o.shipment_name || "Encomenda Normal"}). O valor de {money(shippingSellerCost)} foi debitado do repasse da venda.
+                                                </p>
+                                                <div className="flex justify-between pt-1 border-t border-amber-200/80 font-bold text-amber-950">
+                                                  <span>Custo de frete suportado pela loja:</span>
+                                                  <span className="tabular-nums">-{money(shippingSellerCost)}</span>
+                                                </div>
+                                              </div>
+                                            ) : isShopee ? (
+                                              <>
+                                                <div className="flex justify-between text-stone-700">
+                                                  <span>Valor do frete pago pelo comprador / Shopee:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>✅ Frete 100% Custeado pela Shopee:</span>
+                                                  </div>
+                                                  <p className="text-emerald-800">
+                                                    Os cupons de frete grátis e envios regulares são subsidiados integralmente pela Shopee. O valor de {money(o.shipment_value || 0)} é repassado à transportadora ({o.shipment_name || "Shopee Xpress"}). Custo R$ 0,00 para a sua loja.
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (100% Custeado pela Plataforma)</span>
+                                                </div>
+                                              </>
+                                            ) : isTikTok ? (
+                                              <>
+                                                <div className="flex justify-between text-stone-700">
+                                                  <span>Valor do frete pago pelo comprador / TikTok:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>✅ Frete 100% Gerenciado pelo TikTok Shop:</span>
+                                                  </div>
+                                                  <p className="text-emerald-800">
+                                                    Envio operado pela transportadora oficial ({o.shipment_name || "J&T Express Brazil"}). Custo R$ 0,00 para a sua loja.
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (100% Custeado pela Plataforma)</span>
+                                                </div>
+                                              </>
+                                            ) : isML ? (
+                                              <>
+                                                <div className="flex justify-between text-stone-700">
+                                                  <span>Taxa de frete paga pelo comprador:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>✅ Frete Pago pelo Comprador:</span>
+                                                  </div>
+                                                  <p className="text-emerald-800">
+                                                    Como o pedido é inferior a R$ 79,00 no Mercado Livre, o frete de {money(o.shipment_value || 0)} foi pago pelo comprador ({o.shipment_name || "Mercado Envios"}). Custo R$ 0,00 para a sua loja.
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (Custeado pelo Comprador)</span>
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <div className="flex justify-between text-sky-800">
+                                                  <span>Taxa de frete paga pelo cliente no checkout:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-sky-50 border border-sky-200 text-sky-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>📦 Frete Próprio da Loja Virtual:</span>
+                                                  </div>
+                                                  <p className="text-sky-800">
+                                                    O valor pago pelo cliente entra no caixa da loja e é repassado para a compra da etiqueta junto à transportadora ({o.shipment_name || "Correios / Melhor Envio"}).
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-sky-800">+{money(o.shipment_value || 0)}</span>
+                                                </div>
+                                              </>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Sanfona 3: Taxas e Encargos da Plataforma */}
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                            toggleAccordion(`ord-tax-${o.id}`);
+                                          setExpandedOrderFeeId(isFeesOpen ? null : o.id);
+                                        }}
+                                        className="p-2 rounded-lg bg-orange-50/70 hover:bg-orange-50 border border-orange-200 cursor-pointer transition"
+                                        title="Clique para ver a decomposição centavo a centavo das taxas"
+                                      >
+                                        <div className="flex justify-between items-center text-orange-900 font-semibold">
+                                          <span className="flex items-center gap-1.5">
+                                            <span>Taxas e Encargos ({cfg.label} - {effectiveTotalPct}%):</span>
+                                            <ChevronDownIcon
+                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                isFeesOpen ? "rotate-180 text-orange-800" : "text-orange-600"
+                                              }`}
+                                            />
+                                          </span>
+                                          <strong className="text-orange-700 tabular-nums">-{money(totalCommission)}</strong>
+                                        </div>
+
+                                        {isFeesOpen && (
+                                          <div className="mt-2 pt-2 border-t border-orange-200 text-[10px] space-y-1 text-orange-950">
+                                            <div className="flex justify-between">
+                                              <span
+                                                className="flex items-center gap-1 cursor-help"
+                                                title={isShopee ? "A Shopee cobra 18.60% do valor do seu produto como comissão" : undefined}
+                                              >
+                                                <span>Taxa de comissão líquida ({isShopee ? "18,60%" : `${orderCommRate}%`}):</span>
+                                                {isShopee && <InfoIcon className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />}
+                                              </span>
+                                              <strong className="text-orange-900 tabular-nums">-{money(shopeeCommLiquid)}</strong>
+                                            </div>
+                                            {isShopee && (
+                                              <div className="flex justify-between pl-1 text-stone-600">
+                                                <span>Taxa de transação (1,40%):</span>
+                                                <strong className="text-orange-900 tabular-nums">-{money(shopeeTransFee)}</strong>
+                                              </div>
+                                            )}
+                                            <div className="flex justify-between">
+                                              <span className="flex items-center gap-1 flex-wrap"><span>Taxa por item vendido:</span> <span className="tabular-nums text-orange-900 font-normal whitespace-nowrap">({totalUnits} un × R$ {isShopee ? "4,50" : (fixedFeeTotal / totalUnits).toFixed(2)})</span></span>
+                                              <strong className="text-orange-900 tabular-nums">-{money(fixedFeeTotal)}</strong>
+                                            </div>
+                                            <div className="flex justify-between pt-1 border-t border-orange-200/80 font-bold text-orange-950">
+                                              <span>Total Retido pelo Canal:</span>
+                                              <span className="tabular-nums">-{money(totalCommission)}</span>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Destaque Estilo Shopee: Renda Estimada do Pedido */}
+                                      <div className="p-2.5 rounded-lg bg-orange-50 border border-orange-200 flex justify-between items-center shadow-2xs">
+                                        <div>
+                                          <span className="font-bold text-stone-800 text-xs block">Renda estimada do pedido</span>
+                                          <span className="text-[10px] text-stone-500">Valor líquido repassado no caixa</span>
+                                        </div>
+                                        <strong className="text-orange-600 font-extrabold text-base tabular-nums">
+                                          {money(netEstimatedRevenue)}
+                                        </strong>
+                                      </div>
+
+                                      {/* Sanfona 4: Custo Fábrica / CMV */}
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                            toggleAccordion(`ord-cost-${o.id}`);
+                                        }}
+                                        className="p-2 rounded-lg bg-stone-50 hover:bg-stone-100/70 border border-stone-200 cursor-pointer transition"
+                                        title="Clique para ver o custo de fábrica unitário e origem"
+                                      >
+                                        <div className="flex justify-between items-center text-stone-700">
+                                          <span className="flex items-center gap-1.5 font-medium">
+                                            <span>Custo Fábrica:</span>
+                                            <ChevronDownIcon
+                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                isCostOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                              }`}
+                                            />
+                                          </span>
+                                          <strong className="text-stone-800 tabular-nums">-{money(o.cost_amount || 0)}</strong>
+                                        </div>
+                                        {isCostOpen && (
+                                          <div className="mt-1.5 pt-1.5 border-t border-stone-200 text-[10px] space-y-1 text-stone-600">
+                                            <div className="flex justify-between text-stone-500 pb-0.5 border-b border-stone-100">
+                                              <span>Cálculo Base:</span>
+                                              <span className="tabular-nums font-mono text-stone-700">
+                                                {orderHasKits && orderPiecesCount > orderKitsCount
+                                                  ? `${orderKitsCount} kits (${orderPiecesCount} peças) × -${money(unitCost)}`
+                                                  : `${totalUnits} un × -${money(unitCost)}`}
+                                              </span>
+                                            </div>
+                                            {orderHasKits && orderPiecesCount > orderKitsCount ? (
+                                              <>
+                                                <div className="flex justify-between">
+                                                  <span>Custo por Kit Anunciado:</span>
+                                                  <strong className="text-stone-900 tabular-nums">-{money(unitCost)} / kit</strong>
+                                                </div>
+                                                <div className="flex justify-between text-stone-600">
+                                                  <span>Custo Unitário por Peça:</span>
+                                                  <strong className="text-stone-900 tabular-nums">-{money(unitPieceCost)} / peça</strong>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                  <span>Total de Peças Produzidas:</span>
+                                                  <strong className="text-stone-900 tabular-nums">{orderKitsCount} kits ({orderPiecesCount} peças)</strong>
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <div className="flex justify-between">
+                                                  <span>Custo Unitário de Confecção:</span>
+                                                  <strong className="text-stone-900 tabular-nums">-{money(unitCost)} / un</strong>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                  <span>Quantidade de Peças Produzidas:</span>
+                                                  <strong className="text-stone-900 tabular-nums">{totalUnits} peças</strong>
+                                                </div>
+                                              </>
+                                            )}
+                                            <div className="flex justify-between pt-0.5 border-t border-stone-200/50">
+                                              <span>Origem:</span>
+                                              <strong className="text-stone-900">
+                                                {(o.items || []).some((it) => it.is_own_production) ? "Confecção Própria Mesa & Graça" : "Revenda / Insumos"}
+                                              </strong>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Sanfona 5: Lucro Limpo no Bolso */}
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                            toggleAccordion(`ord-profit-${o.id}`);
+                                        }}
+                                        className={`p-2.5 rounded-lg border cursor-pointer transition ${
+                                          o.net_profit < 0 ? "bg-rose-50 border-rose-200" : "bg-emerald-50 border-emerald-200"
+                                        }`}
+                                        title="Clique para ver o cálculo do lucro limpo"
+                                      >
+                                        <div className="flex justify-between items-center">
+                                          <span className={`font-bold flex items-center gap-1.5 ${o.net_profit < 0 ? "text-rose-800" : "text-emerald-800"}`}>
+                                            <span>Lucro Limpo no Bolso:</span>
+                                            <ChevronDownIcon
+                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                isProfitOpen ? "rotate-180" : ""
+                                              }`}
+                                            />
+                                          </span>
+                                          <strong className={`text-sm font-extrabold tabular-nums ${o.net_profit < 0 ? "text-rose-700" : "text-emerald-700"}`}>
+                                            {money(o.net_profit)}
+                                          </strong>
+                                        </div>
+
+                                        {isProfitOpen && (
+                                          <div className={`mt-2 pt-2 border-t text-[10px] space-y-1 ${
+                                            o.net_profit < 0 ? "border-rose-200 text-rose-950" : "border-emerald-200 text-emerald-950"
+                                          }`}>
+                                            {orderHasKits && orderPiecesCount > orderKitsCount ? (
+                                              <>
+                                                <div className="flex justify-between">
+                                                  <span>Lucro por Kit Anunciado:</span>
+                                                  <strong className="tabular-nums font-semibold">{money(unitProfit)} / kit</strong>
+                                                </div>
+                                                <div className="flex justify-between text-stone-600">
+                                                  <span>Lucro Unitário por Peça:</span>
+                                                  <strong className="tabular-nums font-semibold">{money(unitPieceProfit)} / peça</strong>
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <div className="flex justify-between">
+                                                <span>Lucro Unitário:</span>
+                                                <strong className="tabular-nums">{money(unitProfit)} / peça</strong>
+                                              </div>
+                                            )}
+                                            <div className="flex justify-between">
+                                              <span>Margem Líquida Real:</span>
+                                              <strong className="tabular-nums">{percent(o.net_margin_percent)}</strong>
+                                            </div>
+                                            {shippingSellerCost > 0 && (
+                                              <div className="flex justify-between text-amber-900 pb-0.5 border-b border-amber-200/50">
+                                                <span>Frete Mercado Envios (Custeado pela Loja):</span>
+                                                <strong className="tabular-nums font-semibold">- {money(shippingSellerCost)}</strong>
+                                              </div>
+                                            )}
+                                            <div className="pt-1 border-t border-current/20 text-[9px] opacity-80 tabular-nums">
+                                              {shippingSellerCost > 0
+                                                ? `Renda Repassada (${money(netEstimatedRevenue)}) [Venda - Taxas - Frete Mercado Envios] - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`
+                                                : `Renda Repassada (${money(netEstimatedRevenue)}) - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`}
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+
+                                <div className="flex justify-end pt-1">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigator.clipboard?.writeText(o.id);
+                                      setCopiedOrderId(o.id);
+                                      setTimeout(() => setCopiedOrderId(null), 2000);
+                                    }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-semibold text-stone-700 bg-stone-100 hover:bg-stone-200 active:scale-[0.98] transition border border-stone-200"
+                                  >
+                                    {copiedOrderId === o.id ? (
+                                      <>
+                                        <CheckIcon className="w-3.5 h-3.5 text-emerald-600" />
+                                        <span className="text-emerald-700">ID Copiado!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <CopyIcon className="w-3.5 h-3.5 text-stone-500" />
+                                        <span>Copiar ID #{o.id}</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-stone-400 text-sm col-span-3 text-center py-8">
+                        Nenhum pedido encontrado com os filtros aplicados.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ------------------------------------------------------------------------- */}
+        {/* ABA 4: ANÚNCIOS & RETORNO (ROAS)                                          */}
+        {/* ------------------------------------------------------------------------- */}
         {activeTab === "anuncios" && (
           <div className="space-y-6">
-            {/* KPI Cards Ads */}
+            {/* Cards de Anúncios */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
                 <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
@@ -1959,7 +3335,7 @@ export function DashboardClient() {
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-stone-900">
+                  <h2 className="text-base font-bold text-stone-900">
                     Investimento por Plataforma Publicitária
                   </h2>
                   <p className="text-xs text-stone-500">
@@ -2016,38 +3392,38 @@ export function DashboardClient() {
 
             {/* Histórico Recente de Lançamentos */}
             <div className="bg-white rounded-2xl border border-stone-200 shadow-xs p-6">
-              <h2 className="text-lg font-bold text-stone-900 mb-4">
+              <h2 className="text-base font-bold text-stone-900 mb-4">
                 Histórico de Lançamentos de Anúncios no Período
               </h2>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider">
+                  <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider whitespace-nowrap">
                     <tr>
-                      <th className="py-2.5 px-4">Data</th>
-                      <th className="py-2.5 px-3">Plataforma</th>
-                      <th className="py-2.5 px-3">Campanha</th>
-                      <th className="py-2.5 px-3 text-right">Valor Gasto</th>
-                      <th className="py-2.5 px-3 text-center">Cliques</th>
-                      <th className="py-2.5 px-4 text-center">Conversões</th>
+                      <th className="py-3 px-4 whitespace-nowrap min-w-[110px]">Data</th>
+                      <th className="py-3 px-3 whitespace-nowrap min-w-[120px]">Plataforma</th>
+                      <th className="py-3 px-3 min-w-[180px]">Campanha</th>
+                      <th className="py-3 px-3.5 text-right whitespace-nowrap min-w-[115px]">Valor Gasto</th>
+                      <th className="py-3 px-3 text-center whitespace-nowrap min-w-[80px]">Cliques</th>
+                      <th className="py-3 px-4 text-center whitespace-nowrap min-w-[90px]">Conversões</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-100 text-stone-700">
                     {data?.ads.recent_records && data.ads.recent_records.length > 0 ? (
                       data.ads.recent_records.map((r) => (
                         <tr key={r.id} className="hover:bg-stone-50 transition">
-                          <td className="py-3 px-4 font-mono">{r.date}</td>
-                          <td className="py-3 px-3 font-medium text-stone-900">
+                          <td className="py-3 px-4 font-mono whitespace-nowrap">{formatFullDateBR(r.date)}</td>
+                          <td className="py-3 px-3 font-medium text-stone-900 whitespace-nowrap">
                             {PLATFORM_LABELS[r.platform] || r.platform}
                           </td>
-                          <td className="py-3 px-3 text-stone-600">
+                          <td className="py-3 px-3 text-stone-600 font-medium">
                             {r.campaign_name || "—"}
                           </td>
-                          <td className="py-3 px-3 text-right font-bold text-stone-900">
+                          <td className="py-3 px-3.5 text-right font-bold text-stone-900 tabular-nums whitespace-nowrap min-w-[115px]">
                             {money(r.amount_spent)}
                           </td>
-                          <td className="py-3 px-3 text-center">{r.clicks || 0}</td>
-                          <td className="py-3 px-4 text-center">{r.conversions || 0}</td>
+                          <td className="py-3 px-3 text-center tabular-nums whitespace-nowrap">{r.clicks || 0}</td>
+                          <td className="py-3 px-4 text-center tabular-nums whitespace-nowrap">{r.conversions || 0}</td>
                         </tr>
                       ))
                     ) : (
@@ -2062,6 +3438,12 @@ export function DashboardClient() {
               </div>
             </div>
           </div>
+        )}
+        {/* ------------------------------------------------------------------------- */}
+        {/* ABA 5: SAÚDE DOS MARKETPLACES & DIAGNÓSTICO DE PERFORMANCE                */}
+        {/* ------------------------------------------------------------------------- */}
+        {activeTab === "saude" && (
+          <MarketplaceHealthClient />
         )}
       </main>
 
