@@ -598,7 +598,7 @@ export async function GET(req: Request) {
         }
       } else if (ch === "tiktok") {
         // TikTok Shop Brasil: Tolerância máxima oficial LDR < 4.0% e SFCR (cancelamento vendedor) < 2.5%
-        // Cancelamentos no TikTok acionam imediatamente o Order Volume Limit (OVL)
+        // Cancelamentos no TikTok acionam imediatamente a Trava OVL (Order Volume Limit)
         if (lateRate > 4.0 || cancellationRate > 2.5 || stats.cancelled >= 2) {
           severity = "critical";
           healthScore = Math.max(30, Math.round(100 - lateRate * 6 - cancellationRate * 8));
@@ -607,9 +607,13 @@ export async function GET(req: Request) {
           healthScore = 75;
         }
       } else {
-        if (stats.delayed > 0 || stats.cancelled > 0) {
+        // Loja Virtual (Tray): SLA de envio com tolerância de 15%. Atraso de 100% ou >= 2 pedidos é Crítico.
+        if (lateRate > 15.0 || stats.delayed >= 2 || cancellationRate > 5.0) {
+          severity = "critical";
+          healthScore = Math.max(15, Math.round(100 - lateRate * 0.85));
+        } else if (stats.delayed > 0 || stats.cancelled > 0) {
           severity = "warning";
-          healthScore = 80;
+          healthScore = 75;
         }
       }
 
@@ -649,7 +653,7 @@ export async function GET(req: Request) {
           rule_id: ch === "tiktok" ? "tiktok-sfcr-rule" : ch === "shopee" ? "shopee-tne-rule" : "meli-despacho-rule",
           title:
             ch === "tiktok"
-              ? `Risco de Trava OVL por Cancelamento (${stats.cancelled} pedido(s) cancelados)`
+              ? `Trava de Vendas Diárias (OVL TikTok) - ${stats.cancelled} pedido(s) cancelados`
               : `Risco de Penalidade por Cancelamento (${stats.cancelled} pedido(s) cancelados)`,
           category: "risk",
           severity: isCriticalCancel ? "critical" : "warning",
@@ -658,8 +662,9 @@ export async function GET(req: Request) {
           active_restrictions:
             ch === "tiktok"
               ? [
-                  "Aplicação de Order Volume Limit (trava no volume máximo de pedidos diários)",
-                  "Risco de restrição de transmissões e campanhas subsidiadas pelo TikTok",
+                  "Trava de Volume Diário de Pedidos (Order Volume Limit - OVL)",
+                  "Redução severa do número de vendas diárias que a loja pode receber no TikTok Shop",
+                  "Risco de restrição de transmissões ao vivo e campanhas com frete subsidiado",
                 ]
               : ch === "shopee"
               ? [
@@ -670,7 +675,10 @@ export async function GET(req: Request) {
                   "Rebaixamento imediato do termômetro de reputação",
                   "Perda de relevância e Buy Box nas listagens do Mercado Livre",
                 ],
-          notes: `${stats.cancelled} pedido(s) cancelado(s) no período. Taxa de cancelamento em ${cancellationRate.toFixed(1)}%. Mantenha abaixo da tolerância máxima.`,
+          notes:
+            ch === "tiktok"
+              ? `${stats.cancelled} pedido(s) cancelado(s) no período (taxa de cancelamento: ${cancellationRate.toFixed(1)}%). O TikTok Shop impõe a Trava OVL (Order Volume Limit - teto diário de pedidos) quando o cancelamento pelo vendedor supera 2,5%.`
+              : `${stats.cancelled} pedido(s) cancelado(s) no período. Taxa de cancelamento em ${cancellationRate.toFixed(1)}%. Mantenha abaixo da tolerância máxima.`,
         });
       }
 
@@ -795,7 +803,7 @@ export async function GET(req: Request) {
 
     // 5.1 Buscar detalhes ao vivo na Tray API para os maiores campeões de vendas
     // Obtém o estoque real (stock) e a foto oficial de estúdio (ProductImage[0]) direto da Tray
-    const candidateChamps = sortedChamps.slice(0, 25);
+    const candidateChamps = sortedChamps.slice(0, 50);
     const liveTrayProductDetails = new Map<number, { stock: number; image_url?: string; name?: string }>();
     const champConcurrency = 5;
     for (let i = 0; i < candidateChamps.length; i += champConcurrency) {
@@ -808,9 +816,11 @@ export async function GET(req: Request) {
           if (p) {
             const stock = p.stock != null ? Number(p.stock) : 0;
             const img =
+              p.ProductImage?.[0]?.thumbs?.["180"]?.https ||
               p.ProductImage?.[0]?.thumbs?.["90"]?.https ||
-              p.ProductImage?.[0]?.thumbs?.["90"]?.http ||
               p.ProductImage?.[0]?.https ||
+              p.ProductImage?.[0]?.thumbs?.["180"]?.http ||
+              p.ProductImage?.[0]?.thumbs?.["90"]?.http ||
               p.ProductImage?.[0]?.http ||
               undefined;
             liveTrayProductDetails.set(c.productId, {
@@ -860,6 +870,34 @@ export async function GET(req: Request) {
         });
 
         if (topStockoutLosses.length >= 6) break;
+      }
+    }
+
+    // 5.2 Garantia Absoluta de Foto para 100% dos Itens em topStockoutLosses
+    for (const item of topStockoutLosses) {
+      if (!item.image_url) {
+        try {
+          const searchRes = await trayApiFetch<{ Products?: any[] }>(`products?reference=${encodeURIComponent(item.sku)}`);
+          const foundProd = searchRes?.Products?.[0]?.Product;
+          if (foundProd) {
+            const detailRes = await trayApiFetch<{ Product: any }>(`products/${foundProd.id}`);
+            const p = detailRes?.Product || foundProd;
+            const img =
+              p.ProductImage?.[0]?.thumbs?.["180"]?.https ||
+              p.ProductImage?.[0]?.thumbs?.["90"]?.https ||
+              p.ProductImage?.[0]?.https ||
+              p.ProductImage?.[0]?.thumbs?.["180"]?.http ||
+              p.ProductImage?.[0]?.thumbs?.["90"]?.http ||
+              p.ProductImage?.[0]?.http ||
+              undefined;
+            if (img) {
+              item.image_url = img;
+              if (p.name && !item.name) item.name = p.name;
+            }
+          }
+        } catch (err) {
+          console.warn(`[Health:API] Fallback de imagem para SKU ${item.sku} falhou:`, err);
+        }
       }
     }
 

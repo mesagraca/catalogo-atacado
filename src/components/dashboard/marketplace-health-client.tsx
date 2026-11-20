@@ -346,8 +346,8 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
 
                 <div className="flex items-baseline justify-between mt-3">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-stone-400 block">
-                      Taxa de Atraso (TEA/LDR)
+                    <span className="text-[10px] uppercase font-bold text-stone-400 block" title="Taxa de Envio Atrasado / Late Dispatch Rate">
+                      Atraso no Envio (TEA/SLA)
                     </span>
                     <strong
                       className={`text-xl font-extrabold tabular-nums whitespace-nowrap ${
@@ -385,7 +385,7 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                   />
                 </div>
 
-                {/* Taxa de Cancelamento (TNE / SFCR) */}
+                {/* Taxa de Cancelamento pelo Vendedor */}
                 {(() => {
                   const cancelTarget =
                     ch.channel === "tiktok"
@@ -401,8 +401,8 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                   return (
                     <div className="mt-2.5 pt-2 border-t border-dashed border-stone-100 flex items-center justify-between text-xs">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-stone-400 block">
-                          Cancelamento ({ch.channel === "tiktok" ? "SFCR" : ch.channel === "shopee" ? "TNE" : "Taxa"})
+                        <span className="text-[10px] uppercase font-bold text-stone-400 block" title="Cancelamentos com culpa do vendedor (TNE / SFCR)">
+                          Cancelamentos (Loja)
                         </span>
                         <strong
                           className={`tabular-nums font-bold ${
@@ -426,7 +426,7 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                   );
                 })()}
 
-                {/* Alerta de Risco de Cancelamento / OVL se aplicável */}
+                {/* Alerta de Risco de Cancelamento com Explicação Clara */}
                 {(() => {
                   const cancelTarget =
                     ch.channel === "tiktok"
@@ -441,14 +441,23 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                     (ch.cancelled_orders_count || 0) > 0;
                   if (!isCancelOver) return null;
                   return (
-                    <div className="mt-2 px-2 py-1 bg-rose-50 border border-rose-200 rounded-md text-[10px] font-semibold text-rose-800 flex items-center gap-1">
-                      <span>⚠️</span>
-                      <span>
+                    <div className="mt-2 p-2 bg-rose-50 border border-rose-200 rounded-lg text-[10px] text-rose-900 flex flex-col gap-0.5">
+                      <div className="font-bold flex items-center gap-1 text-rose-800">
+                        <span>⚠️</span>
+                        <span>
+                          {ch.channel === "tiktok"
+                            ? "Trava de Vendas Diárias (OVL TikTok)"
+                            : ch.channel === "shopee"
+                            ? "Risco de Penalidade por Cancelamento"
+                            : "Impacto no Termômetro da Loja"}
+                        </span>
+                      </div>
+                      <span className="text-[9px] text-rose-700 leading-tight">
                         {ch.channel === "tiktok"
-                          ? "Risco de Trava OVL (SFCR > 2,5%)"
+                          ? "Limite máximo de pedidos diários imposto pelo TikTok devido a cancelamentos (> 2,5%)."
                           : ch.channel === "shopee"
-                          ? "Risco de Penalidade TNE"
-                          : "Impacto no Termômetro ML"}
+                          ? "Cancelamentos pelo vendedor geram pontos de penalidade e perda do selo Vendedor Indicado."
+                          : "Cancelamentos com culpa do vendedor rebaixam a cor da reputação no Mercado Livre."}
                       </span>
                     </div>
                   );
@@ -456,7 +465,7 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
 
                 <div className="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-stone-100 text-xs">
                   <div>
-                    <span className="text-[10px] text-stone-400 block">Atrasados (TEA)</span>
+                    <span className="text-[10px] text-stone-400 block">Atrasados (SLA)</span>
                     <strong
                       className={`tabular-nums ${
                         ch.late_orders_count > 0 ? "text-rose-700 font-bold" : "text-stone-700"
