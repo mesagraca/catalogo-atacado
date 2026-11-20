@@ -573,44 +573,47 @@ export async function GET(req: Request) {
     const channelSummaries: ChannelHealthSummary[] = (["shopee", "mercadolivre", "tiktok", "site"] as SalesChannel[]).map((ch) => {
       const stats = channelStats[ch];
       const lateRate = stats.total > 0 ? (stats.delayed / stats.total) * 100 : 0;
+      const cancellationRate = stats.total > 0 ? (stats.cancelled / stats.total) * 100 : 0;
       const channelRules = OFFICIAL_RULES.filter((r) => r.channel === ch);
       
-      // Avaliar severidade
+      // Avaliar severidade combinando atrasos (TEA/LDR) e cancelamentos (TNE/SFCR)
       let severity: HealthSeverity = "healthy";
       let healthScore = 100;
 
       if (ch === "shopee") {
-        if (lateRate > 8.0 || stats.delayed >= 3) {
+        if (lateRate > 8.0 || stats.delayed >= 3 || cancellationRate > 8.0 || stats.cancelled >= 2) {
           severity = "critical";
-          healthScore = Math.max(30, Math.round(100 - lateRate * 5));
-        } else if (lateRate > 4.0 || stats.atRisk >= 2) {
+          healthScore = Math.max(25, Math.round(100 - lateRate * 4 - cancellationRate * 4));
+        } else if (lateRate > 4.0 || stats.atRisk >= 2 || cancellationRate > 2.0 || stats.cancelled >= 1) {
+          severity = "warning";
+          healthScore = 70;
+        }
+      } else if (ch === "mercadolivre") {
+        if (lateRate > 15.0 || cancellationRate > 3.0 || stats.cancelled >= 2) {
+          severity = "critical";
+          healthScore = 35;
+        } else if (lateRate > 8.0 || stats.atRisk >= 2 || stats.cancelled >= 1) {
+          severity = "warning";
+          healthScore = 65;
+        }
+      } else if (ch === "tiktok") {
+        // TikTok Shop Brasil: Tolerância máxima oficial LDR < 4.0% e SFCR (cancelamento vendedor) < 2.5%
+        // Cancelamentos no TikTok acionam imediatamente o Order Volume Limit (OVL)
+        if (lateRate > 4.0 || cancellationRate > 2.5 || stats.cancelled >= 2) {
+          severity = "critical";
+          healthScore = Math.max(30, Math.round(100 - lateRate * 6 - cancellationRate * 8));
+        } else if (lateRate > 2.0 || stats.atRisk >= 1 || stats.cancelled === 1) {
           severity = "warning";
           healthScore = 75;
         }
-      } else if (ch === "mercadolivre") {
-        if (lateRate > 15.0) {
-          severity = "critical";
-          healthScore = 40;
-        } else if (lateRate > 8.0 || stats.atRisk >= 2) {
-          severity = "warning";
-          healthScore = 78;
-        }
-      } else if (ch === "tiktok") {
-        if (lateRate > 4.0) {
-          severity = "critical";
-          healthScore = 50;
-        } else if (lateRate > 2.0 || stats.atRisk >= 2) {
+      } else {
+        if (stats.delayed > 0 || stats.cancelled > 0) {
           severity = "warning";
           healthScore = 80;
         }
-      } else {
-        if (stats.delayed > 0) {
-          severity = "warning";
-          healthScore = 85;
-        }
       }
 
-      // Penalidades e Riscos identificados
+      // Penalidades e Riscos identificados por Atraso e por Cancelamento
       const penalties: ActivePenaltyRecord[] = [];
       if (stats.delayed > 0) {
         penalties.push({
@@ -630,14 +633,53 @@ export async function GET(req: Request) {
         });
       }
 
+      if (stats.cancelled > 0) {
+        const isCriticalCancel =
+          ch === "tiktok"
+            ? cancellationRate > 2.5 || stats.cancelled >= 2
+            : ch === "shopee"
+            ? cancellationRate > 8.0 || stats.cancelled >= 2
+            : ch === "mercadolivre"
+            ? cancellationRate > 2.0 || stats.cancelled >= 1
+            : false;
+
+        penalties.push({
+          id: `pen-risk-${ch}-cancel`,
+          channel: ch,
+          rule_id: ch === "tiktok" ? "tiktok-sfcr-rule" : ch === "shopee" ? "shopee-tne-rule" : "meli-despacho-rule",
+          title:
+            ch === "tiktok"
+              ? `Risco de Trava OVL por Cancelamento (${stats.cancelled} pedido(s) cancelados)`
+              : `Risco de Penalidade por Cancelamento (${stats.cancelled} pedido(s) cancelados)`,
+          category: "risk",
+          severity: isCriticalCancel ? "critical" : "warning",
+          current_metric_value: parseFloat(cancellationRate.toFixed(1)),
+          target_threshold: ch === "tiktok" ? 2.5 : ch === "shopee" ? 8.0 : 2.0,
+          active_restrictions:
+            ch === "tiktok"
+              ? [
+                  "Aplicação de Order Volume Limit (trava no volume máximo de pedidos diários)",
+                  "Risco de restrição de transmissões e campanhas subsidiadas pelo TikTok",
+                ]
+              : ch === "shopee"
+              ? [
+                  "Atribuição de 1 a 2 pontos de penalidade no Seller Centre",
+                  "Risco de suspensão ou perda do selo Vendedor Indicado",
+                ]
+              : [
+                  "Rebaixamento imediato do termômetro de reputação",
+                  "Perda de relevância e Buy Box nas listagens do Mercado Livre",
+                ],
+          notes: `${stats.cancelled} pedido(s) cancelado(s) no período. Taxa de cancelamento em ${cancellationRate.toFixed(1)}%. Mantenha abaixo da tolerância máxima.`,
+        });
+      }
+
       const channelLabels: Record<SalesChannel, string> = {
         shopee: "Shopee",
         mercadolivre: "Mercado Livre",
         tiktok: "TikTok Shop",
         site: "Loja Virtual (Tray)",
       };
-
-      const cancellationRate = stats.total > 0 ? (stats.cancelled / stats.total) * 100 : 0;
 
       return {
         channel: ch,
@@ -708,7 +750,7 @@ export async function GET(req: Request) {
     const revenueDeltaPercent = peakRevenue > 0 ? (revenueDelta / peakRevenue) * 100 : 0;
 
     // 5. Diagnóstico de Ruptura de Estoque nos SKUs Campeões Reais
-    const skuSalesStats = new Map<string, { sku: string; name: string; allTimeUnits: number; recentUnits: number; totalRevenue: number; avgPrice: number }>();
+    const skuSalesStats = new Map<string, { sku: string; name: string; productId?: number; allTimeUnits: number; recentUnits: number; totalRevenue: number; avgPrice: number }>();
     try {
       const soldsP1 = await trayApiFetch<{ ProductsSolds?: any[] }>("products_solds?page=1&limit=50").catch(() => ({ ProductsSolds: [] }));
       const soldsP2 = await trayApiFetch<{ ProductsSolds?: any[] }>("products_solds?page=2&limit=50").catch(() => ({ ProductsSolds: [] }));
@@ -725,14 +767,19 @@ export async function GET(req: Request) {
         if (!sku) continue;
         const qty = Number(s.quantity || 1);
         const price = Number(s.price || 0);
+        const productId = s.product_id ? Number(s.product_id) : undefined;
         const entry = skuSalesStats.get(sku) || {
           sku,
           name: s.name,
+          productId,
           allTimeUnits: 0,
           recentUnits: 0,
           totalRevenue: 0,
           avgPrice: price,
         };
+        if (!entry.productId && productId) {
+          entry.productId = productId;
+        }
         entry.allTimeUnits += qty;
         entry.totalRevenue += price * qty;
         if (s.date && s.date >= periodStartStr) {
@@ -744,14 +791,53 @@ export async function GET(req: Request) {
       console.warn("[Health:API] Aviso ao consultar products_solds:", e);
     }
 
-    const topStockoutLosses: StockoutLossItem[] = [];
     const sortedChamps = Array.from(skuSalesStats.values()).sort((a, b) => b.allTimeUnits - a.allTimeUnits);
 
-    for (const champ of sortedChamps) {
-      const mapped = costMapBySku.get(champ.sku);
-      const currentStock = mapped?.stock != null ? mapped.stock : 0;
+    // 5.1 Buscar detalhes ao vivo na Tray API para os maiores campeões de vendas
+    // Obtém o estoque real (stock) e a foto oficial de estúdio (ProductImage[0]) direto da Tray
+    const candidateChamps = sortedChamps.slice(0, 25);
+    const liveTrayProductDetails = new Map<number, { stock: number; image_url?: string; name?: string }>();
+    const champConcurrency = 5;
+    for (let i = 0; i < candidateChamps.length; i += champConcurrency) {
+      const chunk = candidateChamps.slice(i, i + champConcurrency);
+      const promises = chunk.map(async (c) => {
+        if (!c.productId) return;
+        try {
+          const res = await trayApiFetch<{ Product: any }>(`products/${c.productId}`);
+          const p = res?.Product;
+          if (p) {
+            const stock = p.stock != null ? Number(p.stock) : 0;
+            const img =
+              p.ProductImage?.[0]?.thumbs?.["90"]?.https ||
+              p.ProductImage?.[0]?.thumbs?.["90"]?.http ||
+              p.ProductImage?.[0]?.https ||
+              p.ProductImage?.[0]?.http ||
+              undefined;
+            liveTrayProductDetails.set(c.productId, {
+              stock,
+              image_url: img,
+              name: p.name,
+            });
+          }
+        } catch (err) {
+          console.warn(`[Health:API] Não foi possível obter produto ${c.productId} na Tray:`, err);
+        }
+      });
+      await Promise.all(promises);
+    }
 
-      // Filtrar apenas os campeões com estoque crítico (<= 3 un) ou esgotado (0 un)
+    const topStockoutLosses: StockoutLossItem[] = [];
+
+    for (const champ of sortedChamps) {
+      const liveTray = champ.productId ? liveTrayProductDetails.get(champ.productId) : undefined;
+      const mapped = costMapBySku.get(champ.sku);
+
+      // A Tray API em tempo real é a fonte da verdade operacional prioritária do estoque!
+      const currentStock = liveTray?.stock != null ? liveTray.stock : (mapped?.stock != null ? mapped.stock : 0);
+      const imageUrl = liveTray?.image_url || mapped?.image_url;
+      const productName = liveTray?.name || mapped?.name || champ.name;
+
+      // Filtrar apenas os campeões com estoque crítico (<= 3 un) ou esgotado (0 un) na Tray!
       if (currentStock <= 3) {
         const avgPrice = champ.allTimeUnits > 0 ? champ.totalRevenue / champ.allTimeUnits : champ.avgPrice;
         const dropUnits = Math.max(1, Math.round(champ.allTimeUnits / 4));
@@ -759,8 +845,8 @@ export async function GET(req: Request) {
 
         topStockoutLosses.push({
           sku: champ.sku,
-          name: mapped?.name || champ.name,
-          image_url: mapped?.image_url,
+          name: productName,
+          image_url: imageUrl,
           current_stock: currentStock,
           peak_period_units_sold: champ.allTimeUnits,
           recent_period_units_sold: champ.recentUnits,

@@ -370,7 +370,7 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                 </div>
 
                 {/* Barra de Progresso do SLA */}
-                <div className="w-full bg-stone-100 rounded-full h-1.5 mt-2 overflow-hidden">
+                <div className="w-full bg-stone-100 rounded-full h-1.5 mt-1.5 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
                       ch.late_dispatch_rate_percent > targetLimit
@@ -385,7 +385,76 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-stone-100 text-xs">
+                {/* Taxa de Cancelamento (TNE / SFCR) */}
+                {(() => {
+                  const cancelTarget =
+                    ch.channel === "tiktok"
+                      ? 2.5
+                      : ch.channel === "mercadolivre"
+                      ? 2.0
+                      : ch.channel === "shopee"
+                      ? 8.0
+                      : 5.0;
+                  const cancelRate = ch.cancellation_rate_percent || 0;
+                  const isCancelCritical =
+                    cancelRate > cancelTarget && (ch.cancelled_orders_count || 0) > 0;
+                  return (
+                    <div className="mt-2.5 pt-2 border-t border-dashed border-stone-100 flex items-center justify-between text-xs">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                          Cancelamento ({ch.channel === "tiktok" ? "SFCR" : ch.channel === "shopee" ? "TNE" : "Taxa"})
+                        </span>
+                        <strong
+                          className={`tabular-nums font-bold ${
+                            isCancelCritical
+                              ? "text-rose-700 font-extrabold"
+                              : cancelRate > 0
+                              ? "text-amber-700"
+                              : "text-emerald-700"
+                          }`}
+                        >
+                          {percent(cancelRate)}
+                        </strong>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[10px] text-stone-400 block font-mono">Meta Oficial</span>
+                        <span className="text-xs font-semibold text-stone-600 font-mono">
+                          &lt; {cancelTarget}%
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Alerta de Risco de Cancelamento / OVL se aplicável */}
+                {(() => {
+                  const cancelTarget =
+                    ch.channel === "tiktok"
+                      ? 2.5
+                      : ch.channel === "mercadolivre"
+                      ? 2.0
+                      : ch.channel === "shopee"
+                      ? 8.0
+                      : 5.0;
+                  const isCancelOver =
+                    (ch.cancellation_rate_percent || 0) > cancelTarget &&
+                    (ch.cancelled_orders_count || 0) > 0;
+                  if (!isCancelOver) return null;
+                  return (
+                    <div className="mt-2 px-2 py-1 bg-rose-50 border border-rose-200 rounded-md text-[10px] font-semibold text-rose-800 flex items-center gap-1">
+                      <span>⚠️</span>
+                      <span>
+                        {ch.channel === "tiktok"
+                          ? "Risco de Trava OVL (SFCR > 2,5%)"
+                          : ch.channel === "shopee"
+                          ? "Risco de Penalidade TNE"
+                          : "Impacto no Termômetro ML"}
+                      </span>
+                    </div>
+                  );
+                })()}
+
+                <div className="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-stone-100 text-xs">
                   <div>
                     <span className="text-[10px] text-stone-400 block">Atrasados (TEA)</span>
                     <strong
@@ -1316,19 +1385,29 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                     <tr key={loss.sku} className="hover:bg-stone-50/80 transition">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 overflow-hidden shrink-0 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 overflow-hidden shrink-0 flex items-center justify-center relative">
                             {loss.image_url ? (
                               <img
                                 src={loss.image_url}
                                 alt={loss.name}
                                 className="w-full h-full object-cover"
+                                loading="lazy"
                                 onError={(e) => {
                                   (e.currentTarget as HTMLElement).style.display = "none";
+                                  const fallback = (e.currentTarget as HTMLElement).nextElementSibling;
+                                  if (fallback) {
+                                    (fallback as HTMLElement).classList.remove("hidden");
+                                  }
                                 }}
                               />
-                            ) : (
-                              <span className="text-stone-400 text-sm">📦</span>
-                            )}
+                            ) : null}
+                            <span
+                              className={`text-stone-400 text-sm ${
+                                loss.image_url ? "hidden" : "block"
+                              }`}
+                            >
+                              🍽️
+                            </span>
                           </div>
                           <div className="min-w-0">
                             <div className="font-semibold text-stone-900 truncate max-w-[280px]" title={loss.name}>
