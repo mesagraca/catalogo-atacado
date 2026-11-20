@@ -448,8 +448,10 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                           {ch.channel === "tiktok"
                             ? "Trava de Vendas Diárias (OVL TikTok)"
                             : ch.channel === "shopee"
-                            ? "Risco de Penalidade por Cancelamento"
-                            : "Impacto no Termômetro da Loja"}
+                            ? "Risco de Penalidade por Cancelamento (Shopee)"
+                            : ch.channel === "mercadolivre"
+                            ? "Impacto no Termômetro do Mercado Livre"
+                            : "Perda de Vendas e Custos de Estorno (Loja Virtual)"}
                         </span>
                       </div>
                       <span className="text-[9px] text-rose-700 leading-tight">
@@ -457,7 +459,9 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                           ? "Limite máximo de pedidos diários imposto pelo TikTok devido a cancelamentos (> 2,5%)."
                           : ch.channel === "shopee"
                           ? "Cancelamentos pelo vendedor geram pontos de penalidade e perda do selo Vendedor Indicado."
-                          : "Cancelamentos com culpa do vendedor rebaixam a cor da reputação no Mercado Livre."}
+                          : ch.channel === "mercadolivre"
+                          ? "Cancelamentos com culpa do vendedor rebaixam a cor da reputação no Mercado Livre."
+                          : "Cancelamentos na loja virtual própria geram perda direta de receita e custos de taxas de estorno no gateway."}
                       </span>
                     </div>
                   );

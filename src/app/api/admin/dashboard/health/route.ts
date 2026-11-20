@@ -645,20 +645,29 @@ export async function GET(req: Request) {
             ? cancellationRate > 8.0 || stats.cancelled >= 2
             : ch === "mercadolivre"
             ? cancellationRate > 2.0 || stats.cancelled >= 1
-            : false;
+            : cancellationRate > 5.0 || stats.cancelled >= 2;
 
         penalties.push({
           id: `pen-risk-${ch}-cancel`,
           channel: ch,
-          rule_id: ch === "tiktok" ? "tiktok-sfcr-rule" : ch === "shopee" ? "shopee-tne-rule" : "meli-despacho-rule",
+          rule_id:
+            ch === "tiktok"
+              ? "tiktok-sfcr-rule"
+              : ch === "shopee"
+              ? "shopee-tne-rule"
+              : ch === "mercadolivre"
+              ? "meli-despacho-rule"
+              : "site-cancel-rule",
           title:
             ch === "tiktok"
               ? `Trava de Vendas Diárias (OVL TikTok) - ${stats.cancelled} pedido(s) cancelados`
+              : ch === "site"
+              ? `Perda de Vendas e Custos de Estorno (${stats.cancelled} pedido(s) cancelados)`
               : `Risco de Penalidade por Cancelamento (${stats.cancelled} pedido(s) cancelados)`,
           category: "risk",
           severity: isCriticalCancel ? "critical" : "warning",
           current_metric_value: parseFloat(cancellationRate.toFixed(1)),
-          target_threshold: ch === "tiktok" ? 2.5 : ch === "shopee" ? 8.0 : 2.0,
+          target_threshold: ch === "tiktok" ? 2.5 : ch === "shopee" ? 8.0 : ch === "mercadolivre" ? 2.0 : 5.0,
           active_restrictions:
             ch === "tiktok"
               ? [
@@ -671,13 +680,21 @@ export async function GET(req: Request) {
                   "Atribuição de 1 a 2 pontos de penalidade no Seller Centre",
                   "Risco de suspensão ou perda do selo Vendedor Indicado",
                 ]
-              : [
+              : ch === "mercadolivre"
+              ? [
                   "Rebaixamento imediato do termômetro de reputação",
                   "Perda de relevância e Buy Box nas listagens do Mercado Livre",
+                ]
+              : [
+                  "Perda direta de receita bruta e margem líquida",
+                  "Custos operacionais e taxas retidas de estorno no gateway de pagamento",
+                  "Possível atrito de pós-venda e insatisfação de clientes diretos",
                 ],
           notes:
             ch === "tiktok"
               ? `${stats.cancelled} pedido(s) cancelado(s) no período (taxa de cancelamento: ${cancellationRate.toFixed(1)}%). O TikTok Shop impõe a Trava OVL (Order Volume Limit - teto diário de pedidos) quando o cancelamento pelo vendedor supera 2,5%.`
+              : ch === "site"
+              ? `${stats.cancelled} pedido(s) cancelado(s) na Loja Virtual própria (taxa de cancelamento: ${cancellationRate.toFixed(1)}%). Verifique eventuais rupturas de estoque ou falhas de checkout.`
               : `${stats.cancelled} pedido(s) cancelado(s) no período. Taxa de cancelamento em ${cancellationRate.toFixed(1)}%. Mantenha abaixo da tolerância máxima.`,
         });
       }
