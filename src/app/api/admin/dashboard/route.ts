@@ -575,19 +575,40 @@ export async function GET(request: Request) {
       return true;
     });
 
-    // 3. Buscar detalhes completos dos pedidos para analisar produtos vendidos
+    // 3. Buscar detalhes completos dos pedidos para analisar produtos vendidos com retry e blindagem anti-perda
     const completeOrders: TrayCompleteOrder[] = [];
-    const concurrency = 5;
+    const concurrency = 4; // Concorrência otimizada para estabilidade e evitar rate-limit na Tray
 
     for (let i = 0; i < validOrders.length; i += concurrency) {
       const chunk = validOrders.slice(i, i + concurrency);
       const chunkPromises = chunk.map(async (o) => {
-        try {
-          return await trayApiFetch<TrayCompleteOrder>(`orders/${o.Order.id}/complete`);
-        } catch {
-          return null;
+        const orderId = o.Order.id;
+        // Tenta até 3 vezes com backoff progressivo caso a Tray oscile
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            const res = await trayApiFetch<TrayCompleteOrder>(`orders/${orderId}/complete`);
+            if (res && res.Order) {
+              return res;
+            }
+          } catch (err) {
+            if (attempt === 3) {
+              console.warn(`[Dashboard:API] Falha ao obter /complete do pedido #${orderId}. Ativando fallback resiliente.`);
+            } else {
+              await new Promise((resolve) => setTimeout(resolve, 250 * attempt));
+            }
+          }
         }
+
+        // Fallback garantido: caso /complete falhe nas 3 tentativas, preserva o pedido
+        // a partir dos dados já carregados no pedido principal (validOrders)
+        return {
+          Order: {
+            ...o.Order,
+            ProductsSold: (o.Order as any).ProductsSold || [],
+          },
+        } as TrayCompleteOrder;
       });
+
       const resolved = await Promise.all(chunkPromises);
       for (const item of resolved) {
         if (item && item.Order) completeOrders.push(item);
@@ -903,9 +924,21 @@ export async function GET(request: Request) {
         productStats.set(statKey, existing);
       }
 
-      // Se o pedido não tem itens no escopo (ex: pedido com apenas terceiros no filtro têxtil), pula
+      // Se o pedido não tem itens no escopo:
+      // No escopo restrito 'textil', pula se o pedido só tiver produtos de terceiros.
+      // No escopo 'all' (geral), NUNCA descarta o pedido: apura com base nos valores oficiais do pedido da Tray.
       if (orderItems.length === 0) {
-        continue;
+        if (scope === "textil") {
+          continue;
+        }
+
+        orderRevenue = Number(order.partial_total || order.total || 0);
+        const comm = calculateDetailedCommission(channel, orderRevenue, 1);
+        orderTotalCommission = comm.total_fee;
+        orderPercentageComm = comm.percentage_amount;
+        orderFixedFees = comm.fixed_fee;
+        // Custo médio de fabricação da loja (~37.5% CMV)
+        orderCmv = orderRevenue * 0.375;
       }
 
       matchingOrdersCount += 1;
