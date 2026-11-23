@@ -547,6 +547,7 @@ export function DashboardClient() {
   type AdSortField = "date" | "platform" | "campaign" | "amount_spent" | "clicks" | "conversions";
   const [adSortField, setAdSortField] = useState<AdSortField>("date");
   const [adSortAsc, setAdSortAsc] = useState<boolean>(false);
+  const [showZeroSpendDays, setShowZeroSpendDays] = useState<boolean>(true);
 
   const handleAdSort = (field: AdSortField) => {
     if (adSortField === field) {
@@ -3918,13 +3919,64 @@ export function DashboardClient() {
           const displayMarginPct =
             displayRevenue > 0 ? (displayNetProfit / displayRevenue) * 100 : 0;
 
-          // Registros filtrados e ordenados do histórico
-          const filteredRecords = (data?.ads.recent_records || []).filter((r) => {
-            if (selectedAdPlatform === "all") return true;
-            return r.platform === selectedAdPlatform;
-          });
+          // 1. Gera todos os dias contínuos do período selecionado
+          const allDatesInPeriod: string[] = [];
+          if (data?.start_date && data?.end_date) {
+            const cur = new Date(data.start_date + "T12:00:00");
+            const end = new Date(data.end_date + "T12:00:00");
+            while (cur <= end) {
+              const yyyy = cur.getFullYear();
+              const mm = String(cur.getMonth() + 1).padStart(2, "0");
+              const dd = String(cur.getDate()).padStart(2, "0");
+              allDatesInPeriod.push(`${yyyy}-${mm}-${dd}`);
+              cur.setDate(cur.getDate() + 1);
+            }
+          }
 
-          const sortedRecords = [...filteredRecords].sort((a, b) => {
+          const platformsToDisplay: AdPlatform[] = isPlatformFiltered
+            ? [selectedAdPlatform]
+            : ["shopee_ads", "meta_ads"];
+
+          const rawRecords = data?.ads.recent_records || [];
+          let combinedRecords: (AdSpendRecord & { is_zero_fill?: boolean })[] = [];
+
+          if (showZeroSpendDays && allDatesInPeriod.length > 0) {
+            const recordMap = new Map<string, AdSpendRecord>();
+            for (const r of rawRecords) {
+              const key = `${r.platform}_${r.date.split(" ")[0]}`;
+              recordMap.set(key, r);
+            }
+
+            for (const date of allDatesInPeriod) {
+              for (const p of platformsToDisplay) {
+                const key = `${p}_${date}`;
+                const existing = recordMap.get(key);
+                if (existing) {
+                  combinedRecords.push(existing);
+                } else {
+                  combinedRecords.push({
+                    id: `zero-${p}-${date}`,
+                    platform: p,
+                    date: date,
+                    amount_spent: 0,
+                    impressions: 0,
+                    clicks: 0,
+                    conversions: 0,
+                    campaign_name: "Sem Veiculação / Pausado",
+                    is_zero_fill: true,
+                  });
+                }
+              }
+            }
+          } else {
+            combinedRecords = rawRecords.filter((r) => {
+              if (selectedAdPlatform === "all") return true;
+              return r.platform === selectedAdPlatform;
+            });
+          }
+
+          // Ordenação dinâmica
+          const sortedRecords = [...combinedRecords].sort((a, b) => {
             let cmp = 0;
             switch (adSortField) {
               case "date":
@@ -4282,9 +4334,18 @@ export function DashboardClient() {
                       )}
                     </h2>
                     <p className="text-xs text-stone-500 mt-0.5">
-                      Mostrando {filteredRecords.length} lançamentos. Clique em qualquer linha para expandir detalhes de CPC, conversões e pedidos faturados no dia.
+                      Mostrando {sortedRecords.length} lançamentos. Clique em qualquer linha para expandir detalhes de CPC, conversões e pedidos faturados no dia.
                     </p>
                   </div>
+                  <label className="inline-flex items-center gap-2 text-xs font-semibold text-stone-700 cursor-pointer select-none bg-stone-100 hover:bg-stone-200/80 px-3 py-1.5 rounded-xl border border-stone-200 transition self-start sm:self-auto">
+                    <input
+                      type="checkbox"
+                      checked={showZeroSpendDays}
+                      onChange={(e) => setShowZeroSpendDays(e.target.checked)}
+                      className="rounded text-amber-950 focus:ring-amber-900 w-3.5 h-3.5 cursor-pointer"
+                    />
+                    <span>Mostrar dias sem investimento (R$ 0,00)</span>
+                  </label>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -4418,6 +4479,8 @@ export function DashboardClient() {
                                 className={`transition cursor-pointer select-none ${
                                   isExpanded
                                     ? "bg-amber-50/70 border-b border-amber-200"
+                                    : r.amount_spent === 0
+                                    ? "hover:bg-stone-50/80 bg-stone-50/30 text-stone-500"
                                     : "hover:bg-stone-50/90"
                                 }`}
                                 title="Clique para expandir/recolher detalhes"
@@ -4443,18 +4506,30 @@ export function DashboardClient() {
                                 </td>
 
                                 <td
-                                  className="py-2.5 px-3 text-stone-600 font-medium text-xs max-w-[260px] sm:max-w-[360px] truncate whitespace-nowrap"
+                                  className="py-2.5 px-3 text-xs max-w-[260px] sm:max-w-[360px] truncate whitespace-nowrap"
                                   title={r.campaign_name || ""}
                                 >
-                                  {r.campaign_name || "—"}
+                                  {r.amount_spent === 0 ? (
+                                    <span className="text-[10px] bg-stone-100 text-stone-500 font-semibold px-2 py-0.5 rounded-full border border-stone-200">
+                                      Pausado / Sem gasto
+                                    </span>
+                                  ) : (
+                                    <span className="text-stone-700 font-medium">
+                                      {r.campaign_name || "—"}
+                                    </span>
+                                  )}
                                 </td>
 
-                                <td className="py-2.5 px-3.5 text-right font-bold text-stone-900 tabular-nums whitespace-nowrap text-xs">
-                                  {money(r.amount_spent)}
+                                <td className="py-2.5 px-3.5 text-right tabular-nums whitespace-nowrap text-xs">
+                                  <span className={r.amount_spent > 0 ? "font-bold text-stone-900" : "text-stone-400 font-medium"}>
+                                    {money(r.amount_spent)}
+                                  </span>
                                 </td>
 
                                 <td className="py-2.5 px-3 text-center tabular-nums whitespace-nowrap text-xs">
-                                  {Number(r.clicks || 0).toLocaleString("pt-BR")}
+                                  <span className={Number(r.clicks || 0) > 0 ? "text-stone-700" : "text-stone-300"}>
+                                    {Number(r.clicks || 0).toLocaleString("pt-BR")}
+                                  </span>
                                 </td>
 
                                 <td className="py-2.5 px-4 text-center tabular-nums whitespace-nowrap text-xs">
