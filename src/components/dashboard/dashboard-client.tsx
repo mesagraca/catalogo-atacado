@@ -1,6 +1,7 @@
 "use client";
 
 import { MarketplaceHealthClient } from "./marketplace-health-client";
+import { getOrderStatusBadge } from "@/lib/order-status-badge";
 
 import { useEffect, useState, useTransition, useRef, Fragment } from "react";
 import Link from "next/link";
@@ -2816,21 +2817,24 @@ export function DashboardClient() {
                           onClick={() => setOrderStatusFilter("a_enviar")}
                           className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
                             orderStatusFilter === "a_enviar"
-                              ? "bg-emerald-700 text-white shadow-2xs font-semibold"
-                              : "text-emerald-800 hover:bg-emerald-50"
+                              ? "bg-amber-800 text-white shadow-2xs font-bold"
+                              : "text-amber-900 hover:bg-amber-100/60"
                           }`}
+                          title="Filtrar pedidos com pagamento aprovado que aguardam separação e envio"
                         >
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse" />
+                          <span className="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse" />
                           A Enviar
                         </button>
                         <button
                           onClick={() => setOrderStatusFilter("enviados")}
-                          className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
+                          className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
                             orderStatusFilter === "enviados"
-                              ? "bg-white text-stone-900 shadow-2xs font-semibold"
-                              : "text-stone-500 hover:text-stone-800"
+                              ? "bg-sky-800 text-white shadow-2xs font-bold"
+                              : "text-sky-900 hover:bg-sky-100/60"
                           }`}
+                          title="Filtrar pedidos despachados e em transporte"
                         >
+                          <span className={`w-2 h-2 rounded-full ${orderStatusFilter === "enviados" ? "bg-sky-300" : "bg-sky-500"}`} />
                           Enviados
                         </button>
                       </div>
@@ -2879,11 +2883,18 @@ export function DashboardClient() {
                                   <Icon className="w-3.5 h-3.5 flex-shrink-0" />
                                   <span>{cfg.label}</span>
                                 </span>
-                                {o.status && (
-                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-stone-100 text-stone-700 border-stone-200">
-                                    {o.status}
-                                  </span>
-                                )}
+                                {o.status && (() => {
+                                  const statusCfg = getOrderStatusBadge(o.status);
+                                  return (
+                                    <span
+                                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1 ${statusCfg.badgeClass}`}
+                                      title={statusCfg.description}
+                                    >
+                                      <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotClass}`} />
+                                      <span>{statusCfg.label}</span>
+                                    </span>
+                                  );
+                                })()}
                               </div>
                               <span className="text-xs text-stone-600 font-mono font-bold">
                                 #{o.id}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { getOrderStatusBadge } from "@/lib/order-status-badge";
 import type {
   MarketplaceHealthDashboardResponse,
   ChannelHealthSummary,
@@ -908,9 +909,18 @@ export function MarketplaceHealthClient({ className = "" }: Props) {
                                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200">
                                     <div className="flex items-center gap-2 flex-wrap">
                                       <ChannelBadge channel={ord.channel} pointSale={ord.point_sale} />
-                                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-stone-100 text-stone-700 border border-stone-200">
-                                        {ord.status}
-                                      </span>
+                                      {(() => {
+                                        const statusCfg = getOrderStatusBadge(ord.status);
+                                        return (
+                                          <span
+                                            className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border inline-flex items-center gap-1.5 ${statusCfg.badgeClass}`}
+                                            title={statusCfg.description}
+                                          >
+                                            <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotClass}`} />
+                                            <span>{statusCfg.label}</span>
+                                          </span>
+                                        );
+                                      })()}
                                     </div>
                                     <div className="flex items-center gap-2 self-start sm:self-auto">
                                       <span className="font-mono font-bold text-stone-900 text-sm">
