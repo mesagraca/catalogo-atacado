@@ -1096,17 +1096,16 @@ export async function GET(request: Request) {
       .sort((a, b) => b.units_sold - a.units_sold);
 
     const platformLabels: Record<AdPlatform, string> = {
+      meta_ads: "Meta Ads (Instagram & Facebook)",
       shopee_ads: "Shopee Ads",
-      mercado_ads: "Mercado Ads",
+      mercado_ads: "Mercado Ads (Mercado Livre)",
       tiktok_ads: "TikTok Ads",
-      meta_ads: "Meta Ads (Insta/Face)",
       google_ads: "Google Ads",
     };
 
-    const adSummaryArray: AdSpendSummary[] = (
-      Object.keys(adSummaryByPlatform) as AdPlatform[]
-    ).map((p) => {
-      const info = adSummaryByPlatform[p];
+    const activeAdPlatforms: AdPlatform[] = ["meta_ads", "shopee_ads", "mercado_ads", "tiktok_ads"];
+    const adSummaryArray: AdSpendSummary[] = activeAdPlatforms.map((p) => {
+      const info = adSummaryByPlatform[p] || { spent: 0, imp: 0, clk: 0, conv: 0 };
       return {
         platform: p,
         platform_name: platformLabels[p],

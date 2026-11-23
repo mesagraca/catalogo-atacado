@@ -679,6 +679,31 @@ export function DashboardClient() {
     }
   };
 
+  const [isSyncingAds, setIsSyncingAds] = useState<boolean>(false);
+  const [syncAdsResult, setSyncAdsResult] = useState<string | null>(null);
+
+  const handleSyncAds = async () => {
+    setIsSyncingAds(true);
+    setSyncAdsResult(null);
+    try {
+      const res = await fetch("/api/admin/dashboard/ads/sync", {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json.message || "Falha na sincronização de anúncios.");
+      }
+      setSyncAdsResult(json.message || "Sincronização executada com sucesso.");
+      await loadDashboard();
+      setTimeout(() => setSyncAdsResult(null), 6000);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Erro ao sincronizar anúncios.";
+      alert(msg);
+    } finally {
+      setIsSyncingAds(false);
+    }
+  };
+
   const kpis = data?.kpis;
   const grossRevenue = kpis?.gross_revenue || 0;
   const shippingCost = kpis?.shipping_cost || 0;
@@ -3789,54 +3814,92 @@ export function DashboardClient() {
                     Investimento por Plataforma Publicitária
                   </h2>
                   <p className="text-xs text-stone-500">
-                    Distribuição dos gastos em Shopee Ads, Mercado Ads, TikTok Ads e redes sociais.
+                    Distribuição dos gastos em Meta Ads (Instagram/FB), Shopee Ads, Mercado Ads e TikTok Ads.
                   </p>
                 </div>
-                <button
-                  onClick={() => setModalOpen(true)}
-                  className="bg-amber-950 hover:bg-amber-900 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-xs self-start sm:self-auto"
-                >
-                  + Novo Lançamento de Anúncio
-                </button>
+                <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={handleSyncAds}
+                    disabled={isSyncingAds}
+                    className="bg-stone-900 hover:bg-stone-800 disabled:opacity-50 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
+                    title="Consultar e sincronizar as APIs oficiais das plataformas de anúncios"
+                  >
+                    <span className={isSyncingAds ? "animate-spin" : ""}>🔄</span>
+                    <span>{isSyncingAds ? "Sincronizando..." : "Sincronizar APIs de Ads"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setModalOpen(true)}
+                    className="bg-amber-950 hover:bg-amber-900 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs cursor-pointer active:scale-[0.98]"
+                  >
+                    + Novo Lançamento
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {data?.ads.by_platform.map((ad) => (
-                  <div
-                    key={ad.platform}
-                    className="border border-stone-200 rounded-xl p-4 bg-stone-50/50 flex flex-col justify-between gap-2"
+              {syncAdsResult && (
+                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-medium flex items-center justify-between shadow-2xs">
+                  <span>✨ {syncAdsResult}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSyncAdsResult(null)}
+                    className="text-emerald-700 font-bold hover:underline ml-2"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-stone-900 text-sm">
-                        {ad.platform_name}
-                      </span>
-                      {ad.roas && (
-                        <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                          ROAS {ad.roas.toFixed(1)}x
+                    ✕
+                  </button>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {data?.ads.by_platform.map((ad) => {
+                  const channelIcon =
+                    ad.platform === "meta_ads"
+                      ? "🟣"
+                      : ad.platform === "shopee_ads"
+                      ? "🟠"
+                      : ad.platform === "mercado_ads"
+                      ? "🟡"
+                      : "⚫";
+
+                  return (
+                    <div
+                      key={ad.platform}
+                      className="border border-stone-200 rounded-xl p-4 bg-stone-50/50 flex flex-col justify-between gap-3 shadow-2xs hover:border-stone-300 transition"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-stone-900 text-sm flex items-center gap-1.5">
+                          <span>{channelIcon}</span>
+                          <span>{ad.platform_name}</span>
                         </span>
-                      )}
-                    </div>
+                        {ad.roas && ad.roas > 0 ? (
+                          <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                            ROAS {ad.roas.toFixed(1)}x
+                          </span>
+                        ) : null}
+                      </div>
 
-                    <div className="text-xl font-bold text-stone-900">
-                      {money(ad.total_spent)}
-                    </div>
+                      <div className="text-2xl font-bold text-stone-900 tabular-nums">
+                        {money(ad.total_spent)}
+                      </div>
 
-                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-stone-200 text-center text-xs text-stone-500">
-                      <div>
-                        <div className="text-stone-800 font-semibold">{ad.impressions}</div>
-                        <div className="text-[10px]">Impressões</div>
-                      </div>
-                      <div>
-                        <div className="text-stone-800 font-semibold">{ad.clicks}</div>
-                        <div className="text-[10px]">Cliques</div>
-                      </div>
-                      <div>
-                        <div className="text-stone-800 font-semibold">{ad.conversions}</div>
-                        <div className="text-[10px]">Conversões</div>
+                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-stone-200 text-center text-xs text-stone-500">
+                        <div>
+                          <div className="text-stone-800 font-semibold tabular-nums">{ad.impressions}</div>
+                          <div className="text-[10px]">Impressões</div>
+                        </div>
+                        <div>
+                          <div className="text-stone-800 font-semibold tabular-nums">{ad.clicks}</div>
+                          <div className="text-[10px]">Cliques</div>
+                        </div>
+                        <div>
+                          <div className="text-stone-800 font-semibold tabular-nums">{ad.conversions}</div>
+                          <div className="text-[10px]">Conversões</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -3925,11 +3988,10 @@ export function DashboardClient() {
                   }
                   className="w-full border border-stone-300 rounded-lg p-2.5 text-stone-900 bg-white"
                 >
+                  <option value="meta_ads">🟣 Meta Ads (Instagram &amp; Facebook)</option>
                   <option value="shopee_ads">🟠 Shopee Ads</option>
                   <option value="mercado_ads">🟡 Mercado Ads (Mercado Livre)</option>
                   <option value="tiktok_ads">⚫ TikTok Ads</option>
-                  <option value="meta_ads">🔵 Meta Ads (Instagram &amp; Facebook)</option>
-                  <option value="google_ads">🔴 Google Ads (Shopping &amp; Search)</option>
                 </select>
               </div>
 
