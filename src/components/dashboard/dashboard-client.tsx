@@ -447,6 +447,21 @@ export function DashboardClient() {
     };
   };
 
+  const formatDateBR = (dateStr?: string) => {
+    if (!dateStr) return "";
+    const parts = dateStr.split("-");
+    if (parts.length !== 3) return dateStr;
+    const [year, month, day] = parts;
+    return `${day}/${month}/${year}`;
+  };
+
+  const isToday = (dateStr?: string) => {
+    if (!dateStr) return false;
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    return dateStr === todayStr;
+  };
+
   // Estados expansíveis
   const [expandedOrderIds, setExpandedOrderIds] = useState<Record<string, boolean>>({});
   const [expandedProductSkus, setExpandedProductSkus] = useState<Record<string, boolean>>({});
@@ -766,8 +781,19 @@ export function DashboardClient() {
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">
               O Caixa Real da Sua Loja
             </h1>
-            <p className="text-sm text-stone-600 mt-1">
-              Entenda exatamente quanto entrou, quanto foi para tecido e fábrica, as taxas dos canais e o que sobrou limpo no seu bolso.
+            <p className="text-sm text-stone-600 mt-1 flex items-center gap-2 flex-wrap">
+              <span>
+                Entenda exatamente quanto entrou, quanto foi para tecido e fábrica, as taxas dos canais e o que sobrou limpo no seu bolso.
+              </span>
+              {data?.start_date && data?.end_date && (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-stone-200/80 text-stone-800 text-[11px] font-semibold border border-stone-300">
+                  <span>📅</span>
+                  <span>
+                    Período: <strong>{formatDateBR(data.start_date)}</strong> até <strong>{formatDateBR(data.end_date)}</strong>
+                    {isToday(data.end_date) ? " (Hoje)" : ""}
+                  </span>
+                </span>
+              )}
             </p>
           </div>
 
@@ -1005,6 +1031,21 @@ export function DashboardClient() {
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Total Recebido das Vendas
                 </span>
+                {data?.start_date && data?.end_date && (
+                  <span
+                    className="text-[11px] font-semibold bg-amber-50 text-amber-950 border border-amber-300/80 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 shadow-2xs"
+                    title={`Intervalo exato analisado: de ${formatDateBR(data.start_date)} até ${formatDateBR(data.end_date)} (${data.period_days || days} dias)`}
+                  >
+                    <span>📅</span>
+                    <span>
+                      {formatDateBR(data.start_date)} até {formatDateBR(data.end_date)}
+                      {isToday(data.end_date) ? " (Hoje)" : ""}
+                    </span>
+                    <span className="text-[10px] text-amber-800/80 font-normal">
+                      · {data.period_days || days} dias
+                    </span>
+                  </span>
+                )}
                 <span className="text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                   Conferência Oficial Tray: 100% Sincronizado
@@ -1015,7 +1056,13 @@ export function DashboardClient() {
                   {loading ? "..." : money(grossRevenue)}
                 </span>
                 <span className="text-xs text-stone-500 font-medium">
-                  {kpis?.total_orders || 0} pedidos pagos e aprovados no período · Ticket Médio: {money(kpis?.average_ticket)}
+                  {kpis?.total_orders || 0} pedidos pagos e aprovados
+                  {data?.start_date && data?.end_date && (
+                    <span className="text-stone-700 font-semibold">
+                      {" "}(de {formatDateBR(data.start_date).slice(0, 5)} a {formatDateBR(data.end_date).slice(0, 5)})
+                    </span>
+                  )}
+                  {" "}· Ticket Médio: {money(kpis?.average_ticket)}
                 </span>
               </div>
             </div>
@@ -2737,9 +2784,17 @@ export function DashboardClient() {
                 <div className="bg-white rounded-2xl border border-stone-200 shadow-xs p-6">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-5">
                     <div>
-                      <h2 className="text-base font-bold text-stone-900">
-                        Últimos Pedidos Recebidos
-                      </h2>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-base font-bold text-stone-900">
+                          Últimos Pedidos Recebidos
+                        </h2>
+                        {data?.start_date && data?.end_date && (
+                          <span className="text-[11px] font-semibold bg-stone-100 text-stone-800 border border-stone-300 px-2 py-0.5 rounded-full inline-flex items-center gap-1 shadow-2xs">
+                            <span>📅</span>
+                            <span>{formatDateBR(data.start_date)} a {formatDateBR(data.end_date)}</span>
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-stone-500">
                         Clique em qualquer pedido para conferir os produtos, frete, taxa e lucro de cada compra.
                       </p>
