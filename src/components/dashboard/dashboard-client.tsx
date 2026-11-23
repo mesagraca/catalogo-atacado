@@ -516,7 +516,8 @@ export function DashboardClient() {
   // Filtros operacionais
   const [productSearch, setProductSearch] = useState<string>("");
   const [orderSearch, setOrderSearch] = useState<string>("");
-  const [orderStatusFilter, setOrderStatusFilter] = useState<"todos" | "a_enviar" | "enviados">("todos");
+  type OrderStatusFilter = "todos" | "a_enviar" | "enviados" | "finalizados" | "cancelados" | "aguardando_pgto";
+  const [orderStatusFilter, setOrderStatusFilter] = useState<OrderStatusFilter>("todos");
   const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
   const [pinnedPointIndex, setPinnedPointIndex] = useState<number | null>(null);
 
@@ -2763,14 +2764,55 @@ export function DashboardClient() {
         {activeTab === "pedidos" && (
           <div className="space-y-6">
             {(() => {
-              const filteredOrders = (data?.recent_orders || []).filter((o) => {
-                if (orderStatusFilter === "a_enviar") {
-                  const s = (o.status || "").toLowerCase();
-                  if (!s.includes("a enviar") && !s.includes("aguardando") && !s.includes("pendente")) return false;
-                } else if (orderStatusFilter === "enviados") {
-                  const s = (o.status || "").toLowerCase();
-                  if (!s.includes("enviado") && !s.includes("entregue") && !s.includes("finalizado")) return false;
-                }
+              const allOrders = data?.recent_orders || [];
+
+              // Classificadores de status por ciclo operacional
+              const isAEnviar = (s: string) =>
+                s.includes("a enviar") ||
+                s.includes("aguardando envio") ||
+                s.includes("pronto para envio") ||
+                s.includes("a despachar");
+
+              const isFinalizado = (s: string) =>
+                s.includes("finalizado") ||
+                s.includes("entregue") ||
+                s.includes("concluido") ||
+                s.includes("concluído");
+
+              const isCancelado = (s: string) =>
+                s.includes("cancelado") ||
+                s.includes("devolvido") ||
+                s.includes("estornado") ||
+                s.includes("rejeitado");
+
+              const isAguardandoPgto = (s: string) =>
+                s.includes("aguardando pagamento") ||
+                s.includes("aguardando vindi") ||
+                s.includes("pendente");
+
+              const isEnviado = (s: string) =>
+                (s.includes("enviado") ||
+                  s.includes("transporte") ||
+                  s.includes("monitoramento") ||
+                  s.includes("despachado")) &&
+                !isFinalizado(s) &&
+                !isCancelado(s);
+
+              // Contagens dinâmicas
+              const countAEnviar = allOrders.filter((o) => isAEnviar((o.status || "").toLowerCase())).length;
+              const countEnviados = allOrders.filter((o) => isEnviado((o.status || "").toLowerCase())).length;
+              const countFinalizados = allOrders.filter((o) => isFinalizado((o.status || "").toLowerCase())).length;
+              const countCancelados = allOrders.filter((o) => isCancelado((o.status || "").toLowerCase())).length;
+              const countAguardandoPgto = allOrders.filter((o) => isAguardandoPgto((o.status || "").toLowerCase())).length;
+
+              const filteredOrders = allOrders.filter((o) => {
+                const s = (o.status || "").toLowerCase();
+                if (orderStatusFilter === "a_enviar" && !isAEnviar(s)) return false;
+                if (orderStatusFilter === "enviados" && !isEnviado(s)) return false;
+                if (orderStatusFilter === "finalizados" && !isFinalizado(s)) return false;
+                if (orderStatusFilter === "cancelados" && !isCancelado(s)) return false;
+                if (orderStatusFilter === "aguardando_pgto" && !isAguardandoPgto(s)) return false;
+
                 if (!orderSearch) return true;
                 const q = orderSearch.toLowerCase().trim();
                 return (
@@ -2802,18 +2844,24 @@ export function DashboardClient() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="flex items-center bg-stone-100 p-1 rounded-xl gap-1 text-xs font-semibold">
+                      {/* Barra de Filtros por Fases com Scroll Suave */}
+                      <div className="flex items-center bg-stone-100 p-1 rounded-xl gap-1 text-xs font-semibold overflow-x-auto whitespace-nowrap scrollbar-none max-w-full">
+                        {/* Todos */}
                         <button
+                          type="button"
                           onClick={() => setOrderStatusFilter("todos")}
                           className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
                             orderStatusFilter === "todos"
-                              ? "bg-white text-stone-900 shadow-2xs font-semibold"
+                              ? "bg-white text-stone-900 shadow-2xs font-bold"
                               : "text-stone-500 hover:text-stone-800"
                           }`}
                         >
-                          Todos ({data?.recent_orders?.length || 0})
+                          Todos ({allOrders.length})
                         </button>
+
+                        {/* A Enviar */}
                         <button
+                          type="button"
                           onClick={() => setOrderStatusFilter("a_enviar")}
                           className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
                             orderStatusFilter === "a_enviar"
@@ -2823,9 +2871,12 @@ export function DashboardClient() {
                           title="Filtrar pedidos com pagamento aprovado que aguardam separação e envio"
                         >
                           <span className="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse" />
-                          A Enviar
+                          A Enviar ({countAEnviar})
                         </button>
+
+                        {/* Enviados */}
                         <button
+                          type="button"
                           onClick={() => setOrderStatusFilter("enviados")}
                           className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
                             orderStatusFilter === "enviados"
@@ -2835,8 +2886,57 @@ export function DashboardClient() {
                           title="Filtrar pedidos despachados e em transporte"
                         >
                           <span className={`w-2 h-2 rounded-full ${orderStatusFilter === "enviados" ? "bg-sky-300" : "bg-sky-500"}`} />
-                          Enviados
+                          Enviados ({countEnviados})
                         </button>
+
+                        {/* Finalizados */}
+                        <button
+                          type="button"
+                          onClick={() => setOrderStatusFilter("finalizados")}
+                          className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
+                            orderStatusFilter === "finalizados"
+                              ? "bg-emerald-800 text-white shadow-2xs font-bold"
+                              : "text-emerald-900 hover:bg-emerald-100/60"
+                          }`}
+                          title="Filtrar pedidos com entrega confirmada e ciclo 100% concluído"
+                        >
+                          <span className={`w-2 h-2 rounded-full ${orderStatusFilter === "finalizados" ? "bg-emerald-300" : "bg-emerald-500"}`} />
+                          Finalizados ({countFinalizados})
+                        </button>
+
+                        {/* Cancelados (se houver ou se selecionado) */}
+                        {(countCancelados > 0 || orderStatusFilter === "cancelados") && (
+                          <button
+                            type="button"
+                            onClick={() => setOrderStatusFilter("cancelados")}
+                            className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
+                              orderStatusFilter === "cancelados"
+                                ? "bg-rose-800 text-white shadow-2xs font-bold"
+                                : "text-rose-900 hover:bg-rose-100/60"
+                            }`}
+                            title="Filtrar pedidos cancelados ou estornados"
+                          >
+                            <span className={`w-2 h-2 rounded-full ${orderStatusFilter === "cancelados" ? "bg-rose-300" : "bg-rose-500"}`} />
+                            Cancelados ({countCancelados})
+                          </button>
+                        )}
+
+                        {/* Aguardando Pagamento (se houver ou se selecionado) */}
+                        {(countAguardandoPgto > 0 || orderStatusFilter === "aguardando_pgto") && (
+                          <button
+                            type="button"
+                            onClick={() => setOrderStatusFilter("aguardando_pgto")}
+                            className={`px-3 py-1.5 min-h-[38px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
+                              orderStatusFilter === "aguardando_pgto"
+                                ? "bg-yellow-700 text-white shadow-2xs font-bold"
+                                : "text-yellow-950 hover:bg-yellow-100/60"
+                            }`}
+                            title="Filtrar pedidos aguardando confirmação do pagamento"
+                          >
+                            <span className={`w-2 h-2 rounded-full ${orderStatusFilter === "aguardando_pgto" ? "bg-yellow-300" : "bg-yellow-500"}`} />
+                            Aguardando Pgto ({countAguardandoPgto})
+                          </button>
+                        )}
                       </div>
 
                       <div className="relative">
