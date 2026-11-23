@@ -505,24 +505,33 @@ export async function GET(request: Request) {
       }
     }
 
-    // 2. Buscar pedidos na Tray (com paginação adicional para cobrir períodos maiores e datas personalizadas)
-    const ordersListRes = await trayApiFetch<{ Orders?: TrayOrderItem[] }>(
-      "orders?sort=id_desc&limit=50&page=1",
-    );
-    let rawOrders = ordersListRes.Orders || [];
-    const oldestOrderDate = rawOrders[rawOrders.length - 1]?.Order?.date;
+    // 2. Buscar pedidos na Tray com Graceful Degradation (não quebra a dashboard se a Tray oscilar ou expirar)
+    let rawOrders: TrayOrderItem[] = [];
+    let trayWarning: string | null = null;
 
-    if (days > 40 || (oldestOrderDate && oldestOrderDate > startDate)) {
-      try {
-        const ordersPage2Res = await trayApiFetch<{ Orders?: TrayOrderItem[] }>(
-          "orders?sort=id_desc&limit=50&page=2",
-        );
-        if (ordersPage2Res?.Orders) {
-          rawOrders = [...rawOrders, ...ordersPage2Res.Orders];
+    try {
+      const ordersListRes = await trayApiFetch<{ Orders?: TrayOrderItem[] }>(
+        "orders?sort=id_desc&limit=50&page=1",
+      );
+      rawOrders = ordersListRes?.Orders || [];
+      const oldestOrderDate = rawOrders[rawOrders.length - 1]?.Order?.date;
+
+      if (days > 40 || (oldestOrderDate && oldestOrderDate > startDate)) {
+        try {
+          const ordersPage2Res = await trayApiFetch<{ Orders?: TrayOrderItem[] }>(
+            "orders?sort=id_desc&limit=50&page=2",
+          );
+          if (ordersPage2Res?.Orders) {
+            rawOrders = [...rawOrders, ...ordersPage2Res.Orders];
+          }
+        } catch (err) {
+          console.warn("[Dashboard:API] Falha ao carregar página 2 de pedidos:", err);
         }
-      } catch (err) {
-        console.warn("[Dashboard:API] Falha ao carregar página 2 de pedidos:", err);
       }
+    } catch (trayErr: unknown) {
+      const msg = trayErr instanceof Error ? trayErr.message : String(trayErr);
+      trayWarning = `Conexão com a Tray Commerce temporariamente indisponível (${msg}). O catálogo e anúncios continuam operando normalmente.`;
+      console.warn("[Dashboard:API] Aviso de conexão com a Tray:", msg);
     }
 
     // Calcular KPIs oficiais idênticos aos do painel da Tray
@@ -1166,6 +1175,7 @@ export async function GET(request: Request) {
       end_date: endDate,
       scope,
       missing_costs_count: totalMissingCostsCount,
+      tray_warning: trayWarning,
       tray_kpis: {
         total_orders_count: periodOrders.length,
         total_orders_revenue: trayTotalOrdersRevenue,

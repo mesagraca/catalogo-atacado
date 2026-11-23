@@ -674,10 +674,16 @@ export function DashboardClient() {
       }
 
       const res = await fetch(queryUrl);
+      const json: DashboardResponse = await res.json().catch(() => null as any);
       if (!res.ok) {
-        throw new Error(`Erro ${res.status}: não foi possível carregar a dashboard.`);
+        const errorDetail =
+          (json as any)?.error ||
+          (json as any)?.message ||
+          (res.status === 500
+            ? "O servidor encontrou uma instabilidade temporária ao consultar os marketplaces."
+            : `Código HTTP ${res.status}`);
+        throw new Error(`Falha na sincronização (HTTP ${res.status}): ${errorDetail}`);
       }
-      const json: DashboardResponse = await res.json();
       startTransition(() => {
         setData(json);
       });
@@ -1469,8 +1475,44 @@ export function DashboardClient() {
         </nav>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
-            {error}
+          <div className="bg-rose-50 border border-rose-300 text-rose-950 p-4 sm:p-5 rounded-2xl mb-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-in fade-in duration-200">
+            <div className="flex items-start gap-3.5">
+              <span className="text-2xl flex-shrink-0">⚠️</span>
+              <div>
+                <h4 className="font-bold text-sm text-rose-950">
+                  Instabilidade Temporária na Conexão de Dados
+                </h4>
+                <p className="text-xs text-rose-800 mt-1 leading-relaxed">
+                  {error}
+                </p>
+                <p className="text-[11px] text-rose-700/80 mt-1">
+                  Se o problema persistir, a sincronização será restabelecida automaticamente no próximo ciclo de renovação das credenciais da plataforma.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={loadDashboard}
+              className="bg-rose-900 hover:bg-rose-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-xs cursor-pointer self-start sm:self-auto flex-shrink-0 active:scale-[0.98] inline-flex items-center gap-1.5"
+            >
+              <RefreshIcon className="w-3.5 h-3.5" />
+              <span>Tentar Novamente</span>
+            </button>
+          </div>
+        )}
+
+        {data?.tray_warning && (
+          <div className="bg-amber-50 border border-amber-300 text-amber-950 p-4 rounded-2xl mb-6 shadow-xs flex items-center justify-between gap-3 animate-in fade-in duration-200">
+            <div className="flex items-start sm:items-center gap-3 text-xs">
+              <span className="text-xl flex-shrink-0">ℹ️</span>
+              <div>
+                <strong className="font-bold text-amber-950">Aviso da Conexão Tray Commerce:</strong>{" "}
+                <span className="text-amber-900">{data.tray_warning}</span>
+                <span className="block text-[11px] text-amber-800/80 mt-0.5">
+                  Os dados de Catálogo, Produtos e Anúncios (Shopee &amp; Meta Ads) continuam operacionais.
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
