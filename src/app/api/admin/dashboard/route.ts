@@ -1176,9 +1176,9 @@ export async function GET(request: Request) {
       ads: {
         total_spent: totalAdSpend,
         by_platform: adSummaryArray,
-        recent_records: recentAdRecords.slice(0, 15),
+        recent_records: recentAdRecords,
       },
-      recent_orders: recentOrdersList.slice(0, 30),
+      recent_orders: recentOrdersList,
     };
 
     return NextResponse.json(responsePayload);

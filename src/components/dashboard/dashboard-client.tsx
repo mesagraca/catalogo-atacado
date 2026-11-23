@@ -246,6 +246,69 @@ function ChannelBadgeIcon({ channel, className = "w-4 h-4" }: { channel: SalesCh
   );
 }
 
+/**
+ * Logo oficial de alta resolução para cada plataforma de anúncios.
+ */
+function PlatformLogoIcon({
+  platform,
+  className = "w-4 h-4",
+}: {
+  platform: AdPlatform | string;
+  className?: string;
+}) {
+  if (platform === "shopee_ads" || platform === "shopee") {
+    return (
+      <img
+        src="/icons/shopee.png"
+        alt="Shopee Ads"
+        className={`inline-block object-contain rounded-xs ${className}`}
+        loading="lazy"
+      />
+    );
+  }
+  if (platform === "mercado_ads" || platform === "mercadolivre") {
+    return (
+      <img
+        src="/icons/mercadolivre.png"
+        alt="Mercado Ads"
+        className={`inline-block object-contain rounded-xs ${className}`}
+        loading="lazy"
+      />
+    );
+  }
+  if (platform === "tiktok_ads" || platform === "tiktok") {
+    return (
+      <img
+        src="/icons/tiktok.ico"
+        alt="TikTok Ads"
+        className={`inline-block object-contain rounded-xs ${className}`}
+        loading="lazy"
+      />
+    );
+  }
+  if (platform === "meta_ads" || platform === "facebook" || platform === "instagram") {
+    return (
+      <span
+        className={`inline-flex items-center justify-center rounded-md bg-[#0081FB]/10 text-[#0081FB] p-0.5 border border-[#0081FB]/20 flex-shrink-0 ${className}`}
+        title="Meta Ads (Instagram & Facebook)"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z" />
+        </svg>
+      </span>
+    );
+  }
+  return <span className={className}>📢</span>;
+}
+
+const PLATFORM_CHANNEL_MAP: Record<string, SalesChannel> = {
+  shopee_ads: "shopee",
+  mercado_ads: "mercadolivre",
+  tiktok_ads: "tiktok",
+  meta_ads: "site",
+  google_ads: "site",
+};
+
 function ShopeeIcon({ className = "w-4 h-4" }: { className?: string }) {
   return <ChannelBadgeIcon channel="shopee" className={className} />;
 }
@@ -680,6 +743,8 @@ export function DashboardClient() {
   };
 
   const [isSyncingAds, setIsSyncingAds] = useState<boolean>(false);
+  const [selectedAdPlatform, setSelectedAdPlatform] = useState<"all" | AdPlatform>("all");
+  const [expandedAdRecordId, setExpandedAdRecordId] = useState<string | null>(null);
   const [syncAdsResult, setSyncAdsResult] = useState<string | null>(null);
 
   const handleSyncAds = async () => {
@@ -709,7 +774,7 @@ export function DashboardClient() {
   const shippingCost = kpis?.shipping_cost || 0;
   const productCost = kpis?.product_cost_cmv || 0;
   const commissions = kpis?.platform_commissions || 0;
-  const netProfit = kpis?.final_net_profit || 0;
+  const netProfit = kpis?.operational_profit || 0;
 
   // Cálculo percentual para a esteira
   const shippingPct = grossRevenue > 0 ? (shippingCost / grossRevenue) * 100 : 0;
@@ -1223,7 +1288,7 @@ export function DashboardClient() {
                   </span>
                 </div>
                 <div className="mt-3 pt-2 border-t border-emerald-600/80 text-[11px] text-emerald-100">
-                  Dinheiro 100% livre após pagar tudo
+                  Lucro operacional líquido das vendas
                 </div>
               </div>
             </div>
@@ -3757,212 +3822,642 @@ export function DashboardClient() {
         {/* ------------------------------------------------------------------------- */}
         {/* ABA 4: ANÚNCIOS & RETORNO (ROAS)                                          */}
         {/* ------------------------------------------------------------------------- */}
-        {activeTab === "anuncios" && (
-          <div className="space-y-6">
-            {/* Cards de Anúncios */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
-                  Total Investido em Ads
-                </span>
-                <p className="text-2xl font-bold text-stone-900 mt-2">
-                  {loading ? "..." : money(kpis?.total_ad_spend)}
-                </p>
-                <p className="text-xs text-stone-400 mt-1">Período de {days} dias</p>
+        {activeTab === "anuncios" && (() => {
+          const isPlatformFiltered = selectedAdPlatform !== "all";
+          const currentPlatformInfo = isPlatformFiltered
+            ? data?.ads.by_platform.find((p) => p.platform === selectedAdPlatform)
+            : null;
+          const targetChannelKey = isPlatformFiltered
+            ? PLATFORM_CHANNEL_MAP[selectedAdPlatform]
+            : null;
+          const targetChannelStats = targetChannelKey
+            ? data?.channels.find((c) => c.channel === targetChannelKey)
+            : null;
+
+          // Métricas dinâmicas do topo
+          const displayAdSpend = isPlatformFiltered
+            ? currentPlatformInfo?.total_spent || 0
+            : kpis?.total_ad_spend || 0;
+
+          const displayRevenue = isPlatformFiltered
+            ? targetChannelStats?.gross_revenue || 0
+            : grossRevenue || 0;
+
+          const displayOrdersCount = isPlatformFiltered
+            ? targetChannelStats?.orders_count || 0
+            : kpis?.total_orders || 0;
+
+          const displayRoas = displayAdSpend > 0 ? displayRevenue / displayAdSpend : 0;
+          const displayCac =
+            displayOrdersCount > 0 && displayAdSpend > 0
+              ? displayAdSpend / displayOrdersCount
+              : 0;
+
+          const channelOpProfit = targetChannelStats ? targetChannelStats.net_profit : 0;
+          const displayNetProfit = isPlatformFiltered
+            ? channelOpProfit - displayAdSpend
+            : kpis?.final_net_profit || 0;
+
+          const displayMarginPct =
+            displayRevenue > 0 ? (displayNetProfit / displayRevenue) * 100 : 0;
+
+          // Registros filtrados do histórico
+          const filteredRecords = (data?.ads.recent_records || []).filter((r) => {
+            if (selectedAdPlatform === "all") return true;
+            return r.platform === selectedAdPlatform;
+          });
+
+          return (
+            <div className="space-y-6">
+              {/* Barra de Filtros por Plataforma */}
+              <div className="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-bold uppercase tracking-wider text-stone-500 mr-1 flex items-center gap-1.5">
+                    <span>Filtro de Anúncios:</span>
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAdPlatform("all")}
+                    className={`text-xs font-semibold px-3 py-1.5 min-h-[34px] rounded-xl transition active:scale-[0.98] inline-flex items-center gap-1.5 cursor-pointer ${
+                      selectedAdPlatform === "all"
+                        ? "bg-stone-900 text-white shadow-xs font-bold"
+                        : "bg-stone-100 text-stone-700 hover:bg-stone-200"
+                    }`}
+                  >
+                    <span>🌐</span>
+                    <span>Todas as Plataformas</span>
+                    <span className="text-[10px] opacity-75 font-mono">
+                      ({data?.ads.recent_records.length || 0})
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAdPlatform("shopee_ads")}
+                    className={`text-xs font-semibold px-3 py-1.5 min-h-[34px] rounded-xl transition active:scale-[0.98] inline-flex items-center gap-1.5 cursor-pointer ${
+                      selectedAdPlatform === "shopee_ads"
+                        ? "bg-orange-700 text-white shadow-xs font-bold"
+                        : "bg-orange-50 text-orange-950 hover:bg-orange-100 border border-orange-200/60"
+                    }`}
+                  >
+                    <PlatformLogoIcon platform="shopee_ads" className="w-4 h-4" />
+                    <span>Shopee Ads</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAdPlatform("meta_ads")}
+                    className={`text-xs font-semibold px-3 py-1.5 min-h-[34px] rounded-xl transition active:scale-[0.98] inline-flex items-center gap-1.5 cursor-pointer ${
+                      selectedAdPlatform === "meta_ads"
+                        ? "bg-[#0081FB] text-white shadow-xs font-bold"
+                        : "bg-sky-50 text-sky-950 hover:bg-sky-100 border border-sky-200/60"
+                    }`}
+                  >
+                    <PlatformLogoIcon platform="meta_ads" className="w-4 h-4" />
+                    <span>Meta Ads (Instagram & FB)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAdPlatform("mercado_ads")}
+                    className={`text-xs font-semibold px-3 py-1.5 min-h-[34px] rounded-xl transition active:scale-[0.98] inline-flex items-center gap-1.5 cursor-pointer ${
+                      selectedAdPlatform === "mercado_ads"
+                        ? "bg-amber-500 text-stone-900 shadow-xs font-bold"
+                        : "bg-amber-50 text-amber-950 hover:bg-amber-100 border border-amber-200/60"
+                    }`}
+                  >
+                    <PlatformLogoIcon platform="mercado_ads" className="w-4 h-4" />
+                    <span>Mercado Ads</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAdPlatform("tiktok_ads")}
+                    className={`text-xs font-semibold px-3 py-1.5 min-h-[34px] rounded-xl transition active:scale-[0.98] inline-flex items-center gap-1.5 cursor-pointer ${
+                      selectedAdPlatform === "tiktok_ads"
+                        ? "bg-stone-900 text-white shadow-xs font-bold"
+                        : "bg-stone-100 text-stone-800 hover:bg-stone-200 border border-stone-200/80"
+                    }`}
+                  >
+                    <PlatformLogoIcon platform="tiktok_ads" className="w-4 h-4" />
+                    <span>TikTok Ads</span>
+                  </button>
+                </div>
+
+                {isPlatformFiltered && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAdPlatform("all")}
+                    className="text-xs text-stone-500 hover:text-stone-800 font-semibold underline cursor-pointer self-start md:self-auto"
+                  >
+                    Limpar filtro de plataforma
+                  </button>
+                )}
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
-                  ROAS Geral (Retorno em Mídia)
-                </span>
-                <p className="text-2xl font-bold text-emerald-700 mt-2">
-                  {kpis && kpis.overall_roas > 0 ? `${kpis.overall_roas.toFixed(2)}x` : "—"}
-                </p>
-                <p className="text-xs text-stone-400 mt-1">Faturamento ÷ Investimento</p>
-              </div>
+              {/* Cards Dinâmicos de Anúncios Recalculados */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
+                    {isPlatformFiltered && (
+                      <PlatformLogoIcon platform={selectedAdPlatform} className="w-3.5 h-3.5" />
+                    )}
+                    <span>
+                      {selectedAdPlatform === "shopee_ads"
+                        ? "Gasto Shopee Ads"
+                        : selectedAdPlatform === "meta_ads"
+                        ? "Gasto Meta Ads"
+                        : selectedAdPlatform === "mercado_ads"
+                        ? "Gasto Mercado Ads"
+                        : selectedAdPlatform === "tiktok_ads"
+                        ? "Gasto TikTok Ads"
+                        : "Total Investido em Ads"}
+                    </span>
+                  </span>
+                  <p className="text-2xl font-bold text-stone-900 mt-2 tabular-nums">
+                    {loading ? "..." : money(displayAdSpend)}
+                  </p>
+                  <p className="text-xs text-stone-400 mt-1">Período de {days} dias</p>
+                </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
-                  CAC Médio por Pedido
-                </span>
-                <p className="text-2xl font-bold text-stone-800 mt-2">
-                  {kpis && kpis.total_orders > 0 && kpis.total_ad_spend > 0
-                    ? money(kpis.total_ad_spend / kpis.total_orders)
-                    : "—"}
-                </p>
-                <p className="text-xs text-stone-400 mt-1">Custo de Aquisição de Cliente</p>
-              </div>
+                <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+                    {selectedAdPlatform === "shopee_ads"
+                      ? "ROAS da Shopee"
+                      : selectedAdPlatform === "meta_ads"
+                      ? "Cliques & CPC Meta"
+                      : isPlatformFiltered
+                      ? `ROAS ${targetChannelStats?.channel_name || ""}`
+                      : "ROAS Geral (Retorno em Mídia)"}
+                  </span>
+                  {selectedAdPlatform === "meta_ads" ? (
+                    <div>
+                      <p className="text-2xl font-bold text-sky-700 mt-2 tabular-nums">
+                        {Number(currentPlatformInfo?.clicks || 0).toLocaleString("pt-BR")}{" "}
+                        <span className="text-xs font-medium text-stone-500">cliques</span>
+                      </p>
+                      <p className="text-xs text-stone-400 mt-1 tabular-nums">
+                        CPC Médio:{" "}
+                        {displayAdSpend > 0 && Number(currentPlatformInfo?.clicks || 0) > 0
+                          ? money(displayAdSpend / Number(currentPlatformInfo?.clicks || 1))
+                          : "—"}
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-2xl font-bold text-emerald-700 mt-2 tabular-nums">
+                        {displayRoas > 0 ? `${displayRoas.toFixed(2)}x` : "—"}
+                      </p>
+                      <p className="text-xs text-stone-400 mt-1">
+                        {isPlatformFiltered
+                          ? `Faturamento ${targetChannelStats?.channel_name || ""} ÷ Investimento`
+                          : "Faturamento Loja ÷ Investimento Total"}
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-              <div className="bg-amber-950 text-white p-5 rounded-2xl shadow-xs">
-                <span className="text-xs font-semibold uppercase tracking-wider text-amber-200">
-                  Lucro Final após Ads
-                </span>
-                <p className="text-2xl font-bold text-white mt-2">
-                  {loading ? "..." : money(kpis?.final_net_profit)}
-                </p>
-                <p className="text-xs text-amber-300 mt-1">
-                  Margem: {percent(kpis?.final_net_margin_percent)}
-                </p>
-              </div>
-            </div>
+                <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+                    {selectedAdPlatform === "meta_ads"
+                      ? "Alcance & Impressões"
+                      : isPlatformFiltered
+                      ? `CAC ${targetChannelStats?.channel_name || ""}`
+                      : "CAC Médio por Pedido"}
+                  </span>
+                  {selectedAdPlatform === "meta_ads" ? (
+                    <div>
+                      <p className="text-2xl font-bold text-stone-800 mt-2 tabular-nums">
+                        {Number(currentPlatformInfo?.impressions || 0).toLocaleString("pt-BR")}
+                      </p>
+                      <p className="text-xs text-stone-400 mt-1 tabular-nums">
+                        CPM Médio:{" "}
+                        {displayAdSpend > 0 && Number(currentPlatformInfo?.impressions || 0) > 0
+                          ? money((displayAdSpend / Number(currentPlatformInfo?.impressions || 1)) * 1000)
+                          : "—"}
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-2xl font-bold text-stone-800 mt-2 tabular-nums">
+                        {displayCac > 0 ? money(displayCac) : "—"}
+                      </p>
+                      <p className="text-xs text-stone-400 mt-1">
+                        {displayOrdersCount > 0
+                          ? `${displayOrdersCount} compras no canal`
+                          : "Custo de Aquisição de Cliente"}
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-            {/* Plataformas de Anúncios */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                <div>
-                  <h2 className="text-base font-bold text-stone-900">
-                    Investimento por Plataforma Publicitária
-                  </h2>
-                  <p className="text-xs text-stone-500">
-                    Distribuição dos gastos em Meta Ads (Instagram/FB), Shopee Ads, Mercado Ads e TikTok Ads.
+                <div className="bg-amber-950 text-white p-5 rounded-2xl shadow-xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-amber-200">
+                    {isPlatformFiltered
+                      ? `Lucro ${targetChannelStats?.channel_name || "Canal"} pós-Ads`
+                      : "Lucro Final após Ads"}
+                  </span>
+                  <p className="text-2xl font-bold text-white mt-2 tabular-nums">
+                    {loading ? "..." : money(displayNetProfit)}
+                  </p>
+                  <p className="text-xs text-amber-300 mt-1 tabular-nums">
+                    Margem: {percent(displayMarginPct)}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
-                  <button
-                    type="button"
-                    onClick={handleSyncAds}
-                    disabled={isSyncingAds}
-                    className="bg-stone-900 hover:bg-stone-800 disabled:opacity-50 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
-                    title="Consultar e sincronizar as APIs oficiais das plataformas de anúncios"
-                  >
-                    <span className={isSyncingAds ? "animate-spin" : ""}>🔄</span>
-                    <span>{isSyncingAds ? "Sincronizando..." : "Sincronizar APIs de Ads"}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setModalOpen(true)}
-                    className="bg-amber-950 hover:bg-amber-900 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs cursor-pointer active:scale-[0.98]"
-                  >
-                    + Novo Lançamento
-                  </button>
-                </div>
               </div>
 
-              {syncAdsResult && (
-                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-medium flex items-center justify-between shadow-2xs">
-                  <span>✨ {syncAdsResult}</span>
-                  <button
-                    type="button"
-                    onClick={() => setSyncAdsResult(null)}
-                    className="text-emerald-700 font-bold hover:underline ml-2"
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {data?.ads.by_platform.map((ad) => {
-                  const channelIcon =
-                    ad.platform === "meta_ads"
-                      ? "🟣"
-                      : ad.platform === "shopee_ads"
-                      ? "🟠"
-                      : ad.platform === "mercado_ads"
-                      ? "🟡"
-                      : "⚫";
-
-                  return (
-                    <div
-                      key={ad.platform}
-                      className="border border-stone-200 rounded-xl p-4 bg-stone-50/50 flex flex-col justify-between gap-3 shadow-2xs hover:border-stone-300 transition min-w-0"
+              {/* Plataformas de Anúncios (Grid de Cards Clicáveis) */}
+              <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-stone-900">
+                      Investimento por Plataforma Publicitária
+                    </h2>
+                    <p className="text-xs text-stone-500">
+                      Clique em um card para filtrar métricas e histórico da plataforma.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={handleSyncAds}
+                      disabled={isSyncingAds}
+                      className="bg-stone-900 hover:bg-stone-800 disabled:opacity-50 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
+                      title="Consultar e sincronizar as APIs oficiais das plataformas de anúncios"
                     >
-                      <div className="flex items-center justify-between gap-1.5 min-w-0">
-                        <span className="font-bold text-stone-900 text-sm flex items-center gap-1.5 truncate">
-                          <span className="flex-shrink-0">{channelIcon}</span>
-                          <span className="truncate whitespace-nowrap" title={ad.platform_name}>
-                            {ad.platform_name}
+                      <span className={isSyncingAds ? "animate-spin" : ""}>🔄</span>
+                      <span>{isSyncingAds ? "Sincronizando..." : "Sincronizar APIs de Ads"}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setModalOpen(true)}
+                      className="bg-amber-950 hover:bg-amber-900 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs cursor-pointer active:scale-[0.98]"
+                    >
+                      + Novo Lançamento
+                    </button>
+                  </div>
+                </div>
+
+                {syncAdsResult && (
+                  <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-medium flex items-center justify-between shadow-2xs">
+                    <span>✨ {syncAdsResult}</span>
+                    <button
+                      type="button"
+                      onClick={() => setSyncAdsResult(null)}
+                      className="text-emerald-700 font-bold hover:underline ml-2 cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {data?.ads.by_platform.map((ad) => {
+                    const isSelected = selectedAdPlatform === ad.platform;
+
+                    return (
+                      <div
+                        key={ad.platform}
+                        onClick={() =>
+                          setSelectedAdPlatform((prev) =>
+                            prev === ad.platform ? "all" : ad.platform
+                          )
+                        }
+                        className={`border rounded-xl p-4 flex flex-col justify-between gap-3 shadow-2xs transition min-w-0 cursor-pointer active:scale-[0.99] ${
+                          isSelected
+                            ? "bg-amber-50/70 border-amber-500 ring-2 ring-amber-400/40"
+                            : "bg-stone-50/50 border-stone-200 hover:border-stone-400 hover:bg-white"
+                        }`}
+                        title="Clique para filtrar apenas esta plataforma"
+                      >
+                        <div className="flex items-center justify-between gap-1.5 min-w-0">
+                          <span className="font-bold text-stone-900 text-sm flex items-center gap-2 truncate">
+                            <PlatformLogoIcon platform={ad.platform} className="w-5 h-5 flex-shrink-0" />
+                            <span className="truncate whitespace-nowrap" title={ad.platform_name}>
+                              {ad.platform_name}
+                            </span>
                           </span>
+                          {ad.roas && ad.roas > 0 ? (
+                            <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                              ROAS {ad.roas.toFixed(1)}x
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <div className="text-2xl font-black text-stone-900 tabular-nums whitespace-nowrap">
+                          {money(ad.total_spent)}
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-1 pt-2.5 border-t border-stone-200/80 text-center">
+                          <div className="min-w-0">
+                            <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
+                              {Number(ad.impressions || 0).toLocaleString("pt-BR")}
+                            </div>
+                            <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">
+                              Impressões
+                            </div>
+                          </div>
+                          <div className="min-w-0 border-x border-stone-200/70 px-0.5">
+                            <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
+                              {Number(ad.clicks || 0).toLocaleString("pt-BR")}
+                            </div>
+                            <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">
+                              Cliques
+                            </div>
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
+                              {Number(ad.conversions || 0).toLocaleString("pt-BR")}
+                            </div>
+                            <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">
+                              Conversões
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Histórico Recente de Lançamentos com Sanfona / Accordion Interativo */}
+              <div className="bg-white rounded-2xl border border-stone-200 shadow-xs p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-stone-900 flex items-center gap-2">
+                      <span>Histórico de Lançamentos de Anúncios no Período</span>
+                      {isPlatformFiltered && (
+                        <span className="text-xs bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md font-semibold">
+                          Filtrado por: {PLATFORM_LABELS[selectedAdPlatform]}
                         </span>
-                        {ad.roas && ad.roas > 0 ? (
-                          <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
-                            ROAS {ad.roas.toFixed(1)}x
-                          </span>
-                        ) : null}
-                      </div>
+                      )}
+                    </h2>
+                    <p className="text-xs text-stone-500 mt-0.5">
+                      Mostrando {filteredRecords.length} lançamentos. Clique em qualquer linha para expandir detalhes de CPC, conversões e pedidos faturados no dia.
+                    </p>
+                  </div>
+                </div>
 
-                      <div className="text-2xl font-black text-stone-900 tabular-nums whitespace-nowrap">
-                        {money(ad.total_spent)}
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-1 pt-2.5 border-t border-stone-200/80 text-center">
-                        <div className="min-w-0">
-                          <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
-                            {Number(ad.impressions || 0).toLocaleString("pt-BR")}
-                          </div>
-                          <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">Impressões</div>
-                        </div>
-                        <div className="min-w-0 border-x border-stone-200/70 px-0.5">
-                          <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
-                            {Number(ad.clicks || 0).toLocaleString("pt-BR")}
-                          </div>
-                          <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">Cliques</div>
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
-                            {Number(ad.conversions || 0).toLocaleString("pt-BR")}
-                          </div>
-                          <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">Conversões</div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Histórico Recente de Lançamentos */}
-            <div className="bg-white rounded-2xl border border-stone-200 shadow-xs p-6">
-              <h2 className="text-base font-bold text-stone-900 mb-4">
-                Histórico de Lançamentos de Anúncios no Período
-              </h2>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm min-w-[760px]">
-                  <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider whitespace-nowrap">
-                    <tr>
-                      <th className="py-3 px-4 whitespace-nowrap w-[115px]">Data</th>
-                      <th className="py-3 px-3 whitespace-nowrap w-[150px]">Plataforma</th>
-                      <th className="py-3 px-3">Campanha</th>
-                      <th className="py-3 px-3.5 text-right whitespace-nowrap w-[125px]">Valor Gasto</th>
-                      <th className="py-3 px-3 text-center whitespace-nowrap w-[85px]">Cliques</th>
-                      <th className="py-3 px-4 text-center whitespace-nowrap w-[95px]">Conversões</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-stone-100 text-stone-700">
-                    {data?.ads.recent_records && data.ads.recent_records.length > 0 ? (
-                      data.ads.recent_records.map((r) => (
-                        <tr key={r.id} className="hover:bg-stone-50 transition">
-                          <td className="py-2.5 px-4 font-mono whitespace-nowrap text-xs">{formatFullDateBR(r.date)}</td>
-                          <td className="py-2.5 px-3 font-semibold text-stone-900 whitespace-nowrap text-xs">
-                            {PLATFORM_LABELS[r.platform] || r.platform}
-                          </td>
-                          <td className="py-2.5 px-3 text-stone-600 font-medium text-xs max-w-[280px] sm:max-w-[380px] truncate whitespace-nowrap" title={r.campaign_name || ""}>
-                            {r.campaign_name || "—"}
-                          </td>
-                          <td className="py-2.5 px-3.5 text-right font-bold text-stone-900 tabular-nums whitespace-nowrap text-xs">
-                            {money(r.amount_spent)}
-                          </td>
-                          <td className="py-2.5 px-3 text-center tabular-nums whitespace-nowrap text-xs">{Number(r.clicks || 0).toLocaleString("pt-BR")}</td>
-                          <td className="py-2.5 px-4 text-center tabular-nums whitespace-nowrap text-xs">{Number(r.conversions || 0).toLocaleString("pt-BR")}</td>
-                        </tr>
-                      ))
-                    ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs sm:text-sm min-w-[760px]">
+                    <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider whitespace-nowrap">
                       <tr>
-                        <td colSpan={6} className="py-8 text-center text-stone-400">
-                          Nenhum investimento registrado neste período. Clique em &quot;+ Lançar Anúncio&quot; para registrar gastos de mídia.
-                        </td>
+                        <th className="py-3 px-4 whitespace-nowrap w-[130px]">Data</th>
+                        <th className="py-3 px-3 whitespace-nowrap w-[170px]">Plataforma</th>
+                        <th className="py-3 px-3">Campanha</th>
+                        <th className="py-3 px-3.5 text-right whitespace-nowrap w-[125px]">Valor Gasto</th>
+                        <th className="py-3 px-3 text-center whitespace-nowrap w-[85px]">Cliques</th>
+                        <th className="py-3 px-4 text-center whitespace-nowrap w-[110px]">Conversões</th>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-stone-100 text-stone-700">
+                      {filteredRecords && filteredRecords.length > 0 ? (
+                        filteredRecords.map((r) => {
+                          const isExpanded = expandedAdRecordId === r.id;
+                          const dateIso = r.date ? r.date.split(" ")[0] : "";
+                          const chKey = PLATFORM_CHANNEL_MAP[r.platform];
+
+                          // Correlacionar pedidos daquele dia e canal
+                          const matchingOrders = (data?.recent_orders || []).filter((o) => {
+                            const orderDateIso = o.date ? o.date.split(" ")[0] : "";
+                            const dateMatches = orderDateIso === dateIso;
+                            const channelMatches = chKey ? o.channel === chKey : true;
+                            return dateMatches && channelMatches;
+                          });
+
+                          const totalMatchingOrdersRevenue = matchingOrders.reduce(
+                            (acc, o) => acc + (o.total || 0),
+                            0
+                          );
+                          const totalMatchingOrdersProfit = matchingOrders.reduce(
+                            (acc, o) => acc + (o.net_profit || 0),
+                            0
+                          );
+                          const dailyRoas =
+                            r.amount_spent > 0 && totalMatchingOrdersRevenue > 0
+                              ? totalMatchingOrdersRevenue / r.amount_spent
+                              : 0;
+
+                          const clicksCount = Number(r.clicks || 0);
+                          const conversionsCount = Number(r.conversions || 0);
+                          const cpc = clicksCount > 0 ? r.amount_spent / clicksCount : 0;
+                          const costPerConv =
+                            conversionsCount > 0 ? r.amount_spent / conversionsCount : null;
+                          const cvr =
+                            clicksCount > 0 ? (conversionsCount / clicksCount) * 100 : 0;
+
+                          return (
+                            <Fragment key={r.id}>
+                              <tr
+                                onClick={() =>
+                                  setExpandedAdRecordId((prev) =>
+                                    prev === r.id ? null : r.id
+                                  )
+                                }
+                                className={`transition cursor-pointer select-none ${
+                                  isExpanded
+                                    ? "bg-amber-50/70 border-b border-amber-200"
+                                    : "hover:bg-stone-50/90"
+                                }`}
+                                title="Clique para expandir/recolher detalhes"
+                              >
+                                <td className="py-2.5 px-4 font-mono whitespace-nowrap text-xs flex items-center gap-2">
+                                  <span
+                                    className={`text-[10px] text-stone-400 transition-transform duration-150 inline-block ${
+                                      isExpanded ? "rotate-90 text-amber-700 font-bold" : ""
+                                    }`}
+                                  >
+                                    ▶
+                                  </span>
+                                  <span>{formatFullDateBR(r.date)}</span>
+                                </td>
+
+                                <td className="py-2.5 px-3 font-semibold text-stone-900 whitespace-nowrap text-xs">
+                                  <div className="flex items-center gap-2">
+                                    <PlatformLogoIcon platform={r.platform} className="w-4 h-4 flex-shrink-0" />
+                                    <span className="truncate max-w-[130px]">
+                                      {PLATFORM_LABELS[r.platform] || r.platform}
+                                    </span>
+                                  </div>
+                                </td>
+
+                                <td
+                                  className="py-2.5 px-3 text-stone-600 font-medium text-xs max-w-[260px] sm:max-w-[360px] truncate whitespace-nowrap"
+                                  title={r.campaign_name || ""}
+                                >
+                                  {r.campaign_name || "—"}
+                                </td>
+
+                                <td className="py-2.5 px-3.5 text-right font-bold text-stone-900 tabular-nums whitespace-nowrap text-xs">
+                                  {money(r.amount_spent)}
+                                </td>
+
+                                <td className="py-2.5 px-3 text-center tabular-nums whitespace-nowrap text-xs">
+                                  {Number(r.clicks || 0).toLocaleString("pt-BR")}
+                                </td>
+
+                                <td className="py-2.5 px-4 text-center tabular-nums whitespace-nowrap text-xs">
+                                  <div className="inline-flex items-center gap-1.5 justify-center">
+                                    <span
+                                      className={`font-bold ${
+                                        conversionsCount > 0
+                                          ? "text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full text-[11px]"
+                                          : "text-stone-500"
+                                      }`}
+                                    >
+                                      {Number(r.conversions || 0).toLocaleString("pt-BR")}
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+
+                              {/* Accordion Expandido com Informações Detalhadas e Pedidos */}
+                              {isExpanded && (
+                                <tr className="bg-stone-50/95 border-b border-stone-200 animate-in fade-in duration-150">
+                                  <td colSpan={6} className="p-4 sm:p-5">
+                                    <div className="space-y-4">
+                                      {/* Sub-cards de métricas do dia */}
+                                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                                        <div className="bg-white p-3 rounded-xl border border-stone-200">
+                                          <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                                            CPC Médio do Dia
+                                          </span>
+                                          <div className="text-base font-extrabold text-stone-900 mt-0.5 tabular-nums">
+                                            {cpc > 0 ? money(cpc) : "—"}
+                                          </div>
+                                          <span className="text-[10px] text-stone-500">
+                                            Custo por clique
+                                          </span>
+                                        </div>
+
+                                        <div className="bg-white p-3 rounded-xl border border-stone-200">
+                                          <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                                            Taxa de Conversão
+                                          </span>
+                                          <div className="text-base font-extrabold text-stone-900 mt-0.5 tabular-nums">
+                                            {percent(cvr)}
+                                          </div>
+                                          <span className="text-[10px] text-stone-500">
+                                            {r.conversions} conv. ÷ {r.clicks} cliques
+                                          </span>
+                                        </div>
+
+                                        <div className="bg-white p-3 rounded-xl border border-stone-200">
+                                          <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                                            Custo por Conversão
+                                          </span>
+                                          <div className="text-base font-extrabold text-stone-900 mt-0.5 tabular-nums">
+                                            {costPerConv ? money(costPerConv) : "Sem conv. direta"}
+                                          </div>
+                                          <span className="text-[10px] text-stone-500">
+                                            Investimento ÷ conversões
+                                          </span>
+                                        </div>
+
+                                        <div className="bg-white p-3 rounded-xl border border-stone-200">
+                                          <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                                            ROAS Diário do Canal
+                                          </span>
+                                          <div className="text-base font-extrabold text-emerald-700 mt-0.5 tabular-nums">
+                                            {dailyRoas > 0 ? `${dailyRoas.toFixed(2)}x` : "—"}
+                                          </div>
+                                          <span className="text-[10px] text-stone-500">
+                                            {matchingOrders.length} pedidos no dia
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      {/* Seção de Pedidos Faturados no Dia */}
+                                      <div className="bg-white p-4 rounded-xl border border-stone-200">
+                                        <div className="flex items-center justify-between mb-3">
+                                          <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 flex items-center gap-2">
+                                            <span>
+                                              Vendas do Canal ({PLATFORM_LABELS[r.platform]}) em {formatFullDateBR(r.date)}
+                                            </span>
+                                            <span className="bg-stone-100 text-stone-700 px-2 py-0.5 rounded-full text-[10px] font-semibold font-mono">
+                                              {matchingOrders.length} pedido(s)
+                                            </span>
+                                          </h4>
+                                          {matchingOrders.length > 0 && (
+                                            <div className="text-xs text-stone-600">
+                                              Faturado: <strong className="text-stone-900 tabular-nums">{money(totalMatchingOrdersRevenue)}</strong> · Lucro Líquido: <strong className="text-emerald-700 tabular-nums">{money(totalMatchingOrdersProfit)}</strong>
+                                            </div>
+                                          )}
+                                        </div>
+
+                                        {matchingOrders.length > 0 ? (
+                                          <div className="space-y-2">
+                                            {matchingOrders.map((ord) => (
+                                              <div
+                                                key={ord.id}
+                                                className="border border-stone-100 rounded-lg p-2.5 bg-stone-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                                              >
+                                                <div className="flex items-center gap-2.5 min-w-0">
+                                                  <span className="font-mono font-bold text-stone-900">
+                                                    #{ord.id}
+                                                  </span>
+                                                  {ord.hour && (
+                                                    <span className="text-[11px] text-stone-400 font-mono">
+                                                      ⏰ {ord.hour}
+                                                    </span>
+                                                  )}
+                                                  {ord.customer_city && (
+                                                    <span className="text-[11px] text-stone-600 truncate">
+                                                      📍 {ord.customer_city}/{ord.customer_state}
+                                                    </span>
+                                                  )}
+                                                  <span className="text-[11px] text-stone-500 font-medium">
+                                                    ({ord.items_count} item{ord.items_count > 1 ? "s" : ""})
+                                                  </span>
+                                                </div>
+
+                                                <div className="flex items-center gap-3 self-end sm:self-auto font-mono">
+                                                  <div className="text-stone-900 font-bold tabular-nums">
+                                                    {money(ord.total)}
+                                                  </div>
+                                                  <div className="text-emerald-700 font-bold tabular-nums bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60">
+                                                    +{money(ord.net_profit)} limpo
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        ) : (
+                                          <div className="p-3 bg-stone-50 rounded-lg border border-stone-200/60 text-stone-500 text-xs">
+                                            {r.platform === "meta_ads" ? (
+                                              <span>
+                                                ℹ️ Nenhum pedido direto na Loja Virtual registrado nesta data. Anúncios na Meta podem ter objetivo de reconhecimento, seguidores no Instagram ou captação de clientes via Direct/WhatsApp.
+                                              </span>
+                                            ) : (
+                                              <span>
+                                                ℹ️ Nenhuma venda finalizada registrada no canal nesta data específica. O investimento manteve a loja ativa nas buscas patrocinadas.
+                                              </span>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </Fragment>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={6} className="py-8 text-center text-stone-400">
+                            Nenhum investimento registrado com os filtros aplicados.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        {/* ------------------------------------------------------------------------- */}
-        {/* ABA 5: SAÚDE DOS MARKETPLACES & DIAGNÓSTICO DE PERFORMANCE                */}
-        {/* ------------------------------------------------------------------------- */}
+          );
+        })()}
         {activeTab === "saude" && (
           <MarketplaceHealthClient />
         )}
