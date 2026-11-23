@@ -6,11 +6,12 @@
  * 1. Calcula a assinatura criptografica HMAC-SHA256 exigida pela Shopee Open Platform API v2.
  * 2. Verifica a validade do access_token e efetua auto-refresh com o refresh_token se necessario.
  * 3. Busca a lista completa de IDs de campanhas ativas em `/api/v2/ads/get_product_level_campaign_id_list`.
- * 4. Coleta as metricas diarias de performance em lotes via `/api/v2/ads/get_product_campaign_daily_performance`.
- * 5. Agrega as metricas por data e persiste de forma idempotente na tabela `marketing_ad_spend` do Supabase.
+ * 4. Fatieia o periodo em janelas seguras de ate 14 dias (limite maximo da Shopee para metricas diarias).
+ * 5. Coleta as metricas diarias de performance em lotes via `/api/v2/ads/get_product_campaign_daily_performance`.
+ * 6. Agrega as metricas por data e persiste de forma idempotente na tabela `marketing_ad_spend` do Supabase.
  *
  * @category Admin/Integrations
- * @since v4.1.0
+ * @since v4.2.0
  */
 
 import crypto from "node:crypto";
@@ -124,14 +125,50 @@ export function fromShopeeDateToISO(shopeeDate: string): string {
 }
 
 /**
+ * Divide um intervalo de datas ISO em fatias continuas de no maximo `maxDays` dias.
+ * Essencial pois a Shopee API v2 descarta silenciosamente consultas com intervalo maior que 14 dias.
+ *
+ * @param {string} startIso - Data inicial em formato YYYY-MM-DD
+ * @param {string} endIso - Data final em formato YYYY-MM-DD
+ * @param {number} [maxDays=14] - Quantidade maxima de dias por fatia
+ * @returns {Array<{ start: string; end: string }>} Fatias cronologicas
+ */
+export function splitDateRangeIntoSlices(
+  startIso: string,
+  endIso: string,
+  maxDays = 14
+): Array<{ start: string; end: string }> {
+  const slices: Array<{ start: string; end: string }> = [];
+  let currentStart = new Date(startIso + "T00:00:00Z");
+  const targetEnd = new Date(endIso + "T00:00:00Z");
+
+  while (currentStart <= targetEnd) {
+    const nextEnd = new Date(currentStart);
+    nextEnd.setUTCDate(nextEnd.getUTCDate() + (maxDays - 1));
+    const sliceEnd = nextEnd > targetEnd ? targetEnd : nextEnd;
+
+    slices.push({
+      start: currentStart.toISOString().split("T")[0],
+      end: sliceEnd.toISOString().split("T")[0],
+    });
+
+    currentStart = new Date(sliceEnd);
+    currentStart.setUTCDate(currentStart.getUTCDate() + 1);
+  }
+
+  return slices;
+}
+
+/**
  * Executa a sincronizacao oficial de metricas de Shopee Ads para o intervalo especificado.
  *
  * @description
  * 1. Lista campanhas ativas
- * 2. Fatia em lotes de 20 campanhas
- * 3. Busca performance diaria de cada lote
- * 4. Consolida gasto, impressoes, cliques e conversoes por dia
- * 5. Salva de forma idempotente em marketing_ad_spend
+ * 2. Divide as datas em fatias seguras de ate 14 dias
+ * 3. Fatia as campanhas em lotes de 20
+ * 4. Busca performance diaria de cada fatia e lote
+ * 5. Consolida gasto, impressoes, cliques e conversoes por dia
+ * 6. Salva de forma idempotente em marketing_ad_spend
  *
  * @param {string} [startDateIso] - Data inicial em YYYY-MM-DD (padrao: 30 dias atras)
  * @param {string} [endDateIso] - Data final em YYYY-MM-DD (padrao: hoje)
@@ -168,8 +205,6 @@ export async function syncShopeeAds(
 
   const startIso = startDateIso || defaultStart;
   const endIso = endDateIso || defaultEnd;
-  const startShopee = toShopeeDate(startIso);
-  const endShopee = toShopeeDate(endIso);
 
   // 1. Obter lista de campanhas da loja
   const listPath = "/api/v2/ads/get_product_level_campaign_id_list";
@@ -229,7 +264,10 @@ export async function syncShopeeAds(
     };
   }
 
-  // 2. Coletar performance diaria em lotes de ate 20 campanhas
+  // 2. Fatiar o intervalo de datas em janelas de ate 14 dias
+  const dateSlices = splitDateRangeIntoSlices(startIso, endIso, 14);
+
+  // 3. Coletar performance diaria em lotes de ate 20 campanhas e fatias de datas
   const BATCH_SIZE = 20;
   const dailyAggregation: Record<
     string,
@@ -244,54 +282,59 @@ export async function syncShopeeAds(
 
   const perfPath = "/api/v2/ads/get_product_campaign_daily_performance";
 
-  for (let i = 0; i < campaignIds.length; i += BATCH_SIZE) {
-    const batch = campaignIds.slice(i, i + BATCH_SIZE);
-    const perfTs = Math.floor(Date.now() / 1000);
-    const perfSign = generateShopeeSign(perfPath, perfTs, config);
+  for (const slice of dateSlices) {
+    const startShopee = toShopeeDate(slice.start);
+    const endShopee = toShopeeDate(slice.end);
 
-    const perfUrl = new URL(`${config.apiBase}${perfPath}`);
-    perfUrl.searchParams.set("partner_id", String(config.partnerId));
-    perfUrl.searchParams.set("timestamp", String(perfTs));
-    perfUrl.searchParams.set("access_token", config.accessToken);
-    perfUrl.searchParams.set("shop_id", String(config.shopId));
-    perfUrl.searchParams.set("sign", perfSign);
-    perfUrl.searchParams.set("campaign_id_list", batch.join(","));
-    perfUrl.searchParams.set("start_date", startShopee);
-    perfUrl.searchParams.set("end_date", endShopee);
+    for (let i = 0; i < campaignIds.length; i += BATCH_SIZE) {
+      const batch = campaignIds.slice(i, i + BATCH_SIZE);
+      const perfTs = Math.floor(Date.now() / 1000);
+      const perfSign = generateShopeeSign(perfPath, perfTs, config);
 
-    try {
-      const perfRes = await fetch(perfUrl.toString(), { cache: "no-store" });
-      if (!perfRes.ok) continue;
+      const perfUrl = new URL(`${config.apiBase}${perfPath}`);
+      perfUrl.searchParams.set("partner_id", String(config.partnerId));
+      perfUrl.searchParams.set("timestamp", String(perfTs));
+      perfUrl.searchParams.set("access_token", config.accessToken);
+      perfUrl.searchParams.set("shop_id", String(config.shopId));
+      perfUrl.searchParams.set("sign", perfSign);
+      perfUrl.searchParams.set("campaign_id_list", batch.join(","));
+      perfUrl.searchParams.set("start_date", startShopee);
+      perfUrl.searchParams.set("end_date", endShopee);
 
-      const perfJson = await perfRes.json();
-      const campaignList: ShopeeCampaignMetrics[] = perfJson.response?.campaign_list || [];
+      try {
+        const perfRes = await fetch(perfUrl.toString(), { cache: "no-store" });
+        if (!perfRes.ok) continue;
 
-      for (const campaign of campaignList) {
-        for (const metric of campaign.metrics_list || []) {
-          const isoDate = fromShopeeDateToISO(metric.date);
-          if (!dailyAggregation[isoDate]) {
-            dailyAggregation[isoDate] = {
-              spend: 0,
-              impressions: 0,
-              clicks: 0,
-              conversions: 0,
-              gmv: 0,
-            };
+        const perfJson = await perfRes.json();
+        const campaignList: ShopeeCampaignMetrics[] = perfJson.response?.campaign_list || [];
+
+        for (const campaign of campaignList) {
+          for (const metric of campaign.metrics_list || []) {
+            const isoDate = fromShopeeDateToISO(metric.date);
+            if (!dailyAggregation[isoDate]) {
+              dailyAggregation[isoDate] = {
+                spend: 0,
+                impressions: 0,
+                clicks: 0,
+                conversions: 0,
+                gmv: 0,
+              };
+            }
+
+            dailyAggregation[isoDate].spend += Number(metric.expense || 0);
+            dailyAggregation[isoDate].impressions += Number(metric.impression || 0);
+            dailyAggregation[isoDate].clicks += Number(metric.clicks || 0);
+            dailyAggregation[isoDate].conversions += Number(metric.broad_order || 0);
+            dailyAggregation[isoDate].gmv += Number(metric.broad_gmv || 0);
           }
-
-          dailyAggregation[isoDate].spend += Number(metric.expense || 0);
-          dailyAggregation[isoDate].impressions += Number(metric.impression || 0);
-          dailyAggregation[isoDate].clicks += Number(metric.clicks || 0);
-          dailyAggregation[isoDate].conversions += Number(metric.broad_order || 0);
-          dailyAggregation[isoDate].gmv += Number(metric.broad_gmv || 0);
         }
+      } catch {
+        // Continua proximo lote para resiliencia
       }
-    } catch {
-      // Continua proximo lote para resiliencia
     }
   }
 
-  // 3. Persistencia idempotente no Supabase (marketing_ad_spend)
+  // 4. Persistencia idempotente no Supabase (marketing_ad_spend)
   let importedCount = 0;
   let totalCalculatedSpend = 0;
 
@@ -319,8 +362,8 @@ export async function syncShopeeAds(
       impressions: metrics.impressions,
       clicks: metrics.clicks,
       conversions: metrics.conversions,
-      campaign_name: "Shopee Ads Automatico (Consolidado)",
-      notes: `GMV Gerado: R$ ${metrics.gmv.toFixed(2)}`,
+      campaign_name: "Shopee Ads Automático (Consolidado)",
+      notes: metrics.gmv > 0 ? `GMV Gerado: R$ ${metrics.gmv.toFixed(2)}` : "",
       updated_at: new Date().toISOString(),
     };
 

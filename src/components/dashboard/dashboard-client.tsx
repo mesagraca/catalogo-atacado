@@ -3865,36 +3865,44 @@ export function DashboardClient() {
                   return (
                     <div
                       key={ad.platform}
-                      className="border border-stone-200 rounded-xl p-4 bg-stone-50/50 flex flex-col justify-between gap-3 shadow-2xs hover:border-stone-300 transition"
+                      className="border border-stone-200 rounded-xl p-4 bg-stone-50/50 flex flex-col justify-between gap-3 shadow-2xs hover:border-stone-300 transition min-w-0"
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-stone-900 text-sm flex items-center gap-1.5">
-                          <span>{channelIcon}</span>
-                          <span>{ad.platform_name}</span>
+                      <div className="flex items-center justify-between gap-1.5 min-w-0">
+                        <span className="font-bold text-stone-900 text-sm flex items-center gap-1.5 truncate">
+                          <span className="flex-shrink-0">{channelIcon}</span>
+                          <span className="truncate whitespace-nowrap" title={ad.platform_name}>
+                            {ad.platform_name}
+                          </span>
                         </span>
                         {ad.roas && ad.roas > 0 ? (
-                          <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                          <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
                             ROAS {ad.roas.toFixed(1)}x
                           </span>
                         ) : null}
                       </div>
 
-                      <div className="text-2xl font-bold text-stone-900 tabular-nums">
+                      <div className="text-2xl font-black text-stone-900 tabular-nums whitespace-nowrap">
                         {money(ad.total_spent)}
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-stone-200 text-center text-xs text-stone-500">
-                        <div>
-                          <div className="text-stone-800 font-semibold tabular-nums">{ad.impressions}</div>
-                          <div className="text-[10px]">Impressões</div>
+                      <div className="grid grid-cols-3 gap-1 pt-2.5 border-t border-stone-200/80 text-center">
+                        <div className="min-w-0">
+                          <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
+                            {Number(ad.impressions || 0).toLocaleString("pt-BR")}
+                          </div>
+                          <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">Impressões</div>
                         </div>
-                        <div>
-                          <div className="text-stone-800 font-semibold tabular-nums">{ad.clicks}</div>
-                          <div className="text-[10px]">Cliques</div>
+                        <div className="min-w-0 border-x border-stone-200/70 px-0.5">
+                          <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
+                            {Number(ad.clicks || 0).toLocaleString("pt-BR")}
+                          </div>
+                          <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">Cliques</div>
                         </div>
-                        <div>
-                          <div className="text-stone-800 font-semibold tabular-nums">{ad.conversions}</div>
-                          <div className="text-[10px]">Conversões</div>
+                        <div className="min-w-0">
+                          <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
+                            {Number(ad.conversions || 0).toLocaleString("pt-BR")}
+                          </div>
+                          <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">Conversões</div>
                         </div>
                       </div>
                     </div>
@@ -3910,33 +3918,33 @@ export function DashboardClient() {
               </h2>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm">
+                <table className="w-full text-left text-xs sm:text-sm min-w-[760px]">
                   <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider whitespace-nowrap">
                     <tr>
-                      <th className="py-3 px-4 whitespace-nowrap min-w-[110px]">Data</th>
-                      <th className="py-3 px-3 whitespace-nowrap min-w-[120px]">Plataforma</th>
-                      <th className="py-3 px-3 min-w-[180px]">Campanha</th>
-                      <th className="py-3 px-3.5 text-right whitespace-nowrap min-w-[115px]">Valor Gasto</th>
-                      <th className="py-3 px-3 text-center whitespace-nowrap min-w-[80px]">Cliques</th>
-                      <th className="py-3 px-4 text-center whitespace-nowrap min-w-[90px]">Conversões</th>
+                      <th className="py-3 px-4 whitespace-nowrap w-[115px]">Data</th>
+                      <th className="py-3 px-3 whitespace-nowrap w-[150px]">Plataforma</th>
+                      <th className="py-3 px-3">Campanha</th>
+                      <th className="py-3 px-3.5 text-right whitespace-nowrap w-[125px]">Valor Gasto</th>
+                      <th className="py-3 px-3 text-center whitespace-nowrap w-[85px]">Cliques</th>
+                      <th className="py-3 px-4 text-center whitespace-nowrap w-[95px]">Conversões</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-100 text-stone-700">
                     {data?.ads.recent_records && data.ads.recent_records.length > 0 ? (
                       data.ads.recent_records.map((r) => (
                         <tr key={r.id} className="hover:bg-stone-50 transition">
-                          <td className="py-3 px-4 font-mono whitespace-nowrap">{formatFullDateBR(r.date)}</td>
-                          <td className="py-3 px-3 font-medium text-stone-900 whitespace-nowrap">
+                          <td className="py-2.5 px-4 font-mono whitespace-nowrap text-xs">{formatFullDateBR(r.date)}</td>
+                          <td className="py-2.5 px-3 font-semibold text-stone-900 whitespace-nowrap text-xs">
                             {PLATFORM_LABELS[r.platform] || r.platform}
                           </td>
-                          <td className="py-3 px-3 text-stone-600 font-medium">
+                          <td className="py-2.5 px-3 text-stone-600 font-medium text-xs max-w-[280px] sm:max-w-[380px] truncate whitespace-nowrap" title={r.campaign_name || ""}>
                             {r.campaign_name || "—"}
                           </td>
-                          <td className="py-3 px-3.5 text-right font-bold text-stone-900 tabular-nums whitespace-nowrap min-w-[115px]">
+                          <td className="py-2.5 px-3.5 text-right font-bold text-stone-900 tabular-nums whitespace-nowrap text-xs">
                             {money(r.amount_spent)}
                           </td>
-                          <td className="py-3 px-3 text-center tabular-nums whitespace-nowrap">{r.clicks || 0}</td>
-                          <td className="py-3 px-4 text-center tabular-nums whitespace-nowrap">{r.conversions || 0}</td>
+                          <td className="py-2.5 px-3 text-center tabular-nums whitespace-nowrap text-xs">{Number(r.clicks || 0).toLocaleString("pt-BR")}</td>
+                          <td className="py-2.5 px-4 text-center tabular-nums whitespace-nowrap text-xs">{Number(r.conversions || 0).toLocaleString("pt-BR")}</td>
                         </tr>
                       ))
                     ) : (
