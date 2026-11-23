@@ -548,6 +548,7 @@ export function DashboardClient() {
   const [adSortField, setAdSortField] = useState<AdSortField>("date");
   const [adSortAsc, setAdSortAsc] = useState<boolean>(false);
   const [showZeroSpendDays, setShowZeroSpendDays] = useState<boolean>(true);
+  const [showAdsAttributionGuide, setShowAdsAttributionGuide] = useState<boolean>(false);
 
   const handleAdSort = (field: AdSortField) => {
     if (adSortField === field) {
@@ -4217,6 +4218,19 @@ export function DashboardClient() {
                   <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
                     <button
                       type="button"
+                      onClick={() => setShowAdsAttributionGuide((prev) => !prev)}
+                      className={`text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer active:scale-[0.98] border ${
+                        showAdsAttributionGuide
+                          ? "bg-amber-100 text-amber-950 border-amber-300 font-bold"
+                          : "bg-white hover:bg-stone-50 text-stone-700 border-stone-200"
+                      }`}
+                      title="Entenda como as conversões e métricas são registradas em cada canal"
+                    >
+                      <span>ℹ️</span>
+                      <span>{showAdsAttributionGuide ? "Ocultar Guia de Atribuição" : "Entenda as Métricas & Atribuição"}</span>
+                    </button>
+                    <button
+                      type="button"
                       onClick={handleSyncAds}
                       disabled={isSyncingAds}
                       className="bg-stone-900 hover:bg-stone-800 disabled:opacity-50 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
@@ -4245,6 +4259,73 @@ export function DashboardClient() {
                     >
                       ✕
                     </button>
+                  </div>
+                )}
+
+                {showAdsAttributionGuide && (
+                  <div className="mb-6 p-5 bg-gradient-to-br from-amber-50/90 via-stone-50 to-white rounded-2xl border border-amber-200/80 shadow-xs animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between pb-3 mb-4 border-b border-amber-200/60">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📊</span>
+                        <h3 className="text-sm font-bold text-amber-950">
+                          Guia de Atribuição e Regras de Conversão por Canal
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowAdsAttributionGuide(false)}
+                        className="text-xs text-stone-500 hover:text-stone-800 font-bold cursor-pointer"
+                      >
+                        ✕ Fechar
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                      <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs space-y-2">
+                        <div className="flex items-center gap-2 font-bold text-stone-900">
+                          <PlatformLogoIcon platform="shopee_ads" className="w-4 h-4 flex-shrink-0" />
+                          <span>Shopee Ads</span>
+                        </div>
+                        <div className="text-[11px] text-stone-600 space-y-1.5 leading-relaxed">
+                          <p>
+                            <strong>Conversão = Itens Comprados:</strong> A métrica de conversão da Shopee mede a soma de <u>produtos/itens vendidos</u> sob o anúncio, e <em>não</em> a quantidade de carrinhos fechados. Um pedido com 3 kits soma 3 conversões.
+                          </p>
+                          <p>
+                            <strong>Janela de Atribuição (7 dias):</strong> O mérito é registrado na <u>data do clique</u>. Se o comprador clicou no dia 21 e pagou no dia 22, o Shopee Ads atribui o resultado ao dia 21.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs space-y-2">
+                        <div className="flex items-center gap-2 font-bold text-stone-900">
+                          <PlatformLogoIcon platform="meta_ads" className="w-4 h-4 flex-shrink-0" />
+                          <span>Meta Ads (Instagram / FB)</span>
+                        </div>
+                        <div className="text-[11px] text-stone-600 space-y-1.5 leading-relaxed">
+                          <p>
+                            <strong>Atribuição Direta:</strong> Rastreamento via Meta Pixel e Conversions API (CAPI) sobre as compras finalizadas no checkout da Loja Virtual (7 dias clique / 1 dia visualização).
+                          </p>
+                          <p>
+                            <strong>Tráfego & Marca:</strong> Anúncios sem checkout imediato geram reconhecimento, novos seguidores, mensagens no Direct e pedidos via WhatsApp, alimentando o topo de funil da marca.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs space-y-2">
+                        <div className="flex items-center gap-2 font-bold text-stone-900">
+                          <span>🔄</span>
+                          <span>Visão Blended / MER do Canal</span>
+                        </div>
+                        <div className="text-[11px] text-stone-600 space-y-1.5 leading-relaxed">
+                          <p>
+                            <strong>Limitação Técnica das APIs:</strong> Marketplaces (Shopee e Mercado Livre) <em>não</em> repassam o código do anúncio (ad_id) no payload do pedido para o ERP/Tray.
+                          </p>
+                          <p>
+                            <strong>Transparência Operacional:</strong> A dashboard lista todos os pedidos do canal faturados no dia para calcular o <strong>MER (ROAS Geral do Canal)</strong>, métrica padrão do mercado para avaliar o retorno real de cada canal de venda.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -4310,8 +4391,9 @@ export function DashboardClient() {
                             <div className="text-stone-900 font-bold tabular-nums text-xs truncate whitespace-nowrap">
                               {Number(ad.conversions || 0).toLocaleString("pt-BR")}
                             </div>
-                            <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate">
-                              Conversões
+                            <div className="text-[10px] text-stone-500 font-medium whitespace-nowrap truncate flex items-center justify-center gap-0.5">
+                              <span>Conversões</span>
+                              <span className="text-[9px] text-stone-400 cursor-help" title={ad.platform === "shopee_ads" ? "No Shopee Ads, este número indica unidades/itens comprados sob anúncios (não pedidos únicos)" : "Total de conversões registradas"}>ℹ️</span>
                             </div>
                           </div>
                         </div>
@@ -4573,8 +4655,8 @@ export function DashboardClient() {
                                           <div className="text-base font-extrabold text-stone-900 mt-0.5 tabular-nums">
                                             {percent(cvr)}
                                           </div>
-                                          <span className="text-[10px] text-stone-500">
-                                            {r.conversions} conv. ÷ {r.clicks} cliques
+                                          <span className="text-[10px] text-stone-500" title={r.platform === "shopee_ads" ? "No Shopee Ads, cada conversão representa um produto/item comprado" : "Conversões ÷ Cliques"}>
+                                            {r.conversions} {r.platform === "shopee_ads" ? "itens conv." : "conv."} ÷ {r.clicks} cliques
                                           </span>
                                         </div>
 
@@ -4586,29 +4668,32 @@ export function DashboardClient() {
                                             {costPerConv ? money(costPerConv) : "Sem conv. direta"}
                                           </div>
                                           <span className="text-[10px] text-stone-500">
-                                            Investimento ÷ conversões
+                                            {r.platform === "shopee_ads" ? "Investimento ÷ itens convertidos" : "Investimento ÷ conversões"}
                                           </span>
                                         </div>
 
                                         <div className="bg-white p-3 rounded-xl border border-stone-200">
-                                          <span className="text-[10px] uppercase font-bold text-stone-400 block">
-                                            ROAS Diário do Canal
+                                          <span className="text-[10px] uppercase font-bold text-stone-400 block" title="Marketing Efficiency Ratio: Faturamento total das vendas do canal no dia dividido pelo valor investido em anúncios">
+                                            ROAS Blended (MER) do Canal
                                           </span>
                                           <div className="text-base font-extrabold text-emerald-700 mt-0.5 tabular-nums">
                                             {dailyRoas > 0 ? `${dailyRoas.toFixed(2)}x` : "—"}
                                           </div>
                                           <span className="text-[10px] text-stone-500">
-                                            {matchingOrders.length} pedidos no dia
+                                            {matchingOrders.length} pedido(s) no canal no dia
                                           </span>
                                         </div>
                                       </div>
 
                                       {/* Seção de Pedidos Faturados no Dia */}
                                       <div className="bg-white p-4 rounded-xl border border-stone-200">
-                                        <div className="flex items-center justify-between mb-3">
-                                          <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 flex items-center gap-2">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                                          <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 flex items-center gap-2 flex-wrap">
                                             <span>
                                               Vendas do Canal ({PLATFORM_LABELS[r.platform]}) em {formatFullDateBR(r.date)}
+                                            </span>
+                                            <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full text-[10px] font-bold font-mono">
+                                              Visão Blended (MER)
                                             </span>
                                             <span className="bg-stone-100 text-stone-700 px-2 py-0.5 rounded-full text-[10px] font-semibold font-mono">
                                               {matchingOrders.length} pedido(s)
@@ -4616,9 +4701,24 @@ export function DashboardClient() {
                                           </h4>
                                           {matchingOrders.length > 0 && (
                                             <div className="text-xs text-stone-600">
-                                              Faturado: <strong className="text-stone-900 tabular-nums">{money(totalMatchingOrdersRevenue)}</strong> · Lucro Líquido: <strong className="text-emerald-700 tabular-nums">{money(totalMatchingOrdersProfit)}</strong>
+                                              Faturado no Canal: <strong className="text-stone-900 tabular-nums">{money(totalMatchingOrdersRevenue)}</strong> · Lucro Líquido: <strong className="text-emerald-700 tabular-nums">{money(totalMatchingOrdersProfit)}</strong>
                                             </div>
                                           )}
+                                        </div>
+
+                                        {/* Banner de Transparência sobre Pedidos vs Anúncios */}
+                                        <div className="mb-3.5 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-[11px] text-amber-950 flex items-start gap-2.5 leading-relaxed">
+                                          <span className="text-base leading-none select-none">ℹ️</span>
+                                          <div className="space-y-0.5">
+                                            <div>
+                                              <strong>Atribuição Blended do Canal:</strong> A API dos marketplaces (Shopee e Mercado Livre) não repassa códigos de campanha ou identificadores de anúncio (ad_id) dentro do pedido para o ERP/Tray. Listamos todos os pedidos faturados no canal nesta data para calcular o <strong>MER (ROAS Geral do Canal)</strong> e a rentabilidade líquida real.
+                                            </div>
+                                            {r.platform === "shopee_ads" && conversionsCount > 0 && (
+                                              <div className="text-emerald-800 font-semibold pt-0.5">
+                                                🎯 O Shopee Ads confirmou <strong>{conversionsCount} unidades/itens convertidos</strong> através dos anúncios neste período.
+                                              </div>
+                                            )}
+                                          </div>
                                         </div>
 
                                         {matchingOrders.length > 0 ? (
