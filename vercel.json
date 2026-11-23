@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/admin/dashboard/tray-heartbeat",
-      "schedule": "0 */2 * * *"
+      "schedule": "0 6 * * *"
     }
   ]
 }
