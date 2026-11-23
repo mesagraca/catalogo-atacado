@@ -417,7 +417,26 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const days = Math.max(1, Number(searchParams.get("days") || 30));
+  const rawStartDate = searchParams.get("start_date");
+  const rawEndDate = searchParams.get("end_date");
+
+  let startDate: string;
+  let endDate: string;
+  let days: number;
+
+  if (rawStartDate && rawEndDate) {
+    startDate = rawStartDate;
+    endDate = rawEndDate;
+    const diffMs =
+      new Date(`${endDate}T12:00:00`).getTime() - new Date(`${startDate}T12:00:00`).getTime();
+    days = Math.max(1, Math.round(diffMs / (24 * 60 * 60 * 1000)) + 1);
+  } else {
+    days = Math.max(1, Number(searchParams.get("days") || 30));
+    const startDateObj = new Date(Date.now() - (days - 1) * 24 * 60 * 60 * 1000);
+    startDate = startDateObj.toISOString().split("T")[0];
+    endDate = new Date().toISOString().split("T")[0];
+  }
+
   const channelFilter = searchParams.get("channel") || "all";
   const statusParam = searchParams.get("status") || "approved"; // "approved" (padrão), "all", "pending", "cancelled"
   const scope: DashboardScope = searchParams.get("scope") === "textil" ? "textil" : "all";
@@ -426,10 +445,6 @@ export async function GET(request: Request) {
   if (isRefresh) {
     allTimeProductsCache = null;
   }
-
-  const startDateObj = new Date(Date.now() - (days - 1) * 24 * 60 * 60 * 1000);
-  const startDate = startDateObj.toISOString().split("T")[0];
-  const endDate = new Date().toISOString().split("T")[0];
 
   try {
     // 1. Carregar produtos do Supabase para mapa de custos, imagens e estoque
@@ -490,16 +505,30 @@ export async function GET(request: Request) {
       }
     }
 
-    // 2. Buscar pedidos na Tray
+    // 2. Buscar pedidos na Tray (com paginação adicional para cobrir períodos maiores e datas personalizadas)
     const ordersListRes = await trayApiFetch<{ Orders?: TrayOrderItem[] }>(
-      "orders?sort=id_desc&limit=50",
+      "orders?sort=id_desc&limit=50&page=1",
     );
-    const rawOrders = ordersListRes.Orders || [];
+    let rawOrders = ordersListRes.Orders || [];
+    const oldestOrderDate = rawOrders[rawOrders.length - 1]?.Order?.date;
+
+    if (days > 40 || (oldestOrderDate && oldestOrderDate > startDate)) {
+      try {
+        const ordersPage2Res = await trayApiFetch<{ Orders?: TrayOrderItem[] }>(
+          "orders?sort=id_desc&limit=50&page=2",
+        );
+        if (ordersPage2Res?.Orders) {
+          rawOrders = [...rawOrders, ...ordersPage2Res.Orders];
+        }
+      } catch (err) {
+        console.warn("[Dashboard:API] Falha ao carregar página 2 de pedidos:", err);
+      }
+    }
 
     // Calcular KPIs oficiais idênticos aos do painel da Tray
     const periodOrders = rawOrders.filter((o) => {
       const orderDate = o.Order.date;
-      return orderDate >= startDate;
+      return orderDate >= startDate && orderDate <= endDate;
     });
 
     let trayTotalOrdersRevenue = 0;
@@ -977,6 +1006,7 @@ export async function GET(request: Request) {
         .from("marketing_ad_spend")
         .select("*")
         .gte("date", startDate)
+        .lte("date", endDate)
         .order("date", { ascending: false });
 
       if (adsData) {

@@ -2,7 +2,7 @@
 
 import { MarketplaceHealthClient } from "./marketplace-health-client";
 
-import { useEffect, useState, useTransition, Fragment } from "react";
+import { useEffect, useState, useTransition, useRef, Fragment } from "react";
 import Link from "next/link";
 import type {
   DashboardResponse,
@@ -407,6 +407,46 @@ export function DashboardClient() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Modos de Período & Filtros Avançados
+  type PeriodMode = "7d" | "15d" | "30d" | "mtd" | "custom";
+  const [periodMode, setPeriodMode] = useState<PeriodMode>("30d");
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
+  const [tempCustomStart, setTempCustomStart] = useState<string>("");
+  const [tempCustomEnd, setTempCustomEnd] = useState<string>("");
+  const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState<boolean>(false);
+  const filterPopoverRef = useRef<HTMLDivElement>(null);
+
+  // Fecha o popover ao clicar fora
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        filterPopoverRef.current &&
+        !filterPopoverRef.current.contains(event.target as Node)
+      ) {
+        setIsFilterPopoverOpen(false);
+      }
+    }
+    if (isFilterPopoverOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFilterPopoverOpen]);
+
+  const getMtdDates = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return {
+      startDate: `${year}-${month}-01`,
+      endDate: `${year}-${month}-${day}`,
+      label: `01 a ${day}/${month}`,
+    };
+  };
+
   // Estados expansíveis
   const [expandedOrderIds, setExpandedOrderIds] = useState<Record<string, boolean>>({});
   const [expandedProductSkus, setExpandedProductSkus] = useState<Record<string, boolean>>({});
@@ -543,9 +583,17 @@ export function DashboardClient() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `/api/admin/dashboard?days=${days}&channel=${channel}&status=${orderViewMode}&scope=${scope}`
-      );
+      let queryUrl = `/api/admin/dashboard?channel=${channel}&status=${orderViewMode}&scope=${scope}`;
+      if (periodMode === "mtd") {
+        const mtd = getMtdDates();
+        queryUrl += `&start_date=${mtd.startDate}&end_date=${mtd.endDate}`;
+      } else if (periodMode === "custom" && customStartDate && customEndDate) {
+        queryUrl += `&start_date=${customStartDate}&end_date=${customEndDate}`;
+      } else {
+        queryUrl += `&days=${days}`;
+      }
+
+      const res = await fetch(queryUrl);
       if (!res.ok) {
         throw new Error(`Erro ${res.status}: não foi possível carregar a dashboard.`);
       }
@@ -563,7 +611,7 @@ export function DashboardClient() {
 
   useEffect(() => {
     loadDashboard();
-  }, [days, channel, orderViewMode, scope]);
+  }, [days, channel, orderViewMode, scope, periodMode, customStartDate, customEndDate]);
 
   const handleSaveAd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -626,6 +674,11 @@ export function DashboardClient() {
   const productCostPct = grossRevenue > 0 ? (productCost / grossRevenue) * 100 : 0;
   const commissionsPct = grossRevenue > 0 ? (commissions / grossRevenue) * 100 : 0;
   const netProfitPct = grossRevenue > 0 ? (netProfit / grossRevenue) * 100 : 0;
+
+  let activeFiltersCount = 0;
+  if (channel !== "all") activeFiltersCount++;
+  if (scope !== "all") activeFiltersCount++;
+  if (periodMode === "custom") activeFiltersCount++;
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 pb-16 font-sans">
@@ -718,65 +771,226 @@ export function DashboardClient() {
             </p>
           </div>
 
-          {/* Filtros de Topo (Linha Única sem quebra) */}
-          <div className="flex flex-nowrap items-center gap-2 bg-white p-1.5 rounded-xl border border-stone-200 shadow-xs flex-shrink-0 overflow-x-auto whitespace-nowrap scrollbar-none">
-            {/* Dias */}
-            <div className="flex items-center gap-1 pr-2 border-r border-stone-200 flex-shrink-0">
-              {[7, 15, 30, 60].map((d) => (
+          {/* Controles de Topo: Datas Rápidas + Painel Flutuante de Filtros */}
+          <div className="flex items-center gap-2 flex-shrink-0 relative" ref={filterPopoverRef}>
+            {/* Pílulas de Datas Rápidas */}
+            <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-stone-200 shadow-2xs">
+              {[7, 15, 30].map((d) => (
                 <button
                   key={d}
-                  onClick={() => setDays(d)}
-                  className={`text-xs font-semibold px-3 py-1.5 min-h-[44px] sm:min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
-                    days === d
-                      ? "bg-amber-950 text-white shadow-xs"
+                  type="button"
+                  onClick={() => {
+                    setPeriodMode(`${d}d` as PeriodMode);
+                    setDays(d);
+                    setCustomStartDate("");
+                    setCustomEndDate("");
+                  }}
+                  className={`text-xs font-semibold px-2.5 py-1.5 min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
+                    periodMode === `${d}d`
+                      ? "bg-amber-950 text-white shadow-xs font-bold"
                       : "text-stone-600 hover:bg-stone-100"
                   }`}
                 >
                   {d}d
                 </button>
               ))}
-            </div>
 
-            {/* Escopo Têxtil */}
-            <div className="flex items-center gap-1 pr-2 border-r border-stone-200 flex-shrink-0">
+              {/* Botão Este Mês */}
               <button
                 type="button"
-                onClick={() => setScope("all")}
-                className={`text-xs font-semibold px-3 py-1.5 min-h-[44px] sm:min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
-                  scope === "all"
-                    ? "bg-stone-900 text-white shadow-xs"
-                    : "text-stone-600 hover:bg-stone-100"
+                onClick={() => {
+                  const mtd = getMtdDates();
+                  setPeriodMode("mtd");
+                  setCustomStartDate(mtd.startDate);
+                  setCustomEndDate(mtd.endDate);
+                }}
+                className={`text-xs font-semibold px-3 py-1.5 min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center justify-center ${
+                  periodMode === "mtd"
+                    ? "bg-amber-950 text-white shadow-xs font-bold"
+                    : "text-stone-700 hover:bg-stone-100"
                 }`}
+                title={`Do dia 1º até o dia de hoje (${getMtdDates().label})`}
               >
-                Todos
-              </button>
-              <button
-                type="button"
-                onClick={() => setScope("textil")}
-                className={`text-xs font-semibold px-3 py-1.5 min-h-[44px] sm:min-h-[36px] rounded-lg transition active:scale-[0.98] inline-flex items-center gap-1.5 justify-center ${
-                  scope === "textil"
-                    ? "bg-emerald-800 text-white shadow-xs"
-                    : "text-stone-600 hover:bg-emerald-50 hover:text-emerald-900"
-                }`}
-                title="Apenas peças produzidas na sua confecção têxtil"
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${scope === "textil" ? "bg-emerald-300" : "bg-emerald-600"}`} />
-                Só Confecção
+                Este Mês
               </button>
             </div>
 
-            {/* Canal */}
-            <select
-              value={channel}
-              onChange={(e) => setChannel(e.target.value)}
-              className="text-xs font-medium bg-transparent text-stone-700 border-none focus:ring-0 cursor-pointer pl-2 pr-6 py-1.5 min-h-[44px] sm:min-h-[36px] flex-shrink-0"
+            {/* Botão Gatilho do Painel Flutuante de Filtros */}
+            <button
+              type="button"
+              onClick={() => setIsFilterPopoverOpen((prev) => !prev)}
+              className={`text-xs font-semibold px-3.5 py-1.5 min-h-[38px] rounded-xl border transition flex items-center gap-2 active:scale-[0.98] cursor-pointer shadow-2xs ${
+                activeFiltersCount > 0 || isFilterPopoverOpen
+                  ? "bg-amber-50 text-amber-950 border-amber-300 ring-2 ring-amber-300/30"
+                  : "bg-white text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+              }`}
             >
-              <option value="all">Todos os Canais</option>
-              <option value="site">🛒 Loja Virtual</option>
-              <option value="shopee">🟠 Shopee</option>
-              <option value="mercadolivre">🟡 Mercado Livre</option>
-              <option value="tiktok">⚫ TikTok Shop</option>
-            </select>
+              <span>⚙️ Filtros</span>
+              {periodMode === "custom" && customStartDate ? (
+                <span className="text-[10px] bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded font-mono font-bold">
+                  📅 {customStartDate.slice(5).replace("-", "/")} a {customEndDate.slice(5).replace("-", "/")}
+                </span>
+              ) : activeFiltersCount > 0 ? (
+                <span className="text-[10px] bg-amber-900 text-white w-4 h-4 rounded-full inline-flex items-center justify-center font-bold">
+                  {activeFiltersCount}
+                </span>
+              ) : null}
+              <span className="text-[10px] text-stone-400">{isFilterPopoverOpen ? "▲" : "▼"}</span>
+            </button>
+
+            {/* Painel Flutuante (Popover) de Filtros e Datas Personalizadas */}
+            {isFilterPopoverOpen && (
+              <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-stone-200 p-5 z-50 space-y-4 animate-in fade-in duration-150">
+                <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">⚙️</span>
+                    <h3 className="font-bold text-sm text-stone-900">Filtros Avançados &amp; Período</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterPopoverOpen(false)}
+                    className="w-6 h-6 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-700 inline-flex items-center justify-center text-xs"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* 1. Data Personalizada */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-stone-500 block">
+                      📅 Período Livre (Personalizado)
+                    </label>
+                    {periodMode === "custom" && (
+                      <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                        Ativo
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-[10px] text-stone-400 block mb-0.5">De:</span>
+                      <input
+                        type="date"
+                        value={tempCustomStart || customStartDate}
+                        onChange={(e) => setTempCustomStart(e.target.value)}
+                        className="w-full text-xs border border-stone-200 rounded-lg p-2 text-stone-800 bg-stone-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-950 font-mono"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-stone-400 block mb-0.5">Até:</span>
+                      <input
+                        type="date"
+                        value={tempCustomEnd || customEndDate}
+                        onChange={(e) => setTempCustomEnd(e.target.value)}
+                        className="w-full text-xs border border-stone-200 rounded-lg p-2 text-stone-800 bg-stone-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-950 font-mono"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const start = tempCustomStart || customStartDate;
+                      const end = tempCustomEnd || customEndDate;
+                      if (!start || !end) {
+                        alert("Selecione a data inicial e final.");
+                        return;
+                      }
+                      if (start > end) {
+                        alert("A data inicial não pode ser maior que a final.");
+                        return;
+                      }
+                      setCustomStartDate(start);
+                      setCustomEndDate(end);
+                      setPeriodMode("custom");
+                      setIsFilterPopoverOpen(false);
+                    }}
+                    className="w-full py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-semibold transition active:scale-[0.98]"
+                  >
+                    Aplicar Datas Personalizadas
+                  </button>
+                </div>
+
+                {/* 2. Escopo do Catálogo */}
+                <div className="space-y-1.5 pt-3 border-t border-stone-100">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-stone-500 block">
+                    🧵 Escopo de Produção
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setScope("all")}
+                      className={`text-xs font-semibold py-2 px-3 rounded-lg border transition text-center ${
+                        scope === "all"
+                          ? "bg-stone-900 text-white border-stone-900 shadow-2xs"
+                          : "bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100"
+                      }`}
+                    >
+                      Todos os Produtos
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setScope("textil")}
+                      className={`text-xs font-semibold py-2 px-3 rounded-lg border transition text-center flex items-center justify-center gap-1.5 ${
+                        scope === "textil"
+                          ? "bg-emerald-800 text-white border-emerald-800 shadow-2xs"
+                          : "bg-stone-50 text-stone-700 border-stone-200 hover:bg-emerald-50 hover:text-emerald-900"
+                      }`}
+                      title="Apenas peças produzidas na sua confecção têxtil"
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${scope === "textil" ? "bg-emerald-300" : "bg-emerald-600"}`} />
+                      Só Confecção
+                    </button>
+                  </div>
+                </div>
+
+                {/* 3. Canal de Venda */}
+                <div className="space-y-1.5 pt-3 border-t border-stone-100">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-stone-500 block">
+                    🛍️ Canal de Vendas
+                  </label>
+                  <select
+                    value={channel}
+                    onChange={(e) => setChannel(e.target.value)}
+                    className="w-full text-xs font-medium bg-stone-50 text-stone-800 border border-stone-200 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-amber-950 cursor-pointer"
+                  >
+                    <option value="all">🌐 Todos os Canais</option>
+                    <option value="site">🛒 Loja Virtual (Tray)</option>
+                    <option value="shopee">🟠 Shopee</option>
+                    <option value="mercadolivre">🟡 Mercado Livre</option>
+                    <option value="tiktok">⚫ TikTok Shop</option>
+                  </select>
+                </div>
+
+                {/* Rodapé: Limpar e Concluir */}
+                <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPeriodMode("30d");
+                      setDays(30);
+                      setCustomStartDate("");
+                      setCustomEndDate("");
+                      setTempCustomStart("");
+                      setTempCustomEnd("");
+                      setScope("all");
+                      setChannel("all");
+                      setIsFilterPopoverOpen(false);
+                    }}
+                    className="text-stone-500 hover:text-rose-700 underline text-xs font-medium"
+                  >
+                    Limpar todos os filtros
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterPopoverOpen(false)}
+                    className="px-4 py-1.5 bg-amber-950 hover:bg-amber-900 text-white rounded-lg text-xs font-semibold shadow-2xs"
+                  >
+                    Concluir
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -2688,6 +2902,33 @@ export function DashboardClient() {
                                 <strong className={`${o.net_profit < 0 ? "text-rose-700" : "text-emerald-700"} font-bold text-sm tabular-nums`}>
                                   {money(o.net_profit)}
                                 </strong>
+                                <div className="mt-1">
+                                  {(() => {
+                                    const marginPct =
+                                      o.net_margin_percent != null
+                                        ? o.net_margin_percent
+                                        : o.total > 0
+                                        ? (o.net_profit / o.total) * 100
+                                        : 0;
+                                    const isNeg = o.net_profit < 0 || marginPct < 0;
+                                    const badgeClass = isNeg
+                                      ? "bg-rose-50 text-rose-800 border-rose-200"
+                                      : marginPct >= 30
+                                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                                      : marginPct >= 15
+                                      ? "bg-amber-50 text-amber-900 border-amber-200"
+                                      : "bg-rose-50 text-rose-800 border-rose-200";
+
+                                    return (
+                                      <span
+                                        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border tabular-nums ${badgeClass}`}
+                                        title={`Margem líquida da compra: ${percent(marginPct)}`}
+                                      >
+                                        Margem {percent(marginPct)}
+                                      </span>
+                                    );
+                                  })()}
+                                </div>
                               </div>
                             </div>
 
@@ -3170,70 +3411,113 @@ export function DashboardClient() {
                                       </div>
 
                                       {/* Sanfona 5: Lucro Limpo no Bolso */}
-                                      <div
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
-                                            toggleAccordion(`ord-profit-${o.id}`);
-                                        }}
-                                        className={`p-2.5 rounded-lg border cursor-pointer transition ${
-                                          o.net_profit < 0 ? "bg-rose-50 border-rose-200" : "bg-emerald-50 border-emerald-200"
-                                        }`}
-                                        title="Clique para ver o cálculo do lucro limpo"
-                                      >
-                                        <div className="flex justify-between items-center">
-                                          <span className={`font-bold flex items-center gap-1.5 ${o.net_profit < 0 ? "text-rose-800" : "text-emerald-800"}`}>
-                                            <span>Lucro Limpo no Bolso:</span>
-                                            <ChevronDownIcon
-                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                                isProfitOpen ? "rotate-180" : ""
-                                              }`}
-                                            />
-                                          </span>
-                                          <strong className={`text-sm font-extrabold tabular-nums ${o.net_profit < 0 ? "text-rose-700" : "text-emerald-700"}`}>
-                                            {money(o.net_profit)}
-                                          </strong>
-                                        </div>
+                                      {(() => {
+                                        const marginPct =
+                                          o.net_margin_percent != null
+                                            ? o.net_margin_percent
+                                            : o.total > 0
+                                            ? (o.net_profit / o.total) * 100
+                                            : 0;
+                                        const isNeg = o.net_profit < 0 || marginPct < 0;
+                                        const marginBadgeClass = isNeg
+                                          ? "bg-rose-100 text-rose-900 border-rose-300"
+                                          : marginPct >= 30
+                                          ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                                          : marginPct >= 15
+                                          ? "bg-amber-100 text-amber-950 border-amber-300"
+                                          : "bg-rose-100 text-rose-900 border-rose-300";
 
-                                        {isProfitOpen && (
-                                          <div className={`mt-2 pt-2 border-t text-[10px] space-y-1 ${
-                                            o.net_profit < 0 ? "border-rose-200 text-rose-950" : "border-emerald-200 text-emerald-950"
-                                          }`}>
-                                            {orderHasKits && orderPiecesCount > orderKitsCount ? (
-                                              <>
-                                                <div className="flex justify-between">
-                                                  <span>Lucro por Kit Anunciado:</span>
-                                                  <strong className="tabular-nums font-semibold">{money(unitProfit)} / kit</strong>
+                                        const accordionBgClass = isNeg
+                                          ? "bg-rose-50 border-rose-200"
+                                          : marginPct >= 30
+                                          ? "bg-emerald-50 border-emerald-200"
+                                          : marginPct >= 15
+                                          ? "bg-amber-50 border-amber-200"
+                                          : "bg-rose-50 border-rose-200";
+
+                                        const titleTextClass = isNeg
+                                          ? "text-rose-800"
+                                          : marginPct >= 30
+                                          ? "text-emerald-800"
+                                          : marginPct >= 15
+                                          ? "text-amber-900"
+                                          : "text-rose-800";
+
+                                        const valTextClass = isNeg
+                                          ? "text-rose-700"
+                                          : marginPct >= 30
+                                          ? "text-emerald-700"
+                                          : marginPct >= 15
+                                          ? "text-amber-800"
+                                          : "text-rose-700";
+
+                                        return (
+                                          <div
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                              toggleAccordion(`ord-profit-${o.id}`);
+                                            }}
+                                            className={`p-2.5 rounded-lg border cursor-pointer transition ${accordionBgClass}`}
+                                            title="Clique para ver o cálculo do lucro limpo"
+                                          >
+                                            <div className="flex justify-between items-center">
+                                              <span className={`font-bold flex items-center gap-1.5 ${titleTextClass}`}>
+                                                <span>Lucro Limpo no Bolso:</span>
+                                                <ChevronDownIcon
+                                                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                    isProfitOpen ? "rotate-180" : ""
+                                                  }`}
+                                                />
+                                              </span>
+                                              <strong className={`text-sm font-extrabold tabular-nums ${valTextClass}`}>
+                                                {money(o.net_profit)}
+                                              </strong>
+                                            </div>
+
+                                            {isProfitOpen && (
+                                              <div className={`mt-2 pt-2 border-t text-[10px] space-y-1 ${
+                                                isNeg ? "border-rose-200 text-rose-950" : marginPct >= 30 ? "border-emerald-200 text-emerald-950" : marginPct >= 15 ? "border-amber-200 text-amber-950" : "border-rose-200 text-rose-950"
+                                              }`}>
+                                                {orderHasKits && orderPiecesCount > orderKitsCount ? (
+                                                  <>
+                                                    <div className="flex justify-between">
+                                                      <span>Lucro por Kit Anunciado:</span>
+                                                      <strong className="tabular-nums font-semibold">{money(unitProfit)} / kit</strong>
+                                                    </div>
+                                                    <div className="flex justify-between text-stone-600">
+                                                      <span>Lucro Unitário por Peça:</span>
+                                                      <strong className="tabular-nums font-semibold">{money(unitPieceProfit)} / peça</strong>
+                                                    </div>
+                                                  </>
+                                                ) : (
+                                                  <div className="flex justify-between">
+                                                    <span>Lucro Unitário:</span>
+                                                    <strong className="tabular-nums">{money(unitProfit)} / peça</strong>
+                                                  </div>
+                                                )}
+                                                <div className="flex justify-between items-center pt-0.5">
+                                                  <span className="font-semibold">Margem Líquida Real:</span>
+                                                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border tabular-nums ${marginBadgeClass}`}>
+                                                    {percent(marginPct)}
+                                                  </span>
                                                 </div>
-                                                <div className="flex justify-between text-stone-600">
-                                                  <span>Lucro Unitário por Peça:</span>
-                                                  <strong className="tabular-nums font-semibold">{money(unitPieceProfit)} / peça</strong>
+                                                {shippingSellerCost > 0 && (
+                                                  <div className="flex justify-between text-amber-900 pb-0.5 border-b border-amber-200/50">
+                                                    <span>Frete Mercado Envios (Custeado pela Loja):</span>
+                                                    <strong className="tabular-nums font-semibold">- {money(shippingSellerCost)}</strong>
+                                                  </div>
+                                                )}
+                                                <div className="pt-1 border-t border-current/20 text-[9px] opacity-80 tabular-nums">
+                                                  {shippingSellerCost > 0
+                                                    ? `Renda Repassada (${money(netEstimatedRevenue)}) [Venda - Taxas - Frete Mercado Envios] - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`
+                                                    : `Renda Repassada (${money(netEstimatedRevenue)}) - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`}
                                                 </div>
-                                              </>
-                                            ) : (
-                                              <div className="flex justify-between">
-                                                <span>Lucro Unitário:</span>
-                                                <strong className="tabular-nums">{money(unitProfit)} / peça</strong>
                                               </div>
                                             )}
-                                            <div className="flex justify-between">
-                                              <span>Margem Líquida Real:</span>
-                                              <strong className="tabular-nums">{percent(o.net_margin_percent)}</strong>
-                                            </div>
-                                            {shippingSellerCost > 0 && (
-                                              <div className="flex justify-between text-amber-900 pb-0.5 border-b border-amber-200/50">
-                                                <span>Frete Mercado Envios (Custeado pela Loja):</span>
-                                                <strong className="tabular-nums font-semibold">- {money(shippingSellerCost)}</strong>
-                                              </div>
-                                            )}
-                                            <div className="pt-1 border-t border-current/20 text-[9px] opacity-80 tabular-nums">
-                                              {shippingSellerCost > 0
-                                                ? `Renda Repassada (${money(netEstimatedRevenue)}) [Venda - Taxas - Frete Mercado Envios] - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`
-                                                : `Renda Repassada (${money(netEstimatedRevenue)}) - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`}
-                                            </div>
                                           </div>
-                                        )}
-                                      </div>
+                                        );
+                                      })()}
                                     </div>
                                   );
                                 })()}
