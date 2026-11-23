@@ -1146,8 +1146,21 @@ export async function GET(request: Request) {
     };
 
     const activeAdPlatforms: AdPlatform[] = ["meta_ads", "shopee_ads", "mercado_ads", "tiktok_ads"];
+    const platformToChannel: Record<AdPlatform, SalesChannel> = {
+      shopee_ads: "shopee",
+      mercado_ads: "mercadolivre",
+      tiktok_ads: "tiktok",
+      meta_ads: "site",
+      google_ads: "site",
+    };
+
     const adSummaryArray: AdSpendSummary[] = activeAdPlatforms.map((p) => {
       const info = adSummaryByPlatform[p] || { spent: 0, imp: 0, clk: 0, conv: 0 };
+      const chKey = platformToChannel[p];
+      const chRevenue = channelStats[chKey]?.gross || 0;
+      // ROAS atribuído rigorosamente ao faturamento do canal correspondente
+      const platformRoas = info.spent > 0 && chRevenue > 0 ? chRevenue / info.spent : 0;
+
       return {
         platform: p,
         platform_name: platformLabels[p],
@@ -1155,7 +1168,7 @@ export async function GET(request: Request) {
         impressions: info.imp,
         clicks: info.clk,
         conversions: info.conv,
-        roas: info.spent > 0 ? totalGrossRevenue / info.spent : 0,
+        roas: platformRoas,
       };
     });
 

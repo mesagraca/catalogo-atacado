@@ -544,6 +544,19 @@ export function DashboardClient() {
     }
   };
 
+  type AdSortField = "date" | "platform" | "campaign" | "amount_spent" | "clicks" | "conversions";
+  const [adSortField, setAdSortField] = useState<AdSortField>("date");
+  const [adSortAsc, setAdSortAsc] = useState<boolean>(false);
+
+  const handleAdSort = (field: AdSortField) => {
+    if (adSortField === field) {
+      setAdSortAsc((prev) => !prev);
+    } else {
+      setAdSortField(field);
+      setAdSortAsc(field === "platform" || field === "campaign");
+    }
+  };
+
   const toggleOrderExpanded = (id: string) => {
     setExpandedOrderIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -792,6 +805,768 @@ export function DashboardClient() {
   if (channel !== "all") activeFiltersCount++;
   if (scope !== "all") activeFiltersCount++;
   if (periodMode === "custom") activeFiltersCount++;
+
+  const renderOrderCard = (o: DashboardResponse["recent_orders"][number]) => {
+    const cfg = CHANNEL_CONFIG[o.channel];
+                        const Icon = cfg.Icon;
+                        const isExpanded = !!expandedOrderIds[o.id];
+
+                        return (
+                          <div
+                            key={o.id}
+                            onClick={() => {
+                                if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                toggleOrderExpanded(o.id);
+                              }}
+                            className={`p-3.5 rounded-xl border transition cursor-pointer flex flex-col justify-between gap-3 ${
+                              isExpanded
+                                ? "border-amber-400 bg-amber-50/20 shadow-xs ring-1 ring-amber-300"
+                                : "border-stone-200 bg-stone-50/50 hover:bg-stone-50 hover:border-stone-300"
+                            }`}
+                          >
+                            {/* Cabeçalho */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span
+                                  className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1.5 ${cfg.bg}`}
+                                >
+                                  <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                                  <span>{cfg.label}</span>
+                                </span>
+                                {o.status && (() => {
+                                  const statusCfg = getOrderStatusBadge(o.status);
+                                  return (
+                                    <span
+                                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1 ${statusCfg.badgeClass}`}
+                                      title={statusCfg.description}
+                                    >
+                                      <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotClass}`} />
+                                      <span>{statusCfg.label}</span>
+                                    </span>
+                                  );
+                                })()}
+                              </div>
+                              <span className="text-xs text-stone-600 font-mono font-bold">
+                                #{o.id}
+                              </span>
+                            </div>
+
+                            {/* Miniaturas dos Produtos */}
+                            <div className="py-1">
+                              {o.items && o.items.length > 0 ? (
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                    {o.items[0].image_url ? (
+                                      <img
+                                        src={o.items[0].image_url}
+                                        alt={o.items[0].name}
+                                        className="w-full h-full object-cover"
+                                        loading="lazy"
+                                        onError={(e) => {
+                                          (e.target as HTMLElement).style.display = "none";
+                                        }}
+                                      />
+                                    ) : (
+                                      <span className="text-stone-300 text-sm">📦</span>
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="text-xs font-semibold text-stone-900 line-clamp-1">
+                                      {o.items[0].name.replace(/<br\s*\/?>/gi, " - ")}
+                                    </div>
+                                    <div className="text-[11px] text-stone-500 font-mono">
+                                      Qtd: {o.items[0].quantity}x {o.items.length > 1 ? `(+${o.items.length - 1} outros)` : ""}
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="text-xs text-stone-400 italic">
+                                  {o.items_count} {o.items_count === 1 ? "peça" : "peças"}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Metadados: Data, Localidade, Frete */}
+                            <div className="text-xs text-stone-600 flex justify-between items-center gap-2 flex-wrap">
+                              <span className="font-medium whitespace-nowrap">
+                                {formatFullDateBR(o.date)} {o.hour ? `às ${o.hour}` : ""}
+                              </span>
+                              <div className="flex items-center gap-1.5 text-[11px] text-stone-500 flex-wrap">
+                                {o.customer_city && (
+                                  <span className="whitespace-nowrap">
+                                    {o.customer_city}/{o.customer_state}
+                                  </span>
+                                )}
+                                {o.shipment_name && (
+                                  <span className="bg-stone-200/80 px-1.5 py-0.5 rounded text-[10px] font-medium text-stone-700 whitespace-nowrap">
+                                    📦 {o.shipment_name}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Valores do Pedido */}
+                            <div className="pt-2 border-t border-stone-200 flex justify-between items-start text-xs">
+                              <div>
+                                <span className="text-stone-500 text-[11px] block">Pago pelo Cliente</span>
+                                <strong className="text-stone-900 font-bold text-sm tabular-nums">
+                                  {money(o.total)}
+                                </strong>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-stone-500 text-[11px] block">Lucro Limpo</span>
+                                <strong className={`${o.net_profit < 0 ? "text-rose-700" : "text-emerald-700"} font-bold text-sm tabular-nums`}>
+                                  {money(o.net_profit)}
+                                </strong>
+                                <div className="mt-1">
+                                  {(() => {
+                                    const marginPct =
+                                      o.net_margin_percent != null
+                                        ? o.net_margin_percent
+                                        : o.total > 0
+                                        ? (o.net_profit / o.total) * 100
+                                        : 0;
+                                    const isNeg = o.net_profit < 0 || marginPct < 0;
+                                    const badgeClass = isNeg
+                                      ? "bg-rose-50 text-rose-800 border-rose-200"
+                                      : marginPct >= 30
+                                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                                      : marginPct >= 15
+                                      ? "bg-amber-50 text-amber-900 border-amber-200"
+                                      : "bg-rose-50 text-rose-800 border-rose-200";
+
+                                    return (
+                                      <span
+                                        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border tabular-nums ${badgeClass}`}
+                                        title={`Margem líquida da compra: ${percent(marginPct)}`}
+                                      >
+                                        Margem {percent(marginPct)}
+                                      </span>
+                                    );
+                                  })()}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Detalhamento Expansível Estilo Shopee com Sanfonas */}
+                            {isExpanded && (
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="mt-3 pt-3 border-t border-stone-200 space-y-2 cursor-default text-xs"
+                              >
+                                {(() => {
+                                  const isShopee = o.channel === "shopee" || cfg.label.toLowerCase().includes("shopee");
+                                  const isML = o.channel === "mercadolivre" || cfg.label.toLowerCase().includes("mercado");
+                                  const isTikTok = o.channel === "tiktok" || cfg.label.toLowerCase().includes("tiktok");
+                                  const isMarketplace = isShopee || isML || isTikTok;
+
+                                  let orderKitsCount = 0;
+                                  let orderPiecesCount = 0;
+                                  let orderHasKits = false;
+                                  let dominantPack = 1;
+
+                                  (o.items || []).forEach((it) => {
+                                    const name = it.name || "";
+                                    const match = name.match(/kit\s*(\d+)/i) || name.match(/(\d+)\s*(?:peças|unidades|un|pcs)/i);
+                                    const pack = match ? parseInt(match[1], 10) : (name.toLowerCase().includes("par") ? 2 : 1);
+                                    const qty = it.quantity || 1;
+                                    if (pack > 1 || name.toLowerCase().includes("kit")) {
+                                      orderHasKits = true;
+                                      if (pack > dominantPack) dominantPack = pack;
+                                    }
+                                    orderKitsCount += qty;
+                                    orderPiecesCount += qty * pack;
+                                  });
+
+                                  const totalUnits = o.items_count || (o.items || []).reduce((acc, it) => acc + (it.quantity || 1), 0) || 1;
+                                  if (orderPiecesCount === 0) {
+                                    orderPiecesCount = totalUnits;
+                                    orderKitsCount = totalUnits;
+                                  }
+
+                                  const unitCost = totalUnits > 0 ? (o.cost_amount || 0) / totalUnits : 0;
+                                  const unitPieceCost = orderPiecesCount > 0 ? (o.cost_amount || 0) / orderPiecesCount : unitCost;
+                                  const unitProfit = totalUnits > 0 ? (o.net_profit || 0) / totalUnits : 0;
+                                  const unitPieceProfit = orderPiecesCount > 0 ? (o.net_profit || 0) / orderPiecesCount : unitProfit;
+                                  const baseForPct = (o.products_subtotal ?? 0) > 0 ? o.products_subtotal! : (o.total || 0);
+
+                                  // Regra Mercado Livre: Se o valor dos produtos for >= 79, o frete é obrigatório grátis para o comprador e custeado pelo vendedor (Mesa & Graça)
+                                  const isMLFreeShippingSeller = isML && ((o.products_subtotal || o.total) >= 79) && ((o.shipment_value || 0) > 0 || (o.discount_value || 0) > 0);
+                                  const shippingSellerCost = isMLFreeShippingSeller ? (o.shipment_value || o.discount_value || 0) : 0;
+
+                                  // Decomposição Shopee oficial (18,60% comissão líquida + 1,40% taxa de transação + R$ 4,50 fixa por item)
+                                  const shopeeCommLiquid = isShopee ? baseForPct * 0.186 : (o.commission_percentage_amount ?? ((o.commission_amount || 0) - (o.commission_fixed_fee || 0)));
+                                  const shopeeTransFee = isShopee ? baseForPct * 0.014 : 0;
+                                  const fixedFeeTotal = isShopee ? (totalUnits * 4.5) : (o.commission_fixed_fee ?? 0);
+                                  const totalCommission = isShopee ? (shopeeCommLiquid + shopeeTransFee + fixedFeeTotal) : (o.commission_amount || 0);
+                                  const netEstimatedRevenue = baseForPct - totalCommission - shippingSellerCost;
+
+                                  const commPctAmount = isShopee ? (shopeeCommLiquid + shopeeTransFee) : (o.commission_percentage_amount ?? ((o.commission_amount || 0) - (o.commission_fixed_fee || 0)));
+                                  const calculatedRate = baseForPct > 0 && commPctAmount > 0 ? Math.round((commPctAmount / baseForPct) * 100) : 0;
+                                  const fallbackRate = isShopee ? 20 : isML ? 16 : isTikTok ? 7 : 3.5;
+                                  const orderCommRate = calculatedRate > 0 ? calculatedRate : fallbackRate;
+                                  const effectiveTotalPct = baseForPct > 0 ? Math.round((totalCommission / baseForPct) * 100) : orderCommRate;
+
+                                  const isShippingOpen = !!openAccordions[`ord-ship-${o.id}`];
+                                  const isFeesOpen = !!openAccordions[`ord-tax-${o.id}`] || expandedOrderFeeId === o.id;
+                                  const isCostOpen = !!openAccordions[`ord-cost-${o.id}`];
+                                  const isProfitOpen = !!openAccordions[`ord-profit-${o.id}`];
+
+                                  return (
+                                    <div className="space-y-2">
+                                      {/* Container Unificado: Itens do Pedido & Detalhamento Interativo */}
+                                      <div className="bg-white rounded-lg border border-stone-200 overflow-hidden text-[11px] shadow-2xs">
+                                        {/* Cabeçalho Unificado */}
+                                        <div className="bg-stone-50 px-3 py-2 border-b border-stone-200 flex justify-between items-center">
+                                          <span className="font-semibold text-stone-700 flex items-center gap-1.5">
+                                            <span>Itens do Pedido</span>
+                                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-stone-200 text-stone-700 font-mono">
+                                              {o.items?.length || 0}
+                                            </span>
+                                          </span>
+                                          <div className="text-right">
+                                            <span className="text-[10px] text-stone-500 mr-1.5 font-normal">Subtotal:</span>
+                                            <strong className="text-stone-900 tabular-nums text-xs">
+                                              {money(o.products_subtotal || o.total)}
+                                            </strong>
+                                          </div>
+                                        </div>
+
+                                        {/* Lista de Itens com Expansão por Clique */}
+                                        <div className="divide-y divide-stone-100">
+                                          {o.items && o.items.length > 0 ? (
+                                            o.items.map((it, idx) => {
+                                              const itemKey = `ord-item-${o.id}-${idx}`;
+                                              const isItemExpanded = !!openAccordions[itemKey];
+                                              const itNameLower = (it.name || "").toLowerCase();
+                                              const itMatch = itNameLower.match(/kit\s*(\d+)/i) || itNameLower.match(/(\d+)\s*(?:peças|unidades|un|pcs)/i);
+                                              let itPackSize = itMatch ? parseInt(itMatch[1], 10) : (itNameLower.includes("par") ? 2 : 1);
+                                              const itHasLA = itNameLower.includes("lugar americano") || itNameLower.includes("jogo americano") || (it.sku || "").toUpperCase().includes("LAM");
+                                              const itHasGUA = itNameLower.includes("guardanapo") || (it.sku || "").toUpperCase().includes("GUA");
+                                              const itHasPGU = itNameLower.includes("porta") || (it.sku || "").toUpperCase().includes("PGU");
+                                              if (itHasLA && itHasGUA && itHasPGU && itPackSize === 1) {
+                                                if (itNameLower.includes("2 lugares") || itNameLower.includes("2lugares") || itNameLower.includes("6 peças")) {
+                                                  itPackSize = 6;
+                                                } else {
+                                                  itPackSize = 3;
+                                                }
+                                              }
+                                              const isItKit = itPackSize > 1 || itNameLower.includes("kit");
+
+                                              return (
+                                                <div key={it.sku || idx} className="transition-colors">
+                                                  {/* Linha Principal do Produto (Clicável) */}
+                                                  <div
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      toggleAccordion(itemKey);
+                                                    }}
+                                                    className="p-2.5 flex items-center gap-2.5 hover:bg-stone-50/80 cursor-pointer transition"
+                                                    title="Clique para ver o detalhamento deste produto"
+                                                  >
+                                                    {/* Foto do Produto */}
+                                                    <div className="w-10 h-10 rounded border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                      {it.image_url ? (
+                                                        <img src={it.image_url} alt={it.name} className="w-full h-full object-cover" />
+                                                      ) : (
+                                                        <span className="text-xs">📦</span>
+                                                      )}
+                                                    </div>
+
+                                                    {/* Conteúdo Central e Lateral em 2 Linhas Exatas */}
+                                                    <div className="min-w-0 flex-1 space-y-1">
+                                                      {/* 1ª Linha: Quantidade + Nome do Produto (esq) e Total (dir) */}
+                                                      <div className="flex items-center justify-between gap-2">
+                                                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                                                          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-stone-100 border border-stone-300 font-bold text-stone-800 text-[10px] tabular-nums shadow-2xs flex-shrink-0">
+                                                            {it.quantity}x
+                                                          </span>
+                                                          <span className="font-semibold text-stone-900 truncate text-[11px]" title={it.name}>
+                                                            {it.name.replace(/<br\s*\/?>/gi, " - ")}
+                                                          </span>
+                                                        </div>
+                                                        <strong className="text-stone-900 tabular-nums font-bold text-xs flex-shrink-0">
+                                                          {money(it.price * it.quantity)}
+                                                        </strong>
+                                                      </div>
+
+                                                      {/* 2ª Linha: SKU (esq) e Ver detalhes com Chevron (dir) */}
+                                                      <div className="flex items-center justify-between gap-2 text-[10px]">
+                                                        <span className="text-stone-500 font-mono">
+                                                          SKU: {it.sku}
+                                                        </span>
+                                                        <span className="text-stone-500 hover:text-stone-800 flex items-center gap-1 font-medium transition-colors flex-shrink-0">
+                                                          <span>{isItemExpanded ? "recolher" : "ver detalhes"}</span>
+                                                          <ChevronDownIcon
+                                                            className={`w-3 h-3 transition-transform duration-200 ${
+                                                              isItemExpanded ? "rotate-180 text-stone-700" : "text-stone-400"
+                                                            }`}
+                                                          />
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+
+                                                  {/* Detalhes Unitários Expandidos */}
+                                                  {isItemExpanded && (
+                                                    <div className="bg-stone-50/70 px-3 py-2 border-t border-stone-100 text-[10px] space-y-1.5 text-stone-600">
+                                                      <div className="flex justify-between">
+                                                        <span>Preço unitário:</span>
+                                                        <span className="tabular-nums font-medium text-stone-900">
+                                                          {money(it.price)} / {isItKit ? "kit" : "un"}
+                                                          {isItKit && itPackSize > 1 && (
+                                                            <span className="text-stone-400 font-normal"> ({money(it.price / itPackSize)} / peça)</span>
+                                                          )}
+                                                        </span>
+                                                      </div>
+                                                      <div className="flex justify-between">
+                                                        <span>Quantidade comprada:</span>
+                                                        <span className="tabular-nums font-medium text-stone-900">
+                                                          {it.quantity} {isItKit ? `kits (${it.quantity * itPackSize} peças)` : "unidades"}
+                                                        </span>
+                                                      </div>
+                                                      <div className="flex justify-between pt-1 border-t border-stone-200/50 font-semibold text-stone-800">
+                                                        <span>Subtotal:</span>
+                                                        <strong className="text-stone-900 tabular-nums">{money(it.price * it.quantity)}</strong>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              );
+                                            })
+                                          ) : (
+                                            <div className="p-3 text-stone-500 italic text-[11px]">Itens não discriminados</div>
+                                          )}
+                                        </div>
+
+                                        {/* Rodapé: Desconto do vendedor */}
+                                        {o.discount_value != null && o.discount_value > 0 && (
+                                          <div className="bg-stone-50/60 px-3 py-1.5 border-t border-stone-200 flex justify-between text-[10px] text-rose-700 font-medium">
+                                            <span>Descontos concedidos pelo Vendedor:</span>
+                                            <strong className="tabular-nums">-{money(o.discount_value)}</strong>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Sanfona 2: Subtotal estimado do frete com regra inteligente por canal */}
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                            toggleAccordion(`ord-ship-${o.id}`);
+                                        }}
+                                        className="p-2 rounded-lg bg-stone-50 hover:bg-stone-100/70 border border-stone-200 cursor-pointer transition"
+                                        title="Clique para ver os detalhes da operação de frete"
+                                      >
+                                        <div className="flex justify-between items-center gap-2 text-stone-700 min-w-0">
+                                          <span className="flex items-center gap-1.5 font-medium whitespace-nowrap shrink-0 text-[11px]">
+                                            <span>Frete / Logística:</span>
+                                            <ChevronDownIcon
+                                              className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
+                                                isShippingOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                              }`}
+                                            />
+                                          </span>
+                                          <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                                            {isMLFreeShippingSeller ? (
+                                              <>
+                                                <strong className="text-amber-800 tabular-nums whitespace-nowrap font-bold text-xs">
+                                                  ⚠️ -{money(shippingSellerCost)}
+                                                </strong>
+                                                <span className="text-[9px] font-semibold bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded whitespace-nowrap">
+                                                  Pago pela Loja
+                                                </span>
+                                              </>
+                                            ) : isMarketplace ? (
+                                              <>
+                                                <strong className="text-emerald-700 tabular-nums whitespace-nowrap font-bold text-xs">
+                                                  R$ 0,00
+                                                </strong>
+                                                <span className="text-[9px] font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 px-1.5 py-0.2 rounded whitespace-nowrap">
+                                                  Custeado
+                                                </span>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <strong className="text-sky-800 tabular-nums whitespace-nowrap font-bold text-xs">
+                                                  +{money(o.shipment_value || 0)}
+                                                </strong>
+                                                <span className="text-[9px] font-semibold bg-sky-100 text-sky-900 border border-sky-300 px-1.5 py-0.2 rounded whitespace-nowrap">
+                                                  Pago pelo Cliente
+                                                </span>
+                                              </>
+                                            )}
+                                          </div>
+                                        </div>
+                                        {isShippingOpen && (
+                                          <div className="mt-1.5 pt-1.5 border-t border-stone-200 text-[10px] space-y-1 text-stone-600">
+                                            {isMLFreeShippingSeller ? (
+                                              <div className="p-2 rounded bg-amber-50 border border-amber-200 text-amber-900 text-[10px] space-y-1">
+                                                <div className="font-bold flex items-center gap-1 text-amber-950">
+                                                  <span>⚠️ Frete Grátis Mercado Envios (Custeado pelo Vendedor):</span>
+                                                </div>
+                                                <p className="text-amber-900/90 leading-relaxed">
+                                                  Em compras a partir de R$ 79,00 no Mercado Livre, o frete grátis ao comprador é obrigatório e custeado pela Mesa &amp; Graça via Mercado Envios ({o.shipment_name || "Encomenda Normal"}). O valor de {money(shippingSellerCost)} foi debitado do repasse da venda.
+                                                </p>
+                                                <div className="flex justify-between pt-1 border-t border-amber-200/80 font-bold text-amber-950">
+                                                  <span>Custo de frete suportado pela loja:</span>
+                                                  <span className="tabular-nums">-{money(shippingSellerCost)}</span>
+                                                </div>
+                                              </div>
+                                            ) : isShopee ? (
+                                              <>
+                                                <div className="flex justify-between text-stone-700">
+                                                  <span>Valor do frete pago pelo comprador / Shopee:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>✅ Frete 100% Custeado pela Shopee:</span>
+                                                  </div>
+                                                  <p className="text-emerald-800">
+                                                    Os cupons de frete grátis e envios regulares são subsidiados integralmente pela Shopee. O valor de {money(o.shipment_value || 0)} é repassado à transportadora ({o.shipment_name || "Shopee Xpress"}). Custo R$ 0,00 para a sua loja.
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (100% Custeado pela Plataforma)</span>
+                                                </div>
+                                              </>
+                                            ) : isTikTok ? (
+                                              <>
+                                                <div className="flex justify-between text-stone-700">
+                                                  <span>Valor do frete pago pelo comprador / TikTok:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>✅ Frete 100% Gerenciado pelo TikTok Shop:</span>
+                                                  </div>
+                                                  <p className="text-emerald-800">
+                                                    Envio operado pela transportadora oficial ({o.shipment_name || "J&T Express Brazil"}). Custo R$ 0,00 para a sua loja.
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (100% Custeado pela Plataforma)</span>
+                                                </div>
+                                              </>
+                                            ) : isML ? (
+                                              <>
+                                                <div className="flex justify-between text-stone-700">
+                                                  <span>Taxa de frete paga pelo comprador:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>✅ Frete Pago pelo Comprador:</span>
+                                                  </div>
+                                                  <p className="text-emerald-800">
+                                                    Como o pedido é inferior a R$ 79,00 no Mercado Livre, o frete de {money(o.shipment_value || 0)} foi pago pelo comprador ({o.shipment_name || "Mercado Envios"}). Custo R$ 0,00 para a sua loja.
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (Custeado pelo Comprador)</span>
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <div className="flex justify-between text-sky-800">
+                                                  <span>Taxa de frete paga pelo cliente no checkout:</span>
+                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
+                                                </div>
+                                                <div className="p-2 rounded bg-sky-50 border border-sky-200 text-sky-900 text-[10px] space-y-0.5">
+                                                  <div className="font-bold flex items-center gap-1">
+                                                    <span>📦 Frete Próprio da Loja Virtual:</span>
+                                                  </div>
+                                                  <p className="text-sky-800">
+                                                    O valor pago pelo cliente entra no caixa da loja e é repassado para a compra da etiqueta junto à transportadora ({o.shipment_name || "Correios / Melhor Envio"}).
+                                                  </p>
+                                                </div>
+                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
+                                                  <span>Saldo de frete repassado à loja:</span>
+                                                  <span className="tabular-nums font-semibold text-sky-800">+{money(o.shipment_value || 0)}</span>
+                                                </div>
+                                              </>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Sanfona 3: Taxas e Encargos da Plataforma */}
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                            toggleAccordion(`ord-tax-${o.id}`);
+                                          setExpandedOrderFeeId(isFeesOpen ? null : o.id);
+                                        }}
+                                        className="p-2 rounded-lg bg-orange-50/70 hover:bg-orange-50 border border-orange-200 cursor-pointer transition"
+                                        title="Clique para ver a decomposição centavo a centavo das taxas"
+                                      >
+                                        <div className="flex justify-between items-center text-orange-900 font-semibold">
+                                          <span className="flex items-center gap-1.5">
+                                            <span>Taxas e Encargos ({cfg.label} - {effectiveTotalPct}%):</span>
+                                            <ChevronDownIcon
+                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                isFeesOpen ? "rotate-180 text-orange-800" : "text-orange-600"
+                                              }`}
+                                            />
+                                          </span>
+                                          <strong className="text-orange-700 tabular-nums">-{money(totalCommission)}</strong>
+                                        </div>
+
+                                        {isFeesOpen && (
+                                          <div className="mt-2 pt-2 border-t border-orange-200 text-[10px] space-y-1 text-orange-950">
+                                            <div className="flex justify-between">
+                                              <span
+                                                className="flex items-center gap-1 cursor-help"
+                                                title={isShopee ? "A Shopee cobra 18.60% do valor do seu produto como comissão" : undefined}
+                                              >
+                                                <span>Taxa de comissão líquida ({isShopee ? "18,60%" : `${orderCommRate}%`}):</span>
+                                                {isShopee && <InfoIcon className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />}
+                                              </span>
+                                              <strong className="text-orange-900 tabular-nums">-{money(shopeeCommLiquid)}</strong>
+                                            </div>
+                                            {isShopee && (
+                                              <div className="flex justify-between pl-1 text-stone-600">
+                                                <span>Taxa de transação (1,40%):</span>
+                                                <strong className="text-orange-900 tabular-nums">-{money(shopeeTransFee)}</strong>
+                                              </div>
+                                            )}
+                                            <div className="flex justify-between">
+                                              <span className="flex items-center gap-1 flex-wrap"><span>Taxa por item vendido:</span> <span className="tabular-nums text-orange-900 font-normal whitespace-nowrap">({totalUnits} un × R$ {isShopee ? "4,50" : (fixedFeeTotal / totalUnits).toFixed(2)})</span></span>
+                                              <strong className="text-orange-900 tabular-nums">-{money(fixedFeeTotal)}</strong>
+                                            </div>
+                                            <div className="flex justify-between pt-1 border-t border-orange-200/80 font-bold text-orange-950">
+                                              <span>Total Retido pelo Canal:</span>
+                                              <span className="tabular-nums">-{money(totalCommission)}</span>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Destaque Estilo Shopee: Renda Estimada do Pedido */}
+                                      <div className="p-2.5 rounded-lg bg-orange-50 border border-orange-200 flex justify-between items-center shadow-2xs">
+                                        <div>
+                                          <span className="font-bold text-stone-800 text-xs block">Renda estimada do pedido</span>
+                                          <span className="text-[10px] text-stone-500">Valor líquido repassado no caixa</span>
+                                        </div>
+                                        <strong className="text-orange-600 font-extrabold text-base tabular-nums">
+                                          {money(netEstimatedRevenue)}
+                                        </strong>
+                                      </div>
+
+                                      {/* Sanfona 4: Custo Fábrica / CMV */}
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                            toggleAccordion(`ord-cost-${o.id}`);
+                                        }}
+                                        className="p-2 rounded-lg bg-stone-50 hover:bg-stone-100/70 border border-stone-200 cursor-pointer transition"
+                                        title="Clique para ver o custo de fábrica unitário e origem"
+                                      >
+                                        <div className="flex justify-between items-center text-stone-700">
+                                          <span className="flex items-center gap-1.5 font-medium">
+                                            <span>Custo Fábrica:</span>
+                                            <ChevronDownIcon
+                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                isCostOpen ? "rotate-180 text-stone-700" : "text-stone-400"
+                                              }`}
+                                            />
+                                          </span>
+                                          <strong className="text-stone-800 tabular-nums">-{money(o.cost_amount || 0)}</strong>
+                                        </div>
+                                        {isCostOpen && (
+                                          <div className="mt-1.5 pt-1.5 border-t border-stone-200 text-[10px] space-y-1 text-stone-600">
+                                            <div className="flex justify-between text-stone-500 pb-0.5 border-b border-stone-100">
+                                              <span>Cálculo Base:</span>
+                                              <span className="tabular-nums font-mono text-stone-700">
+                                                {orderHasKits && orderPiecesCount > orderKitsCount
+                                                  ? `${orderKitsCount} kits (${orderPiecesCount} peças) × -${money(unitCost)}`
+                                                  : `${totalUnits} un × -${money(unitCost)}`}
+                                              </span>
+                                            </div>
+                                            {orderHasKits && orderPiecesCount > orderKitsCount ? (
+                                              <>
+                                                <div className="flex justify-between">
+                                                  <span>Custo por Kit Anunciado:</span>
+                                                  <strong className="text-stone-900 tabular-nums">-{money(unitCost)} / kit</strong>
+                                                </div>
+                                                <div className="flex justify-between text-stone-600">
+                                                  <span>Custo Unitário por Peça:</span>
+                                                  <strong className="text-stone-900 tabular-nums">-{money(unitPieceCost)} / peça</strong>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                  <span>Total de Peças Produzidas:</span>
+                                                  <strong className="text-stone-900 tabular-nums">{orderKitsCount} kits ({orderPiecesCount} peças)</strong>
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <div className="flex justify-between">
+                                                  <span>Custo Unitário de Confecção:</span>
+                                                  <strong className="text-stone-900 tabular-nums">-{money(unitCost)} / un</strong>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                  <span>Quantidade de Peças Produzidas:</span>
+                                                  <strong className="text-stone-900 tabular-nums">{totalUnits} peças</strong>
+                                                </div>
+                                              </>
+                                            )}
+                                            <div className="flex justify-between pt-0.5 border-t border-stone-200/50">
+                                              <span>Origem:</span>
+                                              <strong className="text-stone-900">
+                                                {(o.items || []).some((it) => it.is_own_production) ? "Confecção Própria Mesa & Graça" : "Revenda / Insumos"}
+                                              </strong>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Sanfona 5: Lucro Limpo no Bolso */}
+                                      {(() => {
+                                        const marginPct =
+                                          o.net_margin_percent != null
+                                            ? o.net_margin_percent
+                                            : o.total > 0
+                                            ? (o.net_profit / o.total) * 100
+                                            : 0;
+                                        const isNeg = o.net_profit < 0 || marginPct < 0;
+                                        const marginBadgeClass = isNeg
+                                          ? "bg-rose-100 text-rose-900 border-rose-300"
+                                          : marginPct >= 30
+                                          ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                                          : marginPct >= 15
+                                          ? "bg-amber-100 text-amber-950 border-amber-300"
+                                          : "bg-rose-100 text-rose-900 border-rose-300";
+
+                                        const accordionBgClass = isNeg
+                                          ? "bg-rose-50 border-rose-200"
+                                          : marginPct >= 30
+                                          ? "bg-emerald-50 border-emerald-200"
+                                          : marginPct >= 15
+                                          ? "bg-amber-50 border-amber-200"
+                                          : "bg-rose-50 border-rose-200";
+
+                                        const titleTextClass = isNeg
+                                          ? "text-rose-800"
+                                          : marginPct >= 30
+                                          ? "text-emerald-800"
+                                          : marginPct >= 15
+                                          ? "text-amber-900"
+                                          : "text-rose-800";
+
+                                        const valTextClass = isNeg
+                                          ? "text-rose-700"
+                                          : marginPct >= 30
+                                          ? "text-emerald-700"
+                                          : marginPct >= 15
+                                          ? "text-amber-800"
+                                          : "text-rose-700";
+
+                                        return (
+                                          <div
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
+                                              toggleAccordion(`ord-profit-${o.id}`);
+                                            }}
+                                            className={`p-2.5 rounded-lg border cursor-pointer transition ${accordionBgClass}`}
+                                            title="Clique para ver o cálculo do lucro limpo"
+                                          >
+                                            <div className="flex justify-between items-center">
+                                              <span className={`font-bold flex items-center gap-1.5 ${titleTextClass}`}>
+                                                <span>Lucro Limpo no Bolso:</span>
+                                                <ChevronDownIcon
+                                                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                                    isProfitOpen ? "rotate-180" : ""
+                                                  }`}
+                                                />
+                                              </span>
+                                              <strong className={`text-sm font-extrabold tabular-nums ${valTextClass}`}>
+                                                {money(o.net_profit)}
+                                              </strong>
+                                            </div>
+
+                                            {isProfitOpen && (
+                                              <div className={`mt-2 pt-2 border-t text-[10px] space-y-1 ${
+                                                isNeg ? "border-rose-200 text-rose-950" : marginPct >= 30 ? "border-emerald-200 text-emerald-950" : marginPct >= 15 ? "border-amber-200 text-amber-950" : "border-rose-200 text-rose-950"
+                                              }`}>
+                                                {orderHasKits && orderPiecesCount > orderKitsCount ? (
+                                                  <>
+                                                    <div className="flex justify-between">
+                                                      <span>Lucro por Kit Anunciado:</span>
+                                                      <strong className="tabular-nums font-semibold">{money(unitProfit)} / kit</strong>
+                                                    </div>
+                                                    <div className="flex justify-between text-stone-600">
+                                                      <span>Lucro Unitário por Peça:</span>
+                                                      <strong className="tabular-nums font-semibold">{money(unitPieceProfit)} / peça</strong>
+                                                    </div>
+                                                  </>
+                                                ) : (
+                                                  <div className="flex justify-between">
+                                                    <span>Lucro Unitário:</span>
+                                                    <strong className="tabular-nums">{money(unitProfit)} / peça</strong>
+                                                  </div>
+                                                )}
+                                                <div className="flex justify-between items-center pt-0.5">
+                                                  <span className="font-semibold">Margem Líquida Real:</span>
+                                                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border tabular-nums ${marginBadgeClass}`}>
+                                                    {percent(marginPct)}
+                                                  </span>
+                                                </div>
+                                                {shippingSellerCost > 0 && (
+                                                  <div className="flex justify-between text-amber-900 pb-0.5 border-b border-amber-200/50">
+                                                    <span>Frete Mercado Envios (Custeado pela Loja):</span>
+                                                    <strong className="tabular-nums font-semibold">- {money(shippingSellerCost)}</strong>
+                                                  </div>
+                                                )}
+                                                <div className="pt-1 border-t border-current/20 text-[9px] opacity-80 tabular-nums">
+                                                  {shippingSellerCost > 0
+                                                    ? `Renda Repassada (${money(netEstimatedRevenue)}) [Venda - Taxas - Frete Mercado Envios] - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`
+                                                    : `Renda Repassada (${money(netEstimatedRevenue)}) - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`}
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+                                        );
+                                      })()}
+                                    </div>
+                                  );
+                                })()}
+
+                                <div className="flex justify-end pt-1">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigator.clipboard?.writeText(o.id);
+                                      setCopiedOrderId(o.id);
+                                      setTimeout(() => setCopiedOrderId(null), 2000);
+                                    }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-semibold text-stone-700 bg-stone-100 hover:bg-stone-200 active:scale-[0.98] transition border border-stone-200"
+                                  >
+                                    {copiedOrderId === o.id ? (
+                                      <>
+                                        <CheckIcon className="w-3.5 h-3.5 text-emerald-600" />
+                                        <span className="text-emerald-700">ID Copiado!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <CopyIcon className="w-3.5 h-3.5 text-stone-500" />
+                                        <span>Copiar ID #{o.id}</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+  };
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 pb-16 font-sans">
@@ -3088,767 +3863,7 @@ export function DashboardClient() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                     {filteredOrders.length > 0 ? (
-                      filteredOrders.map((o) => {
-                        const cfg = CHANNEL_CONFIG[o.channel];
-                        const Icon = cfg.Icon;
-                        const isExpanded = !!expandedOrderIds[o.id];
-
-                        return (
-                          <div
-                            key={o.id}
-                            onClick={() => {
-                                if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
-                                toggleOrderExpanded(o.id);
-                              }}
-                            className={`p-3.5 rounded-xl border transition cursor-pointer flex flex-col justify-between gap-3 ${
-                              isExpanded
-                                ? "border-amber-400 bg-amber-50/20 shadow-xs ring-1 ring-amber-300"
-                                : "border-stone-200 bg-stone-50/50 hover:bg-stone-50 hover:border-stone-300"
-                            }`}
-                          >
-                            {/* Cabeçalho */}
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span
-                                  className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1.5 ${cfg.bg}`}
-                                >
-                                  <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                                  <span>{cfg.label}</span>
-                                </span>
-                                {o.status && (() => {
-                                  const statusCfg = getOrderStatusBadge(o.status);
-                                  return (
-                                    <span
-                                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border inline-flex items-center gap-1 ${statusCfg.badgeClass}`}
-                                      title={statusCfg.description}
-                                    >
-                                      <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotClass}`} />
-                                      <span>{statusCfg.label}</span>
-                                    </span>
-                                  );
-                                })()}
-                              </div>
-                              <span className="text-xs text-stone-600 font-mono font-bold">
-                                #{o.id}
-                              </span>
-                            </div>
-
-                            {/* Miniaturas dos Produtos */}
-                            <div className="py-1">
-                              {o.items && o.items.length > 0 ? (
-                                <div className="flex items-center gap-2.5">
-                                  <div className="w-12 h-12 rounded-lg border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                    {o.items[0].image_url ? (
-                                      <img
-                                        src={o.items[0].image_url}
-                                        alt={o.items[0].name}
-                                        className="w-full h-full object-cover"
-                                        loading="lazy"
-                                        onError={(e) => {
-                                          (e.target as HTMLElement).style.display = "none";
-                                        }}
-                                      />
-                                    ) : (
-                                      <span className="text-stone-300 text-sm">📦</span>
-                                    )}
-                                  </div>
-                                  <div className="min-w-0 flex-1">
-                                    <div className="text-xs font-semibold text-stone-900 line-clamp-1">
-                                      {o.items[0].name.replace(/<br\s*\/?>/gi, " - ")}
-                                    </div>
-                                    <div className="text-[11px] text-stone-500 font-mono">
-                                      Qtd: {o.items[0].quantity}x {o.items.length > 1 ? `(+${o.items.length - 1} outros)` : ""}
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="text-xs text-stone-400 italic">
-                                  {o.items_count} {o.items_count === 1 ? "peça" : "peças"}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Metadados: Data, Localidade, Frete */}
-                            <div className="text-xs text-stone-600 flex justify-between items-center gap-2 flex-wrap">
-                              <span className="font-medium whitespace-nowrap">
-                                {formatFullDateBR(o.date)} {o.hour ? `às ${o.hour}` : ""}
-                              </span>
-                              <div className="flex items-center gap-1.5 text-[11px] text-stone-500 flex-wrap">
-                                {o.customer_city && (
-                                  <span className="whitespace-nowrap">
-                                    {o.customer_city}/{o.customer_state}
-                                  </span>
-                                )}
-                                {o.shipment_name && (
-                                  <span className="bg-stone-200/80 px-1.5 py-0.5 rounded text-[10px] font-medium text-stone-700 whitespace-nowrap">
-                                    📦 {o.shipment_name}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Valores do Pedido */}
-                            <div className="pt-2 border-t border-stone-200 flex justify-between items-start text-xs">
-                              <div>
-                                <span className="text-stone-500 text-[11px] block">Pago pelo Cliente</span>
-                                <strong className="text-stone-900 font-bold text-sm tabular-nums">
-                                  {money(o.total)}
-                                </strong>
-                              </div>
-                              <div className="text-right">
-                                <span className="text-stone-500 text-[11px] block">Lucro Limpo</span>
-                                <strong className={`${o.net_profit < 0 ? "text-rose-700" : "text-emerald-700"} font-bold text-sm tabular-nums`}>
-                                  {money(o.net_profit)}
-                                </strong>
-                                <div className="mt-1">
-                                  {(() => {
-                                    const marginPct =
-                                      o.net_margin_percent != null
-                                        ? o.net_margin_percent
-                                        : o.total > 0
-                                        ? (o.net_profit / o.total) * 100
-                                        : 0;
-                                    const isNeg = o.net_profit < 0 || marginPct < 0;
-                                    const badgeClass = isNeg
-                                      ? "bg-rose-50 text-rose-800 border-rose-200"
-                                      : marginPct >= 30
-                                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                                      : marginPct >= 15
-                                      ? "bg-amber-50 text-amber-900 border-amber-200"
-                                      : "bg-rose-50 text-rose-800 border-rose-200";
-
-                                    return (
-                                      <span
-                                        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border tabular-nums ${badgeClass}`}
-                                        title={`Margem líquida da compra: ${percent(marginPct)}`}
-                                      >
-                                        Margem {percent(marginPct)}
-                                      </span>
-                                    );
-                                  })()}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Detalhamento Expansível Estilo Shopee com Sanfonas */}
-                            {isExpanded && (
-                              <div
-                                onClick={(e) => e.stopPropagation()}
-                                className="mt-3 pt-3 border-t border-stone-200 space-y-2 cursor-default text-xs"
-                              >
-                                {(() => {
-                                  const isShopee = o.channel === "shopee" || cfg.label.toLowerCase().includes("shopee");
-                                  const isML = o.channel === "mercadolivre" || cfg.label.toLowerCase().includes("mercado");
-                                  const isTikTok = o.channel === "tiktok" || cfg.label.toLowerCase().includes("tiktok");
-                                  const isMarketplace = isShopee || isML || isTikTok;
-
-                                  let orderKitsCount = 0;
-                                  let orderPiecesCount = 0;
-                                  let orderHasKits = false;
-                                  let dominantPack = 1;
-
-                                  (o.items || []).forEach((it) => {
-                                    const name = it.name || "";
-                                    const match = name.match(/kit\s*(\d+)/i) || name.match(/(\d+)\s*(?:peças|unidades|un|pcs)/i);
-                                    const pack = match ? parseInt(match[1], 10) : (name.toLowerCase().includes("par") ? 2 : 1);
-                                    const qty = it.quantity || 1;
-                                    if (pack > 1 || name.toLowerCase().includes("kit")) {
-                                      orderHasKits = true;
-                                      if (pack > dominantPack) dominantPack = pack;
-                                    }
-                                    orderKitsCount += qty;
-                                    orderPiecesCount += qty * pack;
-                                  });
-
-                                  const totalUnits = o.items_count || (o.items || []).reduce((acc, it) => acc + (it.quantity || 1), 0) || 1;
-                                  if (orderPiecesCount === 0) {
-                                    orderPiecesCount = totalUnits;
-                                    orderKitsCount = totalUnits;
-                                  }
-
-                                  const unitCost = totalUnits > 0 ? (o.cost_amount || 0) / totalUnits : 0;
-                                  const unitPieceCost = orderPiecesCount > 0 ? (o.cost_amount || 0) / orderPiecesCount : unitCost;
-                                  const unitProfit = totalUnits > 0 ? (o.net_profit || 0) / totalUnits : 0;
-                                  const unitPieceProfit = orderPiecesCount > 0 ? (o.net_profit || 0) / orderPiecesCount : unitProfit;
-                                  const baseForPct = (o.products_subtotal ?? 0) > 0 ? o.products_subtotal! : (o.total || 0);
-
-                                  // Regra Mercado Livre: Se o valor dos produtos for >= 79, o frete é obrigatório grátis para o comprador e custeado pelo vendedor (Mesa & Graça)
-                                  const isMLFreeShippingSeller = isML && ((o.products_subtotal || o.total) >= 79) && ((o.shipment_value || 0) > 0 || (o.discount_value || 0) > 0);
-                                  const shippingSellerCost = isMLFreeShippingSeller ? (o.shipment_value || o.discount_value || 0) : 0;
-
-                                  // Decomposição Shopee oficial (18,60% comissão líquida + 1,40% taxa de transação + R$ 4,50 fixa por item)
-                                  const shopeeCommLiquid = isShopee ? baseForPct * 0.186 : (o.commission_percentage_amount ?? ((o.commission_amount || 0) - (o.commission_fixed_fee || 0)));
-                                  const shopeeTransFee = isShopee ? baseForPct * 0.014 : 0;
-                                  const fixedFeeTotal = isShopee ? (totalUnits * 4.5) : (o.commission_fixed_fee ?? 0);
-                                  const totalCommission = isShopee ? (shopeeCommLiquid + shopeeTransFee + fixedFeeTotal) : (o.commission_amount || 0);
-                                  const netEstimatedRevenue = baseForPct - totalCommission - shippingSellerCost;
-
-                                  const commPctAmount = isShopee ? (shopeeCommLiquid + shopeeTransFee) : (o.commission_percentage_amount ?? ((o.commission_amount || 0) - (o.commission_fixed_fee || 0)));
-                                  const calculatedRate = baseForPct > 0 && commPctAmount > 0 ? Math.round((commPctAmount / baseForPct) * 100) : 0;
-                                  const fallbackRate = isShopee ? 20 : isML ? 16 : isTikTok ? 7 : 3.5;
-                                  const orderCommRate = calculatedRate > 0 ? calculatedRate : fallbackRate;
-                                  const effectiveTotalPct = baseForPct > 0 ? Math.round((totalCommission / baseForPct) * 100) : orderCommRate;
-
-                                  const isShippingOpen = !!openAccordions[`ord-ship-${o.id}`];
-                                  const isFeesOpen = !!openAccordions[`ord-tax-${o.id}`] || expandedOrderFeeId === o.id;
-                                  const isCostOpen = !!openAccordions[`ord-cost-${o.id}`];
-                                  const isProfitOpen = !!openAccordions[`ord-profit-${o.id}`];
-
-                                  return (
-                                    <div className="space-y-2">
-                                      {/* Container Unificado: Itens do Pedido & Detalhamento Interativo */}
-                                      <div className="bg-white rounded-lg border border-stone-200 overflow-hidden text-[11px] shadow-2xs">
-                                        {/* Cabeçalho Unificado */}
-                                        <div className="bg-stone-50 px-3 py-2 border-b border-stone-200 flex justify-between items-center">
-                                          <span className="font-semibold text-stone-700 flex items-center gap-1.5">
-                                            <span>Itens do Pedido</span>
-                                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-stone-200 text-stone-700 font-mono">
-                                              {o.items?.length || 0}
-                                            </span>
-                                          </span>
-                                          <div className="text-right">
-                                            <span className="text-[10px] text-stone-500 mr-1.5 font-normal">Subtotal:</span>
-                                            <strong className="text-stone-900 tabular-nums text-xs">
-                                              {money(o.products_subtotal || o.total)}
-                                            </strong>
-                                          </div>
-                                        </div>
-
-                                        {/* Lista de Itens com Expansão por Clique */}
-                                        <div className="divide-y divide-stone-100">
-                                          {o.items && o.items.length > 0 ? (
-                                            o.items.map((it, idx) => {
-                                              const itemKey = `ord-item-${o.id}-${idx}`;
-                                              const isItemExpanded = !!openAccordions[itemKey];
-                                              const itNameLower = (it.name || "").toLowerCase();
-                                              const itMatch = itNameLower.match(/kit\s*(\d+)/i) || itNameLower.match(/(\d+)\s*(?:peças|unidades|un|pcs)/i);
-                                              let itPackSize = itMatch ? parseInt(itMatch[1], 10) : (itNameLower.includes("par") ? 2 : 1);
-                                              const itHasLA = itNameLower.includes("lugar americano") || itNameLower.includes("jogo americano") || (it.sku || "").toUpperCase().includes("LAM");
-                                              const itHasGUA = itNameLower.includes("guardanapo") || (it.sku || "").toUpperCase().includes("GUA");
-                                              const itHasPGU = itNameLower.includes("porta") || (it.sku || "").toUpperCase().includes("PGU");
-                                              if (itHasLA && itHasGUA && itHasPGU && itPackSize === 1) {
-                                                if (itNameLower.includes("2 lugares") || itNameLower.includes("2lugares") || itNameLower.includes("6 peças")) {
-                                                  itPackSize = 6;
-                                                } else {
-                                                  itPackSize = 3;
-                                                }
-                                              }
-                                              const isItKit = itPackSize > 1 || itNameLower.includes("kit");
-
-                                              return (
-                                                <div key={it.sku || idx} className="transition-colors">
-                                                  {/* Linha Principal do Produto (Clicável) */}
-                                                  <div
-                                                    onClick={(e) => {
-                                                      e.stopPropagation();
-                                                      toggleAccordion(itemKey);
-                                                    }}
-                                                    className="p-2.5 flex items-center gap-2.5 hover:bg-stone-50/80 cursor-pointer transition"
-                                                    title="Clique para ver o detalhamento deste produto"
-                                                  >
-                                                    {/* Foto do Produto */}
-                                                    <div className="w-10 h-10 rounded border border-stone-200 bg-stone-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                                      {it.image_url ? (
-                                                        <img src={it.image_url} alt={it.name} className="w-full h-full object-cover" />
-                                                      ) : (
-                                                        <span className="text-xs">📦</span>
-                                                      )}
-                                                    </div>
-
-                                                    {/* Conteúdo Central e Lateral em 2 Linhas Exatas */}
-                                                    <div className="min-w-0 flex-1 space-y-1">
-                                                      {/* 1ª Linha: Quantidade + Nome do Produto (esq) e Total (dir) */}
-                                                      <div className="flex items-center justify-between gap-2">
-                                                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                                                          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-stone-100 border border-stone-300 font-bold text-stone-800 text-[10px] tabular-nums shadow-2xs flex-shrink-0">
-                                                            {it.quantity}x
-                                                          </span>
-                                                          <span className="font-semibold text-stone-900 truncate text-[11px]" title={it.name}>
-                                                            {it.name.replace(/<br\s*\/?>/gi, " - ")}
-                                                          </span>
-                                                        </div>
-                                                        <strong className="text-stone-900 tabular-nums font-bold text-xs flex-shrink-0">
-                                                          {money(it.price * it.quantity)}
-                                                        </strong>
-                                                      </div>
-
-                                                      {/* 2ª Linha: SKU (esq) e Ver detalhes com Chevron (dir) */}
-                                                      <div className="flex items-center justify-between gap-2 text-[10px]">
-                                                        <span className="text-stone-500 font-mono">
-                                                          SKU: {it.sku}
-                                                        </span>
-                                                        <span className="text-stone-500 hover:text-stone-800 flex items-center gap-1 font-medium transition-colors flex-shrink-0">
-                                                          <span>{isItemExpanded ? "recolher" : "ver detalhes"}</span>
-                                                          <ChevronDownIcon
-                                                            className={`w-3 h-3 transition-transform duration-200 ${
-                                                              isItemExpanded ? "rotate-180 text-stone-700" : "text-stone-400"
-                                                            }`}
-                                                          />
-                                                        </span>
-                                                      </div>
-                                                    </div>
-                                                  </div>
-
-                                                  {/* Detalhes Unitários Expandidos */}
-                                                  {isItemExpanded && (
-                                                    <div className="bg-stone-50/70 px-3 py-2 border-t border-stone-100 text-[10px] space-y-1.5 text-stone-600">
-                                                      <div className="flex justify-between">
-                                                        <span>Preço unitário:</span>
-                                                        <span className="tabular-nums font-medium text-stone-900">
-                                                          {money(it.price)} / {isItKit ? "kit" : "un"}
-                                                          {isItKit && itPackSize > 1 && (
-                                                            <span className="text-stone-400 font-normal"> ({money(it.price / itPackSize)} / peça)</span>
-                                                          )}
-                                                        </span>
-                                                      </div>
-                                                      <div className="flex justify-between">
-                                                        <span>Quantidade comprada:</span>
-                                                        <span className="tabular-nums font-medium text-stone-900">
-                                                          {it.quantity} {isItKit ? `kits (${it.quantity * itPackSize} peças)` : "unidades"}
-                                                        </span>
-                                                      </div>
-                                                      <div className="flex justify-between pt-1 border-t border-stone-200/50 font-semibold text-stone-800">
-                                                        <span>Subtotal:</span>
-                                                        <strong className="text-stone-900 tabular-nums">{money(it.price * it.quantity)}</strong>
-                                                      </div>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              );
-                                            })
-                                          ) : (
-                                            <div className="p-3 text-stone-500 italic text-[11px]">Itens não discriminados</div>
-                                          )}
-                                        </div>
-
-                                        {/* Rodapé: Desconto do vendedor */}
-                                        {o.discount_value != null && o.discount_value > 0 && (
-                                          <div className="bg-stone-50/60 px-3 py-1.5 border-t border-stone-200 flex justify-between text-[10px] text-rose-700 font-medium">
-                                            <span>Descontos concedidos pelo Vendedor:</span>
-                                            <strong className="tabular-nums">-{money(o.discount_value)}</strong>
-                                          </div>
-                                        )}
-                                      </div>
-
-                                      {/* Sanfona 2: Subtotal estimado do frete com regra inteligente por canal */}
-                                      <div
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
-                                            toggleAccordion(`ord-ship-${o.id}`);
-                                        }}
-                                        className="p-2 rounded-lg bg-stone-50 hover:bg-stone-100/70 border border-stone-200 cursor-pointer transition"
-                                        title="Clique para ver os detalhes da operação de frete"
-                                      >
-                                        <div className="flex justify-between items-center gap-2 text-stone-700 min-w-0">
-                                          <span className="flex items-center gap-1.5 font-medium whitespace-nowrap shrink-0 text-[11px]">
-                                            <span>Frete / Logística:</span>
-                                            <ChevronDownIcon
-                                              className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
-                                                isShippingOpen ? "rotate-180 text-stone-700" : "text-stone-400"
-                                              }`}
-                                            />
-                                          </span>
-                                          <div className="flex items-center gap-1.5 flex-wrap justify-end">
-                                            {isMLFreeShippingSeller ? (
-                                              <>
-                                                <strong className="text-amber-800 tabular-nums whitespace-nowrap font-bold text-xs">
-                                                  ⚠️ -{money(shippingSellerCost)}
-                                                </strong>
-                                                <span className="text-[9px] font-semibold bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded whitespace-nowrap">
-                                                  Pago pela Loja
-                                                </span>
-                                              </>
-                                            ) : isMarketplace ? (
-                                              <>
-                                                <strong className="text-emerald-700 tabular-nums whitespace-nowrap font-bold text-xs">
-                                                  R$ 0,00
-                                                </strong>
-                                                <span className="text-[9px] font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 px-1.5 py-0.2 rounded whitespace-nowrap">
-                                                  Custeado
-                                                </span>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <strong className="text-sky-800 tabular-nums whitespace-nowrap font-bold text-xs">
-                                                  +{money(o.shipment_value || 0)}
-                                                </strong>
-                                                <span className="text-[9px] font-semibold bg-sky-100 text-sky-900 border border-sky-300 px-1.5 py-0.2 rounded whitespace-nowrap">
-                                                  Pago pelo Cliente
-                                                </span>
-                                              </>
-                                            )}
-                                          </div>
-                                        </div>
-                                        {isShippingOpen && (
-                                          <div className="mt-1.5 pt-1.5 border-t border-stone-200 text-[10px] space-y-1 text-stone-600">
-                                            {isMLFreeShippingSeller ? (
-                                              <div className="p-2 rounded bg-amber-50 border border-amber-200 text-amber-900 text-[10px] space-y-1">
-                                                <div className="font-bold flex items-center gap-1 text-amber-950">
-                                                  <span>⚠️ Frete Grátis Mercado Envios (Custeado pelo Vendedor):</span>
-                                                </div>
-                                                <p className="text-amber-900/90 leading-relaxed">
-                                                  Em compras a partir de R$ 79,00 no Mercado Livre, o frete grátis ao comprador é obrigatório e custeado pela Mesa &amp; Graça via Mercado Envios ({o.shipment_name || "Encomenda Normal"}). O valor de {money(shippingSellerCost)} foi debitado do repasse da venda.
-                                                </p>
-                                                <div className="flex justify-between pt-1 border-t border-amber-200/80 font-bold text-amber-950">
-                                                  <span>Custo de frete suportado pela loja:</span>
-                                                  <span className="tabular-nums">-{money(shippingSellerCost)}</span>
-                                                </div>
-                                              </div>
-                                            ) : isShopee ? (
-                                              <>
-                                                <div className="flex justify-between text-stone-700">
-                                                  <span>Valor do frete pago pelo comprador / Shopee:</span>
-                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
-                                                </div>
-                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
-                                                  <div className="font-bold flex items-center gap-1">
-                                                    <span>✅ Frete 100% Custeado pela Shopee:</span>
-                                                  </div>
-                                                  <p className="text-emerald-800">
-                                                    Os cupons de frete grátis e envios regulares são subsidiados integralmente pela Shopee. O valor de {money(o.shipment_value || 0)} é repassado à transportadora ({o.shipment_name || "Shopee Xpress"}). Custo R$ 0,00 para a sua loja.
-                                                  </p>
-                                                </div>
-                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
-                                                  <span>Saldo de frete repassado à loja:</span>
-                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (100% Custeado pela Plataforma)</span>
-                                                </div>
-                                              </>
-                                            ) : isTikTok ? (
-                                              <>
-                                                <div className="flex justify-between text-stone-700">
-                                                  <span>Valor do frete pago pelo comprador / TikTok:</span>
-                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
-                                                </div>
-                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
-                                                  <div className="font-bold flex items-center gap-1">
-                                                    <span>✅ Frete 100% Gerenciado pelo TikTok Shop:</span>
-                                                  </div>
-                                                  <p className="text-emerald-800">
-                                                    Envio operado pela transportadora oficial ({o.shipment_name || "J&T Express Brazil"}). Custo R$ 0,00 para a sua loja.
-                                                  </p>
-                                                </div>
-                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
-                                                  <span>Saldo de frete repassado à loja:</span>
-                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (100% Custeado pela Plataforma)</span>
-                                                </div>
-                                              </>
-                                            ) : isML ? (
-                                              <>
-                                                <div className="flex justify-between text-stone-700">
-                                                  <span>Taxa de frete paga pelo comprador:</span>
-                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
-                                                </div>
-                                                <div className="p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10px] space-y-0.5">
-                                                  <div className="font-bold flex items-center gap-1">
-                                                    <span>✅ Frete Pago pelo Comprador:</span>
-                                                  </div>
-                                                  <p className="text-emerald-800">
-                                                    Como o pedido é inferior a R$ 79,00 no Mercado Livre, o frete de {money(o.shipment_value || 0)} foi pago pelo comprador ({o.shipment_name || "Mercado Envios"}). Custo R$ 0,00 para a sua loja.
-                                                  </p>
-                                                </div>
-                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
-                                                  <span>Saldo de frete repassado à loja:</span>
-                                                  <span className="tabular-nums font-semibold text-emerald-700">R$ 0,00 (Custeado pelo Comprador)</span>
-                                                </div>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <div className="flex justify-between text-sky-800">
-                                                  <span>Taxa de frete paga pelo cliente no checkout:</span>
-                                                  <strong className="tabular-nums">+{money(o.shipment_value || 0)}</strong>
-                                                </div>
-                                                <div className="p-2 rounded bg-sky-50 border border-sky-200 text-sky-900 text-[10px] space-y-0.5">
-                                                  <div className="font-bold flex items-center gap-1">
-                                                    <span>📦 Frete Próprio da Loja Virtual:</span>
-                                                  </div>
-                                                  <p className="text-sky-800">
-                                                    O valor pago pelo cliente entra no caixa da loja e é repassado para a compra da etiqueta junto à transportadora ({o.shipment_name || "Correios / Melhor Envio"}).
-                                                  </p>
-                                                </div>
-                                                <div className="flex justify-between pt-0.5 border-t border-stone-200/80 font-semibold text-stone-700">
-                                                  <span>Saldo de frete repassado à loja:</span>
-                                                  <span className="tabular-nums font-semibold text-sky-800">+{money(o.shipment_value || 0)}</span>
-                                                </div>
-                                              </>
-                                            )}
-                                          </div>
-                                        )}
-                                      </div>
-
-                                      {/* Sanfona 3: Taxas e Encargos da Plataforma */}
-                                      <div
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
-                                            toggleAccordion(`ord-tax-${o.id}`);
-                                          setExpandedOrderFeeId(isFeesOpen ? null : o.id);
-                                        }}
-                                        className="p-2 rounded-lg bg-orange-50/70 hover:bg-orange-50 border border-orange-200 cursor-pointer transition"
-                                        title="Clique para ver a decomposição centavo a centavo das taxas"
-                                      >
-                                        <div className="flex justify-between items-center text-orange-900 font-semibold">
-                                          <span className="flex items-center gap-1.5">
-                                            <span>Taxas e Encargos ({cfg.label} - {effectiveTotalPct}%):</span>
-                                            <ChevronDownIcon
-                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                                isFeesOpen ? "rotate-180 text-orange-800" : "text-orange-600"
-                                              }`}
-                                            />
-                                          </span>
-                                          <strong className="text-orange-700 tabular-nums">-{money(totalCommission)}</strong>
-                                        </div>
-
-                                        {isFeesOpen && (
-                                          <div className="mt-2 pt-2 border-t border-orange-200 text-[10px] space-y-1 text-orange-950">
-                                            <div className="flex justify-between">
-                                              <span
-                                                className="flex items-center gap-1 cursor-help"
-                                                title={isShopee ? "A Shopee cobra 18.60% do valor do seu produto como comissão" : undefined}
-                                              >
-                                                <span>Taxa de comissão líquida ({isShopee ? "18,60%" : `${orderCommRate}%`}):</span>
-                                                {isShopee && <InfoIcon className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />}
-                                              </span>
-                                              <strong className="text-orange-900 tabular-nums">-{money(shopeeCommLiquid)}</strong>
-                                            </div>
-                                            {isShopee && (
-                                              <div className="flex justify-between pl-1 text-stone-600">
-                                                <span>Taxa de transação (1,40%):</span>
-                                                <strong className="text-orange-900 tabular-nums">-{money(shopeeTransFee)}</strong>
-                                              </div>
-                                            )}
-                                            <div className="flex justify-between">
-                                              <span className="flex items-center gap-1 flex-wrap"><span>Taxa por item vendido:</span> <span className="tabular-nums text-orange-900 font-normal whitespace-nowrap">({totalUnits} un × R$ {isShopee ? "4,50" : (fixedFeeTotal / totalUnits).toFixed(2)})</span></span>
-                                              <strong className="text-orange-900 tabular-nums">-{money(fixedFeeTotal)}</strong>
-                                            </div>
-                                            <div className="flex justify-between pt-1 border-t border-orange-200/80 font-bold text-orange-950">
-                                              <span>Total Retido pelo Canal:</span>
-                                              <span className="tabular-nums">-{money(totalCommission)}</span>
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-
-                                      {/* Destaque Estilo Shopee: Renda Estimada do Pedido */}
-                                      <div className="p-2.5 rounded-lg bg-orange-50 border border-orange-200 flex justify-between items-center shadow-2xs">
-                                        <div>
-                                          <span className="font-bold text-stone-800 text-xs block">Renda estimada do pedido</span>
-                                          <span className="text-[10px] text-stone-500">Valor líquido repassado no caixa</span>
-                                        </div>
-                                        <strong className="text-orange-600 font-extrabold text-base tabular-nums">
-                                          {money(netEstimatedRevenue)}
-                                        </strong>
-                                      </div>
-
-                                      {/* Sanfona 4: Custo Fábrica / CMV */}
-                                      <div
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
-                                            toggleAccordion(`ord-cost-${o.id}`);
-                                        }}
-                                        className="p-2 rounded-lg bg-stone-50 hover:bg-stone-100/70 border border-stone-200 cursor-pointer transition"
-                                        title="Clique para ver o custo de fábrica unitário e origem"
-                                      >
-                                        <div className="flex justify-between items-center text-stone-700">
-                                          <span className="flex items-center gap-1.5 font-medium">
-                                            <span>Custo Fábrica:</span>
-                                            <ChevronDownIcon
-                                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                                isCostOpen ? "rotate-180 text-stone-700" : "text-stone-400"
-                                              }`}
-                                            />
-                                          </span>
-                                          <strong className="text-stone-800 tabular-nums">-{money(o.cost_amount || 0)}</strong>
-                                        </div>
-                                        {isCostOpen && (
-                                          <div className="mt-1.5 pt-1.5 border-t border-stone-200 text-[10px] space-y-1 text-stone-600">
-                                            <div className="flex justify-between text-stone-500 pb-0.5 border-b border-stone-100">
-                                              <span>Cálculo Base:</span>
-                                              <span className="tabular-nums font-mono text-stone-700">
-                                                {orderHasKits && orderPiecesCount > orderKitsCount
-                                                  ? `${orderKitsCount} kits (${orderPiecesCount} peças) × -${money(unitCost)}`
-                                                  : `${totalUnits} un × -${money(unitCost)}`}
-                                              </span>
-                                            </div>
-                                            {orderHasKits && orderPiecesCount > orderKitsCount ? (
-                                              <>
-                                                <div className="flex justify-between">
-                                                  <span>Custo por Kit Anunciado:</span>
-                                                  <strong className="text-stone-900 tabular-nums">-{money(unitCost)} / kit</strong>
-                                                </div>
-                                                <div className="flex justify-between text-stone-600">
-                                                  <span>Custo Unitário por Peça:</span>
-                                                  <strong className="text-stone-900 tabular-nums">-{money(unitPieceCost)} / peça</strong>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                  <span>Total de Peças Produzidas:</span>
-                                                  <strong className="text-stone-900 tabular-nums">{orderKitsCount} kits ({orderPiecesCount} peças)</strong>
-                                                </div>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <div className="flex justify-between">
-                                                  <span>Custo Unitário de Confecção:</span>
-                                                  <strong className="text-stone-900 tabular-nums">-{money(unitCost)} / un</strong>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                  <span>Quantidade de Peças Produzidas:</span>
-                                                  <strong className="text-stone-900 tabular-nums">{totalUnits} peças</strong>
-                                                </div>
-                                              </>
-                                            )}
-                                            <div className="flex justify-between pt-0.5 border-t border-stone-200/50">
-                                              <span>Origem:</span>
-                                              <strong className="text-stone-900">
-                                                {(o.items || []).some((it) => it.is_own_production) ? "Confecção Própria Mesa & Graça" : "Revenda / Insumos"}
-                                              </strong>
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-
-                                      {/* Sanfona 5: Lucro Limpo no Bolso */}
-                                      {(() => {
-                                        const marginPct =
-                                          o.net_margin_percent != null
-                                            ? o.net_margin_percent
-                                            : o.total > 0
-                                            ? (o.net_profit / o.total) * 100
-                                            : 0;
-                                        const isNeg = o.net_profit < 0 || marginPct < 0;
-                                        const marginBadgeClass = isNeg
-                                          ? "bg-rose-100 text-rose-900 border-rose-300"
-                                          : marginPct >= 30
-                                          ? "bg-emerald-100 text-emerald-900 border-emerald-300"
-                                          : marginPct >= 15
-                                          ? "bg-amber-100 text-amber-950 border-amber-300"
-                                          : "bg-rose-100 text-rose-900 border-rose-300";
-
-                                        const accordionBgClass = isNeg
-                                          ? "bg-rose-50 border-rose-200"
-                                          : marginPct >= 30
-                                          ? "bg-emerald-50 border-emerald-200"
-                                          : marginPct >= 15
-                                          ? "bg-amber-50 border-amber-200"
-                                          : "bg-rose-50 border-rose-200";
-
-                                        const titleTextClass = isNeg
-                                          ? "text-rose-800"
-                                          : marginPct >= 30
-                                          ? "text-emerald-800"
-                                          : marginPct >= 15
-                                          ? "text-amber-900"
-                                          : "text-rose-800";
-
-                                        const valTextClass = isNeg
-                                          ? "text-rose-700"
-                                          : marginPct >= 30
-                                          ? "text-emerald-700"
-                                          : marginPct >= 15
-                                          ? "text-amber-800"
-                                          : "text-rose-700";
-
-                                        return (
-                                          <div
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              if (typeof window !== "undefined" && window.getSelection()?.toString().trim().length) return;
-                                              toggleAccordion(`ord-profit-${o.id}`);
-                                            }}
-                                            className={`p-2.5 rounded-lg border cursor-pointer transition ${accordionBgClass}`}
-                                            title="Clique para ver o cálculo do lucro limpo"
-                                          >
-                                            <div className="flex justify-between items-center">
-                                              <span className={`font-bold flex items-center gap-1.5 ${titleTextClass}`}>
-                                                <span>Lucro Limpo no Bolso:</span>
-                                                <ChevronDownIcon
-                                                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                                    isProfitOpen ? "rotate-180" : ""
-                                                  }`}
-                                                />
-                                              </span>
-                                              <strong className={`text-sm font-extrabold tabular-nums ${valTextClass}`}>
-                                                {money(o.net_profit)}
-                                              </strong>
-                                            </div>
-
-                                            {isProfitOpen && (
-                                              <div className={`mt-2 pt-2 border-t text-[10px] space-y-1 ${
-                                                isNeg ? "border-rose-200 text-rose-950" : marginPct >= 30 ? "border-emerald-200 text-emerald-950" : marginPct >= 15 ? "border-amber-200 text-amber-950" : "border-rose-200 text-rose-950"
-                                              }`}>
-                                                {orderHasKits && orderPiecesCount > orderKitsCount ? (
-                                                  <>
-                                                    <div className="flex justify-between">
-                                                      <span>Lucro por Kit Anunciado:</span>
-                                                      <strong className="tabular-nums font-semibold">{money(unitProfit)} / kit</strong>
-                                                    </div>
-                                                    <div className="flex justify-between text-stone-600">
-                                                      <span>Lucro Unitário por Peça:</span>
-                                                      <strong className="tabular-nums font-semibold">{money(unitPieceProfit)} / peça</strong>
-                                                    </div>
-                                                  </>
-                                                ) : (
-                                                  <div className="flex justify-between">
-                                                    <span>Lucro Unitário:</span>
-                                                    <strong className="tabular-nums">{money(unitProfit)} / peça</strong>
-                                                  </div>
-                                                )}
-                                                <div className="flex justify-between items-center pt-0.5">
-                                                  <span className="font-semibold">Margem Líquida Real:</span>
-                                                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border tabular-nums ${marginBadgeClass}`}>
-                                                    {percent(marginPct)}
-                                                  </span>
-                                                </div>
-                                                {shippingSellerCost > 0 && (
-                                                  <div className="flex justify-between text-amber-900 pb-0.5 border-b border-amber-200/50">
-                                                    <span>Frete Mercado Envios (Custeado pela Loja):</span>
-                                                    <strong className="tabular-nums font-semibold">- {money(shippingSellerCost)}</strong>
-                                                  </div>
-                                                )}
-                                                <div className="pt-1 border-t border-current/20 text-[9px] opacity-80 tabular-nums">
-                                                  {shippingSellerCost > 0
-                                                    ? `Renda Repassada (${money(netEstimatedRevenue)}) [Venda - Taxas - Frete Mercado Envios] - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`
-                                                    : `Renda Repassada (${money(netEstimatedRevenue)}) - Custo Fábrica (${money(o.cost_amount || 0)}) = ${money(o.net_profit)}`}
-                                                </div>
-                                              </div>
-                                            )}
-                                          </div>
-                                        );
-                                      })()}
-                                    </div>
-                                  );
-                                })()}
-
-                                <div className="flex justify-end pt-1">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      navigator.clipboard?.writeText(o.id);
-                                      setCopiedOrderId(o.id);
-                                      setTimeout(() => setCopiedOrderId(null), 2000);
-                                    }}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-semibold text-stone-700 bg-stone-100 hover:bg-stone-200 active:scale-[0.98] transition border border-stone-200"
-                                  >
-                                    {copiedOrderId === o.id ? (
-                                      <>
-                                        <CheckIcon className="w-3.5 h-3.5 text-emerald-600" />
-                                        <span className="text-emerald-700">ID Copiado!</span>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <CopyIcon className="w-3.5 h-3.5 text-stone-500" />
-                                        <span>Copiar ID #{o.id}</span>
-                                      </>
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })
+                      filteredOrders.map((o) => renderOrderCard(o))
                     ) : (
                       <p className="text-stone-400 text-sm col-span-3 text-center py-8">
                         Nenhum pedido encontrado com os filtros aplicados.
@@ -3903,10 +3918,37 @@ export function DashboardClient() {
           const displayMarginPct =
             displayRevenue > 0 ? (displayNetProfit / displayRevenue) * 100 : 0;
 
-          // Registros filtrados do histórico
+          // Registros filtrados e ordenados do histórico
           const filteredRecords = (data?.ads.recent_records || []).filter((r) => {
             if (selectedAdPlatform === "all") return true;
             return r.platform === selectedAdPlatform;
+          });
+
+          const sortedRecords = [...filteredRecords].sort((a, b) => {
+            let cmp = 0;
+            switch (adSortField) {
+              case "date":
+                cmp = a.date.localeCompare(b.date);
+                break;
+              case "platform":
+                cmp = (PLATFORM_LABELS[a.platform] || a.platform).localeCompare(
+                  PLATFORM_LABELS[b.platform] || b.platform
+                );
+                break;
+              case "campaign":
+                cmp = (a.campaign_name || "").localeCompare(b.campaign_name || "");
+                break;
+              case "amount_spent":
+                cmp = Number(a.amount_spent || 0) - Number(b.amount_spent || 0);
+                break;
+              case "clicks":
+                cmp = Number(a.clicks || 0) - Number(b.clicks || 0);
+                break;
+              case "conversions":
+                cmp = Number(a.conversions || 0) - Number(b.conversions || 0);
+                break;
+            }
+            return adSortAsc ? cmp : -cmp;
           });
 
           return (
@@ -4184,7 +4226,11 @@ export function DashboardClient() {
                             <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
                               ROAS {ad.roas.toFixed(1)}x
                             </span>
-                          ) : null}
+                          ) : (
+                            <span className="text-[10px] bg-stone-100 text-stone-600 font-semibold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-stone-200">
+                              {ad.platform === "meta_ads" ? "Tráfego & Marca" : "Sem Vendas"}
+                            </span>
+                          )}
                         </div>
 
                         <div className="text-2xl font-black text-stone-900 tabular-nums whitespace-nowrap">
@@ -4243,19 +4289,91 @@ export function DashboardClient() {
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs sm:text-sm min-w-[760px]">
-                    <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider whitespace-nowrap">
+                    <thead className="bg-stone-50 text-stone-600 font-semibold border-b border-stone-200 uppercase text-[11px] tracking-wider whitespace-nowrap select-none">
                       <tr>
-                        <th className="py-3 px-4 whitespace-nowrap w-[130px]">Data</th>
-                        <th className="py-3 px-3 whitespace-nowrap w-[170px]">Plataforma</th>
-                        <th className="py-3 px-3">Campanha</th>
-                        <th className="py-3 px-3.5 text-right whitespace-nowrap w-[125px]">Valor Gasto</th>
-                        <th className="py-3 px-3 text-center whitespace-nowrap w-[85px]">Cliques</th>
-                        <th className="py-3 px-4 text-center whitespace-nowrap w-[110px]">Conversões</th>
+                        <th className="py-3 px-4 whitespace-nowrap w-[130px]">
+                          <button
+                            type="button"
+                            onClick={() => handleAdSort("date")}
+                            className="flex items-center gap-1.5 hover:text-stone-900 transition cursor-pointer font-bold uppercase tracking-wider"
+                            title="Ordenar por Data"
+                          >
+                            <span>Data</span>
+                            <span className="text-[10px] text-stone-400">
+                              {adSortField === "date" ? (adSortAsc ? "▲" : "▼") : "↕"}
+                            </span>
+                          </button>
+                        </th>
+                        <th className="py-3 px-3 whitespace-nowrap w-[170px]">
+                          <button
+                            type="button"
+                            onClick={() => handleAdSort("platform")}
+                            className="flex items-center gap-1.5 hover:text-stone-900 transition cursor-pointer font-bold uppercase tracking-wider"
+                            title="Ordenar por Plataforma"
+                          >
+                            <span>Plataforma</span>
+                            <span className="text-[10px] text-stone-400">
+                              {adSortField === "platform" ? (adSortAsc ? "▲" : "▼") : "↕"}
+                            </span>
+                          </button>
+                        </th>
+                        <th className="py-3 px-3">
+                          <button
+                            type="button"
+                            onClick={() => handleAdSort("campaign")}
+                            className="flex items-center gap-1.5 hover:text-stone-900 transition cursor-pointer font-bold uppercase tracking-wider"
+                            title="Ordenar por Campanha"
+                          >
+                            <span>Campanha</span>
+                            <span className="text-[10px] text-stone-400">
+                              {adSortField === "campaign" ? (adSortAsc ? "▲" : "▼") : "↕"}
+                            </span>
+                          </button>
+                        </th>
+                        <th className="py-3 px-3.5 text-right whitespace-nowrap w-[125px]">
+                          <button
+                            type="button"
+                            onClick={() => handleAdSort("amount_spent")}
+                            className="inline-flex items-center gap-1.5 hover:text-stone-900 transition cursor-pointer font-bold uppercase tracking-wider ml-auto"
+                            title="Ordenar por Valor Gasto"
+                          >
+                            <span>Valor Gasto</span>
+                            <span className="text-[10px] text-stone-400">
+                              {adSortField === "amount_spent" ? (adSortAsc ? "▲" : "▼") : "↕"}
+                            </span>
+                          </button>
+                        </th>
+                        <th className="py-3 px-3 text-center whitespace-nowrap w-[85px]">
+                          <button
+                            type="button"
+                            onClick={() => handleAdSort("clicks")}
+                            className="inline-flex items-center gap-1.5 hover:text-stone-900 transition cursor-pointer font-bold uppercase tracking-wider mx-auto"
+                            title="Ordenar por Cliques"
+                          >
+                            <span>Cliques</span>
+                            <span className="text-[10px] text-stone-400">
+                              {adSortField === "clicks" ? (adSortAsc ? "▲" : "▼") : "↕"}
+                            </span>
+                          </button>
+                        </th>
+                        <th className="py-3 px-4 text-center whitespace-nowrap w-[110px]">
+                          <button
+                            type="button"
+                            onClick={() => handleAdSort("conversions")}
+                            className="inline-flex items-center gap-1.5 hover:text-stone-900 transition cursor-pointer font-bold uppercase tracking-wider mx-auto"
+                            title="Ordenar por Conversões"
+                          >
+                            <span>Conversões</span>
+                            <span className="text-[10px] text-stone-400">
+                              {adSortField === "conversions" ? (adSortAsc ? "▲" : "▼") : "↕"}
+                            </span>
+                          </button>
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-stone-100 text-stone-700">
-                      {filteredRecords && filteredRecords.length > 0 ? (
-                        filteredRecords.map((r) => {
+                      {sortedRecords && sortedRecords.length > 0 ? (
+                        sortedRecords.map((r) => {
                           const isExpanded = expandedAdRecordId === r.id;
                           const dateIso = r.date ? r.date.split(" ")[0] : "";
                           const chKey = PLATFORM_CHANNEL_MAP[r.platform];
@@ -4429,41 +4547,8 @@ export function DashboardClient() {
                                         </div>
 
                                         {matchingOrders.length > 0 ? (
-                                          <div className="space-y-2">
-                                            {matchingOrders.map((ord) => (
-                                              <div
-                                                key={ord.id}
-                                                className="border border-stone-100 rounded-lg p-2.5 bg-stone-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
-                                              >
-                                                <div className="flex items-center gap-2.5 min-w-0">
-                                                  <span className="font-mono font-bold text-stone-900">
-                                                    #{ord.id}
-                                                  </span>
-                                                  {ord.hour && (
-                                                    <span className="text-[11px] text-stone-400 font-mono">
-                                                      ⏰ {ord.hour}
-                                                    </span>
-                                                  )}
-                                                  {ord.customer_city && (
-                                                    <span className="text-[11px] text-stone-600 truncate">
-                                                      📍 {ord.customer_city}/{ord.customer_state}
-                                                    </span>
-                                                  )}
-                                                  <span className="text-[11px] text-stone-500 font-medium">
-                                                    ({ord.items_count} item{ord.items_count > 1 ? "s" : ""})
-                                                  </span>
-                                                </div>
-
-                                                <div className="flex items-center gap-3 self-end sm:self-auto font-mono">
-                                                  <div className="text-stone-900 font-bold tabular-nums">
-                                                    {money(ord.total)}
-                                                  </div>
-                                                  <div className="text-emerald-700 font-bold tabular-nums bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60">
-                                                    +{money(ord.net_profit)} limpo
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            ))}
+                                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                                            {matchingOrders.map((ord) => renderOrderCard(ord))}
                                           </div>
                                         ) : (
                                           <div className="p-3 bg-stone-50 rounded-lg border border-stone-200/60 text-stone-500 text-xs">
