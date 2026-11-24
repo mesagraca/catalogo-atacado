@@ -12,6 +12,7 @@ import type {
   DashboardResponse,
   ChannelPerformance,
   ProductProfitSummary,
+  MonthlySalesHistory,
   AdSpendRecord,
   AdPlatform,
   AdSpendSummary,
@@ -195,7 +196,190 @@ interface AllTimeCache {
   data: ProductProfitSummary[];
 }
 let allTimeProductsCache: AllTimeCache | null = null;
+
+interface AllTimeOrdersCache {
+  timestamp: number;
+  orders: Array<{
+    id: string;
+    date: string;
+    status: string;
+    total: string;
+    partial_total: string;
+    point_sale?: string;
+  }>;
+}
+let allTimeOrdersCache: AllTimeOrdersCache | null = null;
 const ALL_TIME_CACHE_TTL = 10 * 60 * 1000;
+
+async function getAllTimeOrders(): Promise<Array<{
+  id: string;
+  date: string;
+  status: string;
+  total: string;
+  partial_total: string;
+  point_sale?: string;
+}>> {
+  if (allTimeOrdersCache && Date.now() - allTimeOrdersCache.timestamp < ALL_TIME_CACHE_TTL) {
+    return allTimeOrdersCache.orders;
+  }
+
+  try {
+    let page = 1;
+    const allOrders: Array<{
+      id: string;
+      date: string;
+      status: string;
+      total: string;
+      partial_total: string;
+      point_sale?: string;
+    }> = [];
+
+    while (true) {
+      const res = await trayApiFetch<{
+        Orders?: Array<{
+          Order: {
+            id: string;
+            date: string;
+            status: string;
+            total: string;
+            partial_total: string;
+            point_sale?: string;
+          };
+        }>;
+        paging?: { total: number };
+      }>(`orders?page=${page}&limit=50`);
+
+      const ords = res.Orders || [];
+      if (!ords.length) break;
+      for (const item of ords) {
+        allOrders.push(item.Order);
+      }
+      if (allOrders.length >= (res.paging?.total || 0)) break;
+      page++;
+    }
+
+    allTimeOrdersCache = {
+      timestamp: Date.now(),
+      orders: allOrders,
+    };
+    return allOrders;
+  } catch (err) {
+    console.warn("[Dashboard:API] Falha ao buscar todos os pedidos históricos da Tray:", err);
+    return allTimeOrdersCache?.orders || [];
+  }
+}
+
+const MONTH_NAMES_PT: Record<string, { short: string; full: string }> = {
+  "01": { short: "Jan", full: "Janeiro" },
+  "02": { short: "Fev", full: "Fevereiro" },
+  "03": { short: "Mar", full: "Março" },
+  "04": { short: "Abr", full: "Abril" },
+  "05": { short: "Mai", full: "Maio" },
+  "06": { short: "Jun", full: "Junho" },
+  "07": { short: "Jul", full: "Julho" },
+  "08": { short: "Ago", full: "Agosto" },
+  "09": { short: "Set", full: "Setembro" },
+  "10": { short: "Out", full: "Outubro" },
+  "11": { short: "Nov", full: "Novembro" },
+  "12": { short: "Dez", full: "Dezembro" },
+};
+
+function getMonthlySalesHistory(
+  orders: Array<{
+    id: string;
+    date: string;
+    status: string;
+    total: string;
+    partial_total: string;
+    point_sale?: string;
+  }>
+): MonthlySalesHistory[] {
+  const map = new Map<
+    string,
+    {
+      gross_revenue: number;
+      orders_count: number;
+      by_channel: { site: number; shopee: number; mercado_livre: number };
+    }
+  >();
+
+  for (const o of orders) {
+    const isCancelled = (o.status || "").toUpperCase().includes("CANCELADO");
+    if (isCancelled || !o.date) continue;
+
+    const monthKey = o.date.substring(0, 7); // "YYYY-MM"
+    const rev = Number(o.total || o.partial_total || 0);
+
+    const pointSale = (o.point_sale || "").toLowerCase();
+    let channel: "site" | "shopee" | "mercado_livre" = "site";
+    if (pointSale.includes("shopee")) {
+      channel = "shopee";
+    } else if (pointSale.includes("mercado") || pointSale.includes("ml")) {
+      channel = "mercado_livre";
+    }
+
+    let item = map.get(monthKey);
+    if (!item) {
+      item = {
+        gross_revenue: 0,
+        orders_count: 0,
+        by_channel: { site: 0, shopee: 0, mercado_livre: 0 },
+      };
+      map.set(monthKey, item);
+    }
+
+    item.gross_revenue += rev;
+    item.orders_count += 1;
+    item.by_channel[channel] = (item.by_channel[channel] || 0) + rev;
+  }
+
+  const sortedMonths = Array.from(map.keys()).sort();
+  const now = new Date();
+  const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const currentDay = now.getDate();
+  const daysInCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+  const result: MonthlySalesHistory[] = [];
+
+  for (let i = 0; i < sortedMonths.length; i++) {
+    const m = sortedMonths[i];
+    const data = map.get(m)!;
+    const [year, monthStr] = m.split("-");
+    const nameObj = MONTH_NAMES_PT[monthStr] || { short: monthStr, full: monthStr };
+    const label = `${nameObj.short}/${year.slice(2)}`;
+    const full_label = `${nameObj.full} de ${year}`;
+    const avgTicket = data.orders_count > 0 ? data.gross_revenue / data.orders_count : 0;
+
+    let growth_percent: number | null = null;
+    if (i > 0) {
+      const prevData = map.get(sortedMonths[i - 1])!;
+      if (prevData.gross_revenue > 0) {
+        growth_percent = ((data.gross_revenue - prevData.gross_revenue) / prevData.gross_revenue) * 100;
+      }
+    }
+
+    const is_current_month = m === currentMonthKey;
+    let projected_revenue: number | undefined = undefined;
+    if (is_current_month && currentDay > 0) {
+      projected_revenue = (data.gross_revenue / currentDay) * daysInCurrentMonth;
+    }
+
+    result.push({
+      month: m,
+      label,
+      full_label,
+      gross_revenue: data.gross_revenue,
+      orders_count: data.orders_count,
+      average_ticket: avgTicket,
+      growth_percent,
+      is_current_month,
+      projected_revenue,
+      by_channel: data.by_channel,
+    });
+  }
+
+  return result;
+}
 
 async function getAllTimeProducts(
   costMapByTrayId: Map<number, { cost: number; sku: string; name: string; image_url?: string; stock?: number }>,
@@ -209,21 +393,12 @@ async function getAllTimeProducts(
 
   try {
     const ordersMap = new Map<string, { point_sale?: string; status?: string }>();
-    let page = 1;
-    while (true) {
-      const res = await trayApiFetch<{ Orders?: Array<{ Order: { id: string; point_sale?: string; status?: string } }>; paging?: { total: number } }>(
-        `orders?page=${page}&limit=50`,
-      );
-      const ords = res.Orders || [];
-      if (!ords.length) break;
-      for (const o of ords) {
-        ordersMap.set(String(o.Order.id), o.Order);
-      }
-      if (ordersMap.size >= (res.paging?.total || 0)) break;
-      page++;
+    const allHistoricalOrders = await getAllTimeOrders();
+    for (const o of allHistoricalOrders) {
+      ordersMap.set(String(o.id), o);
     }
 
-    page = 1;
+    let page = 1;
     let allSold: any[] = [];
     while (true) {
       const res = await trayApiFetch<{ ProductsSolds?: any[]; paging?: { total: number } }>(
@@ -444,6 +619,7 @@ export async function GET(request: Request) {
 
   if (isRefresh) {
     allTimeProductsCache = null;
+    allTimeOrdersCache = null;
   }
 
   try {
@@ -1179,6 +1355,8 @@ export async function GET(request: Request) {
       a.date.localeCompare(b.date),
     );
 
+    const allHistoricalOrders = await getAllTimeOrders();
+    const monthlyHistory = getMonthlySalesHistory(allHistoricalOrders);
     const allTimeRaw = await getAllTimeProducts(costMapByTrayId, costMapBySku, liveTrayProductsMap, mktPricesMap);
     const allTimeProducts = scope === "textil" ? allTimeRaw.filter(p => p.is_own_production) : allTimeRaw;
 
@@ -1228,6 +1406,7 @@ export async function GET(request: Request) {
       channels: channelsArray,
       products: productsArray,
       all_time_products: allTimeProducts,
+      monthly_history: monthlyHistory,
       daily_timeline: timelineArray,
       ads: {
         total_spent: totalAdSpend,

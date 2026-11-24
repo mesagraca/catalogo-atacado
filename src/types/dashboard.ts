@@ -74,6 +74,23 @@ export interface AdSpendSummary {
   roas?: number;
 }
 
+export interface MonthlySalesHistory {
+  month: string; // "YYYY-MM"
+  label: string; // "Ago/26"
+  full_label: string; // "Agosto de 2026"
+  gross_revenue: number;
+  orders_count: number;
+  average_ticket: number;
+  growth_percent?: number | null; // % MoM vs mês anterior
+  is_current_month?: boolean;
+  projected_revenue?: number; // Projeção do mês atual com base no ritmo diário
+  by_channel: {
+    site: number;
+    shopee: number;
+    mercado_livre: number;
+  };
+}
+
 export interface DashboardResponse {
   period_days: number;
   start_date: string;
@@ -110,6 +127,7 @@ export interface DashboardResponse {
   channels: ChannelPerformance[];
   products: ProductProfitSummary[];
   all_time_products?: ProductProfitSummary[];
+  monthly_history?: MonthlySalesHistory[];
   daily_timeline: Array<{
     date: string;
     gross_revenue: number;

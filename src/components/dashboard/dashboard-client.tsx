@@ -2557,6 +2557,196 @@ export function DashboardClient() {
               </div>
             )}
 
+            {/* Gráfico de Barras: Evolução Mensal de Faturamento & Vendas */}
+            {data?.monthly_history && data.monthly_history.length > 0 && (
+              <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
+                {(() => {
+                  const history = data.monthly_history;
+                  const maxRevenue = Math.max(1, ...history.map((m) => Math.max(m.gross_revenue, m.projected_revenue || 0)));
+                  const allTimeTotalRevenue = history.reduce((acc, m) => acc + m.gross_revenue, 0);
+                  const allTimeTotalOrders = history.reduce((acc, m) => acc + m.orders_count, 0);
+                  const recordMonth = [...history].sort((a, b) => b.gross_revenue - a.gross_revenue)[0];
+
+                  return (
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h2 className="text-base font-bold text-stone-900">
+                              Evolução Mensal de Faturamento &amp; Vendas
+                            </h2>
+                            <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full border border-amber-200">
+                              Histórico Geral
+                            </span>
+                          </div>
+                          <p className="text-xs text-stone-500 mt-0.5">
+                            Compare o faturamento mês a mês (MoM), volume de pedidos e crescimento do ticket médio consolidado.
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap text-xs">
+                          <div className="bg-stone-50 border border-stone-200 px-3 py-1.5 rounded-xl shadow-2xs">
+                            <span className="text-[10px] text-stone-500 uppercase font-semibold block">Total Faturado</span>
+                            <strong className="text-stone-900 font-bold tabular-nums">{money(allTimeTotalRevenue)}</strong>
+                            <span className="text-[10px] text-stone-400 ml-1">({allTimeTotalOrders} pedidos)</span>
+                          </div>
+                          {recordMonth && (
+                            <div className="bg-amber-50/70 border border-amber-200 px-3 py-1.5 rounded-xl shadow-2xs">
+                              <span className="text-[10px] text-amber-800 uppercase font-semibold block">Mês Recorde</span>
+                              <strong className="text-amber-950 font-bold tabular-nums">{recordMonth.label}: {money(recordMonth.gross_revenue)}</strong>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Grid de Barras dos Meses */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-end pt-4 pb-2">
+                        {history.map((m) => {
+                          const heightPct = Math.max(14, Math.round((m.gross_revenue / maxRevenue) * 100));
+                          const projHeightPct = m.projected_revenue
+                            ? Math.max(14, Math.round((m.projected_revenue / maxRevenue) * 100))
+                            : 0;
+
+                          const shopeePct = m.gross_revenue > 0 ? (m.by_channel.shopee / m.gross_revenue) * 100 : 0;
+                          const mlPct = m.gross_revenue > 0 ? (m.by_channel.mercado_livre / m.gross_revenue) * 100 : 0;
+                          const sitePct = m.gross_revenue > 0 ? (m.by_channel.site / m.gross_revenue) * 100 : 0;
+
+                          return (
+                            <div
+                              key={m.month}
+                              className={`flex flex-col items-center p-3.5 rounded-2xl border transition-all ${
+                                m.is_current_month
+                                  ? "bg-amber-50/50 border-amber-300 ring-2 ring-amber-400/30 shadow-xs"
+                                  : "bg-stone-50/40 border-stone-200 hover:bg-stone-50 hover:border-stone-300"
+                              }`}
+                            >
+                              {/* Variação MoM Badge */}
+                              <div className="h-6 flex items-center justify-center mb-1">
+                                {m.growth_percent !== null && m.growth_percent !== undefined ? (
+                                  <span
+                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 ${
+                                      m.growth_percent >= 0
+                                        ? "bg-emerald-100 text-emerald-800"
+                                        : "bg-rose-100 text-rose-800"
+                                    }`}
+                                  >
+                                    <span>{m.growth_percent >= 0 ? "▲" : "▼"}</span>
+                                    <span>{Math.abs(m.growth_percent).toFixed(1)}%</span>
+                                    <span className="text-[9px] font-medium opacity-75">MoM</span>
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] text-stone-400 font-medium px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">
+                                    Base Inicial
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Valor Faturado */}
+                              <div className="text-center mb-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-stone-900 tabular-nums">
+                                  {money(m.gross_revenue)}
+                                </div>
+                                <div className="text-[10px] text-stone-500 font-medium">
+                                  {m.orders_count} {m.orders_count === 1 ? "pedido" : "pedidos"}
+                                </div>
+                              </div>
+
+                              {/* Coluna / Barra Proporcional */}
+                              <div className="w-full flex justify-center items-end h-40 py-2 relative">
+                                {/* Barra de Projeção tracejada se for o mês corrente */}
+                                {m.is_current_month && m.projected_revenue && m.projected_revenue > m.gross_revenue && (
+                                  <div
+                                    style={{ height: `${projHeightPct}%` }}
+                                    className="absolute w-12 sm:w-16 rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-100/40 pointer-events-none transition-all"
+                                    title={`Projeção ritmo atual: ${money(m.projected_revenue)}`}
+                                  />
+                                )}
+
+                                {/* Barra Sólida (Segmentada por canal) */}
+                                <div
+                                  style={{ height: `${heightPct}%` }}
+                                  className={`w-12 sm:w-16 rounded-t-xl overflow-hidden flex flex-col justify-end shadow-xs transition-all relative z-10 ${
+                                    m.is_current_month ? "ring-2 ring-amber-500/50" : ""
+                                  }`}
+                                >
+                                  {/* Segmento Site */}
+                                  {sitePct > 0 && (
+                                    <div
+                                      style={{ height: `${sitePct}%` }}
+                                      className="w-full bg-sky-600 transition-all"
+                                      title={`Loja Virtual: ${money(m.by_channel.site)}`}
+                                    />
+                                  )}
+                                  {/* Segmento Mercado Livre */}
+                                  {mlPct > 0 && (
+                                    <div
+                                      style={{ height: `${mlPct}%` }}
+                                      className="w-full bg-amber-400 transition-all"
+                                      title={`Mercado Livre: ${money(m.by_channel.mercado_livre)}`}
+                                    />
+                                  )}
+                                  {/* Segmento Shopee */}
+                                  {shopeePct > 0 && (
+                                    <div
+                                      style={{ height: `${shopeePct}%` }}
+                                      className="w-full bg-orange-600 transition-all"
+                                      title={`Shopee: ${money(m.by_channel.shopee)}`}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Rótulo do Mês */}
+                              <div className="text-center mt-2 pt-2 border-t border-stone-200/80 w-full">
+                                <div className="flex items-center justify-center gap-1">
+                                  <strong className="text-xs font-bold text-stone-800">
+                                    {m.label}
+                                  </strong>
+                                  {m.is_current_month && (
+                                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" title="Mês em andamento" />
+                                  )}
+                                </div>
+                                <div className="text-[10px] text-stone-500 mt-0.5 tabular-nums">
+                                  Méd: {money(m.average_ticket)}
+                                </div>
+                                {m.is_current_month && m.projected_revenue && (
+                                  <div className="text-[9px] text-amber-900 font-semibold mt-1 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200">
+                                    Proj: {money(m.projected_revenue)}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Legenda de Canais da Barra */}
+                      <div className="mt-4 pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3 text-[11px] text-stone-500">
+                        <div className="flex items-center gap-4">
+                          <span className="font-semibold text-stone-700">Composição da Barra:</span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-sm bg-orange-600" />
+                            <span>Shopee</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-sm bg-amber-400" />
+                            <span>Mercado Livre</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-sm bg-sky-600" />
+                            <span>Loja Virtual</span>
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-stone-400 italic">
+                          * Barras empilhadas (stacked) por canal de venda. Novembro exibe contorno tracejado com projeção linear para 30 dias.
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
             {/* Comparativo dos 4 Canais de Venda */}
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
               <h2 className="text-base font-bold text-stone-900 mb-1">
