@@ -555,12 +555,21 @@ export function DashboardClient() {
   const [selectedMonthlyChannel, setSelectedMonthlyChannel] = useState<MonthlyChannelFilter>("all");
   const [hoveredMonthIndex, setHoveredMonthIndex] = useState<number | null>(null);
   const [pinnedMonthIndex, setPinnedMonthIndex] = useState<number | null>(null);
-  const [hoveredBarInfo, setHoveredBarInfo] = useState<{
+  interface HoveredBarData {
     val: number;
+    projVal: number;
     channelName: string;
+    channelKey: string;
+    monthLabel: string;
+    isCurrentMonth: boolean;
+    dailyPace: number;
+    sharePct: number;
     borderCls: string;
     bgCls: string;
-  } | null>(null);
+  }
+
+  const [hoveredBarInfo, setHoveredBarInfo] = useState<HoveredBarData | null>(null);
+  const [pinnedBarInfo, setPinnedBarInfo] = useState<HoveredBarData | null>(null);
 
   const handleAdSort = (field: AdSortField) => {
     if (adSortField === field) {
@@ -2654,6 +2663,10 @@ export function DashboardClient() {
                     { key: "tiktok", label: "TikTok Shop", activeCls: "bg-zinc-900 text-white border-zinc-900 shadow-xs", dotCls: "bg-white" },
                   ];
 
+                  const PLOT_HEIGHT = 224; // Altura rígida de h-56 em pixels
+                  const calcPx = (v: number) => Math.max(v > 0 ? 3 : 0, Math.min(PLOT_HEIGHT, Math.round((v / yMax) * PLOT_HEIGHT)));
+                  const activeBarInfo = pinnedBarInfo || hoveredBarInfo;
+
                   return (
                     <div>
                       {/* CABEÇALHO REESTRUTURADO: TÍTULO À ESQUERDA + KPI CHIPS COMPACTOS DENTRO DOS LIMITES */}
@@ -2751,12 +2764,12 @@ export function DashboardClient() {
                         </div>
                       </div>
 
-                      {/* ÁREA DO GRÁFICO: 3 CAMADAS GEOMÉTRICAS COM BASE RIGOROSA E MIRA CARTESIANA NO HOVER */}
+                      {/* ÁREA DO GRÁFICO REESTRUTURADA COM SEPARAÇÃO DE TETO E CÁLCULO EM PIXELS */}
                       <div className="relative overflow-x-auto scrollbar-thin pb-2">
                         <div className="min-w-[620px]">
                           
-                          {/* CAMADA 1: LINHA HORIZONTAL DOS VALORES SUPERIORES & BADGES MoM (ALTURA FIXA h-14) */}
-                          <div className="flex items-end pl-24 pr-4 h-14 mb-2">
+                          {/* CAMADA 1: LINHA DOS VALORES SUPERIORES & BADGES MoM COM FOLGA AMPLA (mb-8) DO TETO */}
+                          <div className="flex items-end pl-24 pr-4 h-16 mb-8">
                             <div className="w-full flex items-end justify-around gap-6">
                               {history.map((m, idx) => {
                                 const rev = m.displayRevenue;
@@ -2803,20 +2816,22 @@ export function DashboardClient() {
                             </div>
                           </div>
 
-                          {/* CAMADA 2: ÁREA DE PLOTAGEM REAL DAS BARRAS (h-56 / 224px) */}
-                          <div className="relative h-56 w-full pl-24 pr-4">
-                            {/* Linhas de Grade Horizontais Nítidas (25%, 50%, 75%, 100%) */}
+                          {/* CAMADA 2: ÁREA DE PLOTAGEM REAL DAS BARRAS (h-[224px] RIGOROSO) */}
+                          <div className="relative h-[224px] w-full pl-24 pr-4">
+                            {/* Linhas de Grade Horizontais Fortes (100% não vaza para cima) */}
                             <div className="absolute inset-y-0 left-0 right-4 pointer-events-none z-0">
                               {[
-                                { val: yMax, pct: 100 },
-                                { val: yMax * 0.75, pct: 75 },
-                                { val: yMax * 0.5, pct: 50 },
-                                { val: yMax * 0.25, pct: 25 },
+                                { val: yMax, pct: 100, isTop: true },
+                                { val: yMax * 0.75, pct: 75, isTop: false },
+                                { val: yMax * 0.5, pct: 50, isTop: false },
+                                { val: yMax * 0.25, pct: 25, isTop: false },
                               ].map((tick) => (
                                 <div
                                   key={tick.pct}
                                   style={{ bottom: `${tick.pct}%` }}
-                                  className="absolute left-0 right-0 flex items-center gap-3 -translate-y-1/2"
+                                  className={`absolute left-0 right-0 flex items-center gap-3 ${
+                                    tick.isTop ? "translate-y-0" : "-translate-y-1/2"
+                                  }`}
                                 >
                                   <span className="text-[11px] font-mono text-stone-500 font-medium w-20 text-right tabular-nums select-none flex-shrink-0">
                                     {money(tick.val)}
@@ -2826,39 +2841,89 @@ export function DashboardClient() {
                               ))}
                             </div>
 
-                            {/* MIRA CARTESIANA DINÂMICA HORIZONTAL NO HOVER DA BARRA */}
-                            {hoveredBarInfo && hoveredBarInfo.val > 0 && (
+                            {/* MIRA CARTESIANA DINÂMICA HORIZONTAL NO HOVER OU FIXADA NO CLIQUE */}
+                            {activeBarInfo && activeBarInfo.val > 0 && (
                               <div
-                                style={{ bottom: `${Math.min(100, (hoveredBarInfo.val / yMax) * 100)}%` }}
-                                className="absolute left-0 right-4 flex items-center gap-3 -translate-y-1/2 pointer-events-none z-20 transition-all duration-75 animate-in fade-in"
+                                style={{ bottom: `${calcPx(activeBarInfo.val)}px` }}
+                                className="absolute left-0 right-4 flex items-center gap-3 -translate-y-1/2 pointer-events-none z-20 transition-all duration-75"
                               >
                                 <div className="w-20 flex justify-end flex-shrink-0">
-                                  <span className={`text-[10px] font-mono font-black px-1.5 py-0.5 rounded shadow-sm tabular-nums select-none ${hoveredBarInfo.bgCls}`}>
-                                    {money(hoveredBarInfo.val)}
+                                  <span className={`text-[10px] font-mono font-black px-1.5 py-0.5 rounded shadow-sm tabular-nums select-none flex items-center gap-1 ${activeBarInfo.bgCls}`}>
+                                    {pinnedBarInfo && <span>📌</span>}
+                                    <span>{money(activeBarInfo.val)}</span>
                                   </span>
                                 </div>
-                                <div className={`w-full border-b-2 border-dashed ${hoveredBarInfo.borderCls}`} />
+                                <div className={`w-full border-b-2 border-dashed ${activeBarInfo.borderCls}`} />
                               </div>
                             )}
 
-                            {/* Colunas de Meses com items-stretch (Garantindo que 100% da altura seja 224px exatos) */}
+                            {/* MINI-CARD FLUTUANTE COM DETALHAMENTO DE PROJEÇÃO DO CANAL ESPECÍFICO */}
+                            {activeBarInfo && (
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute top-2 right-4 z-30 p-3.5 bg-stone-900/95 backdrop-blur-xl text-white rounded-2xl shadow-2xl border border-stone-700/80 text-xs w-68 pointer-events-auto animate-in fade-in duration-100"
+                              >
+                                <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-800">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className={`w-2.5 h-2.5 rounded-full ${
+                                      activeBarInfo.channelKey === "shopee" ? "bg-orange-500" :
+                                      activeBarInfo.channelKey === "mercado_livre" ? "bg-amber-400" :
+                                      activeBarInfo.channelKey === "site" ? "bg-sky-400" : "bg-stone-300"
+                                    }`} />
+                                    <strong className="text-stone-100 font-bold">{activeBarInfo.channelName}</strong>
+                                    <span className="text-[10px] text-stone-400">({activeBarInfo.monthLabel})</span>
+                                  </div>
+                                  {pinnedBarInfo ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => setPinnedBarInfo(null)}
+                                      className="text-[10px] text-amber-400 hover:text-white font-semibold cursor-pointer px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-800/80"
+                                      title="Desafixar régua"
+                                    >
+                                      ✕ Desafixar
+                                    </button>
+                                  ) : (
+                                    <span className="text-[9px] text-stone-500 italic">Clique p/ fixar</span>
+                                  )}
+                                </div>
+
+                                <div className="space-y-1.5 text-[11px]">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-stone-400">Faturamento Realizado:</span>
+                                    <strong className="text-stone-100 font-bold tabular-nums">{money(activeBarInfo.val)}</strong>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-stone-400">Participação no Mês:</span>
+                                    <span className="text-stone-300 tabular-nums">{activeBarInfo.sharePct.toFixed(1)}%</span>
+                                  </div>
+                                  {activeBarInfo.isCurrentMonth && activeBarInfo.projVal > activeBarInfo.val && (
+                                    <>
+                                      <div className="flex items-center justify-between text-amber-300 pt-1.5 border-t border-stone-800/80 font-bold">
+                                        <span>Projeção (30 dias):</span>
+                                        <strong className="tabular-nums">{money(activeBarInfo.projVal)}</strong>
+                                      </div>
+                                      <div className="flex items-center justify-between text-[10px] text-stone-400">
+                                        <span>Ritmo de Vendas:</span>
+                                        <span className="tabular-nums font-medium text-stone-300">{money(activeBarInfo.dailyPace)}/dia</span>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Colunas de Meses com Posicionamento e Alturas Rígidas em Pixels */}
                             <div className="relative z-10 w-full h-full flex items-stretch justify-around gap-6">
                               {history.map((m, idx) => {
                                 const rev = m.displayRevenue;
                                 const isHovered = activeMonthIdx === idx;
-
-                                // Alturas percentuais rigorosamente proporcionais a yMax
-                                const totalHeightPct = Math.max(rev > 0 ? 2 : 0, Math.min(100, (rev / yMax) * 100));
-                                const projHeightPct = m.displayProj
-                                  ? Math.max(2, Math.min(100, (m.displayProj / yMax) * 100))
-                                  : 0;
 
                                 const shopeeVal = m.by_channel.shopee || 0;
                                 const mlVal = m.by_channel.mercado_livre || 0;
                                 const siteVal = m.by_channel.site || 0;
                                 const tiktokVal = m.by_channel.tiktok || 0;
 
-                                // Projeção individual por canal no mês atual
+                                // Projeções individuais por canal em Novembro
                                 const shopeeProj = m.is_current_month && currentDay > 0 && shopeeVal > 0
                                   ? (shopeeVal / currentDay) * daysInCurrentMonth
                                   : shopeeVal;
@@ -2872,15 +2937,9 @@ export function DashboardClient() {
                                   ? (tiktokVal / currentDay) * daysInCurrentMonth
                                   : tiktokVal;
 
-                                const shopeeHeight = Math.max(shopeeVal > 0 ? 2 : 0, Math.min(100, (shopeeVal / yMax) * 100));
-                                const mlHeight = Math.max(mlVal > 0 ? 2 : 0, Math.min(100, (mlVal / yMax) * 100));
-                                const siteHeight = Math.max(siteVal > 0 ? 2 : 0, Math.min(100, (siteVal / yMax) * 100));
-                                const tiktokHeight = Math.max(tiktokVal > 0 ? 2 : 0, Math.min(100, (tiktokVal / yMax) * 100));
-
-                                const shopeeProjHeight = Math.max(shopeeProj > 0 ? 2 : 0, Math.min(100, (shopeeProj / yMax) * 100));
-                                const mlProjHeight = Math.max(mlProj > 0 ? 2 : 0, Math.min(100, (mlProj / yMax) * 100));
-                                const siteProjHeight = Math.max(siteProj > 0 ? 2 : 0, Math.min(100, (siteProj / yMax) * 100));
-                                const tiktokProjHeight = Math.max(tiktokProj > 0 ? 2 : 0, Math.min(100, (tiktokProj / yMax) * 100));
+                                const totalProj = m.is_current_month && currentDay > 0 && rev > 0
+                                  ? (rev / currentDay) * daysInCurrentMonth
+                                  : rev;
 
                                 return (
                                   <div
@@ -2890,147 +2949,259 @@ export function DashboardClient() {
                                     onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
                                     className="flex-1 max-w-[140px] h-full flex justify-center items-end relative cursor-pointer group"
                                   >
-                                    {/* LINHA-GUIA VERTICAL TRACEJADA SUBINDO DO EIXO (EIXO Y PARA CIMA) */}
+                                    {/* Linha-Guia Vertical Tracejada Subindo do Eixo */}
                                     <div
                                       className={`absolute inset-y-0 left-1/2 -translate-x-1/2 border-l border-dashed pointer-events-none transition-colors z-0 ${
-                                        isHovered
-                                          ? "border-amber-400/80 shadow-xs"
-                                          : "border-stone-200/60"
+                                        isHovered ? "border-amber-400/80 shadow-xs" : "border-stone-200/60"
                                       }`}
                                     />
 
-                                    {/* MODO 1: BARRAS POR CANAL LADO A LADO COM PROJEÇÃO INDIVIDUAL POR CANAL */}
+                                    {/* MODO 1: BARRAS POR CANAL COM PROJEÇÃO INDIVIDUAL POR CANAL (ALTURA EM PIXELS) */}
                                     {monthlyViewMode === "grouped" && selectedMonthlyChannel === "all" ? (
                                       <div className={`flex items-end justify-center gap-1.5 sm:gap-2 h-full px-1.5 pt-0 pb-0 rounded-t-2xl transition-colors relative z-10 ${
                                         isHovered ? "bg-stone-100/60" : ""
                                       }`}>
-                                        {/* COLUNA SHOPEE (PROJEÇÃO TRACEJADA + BARRA SÓLIDA) */}
+                                        {/* SHOPEE */}
                                         <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
                                           {m.is_current_month && shopeeProj > shopeeVal && (
                                             <div
-                                              style={{ height: `${shopeeProjHeight}%` }}
+                                              style={{ height: `${calcPx(shopeeProj)}px` }}
                                               className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-orange-400 bg-orange-400/15 pointer-events-none z-0"
                                               title={`Shopee Projeção: ${money(shopeeProj)}`}
                                             />
                                           )}
                                           <div
-                                            style={{ height: `${shopeeHeight}%` }}
+                                            style={{ height: `${calcPx(shopeeVal)}px` }}
                                             onMouseEnter={(e) => {
                                               e.stopPropagation();
                                               setHoveredBarInfo({
                                                 val: shopeeVal,
+                                                projVal: shopeeProj,
                                                 channelName: "Shopee",
+                                                channelKey: "shopee",
+                                                monthLabel: m.label,
+                                                isCurrentMonth: !!m.is_current_month,
+                                                dailyPace: currentDay > 0 ? shopeeVal / currentDay : 0,
+                                                sharePct: rev > 0 ? (shopeeVal / rev) * 100 : 0,
                                                 borderCls: "border-orange-500",
                                                 bgCls: "bg-orange-600 text-white",
                                               });
                                             }}
                                             onMouseLeave={() => setHoveredBarInfo(null)}
-                                            className="w-full bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110"
-                                            title={`Shopee Realizado: ${money(shopeeVal)}`}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setPinnedBarInfo((prev) =>
+                                                prev?.channelKey === "shopee" && prev?.monthLabel === m.label ? null : {
+                                                  val: shopeeVal,
+                                                  projVal: shopeeProj,
+                                                  channelName: "Shopee",
+                                                  channelKey: "shopee",
+                                                  monthLabel: m.label,
+                                                  isCurrentMonth: !!m.is_current_month,
+                                                  dailyPace: currentDay > 0 ? shopeeVal / currentDay : 0,
+                                                  sharePct: rev > 0 ? (shopeeVal / rev) * 100 : 0,
+                                                  borderCls: "border-orange-500",
+                                                  bgCls: "bg-orange-600 text-white",
+                                                }
+                                              );
+                                            }}
+                                            className="w-full bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            title={`Shopee Real: ${money(shopeeVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
 
-                                        {/* COLUNA MERCADO LIVRE (PROJEÇÃO TRACEJADA + BARRA SÓLIDA) */}
+                                        {/* MERCADO LIVRE */}
                                         <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
                                           {m.is_current_month && mlProj > mlVal && (
                                             <div
-                                              style={{ height: `${mlProjHeight}%` }}
+                                              style={{ height: `${calcPx(mlProj)}px` }}
                                               className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-amber-400 bg-amber-400/15 pointer-events-none z-0"
                                               title={`Mercado Livre Projeção: ${money(mlProj)}`}
                                             />
                                           )}
                                           <div
-                                            style={{ height: `${mlHeight}%` }}
+                                            style={{ height: `${calcPx(mlVal)}px` }}
                                             onMouseEnter={(e) => {
                                               e.stopPropagation();
                                               setHoveredBarInfo({
                                                 val: mlVal,
+                                                projVal: mlProj,
                                                 channelName: "Mercado Livre",
+                                                channelKey: "mercado_livre",
+                                                monthLabel: m.label,
+                                                isCurrentMonth: !!m.is_current_month,
+                                                dailyPace: currentDay > 0 ? mlVal / currentDay : 0,
+                                                sharePct: rev > 0 ? (mlVal / rev) * 100 : 0,
                                                 borderCls: "border-amber-500",
                                                 bgCls: "bg-amber-400 text-stone-900 font-bold",
                                               });
                                             }}
                                             onMouseLeave={() => setHoveredBarInfo(null)}
-                                            className="w-full bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110"
-                                            title={`Mercado Livre Realizado: ${money(mlVal)}`}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setPinnedBarInfo((prev) =>
+                                                prev?.channelKey === "mercado_livre" && prev?.monthLabel === m.label ? null : {
+                                                  val: mlVal,
+                                                  projVal: mlProj,
+                                                  channelName: "Mercado Livre",
+                                                  channelKey: "mercado_livre",
+                                                  monthLabel: m.label,
+                                                  isCurrentMonth: !!m.is_current_month,
+                                                  dailyPace: currentDay > 0 ? mlVal / currentDay : 0,
+                                                  sharePct: rev > 0 ? (mlVal / rev) * 100 : 0,
+                                                  borderCls: "border-amber-500",
+                                                  bgCls: "bg-amber-400 text-stone-900 font-bold",
+                                                }
+                                              );
+                                            }}
+                                            className="w-full bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            title={`Mercado Livre Real: ${money(mlVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
 
-                                        {/* COLUNA LOJA VIRTUAL (PROJEÇÃO TRACEJADA + BARRA SÓLIDA) */}
+                                        {/* LOJA VIRTUAL */}
                                         <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
                                           {m.is_current_month && siteProj > siteVal && (
                                             <div
-                                              style={{ height: `${siteProjHeight}%` }}
+                                              style={{ height: `${calcPx(siteProj)}px` }}
                                               className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-sky-400 bg-sky-400/15 pointer-events-none z-0"
                                               title={`Loja Virtual Projeção: ${money(siteProj)}`}
                                             />
                                           )}
                                           <div
-                                            style={{ height: `${siteHeight}%` }}
+                                            style={{ height: `${calcPx(siteVal)}px` }}
                                             onMouseEnter={(e) => {
                                               e.stopPropagation();
                                               setHoveredBarInfo({
                                                 val: siteVal,
+                                                projVal: siteProj,
                                                 channelName: "Loja Virtual",
+                                                channelKey: "site",
+                                                monthLabel: m.label,
+                                                isCurrentMonth: !!m.is_current_month,
+                                                dailyPace: currentDay > 0 ? siteVal / currentDay : 0,
+                                                sharePct: rev > 0 ? (siteVal / rev) * 100 : 0,
                                                 borderCls: "border-sky-500",
                                                 bgCls: "bg-sky-600 text-white",
                                               });
                                             }}
                                             onMouseLeave={() => setHoveredBarInfo(null)}
-                                            className="w-full bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110"
-                                            title={`Loja Virtual Realizado: ${money(siteVal)}`}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setPinnedBarInfo((prev) =>
+                                                prev?.channelKey === "site" && prev?.monthLabel === m.label ? null : {
+                                                  val: siteVal,
+                                                  projVal: siteProj,
+                                                  channelName: "Loja Virtual",
+                                                  channelKey: "site",
+                                                  monthLabel: m.label,
+                                                  isCurrentMonth: !!m.is_current_month,
+                                                  dailyPace: currentDay > 0 ? siteVal / currentDay : 0,
+                                                  sharePct: rev > 0 ? (siteVal / rev) * 100 : 0,
+                                                  borderCls: "border-sky-500",
+                                                  bgCls: "bg-sky-600 text-white",
+                                                }
+                                              );
+                                            }}
+                                            className="w-full bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            title={`Loja Virtual Real: ${money(siteVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
 
-                                        {/* COLUNA TIKTOK SHOP (PROJEÇÃO TRACEJADA + BARRA SÓLIDA) */}
+                                        {/* TIKTOK SHOP */}
                                         <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
                                           {m.is_current_month && tiktokProj > tiktokVal && (
                                             <div
-                                              style={{ height: `${tiktokProjHeight}%` }}
+                                              style={{ height: `${calcPx(tiktokProj)}px` }}
                                               className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-zinc-500 bg-zinc-500/15 pointer-events-none z-0"
                                               title={`TikTok Shop Projeção: ${money(tiktokProj)}`}
                                             />
                                           )}
                                           <div
-                                            style={{ height: `${tiktokHeight}%` }}
+                                            style={{ height: `${calcPx(tiktokVal)}px` }}
                                             onMouseEnter={(e) => {
                                               e.stopPropagation();
                                               setHoveredBarInfo({
                                                 val: tiktokVal,
+                                                projVal: tiktokProj,
                                                 channelName: "TikTok Shop",
+                                                channelKey: "tiktok",
+                                                monthLabel: m.label,
+                                                isCurrentMonth: !!m.is_current_month,
+                                                dailyPace: currentDay > 0 ? tiktokVal / currentDay : 0,
+                                                sharePct: rev > 0 ? (tiktokVal / rev) * 100 : 0,
                                                 borderCls: "border-zinc-800",
                                                 bgCls: "bg-zinc-900 text-white",
                                               });
                                             }}
                                             onMouseLeave={() => setHoveredBarInfo(null)}
-                                            className="w-full bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110"
-                                            title={`TikTok Shop Realizado: ${money(tiktokVal)}`}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setPinnedBarInfo((prev) =>
+                                                prev?.channelKey === "tiktok" && prev?.monthLabel === m.label ? null : {
+                                                  val: tiktokVal,
+                                                  projVal: tiktokProj,
+                                                  channelName: "TikTok Shop",
+                                                  channelKey: "tiktok",
+                                                  monthLabel: m.label,
+                                                  isCurrentMonth: !!m.is_current_month,
+                                                  dailyPace: currentDay > 0 ? tiktokVal / currentDay : 0,
+                                                  sharePct: rev > 0 ? (tiktokVal / rev) * 100 : 0,
+                                                  borderCls: "border-zinc-800",
+                                                  bgCls: "bg-zinc-900 text-white",
+                                                }
+                                              );
+                                            }}
+                                            className="w-full bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            title={`TikTok Shop Real: ${money(tiktokVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
                                       </div>
                                     ) : (
-                                      /* MODO 2: BARRA TOTAL MONOLÍTICA OU CANAL FILTRADO COM PROJEÇÃO CONSOLIDADA */
+                                      /* MODO 2: BARRA TOTAL MONOLÍTICA OU CANAL FILTRADO */
                                       <div className="w-12 sm:w-16 h-full flex items-end justify-center relative">
-                                        {/* Projeção Consolidada da Loja */}
-                                        {m.is_current_month && m.displayProj && m.displayProj > rev && (
+                                        {m.is_current_month && totalProj > rev && (
                                           <div
-                                            style={{ height: `${projHeightPct}%` }}
+                                            style={{ height: `${calcPx(totalProj)}px` }}
                                             className="absolute bottom-0 w-full rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-200/15 pointer-events-none z-0"
-                                            title={`Projeção Total da Loja: ${money(m.displayProj)}`}
+                                            title={`Projeção Total da Loja: ${money(totalProj)}`}
                                           />
                                         )}
                                         <div
-                                          style={{ height: `${totalHeightPct}%` }}
+                                          style={{ height: `${calcPx(rev)}px` }}
                                           onMouseEnter={() => {
                                             setHoveredBarInfo({
                                               val: rev,
-                                              channelName: selectedMonthlyChannel === "all" ? "Total Loja" : channelNames[selectedMonthlyChannel],
+                                              projVal: totalProj,
+                                              channelName: selectedMonthlyChannel === "all" ? "Total da Loja" : channelNames[selectedMonthlyChannel],
+                                              channelKey: selectedMonthlyChannel,
+                                              monthLabel: m.label,
+                                              isCurrentMonth: !!m.is_current_month,
+                                              dailyPace: currentDay > 0 ? rev / currentDay : 0,
+                                              sharePct: 100,
                                               borderCls: "border-amber-600",
                                               bgCls: "bg-amber-950 text-white",
                                             });
                                           }}
                                           onMouseLeave={() => setHoveredBarInfo(null)}
-                                          className={`w-full rounded-t-xl transition-all duration-200 relative z-10 shadow-sm ${
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setPinnedBarInfo((prev) =>
+                                              prev?.channelKey === selectedMonthlyChannel && prev?.monthLabel === m.label ? null : {
+                                                val: rev,
+                                                projVal: totalProj,
+                                                channelName: selectedMonthlyChannel === "all" ? "Total da Loja" : channelNames[selectedMonthlyChannel],
+                                                channelKey: selectedMonthlyChannel,
+                                                monthLabel: m.label,
+                                                isCurrentMonth: !!m.is_current_month,
+                                                dailyPace: currentDay > 0 ? rev / currentDay : 0,
+                                                sharePct: 100,
+                                                borderCls: "border-amber-600",
+                                                bgCls: "bg-amber-950 text-white",
+                                              }
+                                            );
+                                          }}
+                                          className={`w-full rounded-t-xl transition-all duration-200 relative z-10 shadow-sm cursor-pointer ${
                                             isHovered ? "ring-4 ring-amber-400 shadow-md brightness-105" : ""
                                           } ${
                                             selectedMonthlyChannel === "all"
@@ -3043,7 +3214,7 @@ export function DashboardClient() {
                                               ? "bg-gradient-to-t from-sky-700 to-sky-500"
                                               : "bg-gradient-to-t from-zinc-950 to-zinc-800"
                                           }`}
-                                          title={`${m.full_label}: ${money(rev)}`}
+                                          title={`${m.full_label}: ${money(rev)} (Clique para fixar régua)`}
                                         />
                                       </div>
                                     )}
@@ -3067,7 +3238,7 @@ export function DashboardClient() {
                             </div>
                           </div>
 
-                          {/* CAMADA 3: LINHA INFERIOR DOS RÓTULOS DOS MESES (PERFEITAMENTE SINCRONIZADA ABAIXO DO ZERO) */}
+                          {/* CAMADA 3: LINHA INFERIOR DOS RÓTULOS DOS MESES */}
                           <div className="flex items-start pl-24 pr-4 pt-3">
                             <div className="w-full flex justify-around gap-6">
                               {history.map((m, idx) => {
