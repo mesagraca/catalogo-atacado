@@ -2612,8 +2612,21 @@ export function DashboardClient() {
 
                   const activeMonthIdx = pinnedMonthIndex !== null ? pinnedMonthIndex : hoveredMonthIndex;
                   const activeMonth = activeMonthIdx !== null ? history[activeMonthIdx] : null;
+                  const prevMonthForActive = activeMonthIdx !== null && activeMonthIdx > 0 ? history[activeMonthIdx - 1] : null;
+
+                  // Mês atual para o placar de canais
+                  const currentMonthItem = rawHistory.find((m) => m.is_current_month) || rawHistory[rawHistory.length - 1];
+                  const prevMonthItem = rawHistory.length >= 2 ? rawHistory[rawHistory.length - 2] : null;
 
                   // Cores e rótulos para cada canal
+                  const channelNames: Record<MonthlyChannelFilter, string> = {
+                    all: "Todos os Canais",
+                    shopee: "Shopee",
+                    mercado_livre: "Mercado Livre",
+                    site: "Loja Virtual",
+                    tiktok: "TikTok Shop",
+                  };
+
                   const channelPills: Array<{ key: MonthlyChannelFilter; label: string; activeCls: string; dotCls: string }> = [
                     { key: "all", label: "Todos os Canais", activeCls: "bg-amber-950 text-white border-amber-950 shadow-xs", dotCls: "bg-amber-400" },
                     { key: "shopee", label: "Shopee", activeCls: "bg-orange-600 text-white border-orange-600 shadow-xs", dotCls: "bg-white" },
@@ -2643,10 +2656,14 @@ export function DashboardClient() {
                         {/* Totais do Topo */}
                         <div className="flex items-center gap-3 flex-wrap self-start lg:self-auto text-xs">
                           <div className="bg-stone-50 border border-stone-200/90 px-3.5 py-2 rounded-xl shadow-2xs">
-                            <span className="text-[10px] text-stone-500 uppercase font-bold block tracking-wider">Total Acumulado</span>
+                            <span className="text-[10px] text-stone-500 uppercase font-bold block tracking-wider">
+                              {selectedMonthlyChannel === "all" ? "Total Acumulado" : `Total em ${channelNames[selectedMonthlyChannel]}`}
+                            </span>
                             <div className="flex items-baseline gap-1 mt-0.5">
                               <strong className="text-stone-900 font-extrabold text-sm tabular-nums">{money(totalFilteredRevenue)}</strong>
-                              <span className="text-[10px] text-stone-500 font-medium">({totalFilteredOrders} pedidos)</span>
+                              {selectedMonthlyChannel === "all" && (
+                                <span className="text-[10px] text-stone-500 font-medium">({totalFilteredOrders} pedidos)</span>
+                              )}
                             </div>
                           </div>
 
@@ -2654,7 +2671,7 @@ export function DashboardClient() {
                             <div className="bg-amber-50/70 border border-amber-300/80 px-3.5 py-2 rounded-xl shadow-2xs">
                               <span className="text-[10px] text-amber-900 uppercase font-bold block tracking-wider flex items-center gap-1">
                                 <span>👑</span>
-                                <span>Mês Recorde</span>
+                                <span>Mês Recorde {selectedMonthlyChannel !== "all" && "(Canal)"}</span>
                               </span>
                               <div className="flex items-baseline gap-1.5 mt-0.5">
                                 <strong className="text-amber-950 font-extrabold text-sm tabular-nums">
@@ -2702,7 +2719,7 @@ export function DashboardClient() {
                           ))}
                         </div>
 
-                        {/* Colunas dos Meses (Container com Scroll Horizontal Suave para infinitos meses futuros) */}
+                        {/* Colunas dos Meses (Container com Scroll Horizontal Suave) */}
                         <div className="relative z-10 pl-20 overflow-x-auto pb-4 scrollbar-thin">
                           <div className="flex items-end justify-around gap-6 sm:gap-10 min-w-[540px] h-64 pt-8">
                             {history.map((m, idx) => {
@@ -2752,6 +2769,7 @@ export function DashboardClient() {
                                             ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
                                             : "bg-rose-100 text-rose-800 border border-rose-200"
                                         }`}
+                                        title={`Crescimento MoM ${selectedMonthlyChannel !== "all" ? `no canal ${selectedMonthlyChannel}` : "geral"}`}
                                       >
                                         <span>{m.displayMoM >= 0 ? "▲" : "▼"}</span>
                                         <span>{Math.abs(m.displayMoM).toFixed(1)}%</span>
@@ -2868,11 +2886,15 @@ export function DashboardClient() {
                           </div>
                         </div>
 
-                        {/* Tooltip / Janela Flutuante Flutuando sobre o Gráfico */}
+                        {/* Tooltip / Janela Flutuante com Posicionamento Adaptativo (NUNCA TAMPANDO O MÊS ATIVO) */}
                         {activeMonth && (
                           <div
                             onClick={(e) => e.stopPropagation()}
-                            className="absolute top-2 right-4 sm:right-8 z-30 p-4 bg-stone-900/95 backdrop-blur-md text-white rounded-2xl shadow-2xl border border-stone-700/80 text-xs w-72 max-w-[90vw] animate-in fade-in duration-150 select-none pointer-events-auto"
+                            className={`absolute top-2 z-30 p-4 bg-stone-900/95 backdrop-blur-md text-white rounded-2xl shadow-2xl border border-stone-700/80 text-xs w-80 max-w-[90vw] animate-in fade-in duration-150 select-none pointer-events-auto ${
+                              (activeMonthIdx ?? 0) >= history.length / 2
+                                ? "left-24 sm:left-28"
+                                : "right-4 sm:right-8"
+                            }`}
                           >
                             <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-800">
                               <div className="flex items-center gap-2">
@@ -2910,7 +2932,7 @@ export function DashboardClient() {
                                 </strong>
                               </div>
                               <div className="flex items-center justify-between">
-                                <span className="text-stone-400 text-[11px]">Variação MoM:</span>
+                                <span className="text-stone-400 text-[11px]">Variação MoM Total:</span>
                                 <span className={`font-bold text-[11px] tabular-nums ${
                                   (activeMonth.growth_percent || 0) >= 0 ? "text-emerald-400" : "text-rose-400"
                                 }`}>
@@ -2920,9 +2942,9 @@ export function DashboardClient() {
                                 </span>
                               </div>
                               <div className="flex items-center justify-between text-[11px]">
-                                <span className="text-stone-400">Volume de Pedidos:</span>
+                                <span className="text-stone-400">Volume &amp; Ticket:</span>
                                 <span className="text-stone-200 font-medium tabular-nums">
-                                  {activeMonth.orders_count} pedidos ({money(activeMonth.average_ticket)}/médio)
+                                  {activeMonth.orders_count} pedidos · {money(activeMonth.average_ticket)}/médio
                                 </span>
                               </div>
                               {activeMonth.is_current_month && activeMonth.projected_revenue && (
@@ -2935,28 +2957,49 @@ export function DashboardClient() {
                               )}
                             </div>
 
-                            {/* Decomposição Exata por Canal (4 Canais) */}
+                            {/* Decomposição Exata por Canal e Crescimento Plataforma a Plataforma */}
                             <div>
-                              <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-1.5">
-                                Participação por Canal:
+                              <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-2">
+                                Crescimento por Plataforma (MoM):
                               </span>
-                              <div className="space-y-1 text-[11px]">
+                              <div className="space-y-2 text-[11px]">
                                 {[
-                                  { label: "Shopee", val: activeMonth.by_channel.shopee || 0, color: "bg-orange-600", dot: "bg-orange-500" },
-                                  { label: "Loja Virtual", val: activeMonth.by_channel.site || 0, color: "bg-sky-600", dot: "bg-sky-400" },
-                                  { label: "Mercado Livre", val: activeMonth.by_channel.mercado_livre || 0, color: "bg-amber-400", dot: "bg-amber-400" },
-                                  { label: "TikTok Shop", val: activeMonth.by_channel.tiktok || 0, color: "bg-zinc-700", dot: "bg-zinc-400" },
+                                  { label: "Shopee", val: activeMonth.by_channel.shopee || 0, prevVal: prevMonthForActive?.by_channel.shopee || 0, dot: "bg-orange-500" },
+                                  { label: "Loja Virtual", val: activeMonth.by_channel.site || 0, prevVal: prevMonthForActive?.by_channel.site || 0, dot: "bg-sky-400" },
+                                  { label: "Mercado Livre", val: activeMonth.by_channel.mercado_livre || 0, prevVal: prevMonthForActive?.by_channel.mercado_livre || 0, dot: "bg-amber-400" },
+                                  { label: "TikTok Shop", val: activeMonth.by_channel.tiktok || 0, prevVal: prevMonthForActive?.by_channel.tiktok || 0, dot: "bg-zinc-400" },
                                 ].map((item) => {
-                                  const pct = activeMonth.gross_revenue > 0 ? (item.val / activeMonth.gross_revenue) * 100 : 0;
+                                  const pctOfTotal = activeMonth.gross_revenue > 0 ? (item.val / activeMonth.gross_revenue) * 100 : 0;
+                                  let channelMoM: number | null = null;
+                                  if (prevMonthForActive) {
+                                    if (item.prevVal > 0) {
+                                      channelMoM = ((item.val - item.prevVal) / item.prevVal) * 100;
+                                    } else if (item.val > 0) {
+                                      channelMoM = 100;
+                                    }
+                                  }
+
                                   return (
-                                    <div key={item.label} className="flex items-center justify-between gap-2">
+                                    <div key={item.label} className="p-1.5 rounded-lg bg-stone-800/50 border border-stone-800 flex items-center justify-between gap-2">
                                       <div className="flex items-center gap-1.5 min-w-0">
                                         <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.dot}`} />
-                                        <span className="text-stone-300 truncate">{item.label}:</span>
+                                        <span className="text-stone-200 font-semibold truncate">{item.label}</span>
                                       </div>
-                                      <div className="text-right tabular-nums whitespace-nowrap flex-shrink-0">
-                                        <strong className="text-stone-100">{money(item.val)}</strong>
-                                        <span className="text-[10px] text-stone-400 ml-1">({pct.toFixed(1)}%)</span>
+                                      <div className="flex items-center gap-2 tabular-nums text-right flex-shrink-0">
+                                        <div>
+                                          <strong className="text-stone-100">{money(item.val)}</strong>
+                                          <span className="text-[10px] text-stone-400 ml-1">({pctOfTotal.toFixed(0)}%)</span>
+                                        </div>
+                                        {channelMoM !== null ? (
+                                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 ${
+                                            channelMoM >= 0 ? "bg-emerald-950 text-emerald-300 border border-emerald-800" : "bg-rose-950 text-rose-300 border border-rose-800"
+                                          }`}>
+                                            <span>{channelMoM >= 0 ? "▲" : "▼"}</span>
+                                            <span>{Math.abs(channelMoM).toFixed(1)}%</span>
+                                          </span>
+                                        ) : (
+                                          <span className="text-[9px] text-stone-500 font-medium px-1 bg-stone-800 rounded">Base</span>
+                                        )}
                                       </div>
                                     </div>
                                   );
@@ -2966,6 +3009,52 @@ export function DashboardClient() {
                           </div>
                         )}
                       </div>
+
+                      {/* Placar de Crescimento dos 4 Canais no Mês em Andamento */}
+                      {currentMonthItem && prevMonthItem && (
+                        <div className="mt-5 pt-4 border-t border-stone-100">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+                              <span>🚀 Placar de Crescimento por Plataforma em {currentMonthItem.full_label} (vs {prevMonthItem.label}):</span>
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                            {[
+                              { label: "Shopee", val: currentMonthItem.by_channel.shopee || 0, prevVal: prevMonthItem.by_channel.shopee || 0, color: "border-orange-200 bg-orange-50/50 text-orange-950", dot: "bg-orange-600" },
+                              { label: "Loja Virtual", val: currentMonthItem.by_channel.site || 0, prevVal: prevMonthItem.by_channel.site || 0, color: "border-sky-200 bg-sky-50/50 text-sky-950", dot: "bg-sky-600" },
+                              { label: "Mercado Livre", val: currentMonthItem.by_channel.mercado_livre || 0, prevVal: prevMonthItem.by_channel.mercado_livre || 0, color: "border-amber-200 bg-amber-50/50 text-amber-950", dot: "bg-amber-400" },
+                              { label: "TikTok Shop", val: currentMonthItem.by_channel.tiktok || 0, prevVal: prevMonthItem.by_channel.tiktok || 0, color: "border-zinc-200 bg-zinc-50/50 text-zinc-950", dot: "bg-zinc-900" },
+                            ].map((card) => {
+                              const diff = card.val - card.prevVal;
+                              const pct = card.prevVal > 0 ? (diff / card.prevVal) * 100 : (card.val > 0 ? 100 : 0);
+                              const isPositive = diff >= 0;
+
+                              return (
+                                <div key={card.label} className={`p-3 rounded-xl border ${card.color} shadow-2xs flex flex-col justify-between gap-1.5`}>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className={`w-2 h-2 rounded-full ${card.dot}`} />
+                                      <strong className="text-xs">{card.label}</strong>
+                                    </div>
+                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                                      isPositive ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+                                    }`}>
+                                      {isPositive ? "▲ +" : "▼ "}{Math.abs(pct).toFixed(1)}%
+                                    </span>
+                                  </div>
+                                  <div className="flex items-baseline justify-between gap-1 mt-1">
+                                    <span className="text-sm font-extrabold tabular-nums">{money(card.val)}</span>
+                                    <span className="text-[10px] text-stone-500 tabular-nums">
+                                      {diff >= 0 ? "+" : ""}{money(diff)}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
 
                       {/* Legenda dos 4 Canais da Barra */}
                       <div className="mt-4 pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3 text-[11px] text-stone-500">
@@ -2989,7 +3078,7 @@ export function DashboardClient() {
                           </span>
                         </div>
                         <div className="text-[10px] text-stone-400 italic">
-                          * Passe o mouse ou toque nas barras para abrir o detalhamento. Novembro exibe projeção linear tracejada.
+                          * O painel inverte de lado automaticamente para nunca cobrir a barra selecionada.
                         </div>
                       </div>
                     </div>
@@ -2997,7 +3086,6 @@ export function DashboardClient() {
                 })()}
               </div>
             )}
-
             {/* Comparativo dos 4 Canais de Venda */}
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
               <h2 className="text-base font-bold text-stone-900 mb-1">
