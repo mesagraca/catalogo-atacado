@@ -88,6 +88,7 @@ export interface MonthlySalesHistory {
     site: number;
     shopee: number;
     mercado_livre: number;
+    tiktok: number;
   };
 }
 

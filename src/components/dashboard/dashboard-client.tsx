@@ -549,6 +549,10 @@ export function DashboardClient() {
   const [adSortAsc, setAdSortAsc] = useState<boolean>(false);
   const [showZeroSpendDays, setShowZeroSpendDays] = useState<boolean>(true);
   const [showAdsAttributionGuide, setShowAdsAttributionGuide] = useState<boolean>(false);
+  type MonthlyChannelFilter = "all" | "shopee" | "mercado_livre" | "site" | "tiktok";
+  const [selectedMonthlyChannel, setSelectedMonthlyChannel] = useState<MonthlyChannelFilter>("all");
+  const [hoveredMonthIndex, setHoveredMonthIndex] = useState<number | null>(null);
+  const [pinnedMonthIndex, setPinnedMonthIndex] = useState<number | null>(null);
 
   const handleAdSort = (field: AdSortField) => {
     if (adSortField === field) {
@@ -2557,188 +2561,435 @@ export function DashboardClient() {
               </div>
             )}
 
-            {/* Gráfico de Barras: Evolução Mensal de Faturamento & Vendas */}
+            {/* Gráfico de Barras Unificado: Evolução Mensal de Faturamento & Vendas */}
             {data?.monthly_history && data.monthly_history.length > 0 && (
-              <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
+              <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs relative">
                 {(() => {
-                  const history = data.monthly_history;
-                  const maxRevenue = Math.max(1, ...history.map((m) => Math.max(m.gross_revenue, m.projected_revenue || 0)));
-                  const allTimeTotalRevenue = history.reduce((acc, m) => acc + m.gross_revenue, 0);
-                  const allTimeTotalOrders = history.reduce((acc, m) => acc + m.orders_count, 0);
-                  const recordMonth = [...history].sort((a, b) => b.gross_revenue - a.gross_revenue)[0];
+                  const rawHistory = data.monthly_history;
+                  const now = new Date();
+                  const currentDay = now.getDate();
+                  const daysInCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+                  // Recalcular métricas de acordo com o canal selecionado
+                  const history = rawHistory.map((m, idx) => {
+                    const channelKey = selectedMonthlyChannel;
+                    const rev = channelKey === "all" ? m.gross_revenue : (m.by_channel[channelKey] || 0);
+
+                    // MoM baseado no canal selecionado
+                    let mom: number | null = null;
+                    if (idx > 0) {
+                      const prevM = rawHistory[idx - 1];
+                      const prevRev = channelKey === "all" ? prevM.gross_revenue : (prevM.by_channel[channelKey] || 0);
+                      if (prevRev > 0) {
+                        mom = ((rev - prevRev) / prevRev) * 100;
+                      } else if (rev > 0) {
+                        mom = 100;
+                      }
+                    }
+
+                    // Projeção do mês atual baseada no canal selecionado
+                    let proj: number | undefined = undefined;
+                    if (m.is_current_month && currentDay > 0 && rev > 0) {
+                      proj = (rev / currentDay) * daysInCurrentMonth;
+                    }
+
+                    return {
+                      ...m,
+                      displayRevenue: rev,
+                      displayMoM: mom,
+                      displayProj: proj,
+                    };
+                  });
+
+                  const maxRevenue = Math.max(
+                    100,
+                    ...history.map((m) => Math.max(m.displayRevenue, m.displayProj || 0))
+                  ) * 1.12;
+
+                  const totalFilteredRevenue = history.reduce((acc, m) => acc + m.displayRevenue, 0);
+                  const totalFilteredOrders = rawHistory.reduce((acc, m) => acc + m.orders_count, 0);
+                  const recordMonth = [...history].sort((a, b) => b.displayRevenue - a.displayRevenue)[0];
+
+                  const activeMonthIdx = pinnedMonthIndex !== null ? pinnedMonthIndex : hoveredMonthIndex;
+                  const activeMonth = activeMonthIdx !== null ? history[activeMonthIdx] : null;
+
+                  // Cores e rótulos para cada canal
+                  const channelPills: Array<{ key: MonthlyChannelFilter; label: string; activeCls: string; dotCls: string }> = [
+                    { key: "all", label: "Todos os Canais", activeCls: "bg-amber-950 text-white border-amber-950 shadow-xs", dotCls: "bg-amber-400" },
+                    { key: "shopee", label: "Shopee", activeCls: "bg-orange-600 text-white border-orange-600 shadow-xs", dotCls: "bg-white" },
+                    { key: "mercado_livre", label: "Mercado Livre", activeCls: "bg-amber-400 text-stone-900 border-amber-400 font-bold shadow-xs", dotCls: "bg-stone-900" },
+                    { key: "site", label: "Loja Virtual", activeCls: "bg-sky-600 text-white border-sky-600 shadow-xs", dotCls: "bg-white" },
+                    { key: "tiktok", label: "TikTok Shop", activeCls: "bg-zinc-900 text-white border-zinc-900 shadow-xs", dotCls: "bg-cyan-400" },
+                  ];
 
                   return (
                     <div>
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                      {/* Cabeçalho da Seção */}
+                      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
                         <div>
                           <div className="flex items-center gap-2">
-                            <h2 className="text-base font-bold text-stone-900">
-                              Evolução Mensal de Faturamento &amp; Vendas
+                            <h2 className="text-base font-bold text-stone-900 flex items-center gap-2">
+                              <span>Evolução Mensal de Faturamento &amp; Vendas</span>
                             </h2>
-                            <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full border border-amber-200">
-                              Histórico Geral
+                            <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full border border-amber-200 uppercase tracking-wide">
+                              Série Histórica
                             </span>
                           </div>
-                          <p className="text-xs text-stone-500 mt-0.5">
-                            Compare o faturamento mês a mês (MoM), volume de pedidos e crescimento do ticket médio consolidado.
+                          <p className="text-xs text-stone-500 mt-1">
+                            Acompanhe o faturamento consolidado mês a mês (MoM), ritmo de crescimento e ticket médio em todos os canais de venda.
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap text-xs">
-                          <div className="bg-stone-50 border border-stone-200 px-3 py-1.5 rounded-xl shadow-2xs">
-                            <span className="text-[10px] text-stone-500 uppercase font-semibold block">Total Faturado</span>
-                            <strong className="text-stone-900 font-bold tabular-nums">{money(allTimeTotalRevenue)}</strong>
-                            <span className="text-[10px] text-stone-400 ml-1">({allTimeTotalOrders} pedidos)</span>
+                        {/* Totais do Topo */}
+                        <div className="flex items-center gap-3 flex-wrap self-start lg:self-auto text-xs">
+                          <div className="bg-stone-50 border border-stone-200/90 px-3.5 py-2 rounded-xl shadow-2xs">
+                            <span className="text-[10px] text-stone-500 uppercase font-bold block tracking-wider">Total Acumulado</span>
+                            <div className="flex items-baseline gap-1 mt-0.5">
+                              <strong className="text-stone-900 font-extrabold text-sm tabular-nums">{money(totalFilteredRevenue)}</strong>
+                              <span className="text-[10px] text-stone-500 font-medium">({totalFilteredOrders} pedidos)</span>
+                            </div>
                           </div>
-                          {recordMonth && (
-                            <div className="bg-amber-50/70 border border-amber-200 px-3 py-1.5 rounded-xl shadow-2xs">
-                              <span className="text-[10px] text-amber-800 uppercase font-semibold block">Mês Recorde</span>
-                              <strong className="text-amber-950 font-bold tabular-nums">{recordMonth.label}: {money(recordMonth.gross_revenue)}</strong>
+
+                          {recordMonth && recordMonth.displayRevenue > 0 && (
+                            <div className="bg-amber-50/70 border border-amber-300/80 px-3.5 py-2 rounded-xl shadow-2xs">
+                              <span className="text-[10px] text-amber-900 uppercase font-bold block tracking-wider flex items-center gap-1">
+                                <span>👑</span>
+                                <span>Mês Recorde</span>
+                              </span>
+                              <div className="flex items-baseline gap-1.5 mt-0.5">
+                                <strong className="text-amber-950 font-extrabold text-sm tabular-nums">
+                                  {recordMonth.label}: {money(recordMonth.displayRevenue)}
+                                </strong>
+                              </div>
                             </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Grid de Barras dos Meses */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-end pt-4 pb-2">
-                        {history.map((m) => {
-                          const heightPct = Math.max(14, Math.round((m.gross_revenue / maxRevenue) * 100));
-                          const projHeightPct = m.projected_revenue
-                            ? Math.max(14, Math.round((m.projected_revenue / maxRevenue) * 100))
-                            : 0;
-
-                          const shopeePct = m.gross_revenue > 0 ? (m.by_channel.shopee / m.gross_revenue) * 100 : 0;
-                          const mlPct = m.gross_revenue > 0 ? (m.by_channel.mercado_livre / m.gross_revenue) * 100 : 0;
-                          const sitePct = m.gross_revenue > 0 ? (m.by_channel.site / m.gross_revenue) * 100 : 0;
-
-                          return (
-                            <div
-                              key={m.month}
-                              className={`flex flex-col items-center p-3.5 rounded-2xl border transition-all ${
-                                m.is_current_month
-                                  ? "bg-amber-50/50 border-amber-300 ring-2 ring-amber-400/30 shadow-xs"
-                                  : "bg-stone-50/40 border-stone-200 hover:bg-stone-50 hover:border-stone-300"
-                              }`}
-                            >
-                              {/* Variação MoM Badge */}
-                              <div className="h-6 flex items-center justify-center mb-1">
-                                {m.growth_percent !== null && m.growth_percent !== undefined ? (
-                                  <span
-                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 ${
-                                      m.growth_percent >= 0
-                                        ? "bg-emerald-100 text-emerald-800"
-                                        : "bg-rose-100 text-rose-800"
-                                    }`}
-                                  >
-                                    <span>{m.growth_percent >= 0 ? "▲" : "▼"}</span>
-                                    <span>{Math.abs(m.growth_percent).toFixed(1)}%</span>
-                                    <span className="text-[9px] font-medium opacity-75">MoM</span>
-                                  </span>
-                                ) : (
-                                  <span className="text-[10px] text-stone-400 font-medium px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">
-                                    Base Inicial
-                                  </span>
-                                )}
-                              </div>
-
-                              {/* Valor Faturado */}
-                              <div className="text-center mb-2">
-                                <div className="text-xs sm:text-sm font-extrabold text-stone-900 tabular-nums">
-                                  {money(m.gross_revenue)}
-                                </div>
-                                <div className="text-[10px] text-stone-500 font-medium">
-                                  {m.orders_count} {m.orders_count === 1 ? "pedido" : "pedidos"}
-                                </div>
-                              </div>
-
-                              {/* Coluna / Barra Proporcional */}
-                              <div className="w-full flex justify-center items-end h-40 py-2 relative">
-                                {/* Barra de Projeção tracejada se for o mês corrente */}
-                                {m.is_current_month && m.projected_revenue && m.projected_revenue > m.gross_revenue && (
-                                  <div
-                                    style={{ height: `${projHeightPct}%` }}
-                                    className="absolute w-12 sm:w-16 rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-100/40 pointer-events-none transition-all"
-                                    title={`Projeção ritmo atual: ${money(m.projected_revenue)}`}
-                                  />
-                                )}
-
-                                {/* Barra Sólida (Segmentada por canal) */}
-                                <div
-                                  style={{ height: `${heightPct}%` }}
-                                  className={`w-12 sm:w-16 rounded-t-xl overflow-hidden flex flex-col justify-end shadow-xs transition-all relative z-10 ${
-                                    m.is_current_month ? "ring-2 ring-amber-500/50" : ""
-                                  }`}
-                                >
-                                  {/* Segmento Site */}
-                                  {sitePct > 0 && (
-                                    <div
-                                      style={{ height: `${sitePct}%` }}
-                                      className="w-full bg-sky-600 transition-all"
-                                      title={`Loja Virtual: ${money(m.by_channel.site)}`}
-                                    />
-                                  )}
-                                  {/* Segmento Mercado Livre */}
-                                  {mlPct > 0 && (
-                                    <div
-                                      style={{ height: `${mlPct}%` }}
-                                      className="w-full bg-amber-400 transition-all"
-                                      title={`Mercado Livre: ${money(m.by_channel.mercado_livre)}`}
-                                    />
-                                  )}
-                                  {/* Segmento Shopee */}
-                                  {shopeePct > 0 && (
-                                    <div
-                                      style={{ height: `${shopeePct}%` }}
-                                      className="w-full bg-orange-600 transition-all"
-                                      title={`Shopee: ${money(m.by_channel.shopee)}`}
-                                    />
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* Rótulo do Mês */}
-                              <div className="text-center mt-2 pt-2 border-t border-stone-200/80 w-full">
-                                <div className="flex items-center justify-center gap-1">
-                                  <strong className="text-xs font-bold text-stone-800">
-                                    {m.label}
-                                  </strong>
-                                  {m.is_current_month && (
-                                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" title="Mês em andamento" />
-                                  )}
-                                </div>
-                                <div className="text-[10px] text-stone-500 mt-0.5 tabular-nums">
-                                  Méd: {money(m.average_ticket)}
-                                </div>
-                                {m.is_current_month && m.projected_revenue && (
-                                  <div className="text-[9px] text-amber-900 font-semibold mt-1 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200">
-                                    Proj: {money(m.projected_revenue)}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
+                      {/* Seletor de Filtro de Canais */}
+                      <div className="flex items-center gap-2 mb-6 flex-wrap pb-3 border-b border-stone-100">
+                        <span className="text-xs font-bold text-stone-700 mr-1 flex items-center gap-1">
+                          <span>Filtrar Canal:</span>
+                        </span>
+                        {channelPills.map((pill) => (
+                          <button
+                            key={pill.key}
+                            type="button"
+                            onClick={() => setSelectedMonthlyChannel(pill.key)}
+                            className={`text-xs px-3 py-1.5 rounded-xl border transition-all cursor-pointer font-medium flex items-center gap-1.5 select-none active:scale-[0.98] ${
+                              selectedMonthlyChannel === pill.key
+                                ? pill.activeCls
+                                : "bg-stone-50/70 hover:bg-stone-100 text-stone-600 border-stone-200 hover:border-stone-300"
+                            }`}
+                          >
+                            <span className={`w-2 h-2 rounded-full flex-shrink-0 ${selectedMonthlyChannel === pill.key ? pill.dotCls : "bg-stone-300"}`} />
+                            <span>{pill.label}</span>
+                          </button>
+                        ))}
                       </div>
 
-                      {/* Legenda de Canais da Barra */}
+                      {/* Área do Gráfico Unificado com Eixo Y e Linhas de Grade */}
+                      <div className="relative pt-6 pb-2">
+                        {/* Linhas de Grade e Eixo Y */}
+                        <div className="absolute inset-0 top-6 bottom-14 flex flex-col justify-between pointer-events-none z-0">
+                          {[1, 0.75, 0.5, 0.25, 0].map((ratio) => (
+                            <div key={ratio} className="w-full flex items-center gap-2">
+                              <span className="text-[10px] text-stone-400 font-mono w-16 text-right tabular-nums flex-shrink-0 select-none">
+                                {money(maxRevenue * ratio)}
+                              </span>
+                              <div className={`w-full border-b ${ratio === 0 ? "border-stone-300 border-b-2" : "border-stone-100 border-dashed"}`} />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Colunas dos Meses (Container com Scroll Horizontal Suave para infinitos meses futuros) */}
+                        <div className="relative z-10 pl-20 overflow-x-auto pb-4 scrollbar-thin">
+                          <div className="flex items-end justify-around gap-6 sm:gap-10 min-w-[540px] h-64 pt-8">
+                            {history.map((m, idx) => {
+                              const rev = m.displayRevenue;
+                              const heightPct = Math.max(8, Math.min(100, Math.round((rev / maxRevenue) * 100)));
+                              const projHeightPct = m.displayProj
+                                ? Math.max(8, Math.min(100, Math.round((m.displayProj / maxRevenue) * 100)))
+                                : 0;
+
+                              const isRecord = recordMonth?.month === m.month && rev > 0;
+                              const isHovered = activeMonthIdx === idx;
+
+                              // Percentuais de canais
+                              const shopeeVal = m.by_channel.shopee || 0;
+                              const mlVal = m.by_channel.mercado_livre || 0;
+                              const siteVal = m.by_channel.site || 0;
+                              const tiktokVal = m.by_channel.tiktok || 0;
+
+                              const shopeePct = rev > 0 ? (shopeeVal / rev) * 100 : 0;
+                              const mlPct = rev > 0 ? (mlVal / rev) * 100 : 0;
+                              const sitePct = rev > 0 ? (siteVal / rev) * 100 : 0;
+                              const tiktokPct = rev > 0 ? (tiktokVal / rev) * 100 : 0;
+
+                              return (
+                                <div
+                                  key={m.month}
+                                  onMouseEnter={() => setHoveredMonthIndex(idx)}
+                                  onMouseLeave={() => setHoveredMonthIndex(null)}
+                                  onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
+                                  className={`flex-1 max-w-[110px] min-w-[76px] flex flex-col items-center justify-end h-full cursor-pointer group transition-all duration-150 select-none ${
+                                    isHovered ? "scale-[1.03]" : ""
+                                  }`}
+                                >
+                                  {/* Badge de Destaque / Variação MoM no topo da barra */}
+                                  <div className="flex flex-col items-center gap-1 mb-2 text-center pointer-events-none">
+                                    {isRecord && (
+                                      <span className="text-[10px] font-black text-amber-900 bg-amber-200/90 border border-amber-300 px-2 py-0.5 rounded-full shadow-2xs flex items-center gap-1">
+                                        <span>👑</span>
+                                        <span>Recorde</span>
+                                      </span>
+                                    )}
+
+                                    {m.displayMoM !== null && m.displayMoM !== undefined ? (
+                                      <span
+                                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${
+                                          m.displayMoM >= 0
+                                            ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                            : "bg-rose-100 text-rose-800 border border-rose-200"
+                                        }`}
+                                      >
+                                        <span>{m.displayMoM >= 0 ? "▲" : "▼"}</span>
+                                        <span>{Math.abs(m.displayMoM).toFixed(1)}%</span>
+                                        <span className="text-[8px] opacity-75 font-normal">MoM</span>
+                                      </span>
+                                    ) : (
+                                      <span className="text-[10px] text-stone-400 font-medium px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">
+                                        Base
+                                      </span>
+                                    )}
+
+                                    <div className={`text-xs font-black tabular-nums transition-colors ${
+                                      isHovered ? "text-amber-950 scale-105" : "text-stone-800"
+                                    }`}>
+                                      {money(rev)}
+                                    </div>
+                                  </div>
+
+                                  {/* Barra com Altura Proporcional */}
+                                  <div className="w-full flex justify-center items-end relative h-44">
+                                    {/* Projeção tracejada se for o mês corrente */}
+                                    {m.is_current_month && m.displayProj && m.displayProj > rev && (
+                                      <div
+                                        style={{ height: `${projHeightPct}%` }}
+                                        className="absolute w-12 sm:w-16 rounded-t-xl border-2 border-dashed border-amber-500 bg-amber-100/30 transition-all pointer-events-none"
+                                        title={`Projeção linear de fechamento: ${money(m.displayProj)}`}
+                                      />
+                                    )}
+
+                                    {/* Barra Principal */}
+                                    <div
+                                      style={{ height: `${heightPct}%` }}
+                                      className={`w-12 sm:w-16 rounded-t-xl overflow-hidden flex flex-col justify-end transition-all duration-200 relative shadow-sm ${
+                                        isHovered
+                                          ? "ring-3 ring-amber-500 shadow-md brightness-105"
+                                          : m.is_current_month
+                                          ? "ring-2 ring-amber-400/80"
+                                          : "hover:brightness-105"
+                                      }`}
+                                    >
+                                      {selectedMonthlyChannel === "all" ? (
+                                        <>
+                                          {/* Segmento Loja Virtual (Azul) */}
+                                          {sitePct > 0 && (
+                                            <div
+                                              style={{ height: `${sitePct}%` }}
+                                              className="w-full bg-sky-600 transition-all"
+                                              title={`Loja Virtual: ${money(siteVal)}`}
+                                            />
+                                          )}
+                                          {/* Segmento Mercado Livre (Amarelo) */}
+                                          {mlPct > 0 && (
+                                            <div
+                                              style={{ height: `${mlPct}%` }}
+                                              className="w-full bg-amber-400 transition-all"
+                                              title={`Mercado Livre: ${money(mlVal)}`}
+                                            />
+                                          )}
+                                          {/* Segmento TikTok Shop (Preto) */}
+                                          {tiktokPct > 0 && (
+                                            <div
+                                              style={{ height: `${tiktokPct}%` }}
+                                              className="w-full bg-zinc-950 transition-all"
+                                              title={`TikTok Shop: ${money(tiktokVal)}`}
+                                            />
+                                          )}
+                                          {/* Segmento Shopee (Laranja) */}
+                                          {shopeePct > 0 && (
+                                            <div
+                                              style={{ height: `${shopeePct}%` }}
+                                              className="w-full bg-orange-600 transition-all"
+                                              title={`Shopee: ${money(shopeeVal)}`}
+                                            />
+                                          )}
+                                        </>
+                                      ) : (
+                                        <div
+                                          className={`w-full h-full transition-all ${
+                                            selectedMonthlyChannel === "shopee"
+                                              ? "bg-gradient-to-t from-orange-700 to-orange-500"
+                                              : selectedMonthlyChannel === "mercado_livre"
+                                              ? "bg-gradient-to-t from-amber-500 to-amber-300"
+                                              : selectedMonthlyChannel === "site"
+                                              ? "bg-gradient-to-t from-sky-700 to-sky-500"
+                                              : "bg-gradient-to-t from-zinc-950 to-zinc-800"
+                                          }`}
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Rótulo Inferior do Mês e Métricas */}
+                                  <div className="text-center mt-3 pt-2 border-t border-stone-200/80 w-full">
+                                    <div className="flex items-center justify-center gap-1">
+                                      <strong className={`text-xs font-bold transition-colors ${
+                                        isHovered ? "text-amber-950" : "text-stone-800"
+                                      }`}>
+                                        {m.label}
+                                      </strong>
+                                      {m.is_current_month && (
+                                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0" title="Mês em andamento" />
+                                      )}
+                                    </div>
+                                    <div className="text-[10px] text-stone-500 mt-0.5 tabular-nums">
+                                      {m.orders_count} ped.
+                                    </div>
+                                    <div className="text-[10px] text-stone-400 tabular-nums">
+                                      Méd: {money(m.average_ticket)}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Tooltip / Janela Flutuante Flutuando sobre o Gráfico */}
+                        {activeMonth && (
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute top-2 right-4 sm:right-8 z-30 p-4 bg-stone-900/95 backdrop-blur-md text-white rounded-2xl shadow-2xl border border-stone-700/80 text-xs w-72 max-w-[90vw] animate-in fade-in duration-150 select-none pointer-events-auto"
+                          >
+                            <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-800">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm">📅</span>
+                                <div>
+                                  <strong className="text-stone-100 font-bold block leading-tight">
+                                    {activeMonth.full_label}
+                                  </strong>
+                                  <span className="text-[10px] text-stone-400">
+                                    {activeMonth.is_current_month ? "Mês Atual (Em andamento)" : "Mês Fechado / Consolidado"}
+                                  </span>
+                                </div>
+                              </div>
+                              {pinnedMonthIndex !== null && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setPinnedMonthIndex(null);
+                                  }}
+                                  className="text-stone-400 hover:text-white p-1 rounded-lg hover:bg-stone-800 text-[11px]"
+                                  title="Desafixar"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Faturamento e Comparativo */}
+                            <div className="space-y-1.5 pb-2.5 mb-2.5 border-b border-stone-800/80">
+                              <div className="flex items-center justify-between">
+                                <span className="text-stone-400 text-[11px]">Faturamento Bruto:</span>
+                                <strong className="text-amber-300 text-sm font-extrabold tabular-nums">
+                                  {money(activeMonth.gross_revenue)}
+                                </strong>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-stone-400 text-[11px]">Variação MoM:</span>
+                                <span className={`font-bold text-[11px] tabular-nums ${
+                                  (activeMonth.growth_percent || 0) >= 0 ? "text-emerald-400" : "text-rose-400"
+                                }`}>
+                                  {activeMonth.growth_percent !== null && activeMonth.growth_percent !== undefined
+                                    ? `${activeMonth.growth_percent >= 0 ? "+" : ""}${activeMonth.growth_percent.toFixed(1)}% vs anterior`
+                                    : "Mês inicial"}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between text-[11px]">
+                                <span className="text-stone-400">Volume de Pedidos:</span>
+                                <span className="text-stone-200 font-medium tabular-nums">
+                                  {activeMonth.orders_count} pedidos ({money(activeMonth.average_ticket)}/médio)
+                                </span>
+                              </div>
+                              {activeMonth.is_current_month && activeMonth.projected_revenue && (
+                                <div className="flex items-center justify-between text-[11px] pt-1 border-t border-stone-800/60 text-amber-300">
+                                  <span>Projeção (Ritmo Atual):</span>
+                                  <strong className="font-extrabold tabular-nums">
+                                    {money(activeMonth.projected_revenue)}
+                                  </strong>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Decomposição Exata por Canal (4 Canais) */}
+                            <div>
+                              <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-1.5">
+                                Participação por Canal:
+                              </span>
+                              <div className="space-y-1 text-[11px]">
+                                {[
+                                  { label: "Shopee", val: activeMonth.by_channel.shopee || 0, color: "bg-orange-600", dot: "bg-orange-500" },
+                                  { label: "Loja Virtual", val: activeMonth.by_channel.site || 0, color: "bg-sky-600", dot: "bg-sky-400" },
+                                  { label: "Mercado Livre", val: activeMonth.by_channel.mercado_livre || 0, color: "bg-amber-400", dot: "bg-amber-400" },
+                                  { label: "TikTok Shop", val: activeMonth.by_channel.tiktok || 0, color: "bg-zinc-700", dot: "bg-zinc-400" },
+                                ].map((item) => {
+                                  const pct = activeMonth.gross_revenue > 0 ? (item.val / activeMonth.gross_revenue) * 100 : 0;
+                                  return (
+                                    <div key={item.label} className="flex items-center justify-between gap-2">
+                                      <div className="flex items-center gap-1.5 min-w-0">
+                                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.dot}`} />
+                                        <span className="text-stone-300 truncate">{item.label}:</span>
+                                      </div>
+                                      <div className="text-right tabular-nums whitespace-nowrap flex-shrink-0">
+                                        <strong className="text-stone-100">{money(item.val)}</strong>
+                                        <span className="text-[10px] text-stone-400 ml-1">({pct.toFixed(1)}%)</span>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Legenda dos 4 Canais da Barra */}
                       <div className="mt-4 pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3 text-[11px] text-stone-500">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 flex-wrap">
                           <span className="font-semibold text-stone-700">Composição da Barra:</span>
                           <span className="inline-flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-sm bg-orange-600" />
+                            <span className="w-2.5 h-2.5 rounded-sm bg-orange-600 flex-shrink-0" />
                             <span>Shopee</span>
                           </span>
                           <span className="inline-flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-sm bg-amber-400" />
+                            <span className="w-2.5 h-2.5 rounded-sm bg-amber-400 flex-shrink-0" />
                             <span>Mercado Livre</span>
                           </span>
                           <span className="inline-flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-sm bg-sky-600" />
+                            <span className="w-2.5 h-2.5 rounded-sm bg-sky-600 flex-shrink-0" />
                             <span>Loja Virtual</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-sm bg-zinc-950 flex-shrink-0" />
+                            <span>TikTok Shop</span>
                           </span>
                         </div>
                         <div className="text-[10px] text-stone-400 italic">
-                          * Barras empilhadas (stacked) por canal de venda. Novembro exibe contorno tracejado com projeção linear para 30 dias.
+                          * Passe o mouse ou toque nas barras para abrir o detalhamento. Novembro exibe projeção linear tracejada.
                         </div>
                       </div>
                     </div>

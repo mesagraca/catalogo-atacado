@@ -299,7 +299,7 @@ function getMonthlySalesHistory(
     {
       gross_revenue: number;
       orders_count: number;
-      by_channel: { site: number; shopee: number; mercado_livre: number };
+      by_channel: { site: number; shopee: number; mercado_livre: number; tiktok: number };
     }
   >();
 
@@ -311,11 +311,13 @@ function getMonthlySalesHistory(
     const rev = Number(o.total || o.partial_total || 0);
 
     const pointSale = (o.point_sale || "").toLowerCase();
-    let channel: "site" | "shopee" | "mercado_livre" = "site";
+    let channel: "site" | "shopee" | "mercado_livre" | "tiktok" = "site";
     if (pointSale.includes("shopee")) {
       channel = "shopee";
     } else if (pointSale.includes("mercado") || pointSale.includes("ml")) {
       channel = "mercado_livre";
+    } else if (pointSale.includes("tiktok")) {
+      channel = "tiktok";
     }
 
     let item = map.get(monthKey);
@@ -323,7 +325,7 @@ function getMonthlySalesHistory(
       item = {
         gross_revenue: 0,
         orders_count: 0,
-        by_channel: { site: 0, shopee: 0, mercado_livre: 0 },
+        by_channel: { site: 0, shopee: 0, mercado_livre: 0, tiktok: 0 },
       };
       map.set(monthKey, item);
     }
