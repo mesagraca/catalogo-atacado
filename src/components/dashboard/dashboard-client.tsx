@@ -2663,7 +2663,7 @@ export function DashboardClient() {
                     { key: "tiktok", label: "TikTok Shop", activeCls: "bg-zinc-900 text-white border-zinc-900 shadow-xs", dotCls: "bg-white" },
                   ];
 
-                  const PLOT_HEIGHT = 224; // Altura rígida de h-56 em pixels
+                  const PLOT_HEIGHT = 220; // Altura rígida padrão em pixels
                   const calcPx = (v: number) => Math.max(v > 0 ? 3 : 0, Math.min(PLOT_HEIGHT, Math.round((v / yMax) * PLOT_HEIGHT)));
                   const activeBarInfo = pinnedBarInfo || hoveredBarInfo;
 
@@ -2816,19 +2816,19 @@ export function DashboardClient() {
                             </div>
                           </div>
 
-                          {/* CAMADA 2: ÁREA DE PLOTAGEM REAL DAS BARRAS (h-[224px] RIGOROSO) */}
-                          <div className="relative h-[224px] w-full pl-24 pr-4">
-                            {/* Linhas de Grade Horizontais Fortes (100% não vaza para cima) */}
+                          {/* CAMADA 2: ÁREA DE PLOTAGEM REAL DAS BARRAS (RIGOROSAMENTE ${PLOT_HEIGHT}px) */}
+                          <div style={{ height: `${PLOT_HEIGHT}px` }} className="relative w-full pl-24 pr-4">
+                            {/* Linhas de Grade Horizontais Fortes baseadas em pixels rígidos */}
                             <div className="absolute inset-y-0 left-0 right-4 pointer-events-none z-0">
                               {[
-                                { val: yMax, pct: 100, isTop: true },
-                                { val: yMax * 0.75, pct: 75, isTop: false },
-                                { val: yMax * 0.5, pct: 50, isTop: false },
-                                { val: yMax * 0.25, pct: 25, isTop: false },
+                                { val: yMax, px: PLOT_HEIGHT, isTop: true },
+                                { val: yMax * 0.75, px: Math.round(PLOT_HEIGHT * 0.75), isTop: false },
+                                { val: yMax * 0.5, px: Math.round(PLOT_HEIGHT * 0.5), isTop: false },
+                                { val: yMax * 0.25, px: Math.round(PLOT_HEIGHT * 0.25), isTop: false },
                               ].map((tick) => (
                                 <div
-                                  key={tick.pct}
-                                  style={{ bottom: `${tick.pct}%` }}
+                                  key={tick.val}
+                                  style={{ bottom: `${tick.px}px` }}
                                   className={`absolute left-0 right-0 flex items-center gap-3 ${
                                     tick.isTop ? "translate-y-0" : "-translate-y-1/2"
                                   }`}
@@ -2857,9 +2857,8 @@ export function DashboardClient() {
                               </div>
                             )}
 
-
-                            {/* Colunas de Meses com Posicionamento e Alturas Rígidas em Pixels */}
-                            <div className="relative z-10 w-full h-full flex items-stretch justify-around gap-6">
+                            {/* Colunas de Meses com Posicionamento Absoluto no Fundo e Alturas Rígidas em Pixels */}
+                            <div style={{ height: `${PLOT_HEIGHT}px` }} className="relative z-10 w-full flex items-stretch justify-around gap-6">
                               {history.map((m, idx) => {
                                 const rev = m.displayRevenue;
                                 const isHovered = activeMonthIdx === idx;
@@ -2890,10 +2889,11 @@ export function DashboardClient() {
                                 return (
                                   <div
                                     key={m.month}
+                                    style={{ height: `${PLOT_HEIGHT}px` }}
                                     onMouseEnter={() => setHoveredMonthIndex(idx)}
                                     onMouseLeave={() => setHoveredMonthIndex(null)}
                                     onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
-                                    className="flex-1 max-w-[140px] h-full flex justify-center items-end relative cursor-pointer group"
+                                    className="flex-1 max-w-[140px] relative cursor-pointer group flex justify-center items-end"
                                   >
                                     {/* Linha-Guia Vertical Tracejada Subindo do Eixo */}
                                     <div
@@ -2902,17 +2902,17 @@ export function DashboardClient() {
                                       }`}
                                     />
 
-                                    {/* MODO 1: BARRAS POR CANAL COM PROJEÇÃO INDIVIDUAL POR CANAL (ALTURA EM PIXELS) */}
+                                    {/* MODO 1: BARRAS POR CANAL COM ANCORAGEM ABSOLUTA NO CHÃO E PROJEÇÃO INDIVIDUAL */}
                                     {monthlyViewMode === "grouped" && selectedMonthlyChannel === "all" ? (
-                                      <div className={`flex items-end justify-center gap-1.5 sm:gap-2 h-full px-1.5 pt-0 pb-0 rounded-t-2xl transition-colors relative z-10 ${
+                                      <div style={{ height: `${PLOT_HEIGHT}px` }} className={`flex items-end justify-center gap-1.5 sm:gap-2 w-full px-1.5 pt-0 pb-0 rounded-t-2xl transition-colors relative z-10 ${
                                         isHovered ? "bg-stone-100/60" : ""
                                       }`}>
                                         {/* SHOPEE */}
-                                        <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
+                                        <div style={{ height: `${PLOT_HEIGHT}px` }} className="w-3.5 sm:w-4 relative flex-shrink-0">
                                           {m.is_current_month && shopeeProj > shopeeVal && (
                                             <div
                                               style={{ height: `${calcPx(shopeeProj)}px` }}
-                                              className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-orange-400 bg-orange-400/15 pointer-events-none z-0"
+                                              className="absolute bottom-0 inset-x-0 rounded-t-sm border border-dashed border-orange-400 bg-orange-400/15 pointer-events-none z-0"
                                               title={`Shopee Projeção: ${money(shopeeProj)}`}
                                             />
                                           )}
@@ -2951,17 +2951,17 @@ export function DashboardClient() {
                                                 }
                                               );
                                             }}
-                                            className="w-full bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-sm shadow-2xs z-10 transition-all hover:brightness-110 cursor-pointer"
                                             title={`Shopee Real: ${money(shopeeVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
 
                                         {/* MERCADO LIVRE */}
-                                        <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
+                                        <div style={{ height: `${PLOT_HEIGHT}px` }} className="w-3.5 sm:w-4 relative flex-shrink-0">
                                           {m.is_current_month && mlProj > mlVal && (
                                             <div
                                               style={{ height: `${calcPx(mlProj)}px` }}
-                                              className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-amber-400 bg-amber-400/15 pointer-events-none z-0"
+                                              className="absolute bottom-0 inset-x-0 rounded-t-sm border border-dashed border-amber-400 bg-amber-400/15 pointer-events-none z-0"
                                               title={`Mercado Livre Projeção: ${money(mlProj)}`}
                                             />
                                           )}
@@ -3000,17 +3000,17 @@ export function DashboardClient() {
                                                 }
                                               );
                                             }}
-                                            className="w-full bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-sm shadow-2xs z-10 transition-all hover:brightness-110 cursor-pointer"
                                             title={`Mercado Livre Real: ${money(mlVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
 
                                         {/* LOJA VIRTUAL */}
-                                        <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
+                                        <div style={{ height: `${PLOT_HEIGHT}px` }} className="w-3.5 sm:w-4 relative flex-shrink-0">
                                           {m.is_current_month && siteProj > siteVal && (
                                             <div
                                               style={{ height: `${calcPx(siteProj)}px` }}
-                                              className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-sky-400 bg-sky-400/15 pointer-events-none z-0"
+                                              className="absolute bottom-0 inset-x-0 rounded-t-sm border border-dashed border-sky-400 bg-sky-400/15 pointer-events-none z-0"
                                               title={`Loja Virtual Projeção: ${money(siteProj)}`}
                                             />
                                           )}
@@ -3049,17 +3049,17 @@ export function DashboardClient() {
                                                 }
                                               );
                                             }}
-                                            className="w-full bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-sm shadow-2xs z-10 transition-all hover:brightness-110 cursor-pointer"
                                             title={`Loja Virtual Real: ${money(siteVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
 
                                         {/* TIKTOK SHOP */}
-                                        <div className="w-3.5 sm:w-4 h-full flex items-end justify-center relative">
+                                        <div style={{ height: `${PLOT_HEIGHT}px` }} className="w-3.5 sm:w-4 relative flex-shrink-0">
                                           {m.is_current_month && tiktokProj > tiktokVal && (
                                             <div
                                               style={{ height: `${calcPx(tiktokProj)}px` }}
-                                              className="absolute bottom-0 w-full rounded-t-sm border border-dashed border-zinc-500 bg-zinc-500/15 pointer-events-none z-0"
+                                              className="absolute bottom-0 inset-x-0 rounded-t-sm border border-dashed border-zinc-500 bg-zinc-500/15 pointer-events-none z-0"
                                               title={`TikTok Shop Projeção: ${money(tiktokProj)}`}
                                             />
                                           )}
@@ -3098,18 +3098,18 @@ export function DashboardClient() {
                                                 }
                                               );
                                             }}
-                                            className="w-full bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-sm shadow-2xs relative z-10 transition-all hover:brightness-110 cursor-pointer"
+                                            className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-sm shadow-2xs z-10 transition-all hover:brightness-110 cursor-pointer"
                                             title={`TikTok Shop Real: ${money(tiktokVal)} (Clique para fixar régua)`}
                                           />
                                         </div>
                                       </div>
                                     ) : (
                                       /* MODO 2: BARRA TOTAL MONOLÍTICA OU CANAL FILTRADO */
-                                      <div className="w-12 sm:w-16 h-full flex items-end justify-center relative">
+                                      <div style={{ height: `${PLOT_HEIGHT}px` }} className="w-12 sm:w-16 relative flex-shrink-0">
                                         {m.is_current_month && totalProj > rev && (
                                           <div
                                             style={{ height: `${calcPx(totalProj)}px` }}
-                                            className="absolute bottom-0 w-full rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-200/15 pointer-events-none z-0"
+                                            className="absolute bottom-0 inset-x-0 rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-200/15 pointer-events-none z-0"
                                             title={`Projeção Total da Loja: ${money(totalProj)}`}
                                           />
                                         )}
@@ -3147,7 +3147,7 @@ export function DashboardClient() {
                                               }
                                             );
                                           }}
-                                          className={`w-full rounded-t-xl transition-all duration-200 relative z-10 shadow-sm cursor-pointer ${
+                                          className={`absolute bottom-0 inset-x-0 rounded-t-xl transition-all duration-200 z-10 shadow-sm cursor-pointer ${
                                             isHovered ? "ring-4 ring-amber-400 shadow-md brightness-105" : ""
                                           } ${
                                             selectedMonthlyChannel === "all"
