@@ -2829,14 +2829,16 @@ export function DashboardClient() {
                                 <div
                                   key={tick.val}
                                   style={{ bottom: `${tick.px}px` }}
-                                  className={`absolute left-0 right-0 flex items-center gap-3 ${
-                                    tick.isTop ? "translate-y-0" : "-translate-y-1/2"
-                                  }`}
+                                  className="absolute left-0 right-0 pointer-events-none"
                                 >
-                                  <span className="text-[11px] font-mono text-stone-500 font-medium w-20 text-right tabular-nums select-none flex-shrink-0">
-                                    {money(tick.val)}
-                                  </span>
-                                  <div className="w-full border-b border-stone-300 border-dashed" />
+                                  <div className="absolute left-0 -translate-y-1/2 w-20 flex justify-end pr-3">
+                                    <span className="text-[11px] font-mono text-stone-500 font-medium text-right tabular-nums select-none">
+                                      {money(tick.val)}
+                                    </span>
+                                  </div>
+                                  <div className="pl-20 w-full">
+                                    <div className="w-full border-b border-stone-300 border-dashed" />
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -2845,15 +2847,17 @@ export function DashboardClient() {
                             {activeBarInfo && activeBarInfo.val > 0 && (
                               <div
                                 style={{ bottom: `${calcPx(activeBarInfo.val)}px` }}
-                                className="absolute left-0 right-4 flex items-center gap-3 -translate-y-1/2 pointer-events-none z-20 transition-all duration-75"
+                                className="absolute left-0 right-4 pointer-events-none z-20 transition-all duration-75"
                               >
-                                <div className="w-20 flex justify-end flex-shrink-0">
+                                <div className="absolute left-0 -translate-y-1/2 w-20 flex justify-end pr-3">
                                   <span className={`text-[10px] font-mono font-black px-1.5 py-0.5 rounded shadow-sm tabular-nums select-none flex items-center gap-1 ${activeBarInfo.bgCls}`}>
                                     {pinnedBarInfo && <span>📌</span>}
                                     <span>{money(activeBarInfo.val)}</span>
                                   </span>
                                 </div>
-                                <div className={`w-full border-b-2 border-dashed ${activeBarInfo.borderCls}`} />
+                                <div className="pl-20 w-full">
+                                  <div className={`w-full border-b-2 border-dashed ${activeBarInfo.borderCls}`} />
+                                </div>
                               </div>
                             )}
 
