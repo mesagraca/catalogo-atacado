@@ -3273,7 +3273,7 @@ export function DashboardClient() {
 
                         </div>
 
-                        {/* Tooltip / Janela Flutuante com Posicionamento Adaptativo Inteligente */}
+                        {/* Tooltip / Janela Flutuante Única e Integrada com Posicionamento Adaptativo Inteligente */}
                         {activeMonth && (
                           <div
                             onClick={(e) => e.stopPropagation()}
@@ -3287,20 +3287,38 @@ export function DashboardClient() {
                               <div className="flex items-center gap-2">
                                 <span className="text-base">📅</span>
                                 <div>
-                                  <div className="font-bold text-stone-100 text-sm">{activeMonth.full_label}</div>
+                                  <div className="font-bold text-stone-100 text-sm flex items-center gap-1.5">
+                                    <span>{activeMonth.full_label}</span>
+                                    {pinnedMonthIndex !== null && <span title="Mês fixado">📌</span>}
+                                  </div>
                                   <div className="text-[10px] text-stone-400">
                                     {activeMonth.is_current_month ? "Mês Atual (Em andamento)" : "Mês Encerrado"}
                                   </div>
                                 </div>
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => setPinnedMonthIndex(null)}
-                                className="text-stone-400 hover:text-white p-1 rounded-md text-xs cursor-pointer"
-                                title="Fechar detalhes"
-                              >
-                                ✕
-                              </button>
+                              <div className="flex items-center gap-1">
+                                {pinnedBarInfo && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setPinnedBarInfo(null)}
+                                    className="text-[10px] text-amber-400 hover:text-white font-semibold cursor-pointer px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-800/80 mr-1"
+                                    title="Desafixar régua"
+                                  >
+                                    ✕ Soltar Régua
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setPinnedMonthIndex(null);
+                                    setPinnedBarInfo(null);
+                                  }}
+                                  className="text-stone-400 hover:text-white p-1 rounded-md text-xs cursor-pointer"
+                                  title="Fechar detalhes"
+                                >
+                                  ✕
+                                </button>
+                              </div>
                             </div>
 
                             <div className="space-y-1.5 text-stone-300">
@@ -3335,7 +3353,7 @@ export function DashboardClient() {
 
                               {activeMonth.is_current_month && activeMonth.displayProj && (
                                 <div className="flex justify-between items-center py-1 mt-1 border-t border-stone-800 bg-amber-500/10 px-2 rounded-lg">
-                                  <span className="text-amber-300 font-medium">Projeção (Ritmo Atual):</span>
+                                  <span className="text-amber-300 font-medium">Projeção (Ritmo Total):</span>
                                   <strong className="text-amber-300 font-bold tabular-nums">
                                     {money(activeMonth.displayProj)}
                                   </strong>
@@ -3343,17 +3361,25 @@ export function DashboardClient() {
                               )}
                             </div>
 
-                            {/* PARTICIPAÇÃO PLATAFORMA A PLATAFORMA COM CRESCIMENTO MoM */}
+                            {/* PARTICIPAÇÃO PLATAFORMA A PLATAFORMA COM DESTAQUE DINÂMICO E PROJEÇÃO POR CANAL */}
                             <div className="mt-3 pt-2.5 border-t border-stone-800">
-                              <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-2">
-                                Participação por Canal:
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+                                  Participação por Canal:
+                                </span>
+                                {activeBarInfo && (
+                                  <span className="text-[9px] text-amber-400 font-semibold flex items-center gap-1">
+                                    <span>🎯 Foco:</span>
+                                    <span>{activeBarInfo.channelName}</span>
+                                  </span>
+                                )}
                               </div>
                               <div className="space-y-1.5 text-[11px]">
                                 {[
-                                  { key: "shopee", name: "Shopee", val: activeMonth.by_channel.shopee || 0, color: "bg-orange-500" },
-                                  { key: "site", name: "Loja Virtual", val: activeMonth.by_channel.site || 0, color: "bg-sky-500" },
-                                  { key: "mercado_livre", name: "Mercado Livre", val: activeMonth.by_channel.mercado_livre || 0, color: "bg-amber-400" },
-                                  { key: "tiktok", name: "TikTok Shop", val: activeMonth.by_channel.tiktok || 0, color: "bg-stone-400" },
+                                  { key: "shopee", name: "Shopee", val: activeMonth.by_channel.shopee || 0, color: "bg-orange-500", border: "border-orange-500/50", bgHighlight: "bg-orange-950/40" },
+                                  { key: "site", name: "Loja Virtual", val: activeMonth.by_channel.site || 0, color: "bg-sky-500", border: "border-sky-500/50", bgHighlight: "bg-sky-950/40" },
+                                  { key: "mercado_livre", name: "Mercado Livre", val: activeMonth.by_channel.mercado_livre || 0, color: "bg-amber-400", border: "border-amber-400/50", bgHighlight: "bg-amber-950/40" },
+                                  { key: "tiktok", name: "TikTok Shop", val: activeMonth.by_channel.tiktok || 0, color: "bg-stone-400", border: "border-stone-500/50", bgHighlight: "bg-stone-800/40" },
                                 ].map((item) => {
                                   const pct = activeMonth.gross_revenue > 0 ? (item.val / activeMonth.gross_revenue) * 100 : 0;
                                   let channelGrowth: number | null = null;
@@ -3366,31 +3392,58 @@ export function DashboardClient() {
                                     }
                                   }
 
+                                  const isFocused = activeBarInfo?.channelKey === item.key;
+                                  const channelDaily = activeMonth.is_current_month && currentDay > 0 ? item.val / currentDay : 0;
+                                  const channelProj = activeMonth.is_current_month && currentDay > 0 ? (item.val / currentDay) * daysInCurrentMonth : item.val;
+
                                   return (
-                                    <div key={item.key} className="flex items-center justify-between">
-                                      <div className="flex items-center gap-1.5">
-                                        <span className={`w-2 h-2 rounded-full ${item.color}`} />
-                                        <span className="text-stone-300">{item.name}:</span>
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-bold text-stone-100 tabular-nums">{money(item.val)}</span>
-                                        <span className="text-[10px] text-stone-400 tabular-nums">({pct.toFixed(1)}%)</span>
-                                        {channelGrowth !== null && (
-                                          <span className={`text-[9px] font-bold px-1 rounded tabular-nums ${
-                                            channelGrowth >= 0 ? "text-emerald-400 bg-emerald-950/60" : "text-rose-400 bg-rose-950/60"
-                                          }`}>
-                                            {channelGrowth >= 0 ? "+" : ""}{channelGrowth.toFixed(1)}%
+                                    <div
+                                      key={item.key}
+                                      className={`rounded-lg transition-all ${
+                                        isFocused
+                                          ? `p-1.5 border ${item.border} ${item.bgHighlight} shadow-inner`
+                                          : "p-0.5 hover:bg-stone-800/40"
+                                      }`}
+                                    >
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className={`w-2 h-2 rounded-full ${item.color}`} />
+                                          <span className={`font-medium ${isFocused ? "text-white font-bold" : "text-stone-300"}`}>
+                                            {item.name}:
                                           </span>
-                                        )}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span className="font-bold text-stone-100 tabular-nums">{money(item.val)}</span>
+                                          <span className="text-[10px] text-stone-400 tabular-nums">({pct.toFixed(1)}%)</span>
+                                          {channelGrowth !== null && (
+                                            <span className={`text-[9px] font-bold px-1 rounded tabular-nums ${
+                                              channelGrowth >= 0 ? "text-emerald-400 bg-emerald-950/60" : "text-rose-400 bg-rose-950/60"
+                                            }`}>
+                                              {channelGrowth >= 0 ? "+" : ""}{channelGrowth.toFixed(1)}%
+                                            </span>
+                                          )}
+                                        </div>
                                       </div>
+
+                                      {/* Se o canal estiver com foco no mês atual, exibe a projeção e ritmo diário integrados */}
+                                      {isFocused && activeMonth.is_current_month && channelProj > item.val && (
+                                        <div className="mt-1 pt-1 border-t border-stone-800/60 flex items-center justify-between text-[10px] text-amber-300 font-semibold">
+                                          <span>Projeção (30d): <strong>{money(channelProj)}</strong></span>
+                                          <span className="text-stone-300">Ritmo: {money(channelDaily)}/dia</span>
+                                        </div>
+                                      )}
                                     </div>
                                   );
                                 })}
                               </div>
                             </div>
 
-                            <div className="mt-3 pt-2 border-t border-stone-800 text-[10px] text-stone-400 text-center">
-                              Toque ou clique para fixar/desafixar este mês
+                            <div className="mt-3 pt-2 border-t border-stone-800 text-[10px] text-stone-400 text-center flex items-center justify-center gap-1.5">
+                              {pinnedBarInfo ? (
+                                <span className="text-amber-400 font-semibold">📌 Régua fixada em {pinnedBarInfo.channelName}</span>
+                              ) : (
+                                <span>Clique na barra para fixar a régua ou no mês para manter aberto</span>
+                              )}
                             </div>
                           </div>
                         )}
