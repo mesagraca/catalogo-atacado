@@ -2645,12 +2645,12 @@ export function DashboardClient() {
                     { key: "shopee", label: "Shopee", activeCls: "bg-orange-600 text-white border-orange-600 shadow-xs", dotCls: "bg-white" },
                     { key: "mercado_livre", label: "Mercado Livre", activeCls: "bg-amber-400 text-stone-900 border-amber-400 font-bold shadow-xs", dotCls: "bg-stone-900" },
                     { key: "site", label: "Loja Virtual", activeCls: "bg-sky-600 text-white border-sky-600 shadow-xs", dotCls: "bg-white" },
-                    { key: "tiktok", label: "TikTok Shop", activeCls: "bg-zinc-900 text-white border-zinc-900 shadow-xs", dotCls: "bg-cyan-400" },
+                    { key: "tiktok", label: "TikTok Shop", activeCls: "bg-zinc-900 text-white border-zinc-900 shadow-xs", dotCls: "bg-white" },
                   ];
 
                   return (
                     <div>
-                      {/* Cabeçalho da Seção */}
+                      {/* CABEÇALHO REESTRUTURADO: TÍTULO À ESQUERDA + KPI CHIPS COMPACTOS À DIREITA */}
                       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
                         <div>
                           <div className="flex items-center gap-2">
@@ -2666,235 +2666,266 @@ export function DashboardClient() {
                           </p>
                         </div>
 
-                        {/* Controles de Topo: Toggle de Visualização e Estatísticas */}
-                        <div className="flex items-center gap-3 flex-wrap self-start lg:self-auto text-xs">
-                          {/* Toggle de Modo: Agrupado (Lado a Lado) vs Total da Loja */}
-                          <div className="inline-flex p-1 bg-stone-100 rounded-xl border border-stone-200 text-xs font-semibold select-none shadow-2xs">
-                            <button
-                              type="button"
-                              onClick={() => setMonthlyViewMode("grouped")}
-                              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
-                                monthlyViewMode === "grouped"
-                                  ? "bg-white text-stone-900 font-bold shadow-xs scale-[1.02]"
-                                  : "text-stone-500 hover:text-stone-900"
-                              }`}
-                              title="Ver as barras individuais de cada marketplace lado a lado em cada mês"
-                            >
-                              <span>📊</span>
-                              <span>Barras por Canal</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setMonthlyViewMode("total")}
-                              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
-                                monthlyViewMode === "total"
-                                  ? "bg-white text-stone-900 font-bold shadow-xs scale-[1.02]"
-                                  : "text-stone-500 hover:text-stone-900"
-                              }`}
-                              title="Ver uma barra sólida representando o faturamento total da loja"
-                            >
-                              <span>🏛️</span>
-                              <span>Total da Loja</span>
-                            </button>
-                          </div>
-
-                          <div className="bg-stone-50 border border-stone-200/90 px-3.5 py-2 rounded-xl shadow-2xs">
-                            <span className="text-[10px] text-stone-500 uppercase font-bold block tracking-wider">
-                              {selectedMonthlyChannel === "all" ? "Total Acumulado" : `Total em ${channelNames[selectedMonthlyChannel]}`}
+                        {/* KPI Chips Compactos com Altura Padronizada (h-10) Sem Quebra Feia */}
+                        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+                          <div className="inline-flex items-center gap-2 bg-stone-50 border border-stone-200/90 px-3.5 py-1.5 rounded-xl shadow-2xs h-10 flex-shrink-0">
+                            <span className="text-[10px] text-stone-500 uppercase font-bold tracking-wider">
+                              {selectedMonthlyChannel === "all" ? "Total Acumulado:" : channelNames[selectedMonthlyChannel] + ":"}
                             </span>
-                            <div className="flex items-baseline gap-1 mt-0.5">
-                              <strong className="text-stone-900 font-extrabold text-sm tabular-nums">{money(totalFilteredRevenue)}</strong>
-                              {selectedMonthlyChannel === "all" && (
-                                <span className="text-[10px] text-stone-500 font-medium">({totalFilteredOrders} pedidos)</span>
-                              )}
-                            </div>
+                            <strong className="text-stone-900 font-extrabold text-xs sm:text-sm tabular-nums">
+                              {money(totalFilteredRevenue)}
+                            </strong>
+                            {selectedMonthlyChannel === "all" && (
+                              <span className="text-[10px] text-stone-400 font-medium">({totalFilteredOrders} ped.)</span>
+                            )}
                           </div>
 
                           {recordMonth && recordMonth.displayRevenue > 0 && (
-                            <div className="bg-amber-50/70 border border-amber-300/80 px-3.5 py-2 rounded-xl shadow-2xs">
-                              <span className="text-[10px] text-amber-900 uppercase font-bold block tracking-wider flex items-center gap-1">
+                            <div className="inline-flex items-center gap-2 bg-amber-50/70 border border-amber-300/80 px-3.5 py-1.5 rounded-xl shadow-2xs h-10 flex-shrink-0">
+                              <span className="text-[10px] text-amber-900 uppercase font-bold tracking-wider flex items-center gap-1">
                                 <span>👑</span>
-                                <span>Mês Recorde {selectedMonthlyChannel !== "all" && "(Canal)"}</span>
+                                <span>Mês Recorde:</span>
                               </span>
-                              <div className="flex items-baseline gap-1.5 mt-0.5">
-                                <strong className="text-amber-950 font-extrabold text-sm tabular-nums">
-                                  {recordMonth.label}: {money(recordMonth.displayRevenue)}
-                                </strong>
-                              </div>
+                              <strong className="text-amber-950 font-extrabold text-xs sm:text-sm tabular-nums">
+                                {recordMonth.label} ({money(recordMonth.displayRevenue)})
+                              </strong>
                             </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Seletor de Filtro de Canais */}
-                      <div className="flex items-center gap-2 mb-6 flex-wrap pb-3.5 border-b border-stone-100">
-                        <span className="text-xs font-bold text-stone-700 mr-1 flex items-center gap-1">
-                          <span>Filtrar Canal:</span>
-                        </span>
-                        {channelPills.map((pill) => (
-                          <button
-                            key={pill.key}
-                            type="button"
-                            onClick={() => setSelectedMonthlyChannel(pill.key)}
-                            className={`text-xs px-3.5 py-1.5 rounded-xl border transition-all cursor-pointer font-medium flex items-center gap-1.5 select-none active:scale-[0.98] ${
-                              selectedMonthlyChannel === pill.key
-                                ? pill.activeCls
-                                : "bg-stone-50/70 hover:bg-stone-100 text-stone-600 border-stone-200 hover:border-stone-300"
-                            }`}
-                          >
-                            <span className={`w-2 h-2 rounded-full flex-shrink-0 ${selectedMonthlyChannel === pill.key ? pill.dotCls : "bg-stone-300"}`} />
-                            <span>{pill.label}</span>
-                          </button>
-                        ))}
-                      </div>
-
-                      {/* Área do Gráfico Unificado com Eixo Y Limpo e Linhas de Grade */}
-                      <div className="relative pt-8 pb-4">
-                        {/* Linhas de Grade Horizontais e Eixo Y com Valores Redondos */}
-                        <div className="absolute inset-0 top-8 bottom-16 flex flex-col justify-between pointer-events-none z-0">
-                          {yTicks.map((val, idx) => (
-                            <div key={idx} className="w-full flex items-center gap-3">
-                              <span className="text-[11px] font-mono text-stone-400 w-20 text-right tabular-nums flex-shrink-0 select-none">
-                                {money(val)}
-                              </span>
-                              <div className={`w-full border-b ${val === 0 ? "border-stone-300 border-b-2" : "border-stone-100 border-dashed"}`} />
-                            </div>
+                      {/* BARRA DE FERRAMENTAS INTEGRADA: FILTRO DE CANAIS + TOGGLE DE MODO */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-stone-100">
+                        {/* Seletor de Canais */}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-xs font-bold text-stone-700 mr-1 select-none">Filtrar Canal:</span>
+                          {channelPills.map((pill) => (
+                            <button
+                              key={pill.key}
+                              type="button"
+                              onClick={() => setSelectedMonthlyChannel(pill.key)}
+                              className={`text-xs px-3.5 py-1.5 rounded-xl border transition-all cursor-pointer font-medium flex items-center gap-1.5 select-none active:scale-[0.98] ${
+                                selectedMonthlyChannel === pill.key
+                                  ? pill.activeCls
+                                  : "bg-stone-50/70 hover:bg-stone-100 text-stone-600 border-stone-200 hover:border-stone-300"
+                              }`}
+                            >
+                              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${selectedMonthlyChannel === pill.key ? pill.dotCls : "bg-stone-300"}`} />
+                              <span>{pill.label}</span>
+                            </button>
                           ))}
                         </div>
 
-                        {/* Colunas dos Meses (Container com Scroll Horizontal Suave) */}
-                        <div className="relative z-10 pl-24 overflow-x-auto pb-4 scrollbar-thin">
-                          <div className="flex items-end justify-around gap-8 sm:gap-12 min-w-[580px] h-72 pt-10">
-                            {history.map((m, idx) => {
-                              const rev = m.displayRevenue;
-                              const isRecord = recordMonth?.month === m.month && rev > 0;
-                              const isHovered = activeMonthIdx === idx;
+                        {/* Toggle de Modo: Agrupado vs Total */}
+                        <div className="inline-flex p-1 bg-stone-100 rounded-xl border border-stone-200 text-xs font-semibold select-none shadow-2xs self-start sm:self-auto flex-shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setMonthlyViewMode("grouped")}
+                            className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                              monthlyViewMode === "grouped"
+                                ? "bg-white text-stone-900 font-bold shadow-xs"
+                                : "text-stone-500 hover:text-stone-900"
+                            }`}
+                          >
+                            <span>📊</span>
+                            <span>Barras por Canal</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setMonthlyViewMode("total")}
+                            className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                              monthlyViewMode === "total"
+                                ? "bg-white text-stone-900 font-bold shadow-xs"
+                                : "text-stone-500 hover:text-stone-900"
+                            }`}
+                          >
+                            <span>🏛️</span>
+                            <span>Total da Loja</span>
+                          </button>
+                        </div>
+                      </div>
 
-                              // Alturas proporcionais com base em yMax
-                              const totalHeightPct = Math.max(3, Math.min(100, Math.round((rev / yMax) * 100)));
-                              const projHeightPct = m.displayProj
-                                ? Math.max(3, Math.min(100, Math.round((m.displayProj / yMax) * 100)))
-                                : 0;
-
-                              const shopeeVal = m.by_channel.shopee || 0;
-                              const mlVal = m.by_channel.mercado_livre || 0;
-                              const siteVal = m.by_channel.site || 0;
-                              const tiktokVal = m.by_channel.tiktok || 0;
-
-                              const shopeeHeight = Math.max(shopeeVal > 0 ? 3 : 0, Math.min(100, Math.round((shopeeVal / yMax) * 100)));
-                              const mlHeight = Math.max(mlVal > 0 ? 3 : 0, Math.min(100, Math.round((mlVal / yMax) * 100)));
-                              const siteHeight = Math.max(siteVal > 0 ? 3 : 0, Math.min(100, Math.round((siteVal / yMax) * 100)));
-                              const tiktokHeight = Math.max(tiktokVal > 0 ? 3 : 0, Math.min(100, Math.round((tiktokVal / yMax) * 100)));
-
-                              return (
-                                <div
-                                  key={m.month}
-                                  onMouseEnter={() => setHoveredMonthIndex(idx)}
-                                  onMouseLeave={() => setHoveredMonthIndex(null)}
-                                  onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
-                                  className={`flex-1 max-w-[140px] min-w-[110px] flex flex-col items-center justify-end h-full cursor-pointer group transition-all duration-150 select-none ${
-                                    isHovered ? "scale-[1.02]" : ""
-                                  }`}
-                                >
-                                  {/* Cabeçalho Limpo: Valor Total + Badge MoM */}
-                                  <div className="flex flex-col items-center gap-1 mb-2 text-center pointer-events-none">
-                                    <div className="flex items-center gap-1.5">
-                                      {isRecord && (
-                                        <span className="text-xs" title="Mês Recorde da Loja">👑</span>
-                                      )}
+                      {/* ÁREA DO GRÁFICO REESTRUTURADA EM 3 CAMADAS GEOMÉTRICAS SINCRONIZADAS */}
+                      <div className="relative overflow-x-auto scrollbar-thin pb-2">
+                        <div className="min-w-[620px]">
+                          
+                          {/* CAMADA 1: LINHA HORIZONTAL DOS VALORES SUPERIORES & BADGES MoM (ALTURA FIXA h-14) */}
+                          <div className="flex items-end pl-24 pr-4 h-14 mb-2">
+                            <div className="w-full flex items-end justify-around gap-6">
+                              {history.map((m, idx) => {
+                                const rev = m.displayRevenue;
+                                const isRecord = recordMonth?.month === m.month && rev > 0;
+                                const isHovered = activeMonthIdx === idx;
+                                return (
+                                  <div
+                                    key={m.month}
+                                    className={`flex-1 max-w-[140px] flex flex-col items-center justify-end text-center pointer-events-none transition-transform duration-150 ${
+                                      isHovered ? "scale-105" : ""
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-1">
+                                      {isRecord && <span className="text-xs" title="Mês Recorde">👑</span>}
                                       <strong className={`text-xs sm:text-sm font-black tabular-nums transition-colors ${
-                                        isHovered ? "text-amber-950 scale-105" : "text-stone-900"
+                                        isHovered ? "text-amber-950" : "text-stone-900"
                                       }`}>
                                         {money(rev)}
                                       </strong>
                                     </div>
 
-                                    {m.displayMoM !== null && m.displayMoM !== undefined ? (
-                                      <span
-                                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${
-                                          m.displayMoM >= 0
-                                            ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                                            : "bg-rose-100 text-rose-800 border border-rose-200"
-                                        }`}
-                                      >
-                                        <span>{m.displayMoM >= 0 ? "▲" : "▼"}</span>
-                                        <span>{Math.abs(m.displayMoM).toFixed(1)}%</span>
-                                        <span className="text-[8px] opacity-75 font-normal">MoM</span>
-                                      </span>
-                                    ) : (
-                                      <span className="text-[10px] text-stone-400 font-medium px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">
-                                        Base
-                                      </span>
-                                    )}
+                                    <div className="mt-1">
+                                      {m.displayMoM !== null && m.displayMoM !== undefined ? (
+                                        <span
+                                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-0.5 shadow-2xs ${
+                                            m.displayMoM >= 0
+                                              ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                              : "bg-rose-100 text-rose-800 border border-rose-200"
+                                          }`}
+                                        >
+                                          <span>{m.displayMoM >= 0 ? "▲" : "▼"}</span>
+                                          <span>{Math.abs(m.displayMoM).toFixed(1)}%</span>
+                                          <span className="text-[8px] opacity-75 font-normal">MoM</span>
+                                        </span>
+                                      ) : (
+                                        <span className="text-[10px] text-stone-400 font-medium px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200 inline-block">
+                                          Base
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
+                                );
+                              })}
+                            </div>
+                          </div>
 
-                                  {/* Área das Barras (Altura Generosa de 210px) */}
-                                  <div className="w-full flex justify-center items-end relative h-52">
-                                    {/* Linha tracejada de projeção para o mês corrente */}
-                                    {m.is_current_month && m.displayProj && m.displayProj > rev && (
-                                      <div
-                                        style={{ height: `${projHeightPct}%` }}
-                                        className={`absolute rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-100/20 transition-all pointer-events-none ${
-                                          monthlyViewMode === "grouped" ? "w-28 sm:w-32 -left-2 sm:-left-3" : "w-12 sm:w-16"
-                                        }`}
-                                        title={`Ritmo projetado de fechamento: ${money(m.displayProj)}`}
-                                      />
-                                    )}
-
-                                    {/* MODO 1: BARRAS SEPARADAS POR CANAL (LADO A LADO) */}
-                                    {monthlyViewMode === "grouped" && selectedMonthlyChannel === "all" ? (
-                                      <div className={`flex items-end justify-center gap-1.5 sm:gap-2 h-full p-1.5 rounded-t-2xl transition-all ${
-                                        isHovered ? "bg-stone-100/70" : ""
-                                      }`}>
-                                        {/* Barra Shopee */}
-                                        <div
-                                          style={{ height: `${shopeeHeight}%` }}
-                                          className="w-4 sm:w-5 bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-md shadow-2xs transition-all hover:brightness-110"
-                                          title={`Shopee: ${money(shopeeVal)}`}
-                                        />
-                                        {/* Barra Mercado Livre */}
-                                        <div
-                                          style={{ height: `${mlHeight}%` }}
-                                          className="w-4 sm:w-5 bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-md shadow-2xs transition-all hover:brightness-110"
-                                          title={`Mercado Livre: ${money(mlVal)}`}
-                                        />
-                                        {/* Barra Loja Virtual */}
-                                        <div
-                                          style={{ height: `${siteHeight}%` }}
-                                          className="w-4 sm:w-5 bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-md shadow-2xs transition-all hover:brightness-110"
-                                          title={`Loja Virtual: ${money(siteVal)}`}
-                                        />
-                                        {/* Barra TikTok Shop */}
-                                        <div
-                                          style={{ height: `${tiktokHeight}%` }}
-                                          className="w-4 sm:w-5 bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-md shadow-2xs transition-all hover:brightness-110"
-                                          title={`TikTok Shop: ${money(tiktokVal)}`}
-                                        />
-                                      </div>
-                                    ) : (
-                                      /* MODO 2: BARRA MONOLÍTICA TOTAL DA LOJA OU CANAL ESPECÍFICO */
-                                      <div
-                                        style={{ height: `${totalHeightPct}%` }}
-                                        className={`w-12 sm:w-16 rounded-t-xl transition-all duration-200 relative shadow-sm ${
-                                          isHovered ? "ring-4 ring-amber-400 shadow-md brightness-105" : ""
-                                        } ${
-                                          selectedMonthlyChannel === "all"
-                                            ? "bg-gradient-to-t from-amber-950 via-amber-900 to-amber-700"
-                                            : selectedMonthlyChannel === "shopee"
-                                            ? "bg-gradient-to-t from-orange-700 to-orange-500"
-                                            : selectedMonthlyChannel === "mercado_livre"
-                                            ? "bg-gradient-to-t from-amber-500 to-amber-300"
-                                            : selectedMonthlyChannel === "site"
-                                            ? "bg-gradient-to-t from-sky-700 to-sky-500"
-                                            : "bg-gradient-to-t from-zinc-950 to-zinc-800"
-                                        }`}
-                                        title={`${m.full_label}: ${money(rev)}`}
-                                      />
-                                    )}
+                          {/* CAMADA 2: ÁREA DE PLOTAGEM REAL (CHART PLOT AREA - ALTURA FIXA h-60 / 240px) */}
+                          <div className="relative h-60 w-full">
+                            {/* Grade e Ticks do Eixo Y compartilhando exatamente a altura h-60 */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none z-0">
+                              {yTicks.map((val, idx) => {
+                                const isZero = val === 0;
+                                return (
+                                  <div key={idx} className="w-full flex items-center gap-3">
+                                    <span className="text-[11px] font-mono text-stone-400 w-20 text-right tabular-nums flex-shrink-0 select-none">
+                                      {money(val)}
+                                    </span>
+                                    <div className={`w-full border-b ${
+                                      isZero ? "border-stone-300 border-b-2" : "border-stone-100 border-dashed"
+                                    }`} />
                                   </div>
+                                );
+                              })}
+                            </div>
 
-                                  {/* Rótulo Inferior do Mês e Métricas */}
-                                  <div className="text-center mt-3 pt-2.5 border-t border-stone-200/90 w-full">
+                            {/* Colunas de Barras cravadas na mesma altura e base bottom-0 */}
+                            <div className="relative z-10 pl-24 pr-4 h-full">
+                              <div className="w-full h-full flex items-end justify-around gap-6">
+                                {history.map((m, idx) => {
+                                  const rev = m.displayRevenue;
+                                  const isHovered = activeMonthIdx === idx;
+
+                                  // Alturas percentuais rigorosamente proporcionais a yMax
+                                  const totalHeightPct = Math.max(rev > 0 ? 2 : 0, Math.min(100, (rev / yMax) * 100));
+                                  const projHeightPct = m.displayProj
+                                    ? Math.max(2, Math.min(100, (m.displayProj / yMax) * 100))
+                                    : 0;
+
+                                  const shopeeVal = m.by_channel.shopee || 0;
+                                  const mlVal = m.by_channel.mercado_livre || 0;
+                                  const siteVal = m.by_channel.site || 0;
+                                  const tiktokVal = m.by_channel.tiktok || 0;
+
+                                  const shopeeHeight = Math.max(shopeeVal > 0 ? 2 : 0, Math.min(100, (shopeeVal / yMax) * 100));
+                                  const mlHeight = Math.max(mlVal > 0 ? 2 : 0, Math.min(100, (mlVal / yMax) * 100));
+                                  const siteHeight = Math.max(siteVal > 0 ? 2 : 0, Math.min(100, (siteVal / yMax) * 100));
+                                  const tiktokHeight = Math.max(tiktokVal > 0 ? 2 : 0, Math.min(100, (tiktokVal / yMax) * 100));
+
+                                  return (
+                                    <div
+                                      key={m.month}
+                                      onMouseEnter={() => setHoveredMonthIndex(idx)}
+                                      onMouseLeave={() => setHoveredMonthIndex(null)}
+                                      onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
+                                      className="flex-1 max-w-[140px] h-full flex justify-center items-end relative cursor-pointer group"
+                                    >
+                                      {/* CAIXA DE PROJEÇÃO DE NOVEMBRO CRAVADA EM BOTTOM: 0 */}
+                                      {m.is_current_month && m.displayProj && m.displayProj > rev && (
+                                        <div
+                                          style={{ height: `${projHeightPct}%` }}
+                                          className={`absolute bottom-0 rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-200/15 transition-all pointer-events-none z-0 ${
+                                            monthlyViewMode === "grouped" ? "w-28 sm:w-32 left-1/2 -translate-x-1/2" : "w-12 sm:w-16 left-1/2 -translate-x-1/2"
+                                          }`}
+                                          title={`Ritmo projetado de fechamento: ${money(m.displayProj)}`}
+                                        />
+                                      )}
+
+                                      {/* MODO 1: BARRAS POR CANAL LADO A LADO (CRAVADAS NO ZERO) */}
+                                      {monthlyViewMode === "grouped" && selectedMonthlyChannel === "all" ? (
+                                        <div className={`flex items-end justify-center gap-1.5 sm:gap-2 h-full px-2 pt-2 pb-0 rounded-t-2xl transition-colors relative z-10 ${
+                                          isHovered ? "bg-stone-100/60" : ""
+                                        }`}>
+                                          {/* Barra Shopee */}
+                                          <div
+                                            style={{ height: `${shopeeHeight}%` }}
+                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                            title={`Shopee: ${money(shopeeVal)}`}
+                                          />
+                                          {/* Barra Mercado Livre */}
+                                          <div
+                                            style={{ height: `${mlHeight}%` }}
+                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                            title={`Mercado Livre: ${money(mlVal)}`}
+                                          />
+                                          {/* Barra Loja Virtual */}
+                                          <div
+                                            style={{ height: `${siteHeight}%` }}
+                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                            title={`Loja Virtual: ${money(siteVal)}`}
+                                          />
+                                          {/* Barra TikTok Shop */}
+                                          <div
+                                            style={{ height: `${tiktokHeight}%` }}
+                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                            title={`TikTok Shop: ${money(tiktokVal)}`}
+                                          />
+                                        </div>
+                                      ) : (
+                                        /* MODO 2: BARRA TOTAL MONOLÍTICA OU CANAL FILTRADO (CRAVADA NO ZERO) */
+                                        <div
+                                          style={{ height: `${totalHeightPct}%` }}
+                                          className={`w-12 sm:w-16 rounded-t-xl transition-all duration-200 relative z-10 shadow-sm ${
+                                            isHovered ? "ring-4 ring-amber-400 shadow-md brightness-105" : ""
+                                          } ${
+                                            selectedMonthlyChannel === "all"
+                                              ? "bg-gradient-to-t from-amber-950 via-amber-900 to-amber-700"
+                                              : selectedMonthlyChannel === "shopee"
+                                              ? "bg-gradient-to-t from-orange-700 to-orange-500"
+                                              : selectedMonthlyChannel === "mercado_livre"
+                                              ? "bg-gradient-to-t from-amber-500 to-amber-300"
+                                              : selectedMonthlyChannel === "site"
+                                              ? "bg-gradient-to-t from-sky-700 to-sky-500"
+                                              : "bg-gradient-to-t from-zinc-950 to-zinc-800"
+                                          }`}
+                                          title={`${m.full_label}: ${money(rev)}`}
+                                        />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* CAMADA 3: LINHA INFERIOR DOS RÓTULOS DOS MESES (PERFEITAMENTE SINCRONIZADA COM O GRID) */}
+                          <div className="flex items-start pl-24 pr-4 pt-3.5">
+                            <div className="w-full flex justify-around gap-6">
+                              {history.map((m, idx) => {
+                                const isHovered = activeMonthIdx === idx;
+                                return (
+                                  <div
+                                    key={m.month}
+                                    onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
+                                    className="flex-1 max-w-[140px] text-center cursor-pointer select-none"
+                                  >
                                     <div className="flex items-center justify-center gap-1.5">
                                       <strong className={`text-xs sm:text-sm font-bold transition-colors ${
                                         isHovered ? "text-amber-950" : "text-stone-800"
@@ -2912,10 +2943,11 @@ export function DashboardClient() {
                                       Méd: {money(m.average_ticket)}
                                     </div>
                                   </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
+                            </div>
                           </div>
+
                         </div>
 
                         {/* Tooltip / Janela Flutuante com Posicionamento Adaptativo Inteligente */}
@@ -2928,115 +2960,114 @@ export function DashboardClient() {
                                 : "right-4 sm:right-8"
                             }`}
                           >
-                            <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-800">
+                            <div className="flex items-center justify-between border-b border-stone-800 pb-2 mb-2.5">
                               <div className="flex items-center gap-2">
-                                <span className="text-sm">📅</span>
+                                <span className="text-base">📅</span>
                                 <div>
-                                  <strong className="text-stone-100 font-bold block leading-tight">
-                                    {activeMonth.full_label}
-                                  </strong>
-                                  <span className="text-[10px] text-stone-400">
-                                    {activeMonth.is_current_month ? "Mês Atual (Em andamento)" : "Mês Fechado / Consolidado"}
-                                  </span>
+                                  <div className="font-bold text-stone-100 text-sm">{activeMonth.full_label}</div>
+                                  <div className="text-[10px] text-stone-400">
+                                    {activeMonth.is_current_month ? "Mês Atual (Em andamento)" : "Mês Encerrado"}
+                                  </div>
                                 </div>
                               </div>
-                              {pinnedMonthIndex !== null && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setPinnedMonthIndex(null);
-                                  }}
-                                  className="text-stone-400 hover:text-white p-1 rounded-lg hover:bg-stone-800 text-[11px]"
-                                  title="Desafixar"
-                                >
-                                  ✕
-                                </button>
-                              )}
+                              <button
+                                type="button"
+                                onClick={() => setPinnedMonthIndex(null)}
+                                className="text-stone-400 hover:text-white p-1 rounded-md text-xs cursor-pointer"
+                                title="Fechar detalhes"
+                              >
+                                ✕
+                              </button>
                             </div>
 
-                            {/* Faturamento e Comparativo */}
-                            <div className="space-y-1.5 pb-2.5 mb-2.5 border-b border-stone-800/80">
-                              <div className="flex items-center justify-between">
-                                <span className="text-stone-400 text-[11px]">Faturamento Bruto:</span>
-                                <strong className="text-amber-300 text-sm font-extrabold tabular-nums">
-                                  {money(activeMonth.gross_revenue)}
+                            <div className="space-y-1.5 text-stone-300">
+                              <div className="flex justify-between items-center py-0.5">
+                                <span className="text-stone-400">Faturamento Bruto:</span>
+                                <strong className="text-amber-400 font-extrabold text-sm tabular-nums">
+                                  {money(activeMonth.displayRevenue)}
                                 </strong>
                               </div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-stone-400 text-[11px]">Variação MoM Total:</span>
-                                <span className={`font-bold text-[11px] tabular-nums ${
-                                  (activeMonth.growth_percent || 0) >= 0 ? "text-emerald-400" : "text-rose-400"
+
+                              <div className="flex justify-between items-center py-0.5">
+                                <span className="text-stone-400">Variação MoM:</span>
+                                <span className={`font-bold tabular-nums ${
+                                  activeMonth.displayMoM === null
+                                    ? "text-stone-400"
+                                    : activeMonth.displayMoM >= 0
+                                    ? "text-emerald-400"
+                                    : "text-rose-400"
                                 }`}>
-                                  {activeMonth.growth_percent !== null && activeMonth.growth_percent !== undefined
-                                    ? `${activeMonth.growth_percent >= 0 ? "+" : ""}${activeMonth.growth_percent.toFixed(1)}% vs anterior`
-                                    : "Mês inicial"}
+                                  {activeMonth.displayMoM !== null
+                                    ? `${activeMonth.displayMoM >= 0 ? "+" : ""}${activeMonth.displayMoM.toFixed(1)}% vs anterior`
+                                    : "Mês Base"}
                                 </span>
                               </div>
-                              <div className="flex items-center justify-between text-[11px]">
-                                <span className="text-stone-400">Volume &amp; Ticket:</span>
-                                <span className="text-stone-200 font-medium tabular-nums">
-                                  {activeMonth.orders_count} pedidos · {money(activeMonth.average_ticket)}/médio
+
+                              <div className="flex justify-between items-center py-0.5">
+                                <span className="text-stone-400">Volume de Pedidos:</span>
+                                <span className="font-semibold text-stone-200 tabular-nums">
+                                  {activeMonth.orders_count} pedidos ({money(activeMonth.average_ticket)}/médio)
                                 </span>
                               </div>
-                              {activeMonth.is_current_month && activeMonth.projected_revenue && (
-                                <div className="flex items-center justify-between text-[11px] pt-1 border-t border-stone-800/60 text-amber-300">
-                                  <span>Projeção (Ritmo Atual):</span>
-                                  <strong className="font-extrabold tabular-nums">
-                                    {money(activeMonth.projected_revenue)}
+
+                              {activeMonth.is_current_month && activeMonth.displayProj && (
+                                <div className="flex justify-between items-center py-1 mt-1 border-t border-stone-800 bg-amber-500/10 px-2 rounded-lg">
+                                  <span className="text-amber-300 font-medium">Projeção (Ritmo Atual):</span>
+                                  <strong className="text-amber-300 font-bold tabular-nums">
+                                    {money(activeMonth.displayProj)}
                                   </strong>
                                 </div>
                               )}
                             </div>
 
-                            {/* Decomposição Exata por Canal e Crescimento Plataforma a Plataforma */}
-                            <div>
-                              <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-2">
-                                Crescimento por Plataforma (MoM):
-                              </span>
-                              <div className="space-y-2 text-[11px]">
+                            {/* PARTICIPAÇÃO PLATAFORMA A PLATAFORMA COM CRESCIMENTO MoM */}
+                            <div className="mt-3 pt-2.5 border-t border-stone-800">
+                              <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-2">
+                                Participação por Canal:
+                              </div>
+                              <div className="space-y-1.5 text-[11px]">
                                 {[
-                                  { label: "Shopee", val: activeMonth.by_channel.shopee || 0, prevVal: prevMonthForActive?.by_channel.shopee || 0, dot: "bg-orange-500" },
-                                  { label: "Loja Virtual", val: activeMonth.by_channel.site || 0, prevVal: prevMonthForActive?.by_channel.site || 0, dot: "bg-sky-400" },
-                                  { label: "Mercado Livre", val: activeMonth.by_channel.mercado_livre || 0, prevVal: prevMonthForActive?.by_channel.mercado_livre || 0, dot: "bg-amber-400" },
-                                  { label: "TikTok Shop", val: activeMonth.by_channel.tiktok || 0, prevVal: prevMonthForActive?.by_channel.tiktok || 0, dot: "bg-zinc-400" },
+                                  { key: "shopee", name: "Shopee", val: activeMonth.by_channel.shopee || 0, color: "bg-orange-500" },
+                                  { key: "site", name: "Loja Virtual", val: activeMonth.by_channel.site || 0, color: "bg-sky-500" },
+                                  { key: "mercado_livre", name: "Mercado Livre", val: activeMonth.by_channel.mercado_livre || 0, color: "bg-amber-400" },
+                                  { key: "tiktok", name: "TikTok Shop", val: activeMonth.by_channel.tiktok || 0, color: "bg-stone-400" },
                                 ].map((item) => {
-                                  const pctOfTotal = activeMonth.gross_revenue > 0 ? (item.val / activeMonth.gross_revenue) * 100 : 0;
-                                  let channelMoM: number | null = null;
+                                  const pct = activeMonth.gross_revenue > 0 ? (item.val / activeMonth.gross_revenue) * 100 : 0;
+                                  let channelGrowth: number | null = null;
                                   if (prevMonthForActive) {
-                                    if (item.prevVal > 0) {
-                                      channelMoM = ((item.val - item.prevVal) / item.prevVal) * 100;
+                                    const prevVal = prevMonthForActive.by_channel[item.key as keyof typeof prevMonthForActive.by_channel] || 0;
+                                    if (prevVal > 0) {
+                                      channelGrowth = ((item.val - prevVal) / prevVal) * 100;
                                     } else if (item.val > 0) {
-                                      channelMoM = 100;
+                                      channelGrowth = 100;
                                     }
                                   }
 
                                   return (
-                                    <div key={item.label} className="p-1.5 rounded-lg bg-stone-800/50 border border-stone-800 flex items-center justify-between gap-2">
-                                      <div className="flex items-center gap-1.5 min-w-0">
-                                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.dot}`} />
-                                        <span className="text-stone-200 font-semibold truncate">{item.label}</span>
+                                    <div key={item.key} className="flex items-center justify-between">
+                                      <div className="flex items-center gap-1.5">
+                                        <span className={`w-2 h-2 rounded-full ${item.color}`} />
+                                        <span className="text-stone-300">{item.name}:</span>
                                       </div>
-                                      <div className="flex items-center gap-2 tabular-nums text-right flex-shrink-0">
-                                        <div>
-                                          <strong className="text-stone-100">{money(item.val)}</strong>
-                                          <span className="text-[10px] text-stone-400 ml-1">({pctOfTotal.toFixed(0)}%)</span>
-                                        </div>
-                                        {channelMoM !== null ? (
-                                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 ${
-                                            channelMoM >= 0 ? "bg-emerald-950 text-emerald-300 border border-emerald-800" : "bg-rose-950 text-rose-300 border border-rose-800"
+                                      <div className="flex items-center gap-2">
+                                        <span className="font-bold text-stone-100 tabular-nums">{money(item.val)}</span>
+                                        <span className="text-[10px] text-stone-400 tabular-nums">({pct.toFixed(1)}%)</span>
+                                        {channelGrowth !== null && (
+                                          <span className={`text-[9px] font-bold px-1 rounded tabular-nums ${
+                                            channelGrowth >= 0 ? "text-emerald-400 bg-emerald-950/60" : "text-rose-400 bg-rose-950/60"
                                           }`}>
-                                            <span>{channelMoM >= 0 ? "▲" : "▼"}</span>
-                                            <span>{Math.abs(channelMoM).toFixed(1)}%</span>
+                                            {channelGrowth >= 0 ? "+" : ""}{channelGrowth.toFixed(1)}%
                                           </span>
-                                        ) : (
-                                          <span className="text-[9px] text-stone-500 font-medium px-1 bg-stone-800 rounded">Base</span>
                                         )}
                                       </div>
                                     </div>
                                   );
                                 })}
                               </div>
+                            </div>
+
+                            <div className="mt-3 pt-2 border-t border-stone-800 text-[10px] text-stone-400 text-center">
+                              Toque ou clique para fixar/desafixar este mês
                             </div>
                           </div>
                         )}
@@ -3065,9 +3096,9 @@ export function DashboardClient() {
                               return (
                                 <div key={card.label} className={`p-3 rounded-xl border ${card.color} shadow-2xs flex flex-col justify-between gap-1.5`}>
                                   <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-1.5">
+                                    <div className="flex items-center gap-1.5 font-bold">
                                       <span className={`w-2 h-2 rounded-full ${card.dot}`} />
-                                      <strong className="text-xs">{card.label}</strong>
+                                      <span>{card.label}</span>
                                     </div>
                                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
                                       isPositive ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
@@ -3118,6 +3149,8 @@ export function DashboardClient() {
                 })()}
               </div>
             )}
+
+
             {/* Comparativo dos 4 Canais de Venda */}
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs">
               <h2 className="text-base font-bold text-stone-900 mb-1">
