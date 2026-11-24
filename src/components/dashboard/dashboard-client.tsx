@@ -3371,11 +3371,22 @@ export function DashboardClient() {
                                         </div>
                                       </div>
 
-                                      {/* Se o canal estiver com foco no mês atual, exibe a projeção e ritmo diário integrados */}
-                                      {isFocused && activeMonth.is_current_month && channelProj > item.val && (
-                                        <div className="mt-1 pt-1 border-t border-stone-800/60 flex items-center justify-between text-[10px] text-amber-300 font-semibold">
-                                          <span>Projeção (30d): <strong>{money(channelProj)}</strong></span>
-                                          <span className="text-stone-300">Ritmo: {money(channelDaily)}/dia</span>
+                                      {/* Projeção e ritmo diário de TODOS os canais no mês em andamento, sem exigir hover */}
+                                      {activeMonth.is_current_month && (
+                                        <div className={`mt-0.5 pt-0.5 flex items-center justify-between text-[10px] pl-3.5 pr-0.5 ${
+                                          isFocused
+                                            ? "border-t border-amber-500/30 text-amber-300 font-semibold"
+                                            : "text-stone-400"
+                                        }`}>
+                                          <span className="flex items-center gap-1 font-medium">
+                                            <span className={isFocused ? "text-amber-400" : "text-amber-400/80"}>↳ Proj. 30d:</span>
+                                            <strong className={`tabular-nums ${isFocused ? "text-amber-200 font-bold" : "text-amber-300/90 font-semibold"}`}>
+                                              {money(channelProj)}
+                                            </strong>
+                                          </span>
+                                          <span className="text-[9px] text-stone-400 tabular-nums">
+                                            {money(channelDaily)}/dia
+                                          </span>
                                         </div>
                                       )}
                                     </div>
