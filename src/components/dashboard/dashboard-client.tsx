@@ -2627,8 +2627,6 @@ export function DashboardClient() {
                   else if (rawPeak <= 20000) yMax = 20000;
                   else yMax = Math.ceil(rawPeak / 5000) * 5000;
 
-                  const yTicks = [yMax, yMax * 0.75, yMax * 0.5, yMax * 0.25, 0];
-
                   const totalFilteredRevenue = history.reduce((acc, m) => acc + m.displayRevenue, 0);
                   const totalFilteredOrders = rawHistory.reduce((acc, m) => acc + m.orders_count, 0);
                   const recordMonth = [...history].sort((a, b) => b.displayRevenue - a.displayRevenue)[0];
@@ -2745,7 +2743,7 @@ export function DashboardClient() {
                         </div>
                       </div>
 
-                      {/* ÁREA DO GRÁFICO REESTRUTURADA EM 3 CAMADAS GEOMÉTRICAS SINCRONIZADAS */}
+                      {/* ÁREA DO GRÁFICO: 3 CAMADAS GEOMÉTRICAS COM BASE RIGOROSAMENTE APOIADA NO EIXO */}
                       <div className="relative overflow-x-auto scrollbar-thin pb-2">
                         <div className="min-w-[620px]">
                           
@@ -2797,126 +2795,151 @@ export function DashboardClient() {
                             </div>
                           </div>
 
-                          {/* CAMADA 2: ÁREA DE PLOTAGEM REAL (CHART PLOT AREA - ALTURA FIXA h-60 / 240px) */}
-                          <div className="relative h-60 w-full">
-                            {/* Grade e Ticks do Eixo Y compartilhando exatamente a altura h-60 */}
-                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none z-0">
-                              {yTicks.map((val, idx) => {
-                                const isZero = val === 0;
+                          {/* CAMADA 2: ÁREA DE PLOTAGEM REAL DAS BARRAS (h-56 / 224px) */}
+                          <div className="relative h-56 w-full pl-24 pr-4">
+                            {/* Linhas de Grade Horizontais Sutis (25%, 50%, 75%, 100%) */}
+                            <div className="absolute inset-y-0 left-0 right-4 pointer-events-none z-0">
+                              {[
+                                { val: yMax, pct: 100 },
+                                { val: yMax * 0.75, pct: 75 },
+                                { val: yMax * 0.5, pct: 50 },
+                                { val: yMax * 0.25, pct: 25 },
+                              ].map((tick) => (
+                                <div
+                                  key={tick.pct}
+                                  style={{ bottom: `${tick.pct}%` }}
+                                  className="absolute left-0 right-0 flex items-center gap-3 -translate-y-1/2"
+                                >
+                                  <span className="text-[11px] font-mono text-stone-400 w-20 text-right tabular-nums select-none flex-shrink-0">
+                                    {money(tick.val)}
+                                  </span>
+                                  <div className="w-full border-b border-stone-200/60 border-dashed" />
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Colunas de Barras com Linhas-Guia Verticais Tracejadas Sutis */}
+                            <div className="relative z-10 w-full h-full flex items-end justify-around gap-6">
+                              {history.map((m, idx) => {
+                                const rev = m.displayRevenue;
+                                const isHovered = activeMonthIdx === idx;
+
+                                // Alturas percentuais rigorosamente proporcionais a yMax
+                                const totalHeightPct = Math.max(rev > 0 ? 2 : 0, Math.min(100, (rev / yMax) * 100));
+                                const projHeightPct = m.displayProj
+                                  ? Math.max(2, Math.min(100, (m.displayProj / yMax) * 100))
+                                  : 0;
+
+                                const shopeeVal = m.by_channel.shopee || 0;
+                                const mlVal = m.by_channel.mercado_livre || 0;
+                                const siteVal = m.by_channel.site || 0;
+                                const tiktokVal = m.by_channel.tiktok || 0;
+
+                                const shopeeHeight = Math.max(shopeeVal > 0 ? 2 : 0, Math.min(100, (shopeeVal / yMax) * 100));
+                                const mlHeight = Math.max(mlVal > 0 ? 2 : 0, Math.min(100, (mlVal / yMax) * 100));
+                                const siteHeight = Math.max(siteVal > 0 ? 2 : 0, Math.min(100, (siteVal / yMax) * 100));
+                                const tiktokHeight = Math.max(tiktokVal > 0 ? 2 : 0, Math.min(100, (tiktokVal / yMax) * 100));
+
                                 return (
-                                  <div key={idx} className="w-full flex items-center gap-3">
-                                    <span className="text-[11px] font-mono text-stone-400 w-20 text-right tabular-nums flex-shrink-0 select-none">
-                                      {money(val)}
-                                    </span>
-                                    <div className={`w-full border-b ${
-                                      isZero ? "border-stone-300 border-b-2" : "border-stone-100 border-dashed"
-                                    }`} />
+                                  <div
+                                    key={m.month}
+                                    onMouseEnter={() => setHoveredMonthIndex(idx)}
+                                    onMouseLeave={() => setHoveredMonthIndex(null)}
+                                    onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
+                                    className="flex-1 max-w-[140px] h-full flex justify-center items-end relative cursor-pointer group"
+                                  >
+                                    {/* LINHA-GUIA VERTICAL TRACEJADA SUBINDO DO EIXO (EIXO Y PARA CIMA) */}
+                                    <div
+                                      className={`absolute inset-y-0 left-1/2 -translate-x-1/2 border-l border-dashed pointer-events-none transition-colors z-0 ${
+                                        isHovered
+                                          ? "border-amber-400/80 shadow-xs"
+                                          : "border-stone-200/60"
+                                      }`}
+                                    />
+
+                                    {/* CAIXA DE PROJEÇÃO DE NOVEMBRO CRAVADA NO TOPO DA LINHA BASE */}
+                                    {m.is_current_month && m.displayProj && m.displayProj > rev && (
+                                      <div
+                                        style={{ height: `${projHeightPct}%` }}
+                                        className={`absolute bottom-0 rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-200/15 transition-all pointer-events-none z-0 ${
+                                          monthlyViewMode === "grouped" ? "w-28 sm:w-32 left-1/2 -translate-x-1/2" : "w-12 sm:w-16 left-1/2 -translate-x-1/2"
+                                        }`}
+                                        title={`Ritmo projetado de fechamento: ${money(m.displayProj)}`}
+                                      />
+                                    )}
+
+                                    {/* MODO 1: BARRAS POR CANAL LADO A LADO (APOIADAS NO TOPO DA LINHA BASE) */}
+                                    {monthlyViewMode === "grouped" && selectedMonthlyChannel === "all" ? (
+                                      <div className={`flex items-end justify-center gap-1.5 sm:gap-2 h-full px-2 pt-2 pb-0 rounded-t-2xl transition-colors relative z-10 ${
+                                        isHovered ? "bg-stone-100/60" : ""
+                                      }`}>
+                                        {/* Barra Shopee */}
+                                        <div
+                                          style={{ height: `${shopeeHeight}%` }}
+                                          className="w-3.5 sm:w-4 bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                          title={`Shopee: ${money(shopeeVal)}`}
+                                        />
+                                        {/* Barra Mercado Livre */}
+                                        <div
+                                          style={{ height: `${mlHeight}%` }}
+                                          className="w-3.5 sm:w-4 bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                          title={`Mercado Livre: ${money(mlVal)}`}
+                                        />
+                                        {/* Barra Loja Virtual */}
+                                        <div
+                                          style={{ height: `${siteHeight}%` }}
+                                          className="w-3.5 sm:w-4 bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                          title={`Loja Virtual: ${money(siteVal)}`}
+                                        />
+                                        {/* Barra TikTok Shop */}
+                                        <div
+                                          style={{ height: `${tiktokHeight}%` }}
+                                          className="w-3.5 sm:w-4 bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
+                                          title={`TikTok Shop: ${money(tiktokVal)}`}
+                                        />
+                                      </div>
+                                    ) : (
+                                      /* MODO 2: BARRA TOTAL MONOLÍTICA OU CANAL FILTRADO (APOIADA NO TOPO DA LINHA BASE) */
+                                      <div
+                                        style={{ height: `${totalHeightPct}%` }}
+                                        className={`w-12 sm:w-16 rounded-t-xl transition-all duration-200 relative z-10 shadow-sm ${
+                                          isHovered ? "ring-4 ring-amber-400 shadow-md brightness-105" : ""
+                                        } ${
+                                          selectedMonthlyChannel === "all"
+                                            ? "bg-gradient-to-t from-amber-950 via-amber-900 to-amber-700"
+                                            : selectedMonthlyChannel === "shopee"
+                                            ? "bg-gradient-to-t from-orange-700 to-orange-500"
+                                            : selectedMonthlyChannel === "mercado_livre"
+                                            ? "bg-gradient-to-t from-amber-500 to-amber-300"
+                                            : selectedMonthlyChannel === "site"
+                                            ? "bg-gradient-to-t from-sky-700 to-sky-500"
+                                            : "bg-gradient-to-t from-zinc-950 to-zinc-800"
+                                        }`}
+                                        title={`${m.full_label}: ${money(rev)}`}
+                                      />
+                                    )}
                                   </div>
                                 );
                               })}
                             </div>
+                          </div>
 
-                            {/* Colunas de Barras cravadas na mesma altura e base bottom-0 */}
-                            <div className="relative z-10 pl-24 pr-4 h-full">
-                              <div className="w-full h-full flex items-end justify-around gap-6">
-                                {history.map((m, idx) => {
-                                  const rev = m.displayRevenue;
-                                  const isHovered = activeMonthIdx === idx;
-
-                                  // Alturas percentuais rigorosamente proporcionais a yMax
-                                  const totalHeightPct = Math.max(rev > 0 ? 2 : 0, Math.min(100, (rev / yMax) * 100));
-                                  const projHeightPct = m.displayProj
-                                    ? Math.max(2, Math.min(100, (m.displayProj / yMax) * 100))
-                                    : 0;
-
-                                  const shopeeVal = m.by_channel.shopee || 0;
-                                  const mlVal = m.by_channel.mercado_livre || 0;
-                                  const siteVal = m.by_channel.site || 0;
-                                  const tiktokVal = m.by_channel.tiktok || 0;
-
-                                  const shopeeHeight = Math.max(shopeeVal > 0 ? 2 : 0, Math.min(100, (shopeeVal / yMax) * 100));
-                                  const mlHeight = Math.max(mlVal > 0 ? 2 : 0, Math.min(100, (mlVal / yMax) * 100));
-                                  const siteHeight = Math.max(siteVal > 0 ? 2 : 0, Math.min(100, (siteVal / yMax) * 100));
-                                  const tiktokHeight = Math.max(tiktokVal > 0 ? 2 : 0, Math.min(100, (tiktokVal / yMax) * 100));
-
-                                  return (
-                                    <div
-                                      key={m.month}
-                                      onMouseEnter={() => setHoveredMonthIndex(idx)}
-                                      onMouseLeave={() => setHoveredMonthIndex(null)}
-                                      onClick={() => setPinnedMonthIndex((prev) => (prev === idx ? null : idx))}
-                                      className="flex-1 max-w-[140px] h-full flex justify-center items-end relative cursor-pointer group"
-                                    >
-                                      {/* CAIXA DE PROJEÇÃO DE NOVEMBRO CRAVADA EM BOTTOM: 0 */}
-                                      {m.is_current_month && m.displayProj && m.displayProj > rev && (
-                                        <div
-                                          style={{ height: `${projHeightPct}%` }}
-                                          className={`absolute bottom-0 rounded-t-xl border-2 border-dashed border-amber-400 bg-amber-200/15 transition-all pointer-events-none z-0 ${
-                                            monthlyViewMode === "grouped" ? "w-28 sm:w-32 left-1/2 -translate-x-1/2" : "w-12 sm:w-16 left-1/2 -translate-x-1/2"
-                                          }`}
-                                          title={`Ritmo projetado de fechamento: ${money(m.displayProj)}`}
-                                        />
-                                      )}
-
-                                      {/* MODO 1: BARRAS POR CANAL LADO A LADO (CRAVADAS NO ZERO) */}
-                                      {monthlyViewMode === "grouped" && selectedMonthlyChannel === "all" ? (
-                                        <div className={`flex items-end justify-center gap-1.5 sm:gap-2 h-full px-2 pt-2 pb-0 rounded-t-2xl transition-colors relative z-10 ${
-                                          isHovered ? "bg-stone-100/60" : ""
-                                        }`}>
-                                          {/* Barra Shopee */}
-                                          <div
-                                            style={{ height: `${shopeeHeight}%` }}
-                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-orange-600 to-orange-500 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
-                                            title={`Shopee: ${money(shopeeVal)}`}
-                                          />
-                                          {/* Barra Mercado Livre */}
-                                          <div
-                                            style={{ height: `${mlHeight}%` }}
-                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
-                                            title={`Mercado Livre: ${money(mlVal)}`}
-                                          />
-                                          {/* Barra Loja Virtual */}
-                                          <div
-                                            style={{ height: `${siteHeight}%` }}
-                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-sky-600 to-sky-500 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
-                                            title={`Loja Virtual: ${money(siteVal)}`}
-                                          />
-                                          {/* Barra TikTok Shop */}
-                                          <div
-                                            style={{ height: `${tiktokHeight}%` }}
-                                            className="w-3.5 sm:w-4 bg-gradient-to-t from-zinc-950 to-zinc-800 rounded-t-sm shadow-2xs transition-all hover:brightness-110"
-                                            title={`TikTok Shop: ${money(tiktokVal)}`}
-                                          />
-                                        </div>
-                                      ) : (
-                                        /* MODO 2: BARRA TOTAL MONOLÍTICA OU CANAL FILTRADO (CRAVADA NO ZERO) */
-                                        <div
-                                          style={{ height: `${totalHeightPct}%` }}
-                                          className={`w-12 sm:w-16 rounded-t-xl transition-all duration-200 relative z-10 shadow-sm ${
-                                            isHovered ? "ring-4 ring-amber-400 shadow-md brightness-105" : ""
-                                          } ${
-                                            selectedMonthlyChannel === "all"
-                                              ? "bg-gradient-to-t from-amber-950 via-amber-900 to-amber-700"
-                                              : selectedMonthlyChannel === "shopee"
-                                              ? "bg-gradient-to-t from-orange-700 to-orange-500"
-                                              : selectedMonthlyChannel === "mercado_livre"
-                                              ? "bg-gradient-to-t from-amber-500 to-amber-300"
-                                              : selectedMonthlyChannel === "site"
-                                              ? "bg-gradient-to-t from-sky-700 to-sky-500"
-                                              : "bg-gradient-to-t from-zinc-950 to-zinc-800"
-                                          }`}
-                                          title={`${m.full_label}: ${money(rev)}`}
-                                        />
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
+                          {/* LINHA DE BASE ZERO R$ 0,00 (DIVISOR ESTRUTURAL RÍGIDO: AS BARRAS POUSAM EXATAMENTE AQUI) */}
+                          <div className="relative w-full pr-4 z-20">
+                            {/* Linha cinza contínua de 2px no chão exato das barras */}
+                            <div className="pl-24 w-full">
+                              <div className="w-full border-b-2 border-stone-300" />
+                            </div>
+                            {/* Rótulo R$ 0,00 centralizado verticalmente na linha */}
+                            <div className="absolute left-0 top-0 -translate-y-1/2 w-20 text-right pointer-events-none">
+                              <span className="text-[11px] font-mono font-bold text-stone-600 tabular-nums select-none">
+                                {money(0)}
+                              </span>
                             </div>
                           </div>
 
-                          {/* CAMADA 3: LINHA INFERIOR DOS RÓTULOS DOS MESES (PERFEITAMENTE SINCRONIZADA COM O GRID) */}
-                          <div className="flex items-start pl-24 pr-4 pt-3.5">
+                          {/* CAMADA 3: LINHA INFERIOR DOS RÓTULOS DOS MESES (PERFEITAMENTE SINCRONIZADA ABAIXO DO ZERO) */}
+                          <div className="flex items-start pl-24 pr-4 pt-3">
                             <div className="w-full flex justify-around gap-6">
                               {history.map((m, idx) => {
                                 const isHovered = activeMonthIdx === idx;
