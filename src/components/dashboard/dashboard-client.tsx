@@ -2669,25 +2669,25 @@ export function DashboardClient() {
 
                   return (
                     <div>
-                      {/* CABEÇALHO REESTRUTURADO: TÍTULO À ESQUERDA + KPI CHIPS COMPACTOS DENTRO DOS LIMITES */}
-                      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
+                      {/* CABEÇALHO REESTRUTURADO: TÍTULO À ESQUERDA + KPI CHIPS COMPACTOS ALINHADOS EM LINHA ÚNICA */}
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
                         <div className="max-w-xl">
                           <div className="flex items-center gap-2">
-                            <h2 className="text-lg font-extrabold text-stone-900 tracking-tight flex items-center gap-2">
+                            <h2 className="text-base sm:text-lg font-extrabold text-stone-900 tracking-tight flex items-center gap-2">
                               <span>Evolução Mensal de Faturamento &amp; Vendas</span>
                             </h2>
                             <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full border border-amber-200 uppercase tracking-wide">
                               Série Histórica
                             </span>
                           </div>
-                          <p className="text-xs text-stone-500 mt-1">
+                          <p className="text-xs text-stone-500 mt-0.5">
                             Acompanhe o ritmo de crescimento mês a mês (MoM), volume de pedidos e desempenho comparativo por canal de venda.
                           </p>
                         </div>
 
-                        {/* KPI Chips Compactos com Altura Padronizada (h-10) Sem Vazamento dos Limites */}
-                        <div className="flex items-center gap-2.5 flex-wrap max-w-full">
-                          <div className="inline-flex items-center gap-2 bg-stone-50 border border-stone-200/90 px-3 py-1.5 rounded-xl shadow-2xs h-10 flex-shrink-0">
+                        {/* KPI Chips Compactos Alinhados Estritamente na Mesma Linha (flex-nowrap) */}
+                        <div className="flex items-center gap-2 flex-nowrap flex-shrink-0">
+                          <div className="inline-flex items-center gap-1.5 bg-stone-50 border border-stone-200/90 px-2.5 py-1 rounded-xl shadow-2xs h-8 sm:h-8.5 flex-shrink-0">
                             <span className="text-[10px] text-stone-500 uppercase font-bold tracking-wider">
                               {selectedMonthlyChannel === "all" ? "Total Acumulado:" : channelNames[selectedMonthlyChannel] + ":"}
                             </span>
@@ -2700,7 +2700,7 @@ export function DashboardClient() {
                           </div>
 
                           {recordMonth && recordMonth.displayRevenue > 0 && (
-                            <div className="inline-flex items-center gap-2 bg-amber-50/70 border border-amber-300/80 px-3 py-1.5 rounded-xl shadow-2xs h-10 flex-shrink-0">
+                            <div className="inline-flex items-center gap-1.5 bg-amber-50/70 border border-amber-300/80 px-2.5 py-1 rounded-xl shadow-2xs h-8 sm:h-8.5 flex-shrink-0">
                               <span className="text-[10px] text-amber-900 uppercase font-bold tracking-wider flex items-center gap-1">
                                 <span>👑</span>
                                 <span>Mês Recorde:</span>
@@ -2857,60 +2857,6 @@ export function DashboardClient() {
                               </div>
                             )}
 
-                            {/* MINI-CARD FLUTUANTE COM DETALHAMENTO DE PROJEÇÃO DO CANAL ESPECÍFICO */}
-                            {activeBarInfo && (
-                              <div
-                                onClick={(e) => e.stopPropagation()}
-                                className="absolute top-2 right-4 z-30 p-3.5 bg-stone-900/95 backdrop-blur-xl text-white rounded-2xl shadow-2xl border border-stone-700/80 text-xs w-68 pointer-events-auto animate-in fade-in duration-100"
-                              >
-                                <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-800">
-                                  <div className="flex items-center gap-1.5">
-                                    <span className={`w-2.5 h-2.5 rounded-full ${
-                                      activeBarInfo.channelKey === "shopee" ? "bg-orange-500" :
-                                      activeBarInfo.channelKey === "mercado_livre" ? "bg-amber-400" :
-                                      activeBarInfo.channelKey === "site" ? "bg-sky-400" : "bg-stone-300"
-                                    }`} />
-                                    <strong className="text-stone-100 font-bold">{activeBarInfo.channelName}</strong>
-                                    <span className="text-[10px] text-stone-400">({activeBarInfo.monthLabel})</span>
-                                  </div>
-                                  {pinnedBarInfo ? (
-                                    <button
-                                      type="button"
-                                      onClick={() => setPinnedBarInfo(null)}
-                                      className="text-[10px] text-amber-400 hover:text-white font-semibold cursor-pointer px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-800/80"
-                                      title="Desafixar régua"
-                                    >
-                                      ✕ Desafixar
-                                    </button>
-                                  ) : (
-                                    <span className="text-[9px] text-stone-500 italic">Clique p/ fixar</span>
-                                  )}
-                                </div>
-
-                                <div className="space-y-1.5 text-[11px]">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-stone-400">Faturamento Realizado:</span>
-                                    <strong className="text-stone-100 font-bold tabular-nums">{money(activeBarInfo.val)}</strong>
-                                  </div>
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-stone-400">Participação no Mês:</span>
-                                    <span className="text-stone-300 tabular-nums">{activeBarInfo.sharePct.toFixed(1)}%</span>
-                                  </div>
-                                  {activeBarInfo.isCurrentMonth && activeBarInfo.projVal > activeBarInfo.val && (
-                                    <>
-                                      <div className="flex items-center justify-between text-amber-300 pt-1.5 border-t border-stone-800/80 font-bold">
-                                        <span>Projeção (30 dias):</span>
-                                        <strong className="tabular-nums">{money(activeBarInfo.projVal)}</strong>
-                                      </div>
-                                      <div className="flex items-center justify-between text-[10px] text-stone-400">
-                                        <span>Ritmo de Vendas:</span>
-                                        <span className="tabular-nums font-medium text-stone-300">{money(activeBarInfo.dailyPace)}/dia</span>
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                            )}
 
                             {/* Colunas de Meses com Posicionamento e Alturas Rígidas em Pixels */}
                             <div className="relative z-10 w-full h-full flex items-stretch justify-around gap-6">
